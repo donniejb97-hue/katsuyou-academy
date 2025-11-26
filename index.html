@@ -1,0 +1,2494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katsuyō Academy — Japanese Verb Conjugation</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --ink: #1a1a2e;
+      --ink-light: #2d2d44;
+      --paper: #faf9f7;
+      --paper-warm: #f5f3ef;
+      --accent: #c45c4a;
+      --accent-soft: #d4786a;
+      --sage: #7a9e7e;
+      --gold: #c9a962;
+      --text: #3d3d3d;
+      --text-light: #6b6b6b;
+    }
+    
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--paper);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    
+    .jp {
+      font-family: 'Noto Serif JP', serif;
+    }
+    
+    /* NAVIGATION */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--ink);
+      border-bottom: 3px solid var(--accent);
+    }
+    
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    
+    .logo:hover {
+      opacity: 0.85;
+    }
+    
+    .logo-kanji {
+      font-size: 1.75rem;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    
+    .logo-text {
+      color: var(--paper);
+      font-size: 1.35rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
+    
+    .nav-link {
+      color: var(--paper);
+      opacity: 0.7;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0.5rem 0;
+      border: none;
+      background: none;
+      position: relative;
+      font-family: inherit;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      opacity: 1;
+    }
+    
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    
+    /* PAGES */
+    .page {
+      min-height: 100vh;
+      padding-top: 72px;
+      display: none;
+    }
+    
+    .page.active {
+      display: block;
+    }
+    
+    /* HOME PAGE */
+    .home {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .hero {
+      min-height: calc(100vh - 72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--ink) 0%, var(--ink-light) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero::before {
+      content: '活用';
+      position: absolute;
+      font-size: 35vw;
+      color: rgba(255,255,255,0.02);
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 700;
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    
+    .hero-content {
+      text-align: center;
+      padding: 3rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--paper);
+      padding: 0.4rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    
+    .hero-title {
+      color: var(--paper);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      line-height: 1.1;
+    }
+    
+    .hero-subtitle {
+      color: var(--accent-soft);
+      font-size: clamp(1.25rem, 3vw, 1.75rem);
+      font-weight: 300;
+      margin-bottom: 2rem;
+    }
+    
+    .hero-desc {
+      color: rgba(255,255,255,0.6);
+      font-size: 1.1rem;
+      max-width: 500px;
+      margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .btn {
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s;
+      font-family: inherit;
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      color: var(--paper);
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--paper);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    
+    .btn-secondary:hover {
+      border-color: var(--paper);
+      background: rgba(255,255,255,0.05);
+    }
+    
+    /* FEATURES */
+    .features {
+      padding: 6rem 2rem;
+      background: var(--paper-warm);
+    }
+    
+    .features-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .features-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    
+    .features-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+    
+    .features-subtitle {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background: var(--paper);
+      padding: 2.5rem 2rem;
+      border: 1px solid rgba(0,0,0,0.06);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border-color: var(--accent);
+    }
+    
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1.25rem;
+    }
+    
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.75rem;
+    }
+    
+    .feature-desc {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+    
+    /* LEARN & FORMS PAGES */
+    .learn-page, .forms-page {
+      padding: 4rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .page-header {
+      margin-bottom: 3rem;
+    }
+    
+    .page-tag {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    
+    .page-desc {
+      color: var(--text-light);
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+    
+    .placeholder-card {
+      background: var(--paper-warm);
+      border: 2px dashed rgba(0,0,0,0.15);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+    
+    .placeholder-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    .placeholder-text {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+    
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid rgba(0,0,0,0.08);
+      padding-bottom: 0.5rem;
+    }
+    
+    .tab {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: all 0.2s;
+      font-family: inherit;
+      position: relative;
+    }
+    
+    .tab:hover {
+      color: var(--ink);
+    }
+    
+    .tab.active {
+      color: var(--accent);
+    }
+    
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -0.6rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent);
+    }
+    
+    .form-card {
+      background: var(--paper);
+      border: 1px solid rgba(0,0,0,0.08);
+      padding: 2.5rem;
+      display: none;
+    }
+    
+    .form-card.active {
+      display: block;
+    }
+    
+    .form-card-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+    
+    .form-card-desc {
+      color: var(--text-light);
+      margin-bottom: 2rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    
+    .info-box {
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      border-left: 4px solid;
+    }
+    
+    .info-box.blue {
+      background: #eef4f8;
+      border-color: #4a90a4;
+    }
+    
+    .info-box.green {
+      background: #eef5ef;
+      border-color: var(--sage);
+    }
+    
+    .info-box.purple {
+      background: #f3eef8;
+      border-color: #7a5ba4;
+    }
+    
+    .info-box.yellow {
+      background: #fdf8ed;
+      border-color: var(--gold);
+    }
+    
+    .info-box-title {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-box-text {
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    
+    .section-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+    
+    .pattern-box {
+      background: var(--paper-warm);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    .conj-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+    }
+    
+    .conj-table th,
+    .conj-table td {
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    
+    .conj-table th {
+      background: var(--ink);
+      color: var(--paper);
+      font-weight: 600;
+    }
+    
+    .conj-table tr:nth-child(even) {
+      background: var(--paper-warm);
+    }
+    
+    .conj-table .highlight {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    
+    .row-a { color: #c45c4a; font-weight: 600; }
+    .row-i { color: #7a9e7e; font-weight: 600; }
+    .row-u { color: #4a90a4; font-weight: 600; }
+    .row-e { color: #7a5ba4; font-weight: 600; }
+    .row-o { color: #c9a962; font-weight: 600; }
+    
+    .forms-cta {
+      margin-top: 3rem;
+      text-align: center;
+    }
+    
+    /* CONJUGATOR PAGE */
+    .conjugator-page {
+      padding: 4rem 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .conjugator-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+    
+    .score-box {
+      text-align: right;
+    }
+    
+    .score-label {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    .score-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--sage);
+    }
+    
+    .form-select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      border: 2px solid rgba(0,0,0,0.1);
+      background: var(--paper);
+      font-family: inherit;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+      transition: border-color 0.2s;
+    }
+    
+    .form-select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    
+    .verb-display {
+      background: var(--ink);
+      padding: 2.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    
+    .verb-type {
+      color: var(--accent-soft);
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    
+    .verb-kanji {
+      font-size: 3.5rem;
+      color: var(--paper);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    
+    .verb-info {
+      color: rgba(255,255,255,0.6);
+      font-size: 1.15rem;
+    }
+    
+    .prompt-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+    
+    .prompt-text {
+      font-weight: 500;
+      color: var(--ink);
+      flex: 1;
+    }
+    
+    .prompt-form {
+      color: var(--accent);
+      font-weight: 600;
+      display: block;
+      font-size: 1.05rem;
+      margin-top: 0.25rem;
+      line-height: 1.4;
+    }
+    
+    .hint-btn {
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 0.25rem 0.5rem;
+    }
+    
+    .hint-btn:hover {
+      color: var(--accent);
+    }
+    
+    .hint-box {
+      background: #fdf8ed;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--text);
+      display: none;
+    }
+    
+    .hint-box.visible {
+      display: block;
+    }
+    
+    .answer-input {
+      width: 100%;
+      padding: 1.25rem;
+      font-size: 1.35rem;
+      border: 2px solid rgba(0,0,0,0.1);
+      background: var(--paper);
+      font-family: 'Noto Serif JP', serif;
+      text-align: center;
+      margin-bottom: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .answer-input:focus {
+      outline: none;
+      border-color: var(--ink);
+    }
+    
+    .answer-input:disabled {
+      background: var(--paper-warm);
+    }
+    
+    .feedback {
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      display: none;
+    }
+    
+    .feedback.visible {
+      display: block;
+    }
+    
+    .feedback.warning {
+      background: #fef3e6;
+      border: 2px solid #e6a756;
+    }
+    
+    .feedback.correct {
+      background: #eef5ef;
+      border: 2px solid var(--sage);
+    }
+    
+    .feedback.incorrect {
+      background: #fbeef0;
+      border: 2px solid var(--accent);
+    }
+    
+    .feedback-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .feedback-answer {
+      font-size: 1.25rem;
+    }
+    
+    .feedback-explanation {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text);
+      display: none;
+    }
+    
+    .feedback-explanation strong {
+      color: var(--accent);
+    }
+    
+    .check-btn {
+      width: 100%;
+      padding: 1.125rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    
+    .check-btn.primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    
+    .check-btn.primary:hover:not(:disabled) {
+      background: var(--ink-light);
+    }
+    
+    .check-btn.primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    
+    .check-btn.continue {
+      background: var(--sage);
+      color: var(--paper);
+    }
+    
+    .check-btn.continue:hover {
+      opacity: 0.9;
+    }
+    
+    .check-btn.next {
+      background: var(--sage);
+      color: var(--paper);
+      display: none;
+    }
+    
+    .check-btn.next:hover {
+      opacity: 0.9;
+    }
+    
+    /* Responsive */
+    @media (max-width: 600px) {
+      .nav-inner {
+        padding: 0 1rem;
+      }
+      .nav-links {
+        gap: 1rem;
+      }
+      .nav-link {
+        font-size: 0.85rem;
+      }
+      .hero-content {
+        padding: 2rem 1rem;
+      }
+      .features {
+        padding: 4rem 1rem;
+      }
+      .tabs {
+        flex-wrap: wrap;
+      }
+      .tab {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo" onclick="showPage('home')">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </div>
+      <div class="nav-links">
+        <button class="nav-link active" data-page="home" onclick="showPage('home')">Home</button>
+        <button class="nav-link" data-page="learn" onclick="showPage('learn')">Learn</button>
+        <button class="nav-link" data-page="forms" onclick="showPage('forms')">Forms</button>
+        <button class="nav-link" data-page="conjugator" onclick="showPage('conjugator')">The Conjugator</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <div class="home">
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">Japanese Verb Mastery</div>
+          <h1 class="hero-title">Katsuyō Academy</h1>
+          <p class="hero-subtitle jp">活用を学ぶ</p>
+          <p class="hero-desc">
+            A learning tool made by a student, for students—bringing an easy way to comprehend and practice Japanese verb conjugation.
+          </p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" onclick="showPage('learn')">Start Learning</button>
+            <button class="btn btn-secondary" onclick="showPage('conjugator')">Practice Now</button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- INTRODUCTION -->
+      <section style="max-width: 900px; margin: 0 auto; padding: 3rem 2rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 3rem; border-radius: 4px;">
+          <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+            Welcome to Katsuyō Academy
+          </h2>
+          
+          <div style="color: var(--text); font-size: 1.08rem; line-height: 1.8;">
+            <p style="margin-bottom: 1.5rem;">
+              If you're learning Japanese, you know that verb conjugation can feel overwhelming. With three verb types, 
+              multiple forms, and what seems like endless patterns to memorize, it's easy to feel lost.
+            </p>
+            
+            <p style="margin-bottom: 1.5rem;">
+              <strong style="color: var(--ink);">That's why Katsuyō Academy exists.</strong>
+            </p>
+            
+            <p style="margin-bottom: 1.5rem;">
+              As a fellow Japanese learner, I built this site because I needed something better than scattered textbook 
+              chapters and confusing online resources. I wanted a single place that would:
+            </p>
+            
+            <ul style="margin-left: 2rem; margin-bottom: 1.5rem; line-height: 2;">
+              <li><strong>Explain the logic</strong> behind conjugation patterns, not just give you charts to memorize</li>
+              <li><strong>Provide focused practice</strong> that actually helps the patterns stick</li>
+              <li><strong>Give instant feedback</strong> so you know exactly where you're going wrong</li>
+              <li><strong>Make it free and accessible</strong> for any student who wants to learn</li>
+            </ul>
+            
+            <p style="margin-bottom: 1.5rem;">
+              Katsuyō Academy isn't just another conjugation reference—it's a complete learning system designed to take 
+              you from confused to confident. Whether you're a complete beginner or reviewing for the JLPT, these tools 
+              will help you master verb conjugation once and for all.
+            </p>
+            
+            <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin-top: 2rem;">
+              <p style="margin: 0; font-style: italic; color: var(--text);">
+                "The best way to learn is to practice. The best way to practice is to understand. 
+                That's the philosophy behind every feature on this site."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHAT WE OFFER -->
+      <section class="features" style="background: var(--paper-warm); padding: 4rem 2rem;">
+        <div class="features-inner" style="max-width: 1000px; margin: 0 auto;">
+          <div class="features-header" style="text-align: center; margin-bottom: 3rem;">
+            <h2 class="features-title" style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">What You'll Find Here</h2>
+            <p class="features-subtitle" style="font-size: 1.1rem; color: var(--text-light);">Three powerful tools, one complete learning experience</p>
+          </div>
+          <div class="features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem;">
+            <div class="feature-card" onclick="showPage('learn')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
+              <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">Learn</h3>
+              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+                Clear, visual explanations of how Japanese verb conjugation actually works. Understand the <em>why</em> 
+                behind the patterns, not just the rules. Learn to identify verb types, understand the hiragana sound 
+                system, and see step-by-step walkthroughs of each conjugation type.
+              </p>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">Start Learning →</div>
+            </div>
+            <div class="feature-card" onclick="showPage('forms')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
+              <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📖</div>
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">Forms</h3>
+              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+                Quick-reference conjugation charts for all three verb types: Godan (五段), Ichidan (一段), and Suru (する). 
+                Color-coded tables show you exactly how each form is created. Perfect for when you need to look something 
+                up quickly or want to see all the patterns side-by-side.
+              </p>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">View Forms →</div>
+            </div>
+            <div class="feature-card" onclick="showPage('conjugator')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
+              <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">✏️</div>
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">The Conjugator</h3>
+              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+                The heart of Katsuyō Academy. Practice conjugating real Japanese verbs with instant feedback, smart hints, 
+                and detailed error explanations. The system adapts to your struggles, showing worked examples when you need 
+                them and cycling through verbs to keep practice fresh. Track your progress and watch your accuracy improve.
+              </p>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">Start Practicing →</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHY THIS WORKS -->
+      <section style="max-width: 1000px; margin: 0 auto; padding: 4rem 2rem;">
+        <div style="background: var(--ink); padding: 3rem; border-radius: 4px; color: var(--paper);">
+          <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 2rem; text-align: center;">
+            Why Katsuyō Academy Works
+          </h2>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem;">
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🎯 Focused Learning Path
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                Start with the fundamentals in Learn, reference the patterns in Forms, then drill them until they're 
+                automatic in The Conjugator. Each section builds on the last.
+              </p>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🧠 Understanding Over Memorization
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                You'll learn <em>why</em> す becomes さ for negative, not just that it does. When you understand the 
+                logic, conjugation becomes intuitive instead of a memory test.
+              </p>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                💡 Smart Feedback System
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                The Conjugator doesn't just say "wrong"—it explains your mistakes, offers Socratic hints, and provides 
+                worked examples when you're struggling. It's like having a tutor beside you.
+              </p>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🔄 Adaptive Practice
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                The practice system tracks your performance and adjusts accordingly. It cycles through verbs to prevent 
+                repetition, tests your verb type identification skills, and gives you more support when needed.
+              </p>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🎨 Clean, Distraction-Free Design
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                No ads, no clutter, no overwhelming walls of text. Just clean, focused learning tools designed to help 
+                you concentrate on what matters: mastering conjugation.
+              </p>
+            </div>
+            
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🆓 Completely Free
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                Made by a student, for students. No paywalls, no premium tiers, no "sign up to continue." Just free, 
+                quality resources available to anyone who wants to learn.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GET STARTED -->
+      <section style="max-width: 900px; margin: 0 auto; padding: 3rem 2rem 4rem 2rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 3rem; border-radius: 4px; text-align: center;">
+          <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
+            Ready to Master Conjugation?
+          </h2>
+          <p style="font-size: 1.08rem; color: var(--text); margin-bottom: 2rem; line-height: 1.7;">
+            Whether you're just starting to learn Japanese verbs or preparing for the JLPT, Katsuyō Academy has the 
+            tools you need to succeed. Start with Learn to understand the fundamentals, or jump straight into The 
+            Conjugator if you're ready to practice.
+          </p>
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem;">
+            <button class="btn btn-primary" onclick="showPage('learn')" style="font-size: 1.05rem; padding: 1rem 2rem;">
+              Begin Learning
+            </button>
+            <button class="btn btn-secondary" onclick="showPage('conjugator')" style="font-size: 1.05rem; padding: 1rem 2rem;">
+              Start Practicing
+            </button>
+          </div>
+          
+          <!-- STUDENT NOTE -->
+          <div style="background: var(--paper-warm); padding: 1.75rem; border-radius: 4px; border-left: 4px solid var(--accent); margin-top: 2rem;">
+            <p style="font-size: 0.95rem; color: var(--text); line-height: 1.7; margin: 0;">
+              <strong style="color: var(--ink);">A note from the creator:</strong><br>
+              Katsuyō Academy is a passion project born from my own struggles learning Japanese. If this site helps you 
+              in your journey, then it's served its purpose. <span class="jp">頑張ってください！</span> (Ganbatte kudasai - Do your best!)
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- LEARN PAGE -->
+  <div id="page-learn" class="page">
+    <div class="learn-page" style="max-width: 900px;">
+      <div class="page-header">
+        <div class="page-tag">Understanding Conjugation</div>
+        <h1 class="page-title">How Japanese Verbs Work</h1>
+        <p class="page-desc">
+          A clear, visual guide to understanding Japanese verb conjugation patterns.
+          Master the logic behind the forms so you can conjugate any verb with confidence.
+        </p>
+      </div>
+
+      <!-- INTRODUCTION -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem; margin-bottom: 2rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
+            Why Conjugation Matters
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
+            In Japanese, verbs change their form to express time (past/present), politeness, negation, desire, ability, and more. 
+            Unlike English where we add helper words ("I <em>will</em> go", "I <em>can</em> go"), Japanese transforms the verb itself.
+          </p>
+          <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent);">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--ink);">Example:</div>
+            <div style="color: var(--text); font-size: 1rem; line-height: 1.8;">
+              <strong class="jp">食べる</strong> (taberu) = to eat<br>
+              <strong class="jp">食べない</strong> (tabenai) = don't eat<br>
+              <strong class="jp">食べます</strong> (tabemasu) = eat (polite)<br>
+              <strong class="jp">食べた</strong> (tabeta) = ate<br>
+              <strong class="jp">食べたい</strong> (tabetai) = want to eat
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THE THREE VERB GROUPS -->
+      <section style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+          The Three Verb Types
+        </h2>
+        <p style="text-align: center; color: var(--text-light); font-size: 1.05rem; margin-bottom: 2rem;">
+          Every Japanese verb falls into one of three categories. Understanding which type you're working with is the first step.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div style="background: #eef4f8; padding: 2rem; border: 3px solid #4a90a4; border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #4a90a4; margin-bottom: 0.5rem;" class="jp">
+              五段 Godan
+            </h3>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
+              "Five-step" verbs that conjugate by shifting through <strong>5 vowel rows</strong>
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text);">
+              Examples:<br>
+              <span class="jp">行く、話す、飲む</span>
+            </div>
+          </div>
+
+          <div style="background: #eef5ef; padding: 2rem; border: 3px solid var(--sage); border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--sage); margin-bottom: 0.5rem;" class="jp">
+              一段 Ichidan
+            </h3>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
+              "One-step" verbs with a <strong>stem that never changes</strong>
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text);">
+              Examples:<br>
+              <span class="jp">食べる、見る、寝る</span>
+            </div>
+          </div>
+
+          <div style="background: #f3eef8; padding: 2rem; border: 3px solid #7a5ba4; border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #7a5ba4; margin-bottom: 0.5rem;">
+              する Suru
+            </h3>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
+              <strong>Irregular verbs</strong> formed by adding する to nouns
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text);">
+              Examples:<br>
+              <span class="jp">する、勉強する、料理する</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- IDENTIFYING VERB TYPES -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem;">
+            How to Identify Verb Types
+          </h2>
+
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; font-size: 1.25rem;">
+              Step 1: Does it end in する?
+            </h3>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="font-size: 2rem;">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text);">YES → It's a <strong style="color: #7a5ba4;">Suru verb</strong></div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">Examples: する、勉強する、散歩する</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="font-size: 2rem;">→</div>
+              <div style="color: var(--text);">NO → Continue to Step 2</div>
+            </div>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; font-size: 1.25rem;">
+              Step 2: Does it end in -eru (える) or -iru (いる)?
+            </h3>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="font-size: 2rem;">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text);">YES → <em>Probably</em> <strong style="color: var(--sage);">Ichidan</strong></div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">Examples: 食べる (taberu), 見る (miru), 起きる (okiru)</div>
+              </div>
+            </div>
+            <div style="background: #fdf8ed; padding: 1rem; border-radius: 4px; margin-top: 1rem; border-left: 4px solid var(--gold);">
+              <div style="font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem;">⚠️ Watch Out for Exceptions!</div>
+              <div style="font-size: 0.85rem; color: var(--text);">
+                Some verbs <em>look</em> like ichidan but are actually godan:<br>
+                <span class="jp">走る (hashiru)</span> - to run [GODAN]<br>
+                <span class="jp">帰る (kaeru)</span> - to return [GODAN]<br>
+                <span class="jp">知る (shiru)</span> - to know [GODAN]
+              </div>
+            </div>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; font-size: 1.25rem;">
+              Step 3: Everything else
+            </h3>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="font-size: 2rem;">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text);">It's <strong style="color: #4a90a4;">Godan</strong></div>
+                <div style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                  Ends in: く、ぐ、す、つ、ぬ、ぶ、む、る、う<br>
+                  Examples: 行く (iku), 話す (hanasu), 飲む (nomu), 買う (kau)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THE FOUNDATION - HIRAGANA CHART -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
+            Foundation: The Hiragana Sound System
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+            Japanese sounds are organized in <strong>rows</strong> and <strong>columns</strong>. Godan verbs work by shifting between these rows:
+          </p>
+
+          <div style="overflow-x: auto; margin-bottom: 2rem;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+              <thead>
+                <tr style="background: var(--ink);">
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">Row</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">k-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">s-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">t-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">m-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">r-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">w-</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background: #fbeef0;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #c45c4a;">あ (A)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">か</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">さ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">た</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ま</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ら</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">わ</td>
+                </tr>
+                <tr style="background: #eef5ef;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #7a9e7e;">い (I)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">き</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">し</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ち</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">み</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">り</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">い</td>
+                </tr>
+                <tr style="background: #eef4f8;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #4a90a4;">う (U)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">く</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">す</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">つ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">む</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">る</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">う</td>
+                </tr>
+                <tr style="background: #f3eef8;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #7a5ba4;">え (E)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">け</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">せ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">て</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">め</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">れ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">え</td>
+                </tr>
+                <tr style="background: #fdf8ed;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #c9a962;">お (O)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">こ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">そ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">と</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">も</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ろ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">お</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: #eef4f8; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #4a90a4;">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Key Insight:</div>
+            <div style="color: var(--text); line-height: 1.7;">
+              Notice how each column keeps the same consonant sound (k-, s-, t-, etc.), but the vowel changes (a, i, u, e, o).
+              When we conjugate godan verbs, we're moving <strong>up and down these columns</strong> to create different forms.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GODAN VERBS IN DEPTH -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: #4a90a4; margin-bottom: 1rem;">
+            Godan Verbs: The Five-Row System
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Godan verbs work by <strong>changing the final sound</strong> to a different row. Let's use <span class="jp">話す</span> (hanasu - to speak) as our example:
+          </p>
+
+          <!-- VISUAL TRANSFORMATION -->
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+              Watch the Transformation
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; text-align: center;">
+              <div style="padding: 1rem; background: #fbeef0; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #c45c4a; font-weight: 600; margin-bottom: 0.5rem;">NEGATIVE (あ)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話さない</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanasanai</div>
+              </div>
+              <div style="padding: 1rem; background: #eef5ef; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #7a9e7e; font-weight: 600; margin-bottom: 0.5rem;">POLITE (い)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話します</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanashimasu</div>
+              </div>
+              <div style="padding: 1rem; background: #eef4f8; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #4a90a4; font-weight: 600; margin-bottom: 0.5rem;">DICTIONARY (う)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話す</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanasu</div>
+              </div>
+              <div style="padding: 1rem; background: #f3eef8; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #7a5ba4; font-weight: 600; margin-bottom: 0.5rem;">POTENTIAL (え)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話せる</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanaseru</div>
+              </div>
+              <div style="padding: 1rem; background: #fdf8ed; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #c9a962; font-weight: 600; margin-bottom: 0.5rem;">VOLITIONAL (お)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話そう</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanasou</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP BY STEP -->
+          <div style="background: #eef4f8; padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem;">
+              Step-by-Step Process
+            </h3>
+            <div style="font-size: 1rem; line-height: 2; color: var(--text);">
+              <div style="margin-bottom: 1rem;">
+                <strong>1.</strong> Start with the dictionary form: <span class="jp" style="font-size: 1.25rem; color: #4a90a4;">話す</span> (hana<strong>su</strong>)
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <strong>2.</strong> Identify the final sound: <strong style="color: #4a90a4;">す (su)</strong> - this is in the <strong>う-row</strong>
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <strong>3.</strong> Find it in the chart: Look in the <strong>s-column</strong>, <strong>う-row</strong> = す
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <strong>4.</strong> To make negative: Move to the <strong style="color: #c45c4a;">あ-row</strong> in the same column: す → <strong style="color: #c45c4a;">さ</strong>
+              </div>
+              <div>
+                <strong>5.</strong> Add the ending: はな<strong style="color: #c45c4a;">さ</strong> + ない = <span class="jp">話さない</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAST TENSE SPECIAL -->
+          <div style="background: #fdf8ed; padding: 2rem; border-radius: 4px; border-left: 4px solid var(--gold);">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1rem;">
+              ⚠️ Past Tense: Special Sound Changes
+            </h3>
+            <p style="color: var(--text); margin-bottom: 1.5rem; line-height: 1.7;">
+              Past tense is the one exception to the row-shift pattern. Instead, godan verbs use special endings based on the final sound:
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+              <div>
+                <strong>く → いた</strong><br>
+                <span class="jp">書く → 書いた</span>
+              </div>
+              <div>
+                <strong>ぐ → いだ</strong><br>
+                <span class="jp">泳ぐ → 泳いだ</span>
+              </div>
+              <div>
+                <strong>す → した</strong><br>
+                <span class="jp">話す → 話した</span>
+              </div>
+              <div>
+                <strong>つ/る/う → った</strong><br>
+                <span class="jp">買う → 買った</span>
+              </div>
+              <div>
+                <strong>む/ぶ/ぬ → んだ</strong><br>
+                <span class="jp">飲む → 飲んだ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ICHIDAN VERBS -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--sage); margin-bottom: 1rem;">
+            Ichidan Verbs: The Simple Pattern
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Ichidan verbs are called "one-step" because the stem <strong>never changes</strong>. You simply drop る and add endings.
+          </p>
+
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="display: inline-block; background: var(--paper-warm); padding: 2rem 3rem; border-radius: 8px; border: 3px solid var(--sage);">
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--sage); margin-bottom: 1rem;">
+                The Formula
+              </div>
+              <div style="font-size: 1.75rem; line-height: 1.6;">
+                <span style="color: var(--text-light);">Stem</span> + 
+                <span style="color: var(--accent); text-decoration: line-through; margin: 0 0.5rem;">る</span> → 
+                <span style="color: var(--text-light); margin-left: 0.5rem;">Stem</span> + 
+                <span style="color: var(--sage); font-weight: 700; margin-left: 0.5rem;">ending</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #eef5ef; padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+              Example: <span class="jp">食べる</span> (taberu - to eat)
+            </h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: var(--sage);">
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Form</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Process</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Result</th>
+                </tr>
+              </thead>
+              <tbody style="font-size: 1rem;">
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Negative</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + ない</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べない</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Polite</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + ます</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べます</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Past</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + た</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べた</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Want to</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + たい</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べたい</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Potential</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + られる</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べられる</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Volitional</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + よう</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べよう</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--sage);">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Why It's Easy:</div>
+            <div style="color: var(--text); line-height: 1.7;">
+              With ichidan verbs, once you memorize the endings (ない, ます, た, たい, られる, よう), 
+              you can conjugate <strong>any</strong> ichidan verb. No row-shifting, no special rules, no exceptions!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SURU VERBS -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: #7a5ba4; margin-bottom: 1rem;">
+            Suru Verbs: The Irregular Pattern
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Suru verbs are formed by adding <span class="jp">する</span> to a noun. They're irregular, but once you learn how <span class="jp">する</span> conjugates, you can apply it to all suru verbs.
+          </p>
+
+          <div style="background: #f3eef8; padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+              Example: <span class="jp">勉強する</span> (benkyou suru - to study)
+            </h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #7a5ba4;">
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Form</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">する becomes...</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Result</th>
+                </tr>
+              </thead>
+              <tbody style="font-size: 1rem;">
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Negative</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">しない</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強しない</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Polite</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">します</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強します</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Past</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">した</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強した</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Want to</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">したい</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強したい</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Potential</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">できる</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強できる</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Volitional</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">しよう</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強しよう</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid #7a5ba4;">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Special Note:</div>
+            <div style="color: var(--text); line-height: 1.7;">
+              Notice that the potential form uses <span class="jp">できる</span> instead of following the regular pattern. 
+              This is why suru verbs are considered "irregular" - they have their own special rules!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PUTTING IT ALL TOGETHER -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--ink); padding: 3rem 2.5rem; border-radius: 4px; color: var(--paper);">
+          <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+            Putting It All Together
+          </h2>
+          <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; text-align: center; color: rgba(255,255,255,0.8);">
+            Now that you understand the patterns, here's your strategy for success:
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">1️⃣</div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Identify the Type</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                First, figure out if your verb is godan, ichidan, or suru
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">2️⃣</div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Apply the Pattern</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                Use the right conjugation method for that verb type
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">3️⃣</div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Practice, Practice!</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                Use The Conjugator to drill until it becomes automatic
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CALL TO ACTION -->
+      <div style="text-align: center; margin-top: 3rem;">
+        <button 
+          class="btn btn-primary" 
+          onclick="showPage('conjugator')"
+          style="font-size: 1.15rem; padding: 1.25rem 2.5rem;"
+        >
+          Start Practicing with The Conjugator →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMS PAGE -->
+  <div id="page-forms" class="page">
+    <div class="forms-page">
+      <div class="page-header">
+        <div class="page-tag">Quick Reference</div>
+        <h1 class="page-title">Verb Forms</h1>
+        <p class="page-desc">
+          Conjugation patterns for all three verb types at a glance.
+        </p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="godan" onclick="showTab('godan')">五段 Godan</button>
+        <button class="tab" data-tab="ichidan" onclick="showTab('ichidan')">一段 Ichidan</button>
+        <button class="tab" data-tab="suru" onclick="showTab('suru')">する Suru</button>
+      </div>
+
+      <!-- GODAN -->
+      <div id="tab-godan" class="form-card active">
+        <h2 class="form-card-title jp">五段動詞 — Godan Verbs</h2>
+        <p class="form-card-desc">
+          Godan means "five steps" because these verbs conjugate across the <strong>5 vowel rows</strong> of the hiragana chart: あ, い, う, え, お
+        </p>
+
+        <div class="info-box blue">
+          <div class="info-box-title">How to Identify</div>
+          <p class="info-box-text">
+            Verbs that do NOT end in -eru or -iru sounds, plus some exceptions that do (like 走る, 帰る).
+          </p>
+        </div>
+
+        <h3 class="section-title">The 5-Row Chart</h3>
+        <table class="conj-table">
+          <thead>
+            <tr>
+              <th>Row</th>
+              <th>く</th>
+              <th>す</th>
+              <th>つ</th>
+              <th>む</th>
+              <th>る</th>
+              <th>う</th>
+              <th>Usage</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="row-a">あ (A)</td>
+              <td>か</td><td>さ</td><td>た</td><td>ま</td><td>ら</td><td>わ</td>
+              <td>+ ない (negative)</td>
+            </tr>
+            <tr>
+              <td class="row-i">い (I)</td>
+              <td>き</td><td>し</td><td>ち</td><td>み</td><td>り</td><td>い</td>
+              <td>+ ます, たい</td>
+            </tr>
+            <tr>
+              <td class="row-u">う (U)</td>
+              <td>く</td><td>す</td><td>つ</td><td>む</td><td>る</td><td>う</td>
+              <td>Dictionary form</td>
+            </tr>
+            <tr>
+              <td class="row-e">え (E)</td>
+              <td>け</td><td>せ</td><td>て</td><td>め</td><td>れ</td><td>え</td>
+              <td>+ る (potential)</td>
+            </tr>
+            <tr>
+              <td class="row-o">お (O)</td>
+              <td>こ</td><td>そ</td><td>と</td><td>も</td><td>ろ</td><td>お</td>
+              <td>+ う (volitional)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="info-box yellow">
+          <div class="info-box-title">⚠️ Past Tense (Special Rules)</div>
+          <p class="info-box-text">
+            <strong>く → いた</strong> (いく → いった) &nbsp;•&nbsp; 
+            <strong>ぐ → いだ</strong> (およぐ → およいだ) &nbsp;•&nbsp; 
+            <strong>す → した</strong> (はなす → はなした)<br>
+            <strong>つ/る/う → った</strong> (かう → かった) &nbsp;•&nbsp; 
+            <strong>む/ぶ/ぬ → んだ</strong> (のむ → のんだ)
+          </p>
+        </div>
+      </div>
+
+      <!-- ICHIDAN -->
+      <div id="tab-ichidan" class="form-card">
+        <h2 class="form-card-title jp">一段動詞 — Ichidan Verbs</h2>
+        <p class="form-card-desc">
+          Ichidan means "one step" because the stem <strong>never changes</strong> — just drop る and add your ending!
+        </p>
+
+        <div class="info-box green">
+          <div class="info-box-title">How to Identify</div>
+          <p class="info-box-text">
+            Usually end in <strong>-eru</strong> or <strong>-iru</strong> sounds (but watch for exceptions!)
+          </p>
+        </div>
+
+        <h3 class="section-title">Simple Pattern</h3>
+        <div class="pattern-box">
+          <span style="color: var(--text-light)">Stem</span> + 
+          <span style="color: var(--accent); text-decoration: line-through; margin: 0 0.5rem">る</span> → 
+          <span style="color: var(--text-light); margin-left: 0.5rem">Stem</span> + 
+          <span style="color: var(--sage); font-weight: 600; margin-left: 0.5rem">ending</span>
+        </div>
+
+        <table class="conj-table">
+          <thead>
+            <tr>
+              <th>Form</th>
+              <th>Ending</th>
+              <th>Example (食べる)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Negative</td><td>ない</td><td class="highlight jp">たべない</td></tr>
+            <tr><td>Polite</td><td>ます</td><td class="highlight jp">たべます</td></tr>
+            <tr><td>Past</td><td>た</td><td class="highlight jp">たべた</td></tr>
+            <tr><td>Want to</td><td>たい</td><td class="highlight jp">たべたい</td></tr>
+            <tr><td>Potential</td><td>られる</td><td class="highlight jp">たべられる</td></tr>
+            <tr><td>Volitional</td><td>よう</td><td class="highlight jp">たべよう</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SURU -->
+      <div id="tab-suru" class="form-card">
+        <h2 class="form-card-title jp">する動詞 — Suru Verbs</h2>
+        <p class="form-card-desc">
+          Nouns become verbs when you add <strong>する</strong>. This is one of two irregular verbs in Japanese!
+        </p>
+
+        <div class="info-box purple">
+          <div class="info-box-title">Common Examples</div>
+          <p class="info-box-text">
+            勉強 (study) + する = 勉強する (to study)<br>
+            仕事 (work) + する = 仕事する (to work)
+          </p>
+        </div>
+
+        <h3 class="section-title">Conjugation Pattern</h3>
+        <table class="conj-table">
+          <thead>
+            <tr>
+              <th>Form</th>
+              <th>する becomes</th>
+              <th>Example (勉強する)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Negative</td><td>しない</td><td class="highlight jp">べんきょうしない</td></tr>
+            <tr><td>Polite</td><td>します</td><td class="highlight jp">べんきょうします</td></tr>
+            <tr><td>Past</td><td>した</td><td class="highlight jp">べんきょうした</td></tr>
+            <tr><td>Want to</td><td>したい</td><td class="highlight jp">べんきょうしたい</td></tr>
+            <tr><td>Potential</td><td>できる</td><td class="highlight jp">べんきょうできる</td></tr>
+            <tr><td>Volitional</td><td>しよう</td><td class="highlight jp">べんきょうしよう</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="forms-cta">
+        <button class="btn btn-primary" onclick="showPage('conjugator')">Practice with The Conjugator →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONJUGATOR PAGE -->
+  <div id="page-conjugator" class="page">
+    <div class="conjugator-page">
+      <div class="conjugator-header">
+        <div>
+          <div class="page-tag">Interactive Practice</div>
+          <h1 class="page-title" style="font-size: 2rem">The Conjugator</h1>
+        </div>
+        <div class="score-box">
+          <div class="score-label">Score</div>
+          <div class="score-value"><span id="score-correct">0</span> / <span id="score-total">0</span></div>
+        </div>
+      </div>
+
+      <select id="form-select" class="form-select" onchange="generateNewQuestion()">
+        <option value="random">🎲 Random (All Forms)</option>
+        <option value="negative">Negative (ない)</option>
+        <option value="masu">Polite (ます)</option>
+        <option value="past">Past (た)</option>
+        <option value="tai">Want to (たい)</option>
+        <option value="potential">Potential (られる/える)</option>
+        <option value="volitional">Volitional (よう/おう)</option>
+      </select>
+
+      <div class="verb-display">
+        <div id="verb-type" class="verb-type">Godan Verb</div>
+        <div id="verb-kanji" class="verb-kanji jp">行く</div>
+        <div class="verb-info">
+          <span id="verb-hiragana" class="jp">いく</span> — <span id="verb-meaning">to go</span>
+        </div>
+      </div>
+
+      <div class="prompt-row">
+        <span class="prompt-text">
+          <span id="prompt-form" class="prompt-form">Negative</span>
+        </span>
+        <button class="hint-btn" onclick="toggleHint()">
+          <span id="hint-btn-text">💡 Show hint</span>
+        </button>
+      </div>
+
+      <div id="hint-box" class="hint-box">
+        Hint: <span id="hint-text">ない form</span>
+      </div>
+
+      <input 
+        type="text"
+        id="answer-input"
+        class="answer-input jp"
+        placeholder="ひらがなで入力..."
+        onkeypress="handleKeyPress(event)"
+      >
+
+      <div id="feedback-warning" class="feedback warning">
+        <div class="feedback-title">⚠️ Not quite — try again!</div>
+      </div>
+
+      <div id="feedback-result" class="feedback">
+        <div id="feedback-title" class="feedback-title"></div>
+        <div class="feedback-answer jp">Answer: <strong id="feedback-answer"></strong></div>
+        <div id="feedback-explanation" class="feedback-explanation"></div>
+      </div>
+
+      <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled>Check Answer</button>
+      <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()">Next Question →</button>
+    </div>
+  </div>
+
+  <script>
+    // ============ DATA ============
+    const verbs = {
+      godan: [
+        { kanji: '行く', hiragana: 'いく', romaji: 'iku', meaning: 'to go' },
+        { kanji: '話す', hiragana: 'はなす', romaji: 'hanasu', meaning: 'to speak' },
+        { kanji: '買う', hiragana: 'かう', romaji: 'kau', meaning: 'to buy' },
+        { kanji: '聞く', hiragana: 'きく', romaji: 'kiku', meaning: 'to listen' },
+        { kanji: '飲む', hiragana: 'のむ', romaji: 'nomu', meaning: 'to drink' },
+        { kanji: '歩く', hiragana: 'あるく', romaji: 'aruku', meaning: 'to walk' },
+        { kanji: '泣く', hiragana: 'なく', romaji: 'naku', meaning: 'to cry' },
+        { kanji: '終わる', hiragana: 'おわる', romaji: 'owaru', meaning: 'to end' },
+        { kanji: '歌う', hiragana: 'うたう', romaji: 'utau', meaning: 'to sing' },
+        { kanji: '走る', hiragana: 'はしる', romaji: 'hashiru', meaning: 'to run' }
+      ],
+      ichidan: [
+        { kanji: '食べる', hiragana: 'たべる', romaji: 'taberu', meaning: 'to eat' },
+        { kanji: '見る', hiragana: 'みる', romaji: 'miru', meaning: 'to see' },
+        { kanji: '寝る', hiragana: 'ねる', romaji: 'neru', meaning: 'to sleep' },
+        { kanji: '起きる', hiragana: 'おきる', romaji: 'okiru', meaning: 'to wake up' },
+        { kanji: '開ける', hiragana: 'あける', romaji: 'akeru', meaning: 'to open' }
+      ],
+      suru: [
+        { kanji: 'する', hiragana: 'する', romaji: 'suru', meaning: 'to do' },
+        { kanji: '勉強する', hiragana: 'べんきょうする', romaji: 'benkyou suru', meaning: 'to study' },
+        { kanji: '仕事する', hiragana: 'しごとする', romaji: 'shigoto suru', meaning: 'to work' },
+        { kanji: '料理する', hiragana: 'りょうりする', romaji: 'ryouri suru', meaning: 'to cook' }
+      ]
+    };
+
+    const forms = [
+      { 
+        name: 'Negative', 
+        key: 'negative', 
+        hint: 'Think about what sound you need for negation. Which row of the hiragana chart will give you the right stem before adding the negative ending?',
+        templates: [
+          { text: 'Conjugate to: Negative', type: 'direct' },
+          { text: 'How would you say "{meaning} (negative)"?', type: 'phrase' },
+          { text: 'Express the idea: "does not {meaning}"', type: 'phrase' }
+        ]
+      },
+      { 
+        name: 'Masu', 
+        key: 'masu', 
+        hint: 'For polite speech, you need a stem that ends in an い sound. Think about how the verb ending needs to change before adding the polite marker.',
+        templates: [
+          { text: 'Conjugate to: Polite (Masu)', type: 'direct' },
+          { text: 'How would you say "{meaning}" politely?', type: 'phrase' },
+          { text: 'Make this verb into its polite form', type: 'phrase' }
+        ]
+      },
+      { 
+        name: 'Past', 
+        key: 'past', 
+        hint: 'Past tense has different patterns depending on verb type. Consider what the final sound of the verb is—that determines which past ending pattern to use.',
+        templates: [
+          { text: 'Conjugate to: Past', type: 'direct' },
+          { text: 'How would you say "{meaning} (past tense)"?', type: 'phrase' },
+          { text: 'Express: "I {meaning} already"', type: 'phrase' }
+        ]
+      },
+      { 
+        name: 'Tai', 
+        key: 'tai', 
+        hint: 'When expressing "want to do," you need the same stem as the polite form. What sound should come before たい?',
+        templates: [
+          { text: 'Conjugate to: Want to (Tai)', type: 'direct' },
+          { text: 'How would you say "I want to {meaning}"?', type: 'phrase' },
+          { text: 'Express desire: "want to {meaning}"', type: 'phrase' }
+        ]
+      },
+      { 
+        name: 'Potential', 
+        key: 'potential', 
+        hint: 'The potential form shows ability. Think about which sound before る will express "can do." Consider the verb type carefully—each has its own pattern.',
+        templates: [
+          { text: 'Conjugate to: Potential', type: 'direct' },
+          { text: 'How would you say "can {meaning}"?', type: 'phrase' },
+          { text: 'Express ability: "able to {meaning}"', type: 'phrase' }
+        ]
+      },
+      { 
+        name: 'Volitional', 
+        key: 'volitional', 
+        hint: 'To suggest doing something together, you need a stem with an お sound for some verbs. What makes sense for this verb type?',
+        templates: [
+          { text: 'Conjugate to: Volitional', type: 'direct' },
+          { text: 'How would you say "let\'s {meaning}"?', type: 'phrase' },
+          { text: 'Suggest together: "let\'s {meaning}"', type: 'phrase' }
+        ]
+      }
+    ];
+
+    // ============ STATE ============
+    let currentVerb = null;
+    let currentForm = null;
+    let currentPrompt = null; // Track which prompt template we're using
+    let showAnswer = false;
+    let firstAttempt = true;
+    let stats = { correct: 0, total: 0 };
+    let hintVisible = false;
+    let failureTracking = {}; // Track consecutive failures by form type: { 'godan-negative': 2, ... }
+    let isTypeIdentificationQuiz = false; // Are we in verb type ID mode?
+    let typeIdentificationAnswer = null; // What type did they guess?
+    let recentlyUsedVerbs = []; // Track recently used verbs to avoid repetition
+    const MAX_RECENT_VERBS = 12; // Keep last 12 verbs in memory
+
+    // ============ NAVIGATION ============
+    function showPage(pageName) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + pageName).classList.add('active');
+      
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+      document.querySelector('.nav-link[data-page="' + pageName + '"]').classList.add('active');
+      
+      // Only generate a new question if we don't have one yet
+      if (pageName === 'conjugator' && !currentVerb) {
+        generateNewQuestion();
+      }
+    }
+
+    function showTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelector('.tab[data-tab="' + tabName + '"]').classList.add('active');
+      
+      document.querySelectorAll('.form-card').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    // ============ CONJUGATOR LOGIC ============
+    
+    // Normalize and check verb type answer (accepts multiple formats)
+    function checkVerbType(userInput, correctType) {
+      const normalized = userInput.toLowerCase().trim();
+      
+      // Define all acceptable answers for each type
+      const acceptableAnswers = {
+        godan: ['godan', 'ごだん', '五段', 'godан', 'u-verb', 'group 1', 'group1', 'type 1', 'type1'],
+        ichidan: ['ichidan', 'いちだん', '一段', 'ru-verb', 'group 2', 'group2', 'type 2', 'type2'],
+        suru: ['suru', 'する', 'する動詞', 'group 3', 'group3', 'type 3', 'type3', 'irregular']
+      };
+      
+      // Check if the user's answer matches any acceptable answer for the correct type
+      return acceptableAnswers[correctType].some(answer => 
+        normalized === answer || normalized.includes(answer)
+      );
+    }
+    
+    // Generate a step-by-step walkthrough for the current verb
+    function generateWorkedExample(verb, form) {
+      let steps = [];
+      const correctAnswer = conjugateVerb(verb, form);
+      
+      if (verb.type === 'godan') {
+        const lastChar = verb.hiragana.slice(-1);
+        const stem = verb.hiragana.slice(0, -1);
+        
+        steps.push(`<strong>Step 1:</strong> Identify the verb type. ${verb.kanji} (${verb.hiragana}) is a <strong>godan verb</strong> because it ends in "${lastChar}".`);
+        
+        if (form.key === 'negative') {
+          const u = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+          const a = ['か', 'が', 'さ', 'た', 'な', 'ば', 'ま', 'ら', 'わ'];
+          const idx = u.indexOf(lastChar);
+          const aRow = a[idx];
+          steps.push(`<strong>Step 2:</strong> For negative form, shift "${lastChar}" to the あ-row: "${lastChar}" → "${aRow}".`);
+          steps.push(`<strong>Step 3:</strong> Add ない: ${stem}${aRow} + ない = <strong class="jp">${correctAnswer}</strong>`);
+        } else if (form.key === 'masu') {
+          const u = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+          const i = ['き', 'ぎ', 'し', 'ち', 'に', 'び', 'み', 'り', 'い'];
+          const idx = u.indexOf(lastChar);
+          const iRow = i[idx];
+          steps.push(`<strong>Step 2:</strong> For masu form, shift "${lastChar}" to the い-row: "${lastChar}" → "${iRow}".`);
+          steps.push(`<strong>Step 3:</strong> Add ます: ${stem}${iRow} + ます = <strong class="jp">${correctAnswer}</strong>`);
+        } else if (form.key === 'past') {
+          steps.push(`<strong>Step 2:</strong> For past tense, godan verbs have special sound changes.`);
+          if (lastChar === 'く') {
+            steps.push(`<strong>Step 3:</strong> "${lastChar}" becomes "いた": ${stem} + いた = <strong class="jp">${correctAnswer}</strong>`);
+          } else if (lastChar === 'ぐ') {
+            steps.push(`<strong>Step 3:</strong> "${lastChar}" becomes "いだ": ${stem} + いだ = <strong class="jp">${correctAnswer}</strong>`);
+          } else if (lastChar === 'す') {
+            steps.push(`<strong>Step 3:</strong> "${lastChar}" becomes "した": ${stem} + した = <strong class="jp">${correctAnswer}</strong>`);
+          } else if (['つ', 'る', 'う'].includes(lastChar)) {
+            steps.push(`<strong>Step 3:</strong> "${lastChar}" becomes "った": ${stem} + った = <strong class="jp">${correctAnswer}</strong>`);
+          } else if (['む', 'ぶ', 'ぬ'].includes(lastChar)) {
+            steps.push(`<strong>Step 3:</strong> "${lastChar}" becomes "んだ": ${stem} + んだ = <strong class="jp">${correctAnswer}</strong>`);
+          }
+        } else if (form.key === 'tai') {
+          const u = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+          const i = ['き', 'ぎ', 'し', 'ち', 'に', 'び', 'み', 'り', 'い'];
+          const idx = u.indexOf(lastChar);
+          const iRow = i[idx];
+          steps.push(`<strong>Step 2:</strong> For たい form, shift "${lastChar}" to the い-row: "${lastChar}" → "${iRow}".`);
+          steps.push(`<strong>Step 3:</strong> Add たい: ${stem}${iRow} + たい = <strong class="jp">${correctAnswer}</strong>`);
+        } else if (form.key === 'potential') {
+          const u = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+          const e = ['け', 'げ', 'せ', 'て', 'ね', 'べ', 'め', 'れ', 'え'];
+          const idx = u.indexOf(lastChar);
+          const eRow = e[idx];
+          steps.push(`<strong>Step 2:</strong> For potential form, shift "${lastChar}" to the え-row: "${lastChar}" → "${eRow}".`);
+          steps.push(`<strong>Step 3:</strong> Add る: ${stem}${eRow} + る = <strong class="jp">${correctAnswer}</strong>`);
+        } else if (form.key === 'volitional') {
+          const u = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+          const o = ['こ', 'ご', 'そ', 'と', 'の', 'ぼ', 'も', 'ろ', 'お'];
+          const idx = u.indexOf(lastChar);
+          const oRow = o[idx];
+          steps.push(`<strong>Step 2:</strong> For volitional form, shift "${lastChar}" to the お-row: "${lastChar}" → "${oRow}".`);
+          steps.push(`<strong>Step 3:</strong> Add う: ${stem}${oRow} + う = <strong class="jp">${correctAnswer}</strong>`);
+        }
+      } else if (verb.type === 'ichidan') {
+        const stem = verb.hiragana.slice(0, -1);
+        steps.push(`<strong>Step 1:</strong> Identify the verb type. ${verb.kanji} (${verb.hiragana}) is an <strong>ichidan verb</strong>—it ends in -eru or -iru sound.`);
+        steps.push(`<strong>Step 2:</strong> For ichidan verbs, the stem never changes. Drop the る: ${verb.hiragana} → ${stem}`);
+        
+        const endings = {
+          negative: 'ない',
+          masu: 'ます',
+          past: 'た',
+          tai: 'たい',
+          potential: 'られる',
+          volitional: 'よう'
+        };
+        
+        steps.push(`<strong>Step 3:</strong> Add ${endings[form.key]}: ${stem} + ${endings[form.key]} = <strong class="jp">${correctAnswer}</strong>`);
+      } else if (verb.type === 'suru') {
+        const prefix = verb.hiragana.replace('する', '');
+        steps.push(`<strong>Step 1:</strong> Identify the verb type. ${verb.kanji} (${verb.hiragana}) is a <strong>suru verb</strong>—it's formed by adding する to a noun.`);
+        
+        const suruMap = {
+          negative: 'しない',
+          masu: 'します',
+          past: 'した',
+          tai: 'したい',
+          potential: 'できる',
+          volitional: 'しよう'
+        };
+        
+        if (form.key === 'potential') {
+          steps.push(`<strong>Step 2:</strong> For potential form, する becomes できる (special case).`);
+          steps.push(`<strong>Step 3:</strong> Replace する with できる: ${prefix}する → <strong class="jp">${correctAnswer}</strong>`);
+        } else {
+          steps.push(`<strong>Step 2:</strong> For ${form.name} form, する becomes ${suruMap[form.key]}.`);
+          steps.push(`<strong>Step 3:</strong> Replace する with ${suruMap[form.key]}: ${prefix}する → <strong class="jp">${correctAnswer}</strong>`);
+        }
+      }
+      
+      return '<div style="margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 4px; text-align: left;">' +
+             '<div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--sage);">Let\'s work through this together:</div>' +
+             steps.map(s => `<div style="margin-bottom: 0.5rem; line-height: 1.6;">${s}</div>`).join('') +
+             '</div>';
+    }
+    
+    // Check if the answer is close enough to warrant a retry
+    function isAnswerInBallpark(userAnswer, correctAnswer) {
+      // Remove spaces for comparison
+      const user = userAnswer.trim();
+      const correct = correctAnswer.trim();
+      
+      // If completely empty, not in ballpark
+      if (!user) return false;
+      
+      // Check if it's all hiragana (basic validation)
+      const hiraganaRegex = /^[ぁ-ん]+$/;
+      if (!hiraganaRegex.test(user)) {
+        return false; // Contains non-hiragana, probably way off
+      }
+      
+      // Check length similarity (within 3 characters)
+      if (Math.abs(user.length - correct.length) > 3) {
+        return false;
+      }
+      
+      // Check for any character overlap
+      let overlapCount = 0;
+      for (let char of user) {
+        if (correct.includes(char)) overlapCount++;
+      }
+      
+      // If at least 40% of characters are in the correct answer, it's close
+      return (overlapCount / user.length) >= 0.4;
+    }
+    
+    // Generate detailed error explanation
+    function getErrorExplanation(userAnswer, correctAnswer, verb, form) {
+      const user = userAnswer.trim();
+      
+      // Check for non-hiragana
+      const hiraganaRegex = /^[ぁ-ん]+$/;
+      if (!hiraganaRegex.test(user)) {
+        return "Your answer contains characters that aren't hiragana. Remember, we're conjugating the verb, not translating it. Write your answer in hiragana only.";
+      }
+      
+      // Check if they forgot to conjugate
+      if (user === verb.hiragana) {
+        return `You entered the dictionary form (${verb.hiragana}), but we need the <strong>${form.name}</strong> form. You need to change the verb ending.`;
+      }
+      
+      // Type-specific hints
+      if (verb.type === 'godan') {
+        const lastChar = verb.hiragana.slice(-1);
+        const userLast = user.slice(-1);
+        
+        if (form.key === 'negative' && !user.endsWith('ない')) {
+          return `For godan negative, you need to end with <strong>ない</strong>. The last character of ${verb.hiragana} (${lastChar}) should shift to the あ-row, then add ない.`;
+        }
+        
+        if (form.key === 'masu' && !user.endsWith('ます')) {
+          return `For godan polite form, you need to end with <strong>ます</strong>. Shift ${lastChar} to the い-row, then add ます.`;
+        }
+        
+        if (form.key === 'past' && !user.endsWith('た') && !user.endsWith('だ')) {
+          return `For godan past tense, you need special endings like <strong>いた, いだ, した, った, or んだ</strong> depending on the verb ending. Check which pattern ${verb.hiragana} follows.`;
+        }
+        
+        if (form.key === 'tai' && !user.endsWith('たい')) {
+          return `For the たい form, shift to the い-row and add <strong>たい</strong>. Your answer should end with たい.`;
+        }
+        
+        if (form.key === 'potential' && !user.endsWith('る')) {
+          return `For godan potential, shift to the え-row and add <strong>る</strong>. Your answer should end with る.`;
+        }
+        
+        if (form.key === 'volitional' && !user.endsWith('う')) {
+          return `For godan volitional, shift to the お-row and add <strong>う</strong>. Your answer should end with う.`;
+        }
+        
+        return `Remember, this is a <strong>godan verb</strong> that conjugates by shifting the final kana to different rows (あ、い、う、え、お). Check your conjugation pattern for the ${form.name} form.`;
+      }
+      
+      if (verb.type === 'ichidan') {
+        const stem = verb.hiragana.slice(0, -1);
+        
+        if (!user.startsWith(stem)) {
+          return `For ichidan verbs, the stem <strong>never changes</strong>. Your answer should start with "${stem}". Just drop the る and add the correct ending.`;
+        }
+        
+        if (form.key === 'negative' && !user.endsWith('ない')) {
+          return `For ichidan negative: drop る and add <strong>ない</strong>. It should be ${stem}ない.`;
+        }
+        
+        if (form.key === 'masu' && !user.endsWith('ます')) {
+          return `For ichidan polite: drop る and add <strong>ます</strong>. It should be ${stem}ます.`;
+        }
+        
+        if (form.key === 'past' && !user.endsWith('た')) {
+          return `For ichidan past: drop る and add <strong>た</strong>. It should be ${stem}た.`;
+        }
+        
+        if (form.key === 'tai' && !user.endsWith('たい')) {
+          return `For ichidan desire form: drop る and add <strong>たい</strong>. It should be ${stem}たい.`;
+        }
+        
+        if (form.key === 'potential' && !user.endsWith('られる')) {
+          return `For ichidan potential: drop る and add <strong>られる</strong>. It should be ${stem}られる.`;
+        }
+        
+        if (form.key === 'volitional' && !user.endsWith('よう')) {
+          return `For ichidan volitional: drop る and add <strong>よう</strong>. It should be ${stem}よう.`;
+        }
+        
+        return `Remember, this is an <strong>ichidan verb</strong>. The stem never changes—just drop る and add the ending for the ${form.name} form.`;
+      }
+      
+      if (verb.type === 'suru') {
+        const suruMap = { 
+          negative: 'しない', 
+          masu: 'します', 
+          past: 'した', 
+          tai: 'したい', 
+          potential: 'できる', 
+          volitional: 'しよう' 
+        };
+        
+        const expectedEnding = suruMap[form.key];
+        const prefix = verb.hiragana.replace('する', '');
+        
+        if (form.key === 'potential') {
+          return `For する verbs in potential form, する becomes <strong>できる</strong>. The answer should be ${prefix}できる.`;
+        }
+        
+        return `For する verbs, replace する with <strong>${expectedEnding}</strong>. The answer should be ${prefix}${expectedEnding}.`;
+      }
+      
+      return `Your answer doesn't match the correct conjugation pattern. Review how ${verb.type} verbs conjugate in the ${form.name} form.`;
+    }
+    
+    function getRandomVerb() {
+      const types = ['godan', 'ichidan', 'suru'];
+      const weights = [5, 3, 2];
+      const weightedTypes = types.flatMap((type, i) => Array(weights[i]).fill(type));
+      const type = weightedTypes[Math.floor(Math.random() * weightedTypes.length)];
+      const verbList = verbs[type];
+      
+      // Try to pick a verb that hasn't been used recently
+      let availableVerbs = verbList.filter(v => 
+        !recentlyUsedVerbs.some(recent => 
+          recent.kanji === v.kanji && recent.type === type
+        )
+      );
+      
+      // If all verbs have been used recently, use the full list
+      if (availableVerbs.length === 0) {
+        availableVerbs = verbList;
+      }
+      
+      const verb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
+      
+      const selectedForm = document.getElementById('form-select').value;
+      let form = selectedForm === 'random' 
+        ? forms[Math.floor(Math.random() * forms.length)] 
+        : forms.find(f => f.key === selectedForm);
+      
+      // Pick a random prompt template
+      const template = form.templates[Math.floor(Math.random() * form.templates.length)];
+      
+      // Add to recently used list
+      const verbWithType = { ...verb, type };
+      recentlyUsedVerbs.push(verbWithType);
+      
+      // Keep only the last MAX_RECENT_VERBS
+      if (recentlyUsedVerbs.length > MAX_RECENT_VERBS) {
+        recentlyUsedVerbs.shift();
+      }
+      
+      return { ...verb, type, form, template };
+    }
+
+    function conjugateVerb(verb, form) {
+      if (!verb) return '';
+      const stem = verb.hiragana.slice(0, -1);
+      const last = verb.hiragana.slice(-1);
+      
+      if (verb.type === 'suru') {
+        const map = { negative: 'しない', masu: 'します', past: 'した', tai: 'したい', potential: 'できる', volitional: 'しよう' };
+        return verb.hiragana.replace('する', map[form.key]);
+      } else if (verb.type === 'godan') {
+        const u = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+        const a = ['か', 'が', 'さ', 'た', 'な', 'ば', 'ま', 'ら', 'わ'];
+        const i = ['き', 'ぎ', 'し', 'ち', 'に', 'び', 'み', 'り', 'い'];
+        const e = ['け', 'げ', 'せ', 'て', 'ね', 'べ', 'め', 'れ', 'え'];
+        const o = ['こ', 'ご', 'そ', 'と', 'の', 'ぼ', 'も', 'ろ', 'お'];
+        const idx = u.indexOf(last);
+        
+        if (form.key === 'negative') return stem + a[idx] + 'ない';
+        if (form.key === 'masu') return stem + i[idx] + 'ます';
+        if (form.key === 'tai') return stem + i[idx] + 'たい';
+        if (form.key === 'potential') return stem + e[idx] + 'る';
+        if (form.key === 'volitional') return stem + o[idx] + 'う';
+        if (form.key === 'past') {
+          if (last === 'く') return stem + 'いた';
+          if (last === 'ぐ') return stem + 'いだ';
+          if (last === 'す') return stem + 'した';
+          if (['つ', 'る', 'う'].includes(last)) return stem + 'った';
+          if (['む', 'ぶ', 'ぬ'].includes(last)) return stem + 'んだ';
+        }
+      } else {
+        const map = { negative: 'ない', masu: 'ます', past: 'た', tai: 'たい', potential: 'られる', volitional: 'よう' };
+        return stem + map[form.key];
+      }
+      return verb.hiragana;
+    }
+
+    function generateNewQuestion() {
+      currentVerb = getRandomVerb();
+      currentPrompt = currentVerb.template;
+      showAnswer = false;
+      firstAttempt = true;
+      hintVisible = false;
+      typeIdentificationAnswer = null;
+      
+      // 25% chance to do verb type identification quiz
+      isTypeIdentificationQuiz = Math.random() < 0.25;
+      
+      if (isTypeIdentificationQuiz) {
+        // Hide verb type, ask them to identify it
+        document.getElementById('verb-type').style.display = 'none';
+        document.getElementById('prompt-form').innerHTML = 'What type of verb is this?<br><span style="font-size: 0.85rem; font-weight: 400; color: var(--text-light); margin-top: 0.5rem; display: block; line-height: 1.8;">Enter: <strong>godan</strong> / ごだん / 五段<br>or <strong>ichidan</strong> / いちだん / 一段<br>or <strong>suru</strong> / する</span>';
+        document.getElementById('hint-text').textContent = 'Look at how the verb ends. Does it follow the pattern for godan (う-sound endings), ichidan (-eru/-iru), or suru (する)?';
+      } else {
+        // Normal conjugation mode
+        document.getElementById('verb-type').style.display = 'block';
+        document.getElementById('verb-type').textContent = 
+          currentVerb.type === 'godan' ? 'Godan Verb' : 
+          currentVerb.type === 'ichidan' ? 'Ichidan Verb' : 'Suru Verb';
+        
+        // Generate the prompt text with replacements
+        let promptText = currentPrompt.text.replace('{meaning}', currentVerb.meaning.replace('to ', ''));
+        document.getElementById('prompt-form').innerHTML = promptText;
+        document.getElementById('hint-text').textContent = currentVerb.form.hint;
+      }
+      
+      // Update display
+      document.getElementById('verb-kanji').textContent = currentVerb.kanji;
+      document.getElementById('verb-hiragana').textContent = currentVerb.hiragana;
+      document.getElementById('verb-meaning').textContent = currentVerb.meaning;
+      
+      // Reset UI
+      document.getElementById('answer-input').value = '';
+      document.getElementById('answer-input').disabled = false;
+      document.getElementById('hint-box').classList.remove('visible');
+      document.getElementById('hint-btn-text').textContent = '💡 Show hint';
+      document.getElementById('feedback-warning').classList.remove('visible');
+      document.getElementById('feedback-result').classList.remove('visible', 'correct', 'incorrect');
+      document.getElementById('check-btn').style.display = 'block';
+      document.getElementById('check-btn').disabled = true;
+      document.getElementById('next-btn').style.display = 'none';
+      
+      document.getElementById('answer-input').focus();
+    }
+
+    function toggleHint() {
+      hintVisible = !hintVisible;
+      document.getElementById('hint-box').classList.toggle('visible', hintVisible);
+      document.getElementById('hint-btn-text').textContent = hintVisible ? '🙈 Hide hint' : '💡 Show hint';
+    }
+
+    function checkAnswer() {
+      const userAnswer = document.getElementById('answer-input').value.trim();
+      
+      // Check if we're in "continue" mode after correct verb type identification
+      if (showAnswer && typeIdentificationAnswer && !isTypeIdentificationQuiz) {
+        // Transition to conjugation mode
+        document.getElementById('verb-type').style.display = 'block';
+        document.getElementById('verb-type').textContent = 
+          currentVerb.type === 'godan' ? 'Godan Verb' : 
+          currentVerb.type === 'ichidan' ? 'Ichidan Verb' : 'Suru Verb';
+        
+        let promptText = currentPrompt.text.replace('{meaning}', currentVerb.meaning.replace('to ', ''));
+        document.getElementById('prompt-form').innerHTML = promptText;
+        document.getElementById('hint-text').textContent = currentVerb.form.hint;
+        
+        // Reset UI for conjugation
+        document.getElementById('answer-input').value = '';
+        document.getElementById('answer-input').disabled = false;
+        document.getElementById('feedback-result').classList.remove('visible');
+        document.getElementById('check-btn').textContent = 'Check Answer';
+        document.getElementById('check-btn').classList.remove('continue');
+        document.getElementById('check-btn').classList.add('primary');
+        document.getElementById('check-btn').disabled = true;
+        
+        // Reset state
+        showAnswer = false;
+        firstAttempt = true;
+        typeIdentificationAnswer = null;
+        
+        document.getElementById('answer-input').focus();
+        return;
+      }
+      
+      if (isTypeIdentificationQuiz) {
+        // ===== VERB TYPE IDENTIFICATION MODE =====
+        const correctType = currentVerb.type;
+        const isCorrect = checkVerbType(userAnswer, correctType);
+        
+        if (isCorrect) {
+          // Correct! Show success and change button to continue
+          typeIdentificationAnswer = correctType;
+          
+          // Show success message
+          const feedbackResult = document.getElementById('feedback-result');
+          feedbackResult.classList.add('visible', 'correct');
+          document.getElementById('feedback-title').textContent = '✓ Correct!';
+          document.getElementById('feedback-answer').innerHTML = `This is a <strong>${correctType}</strong> verb.`;
+          
+          let typeExplanation = '';
+          if (correctType === 'godan') {
+            typeExplanation = 'Godan verbs conjugate by shifting through the five vowel rows (あ、い、う、え、お).';
+          } else if (correctType === 'ichidan') {
+            typeExplanation = 'Ichidan verbs have a stem that never changes—just drop る and add endings.';
+          } else {
+            typeExplanation = 'Suru verbs are formed by adding する to a noun and have irregular conjugations.';
+          }
+          
+          document.getElementById('feedback-explanation').innerHTML = typeExplanation + '<br><br><strong>Click "Continue" when ready to conjugate this verb.</strong>';
+          document.getElementById('feedback-explanation').style.display = 'block';
+          
+          // Disable input and change button to "Continue"
+          document.getElementById('answer-input').disabled = true;
+          document.getElementById('check-btn').textContent = 'Continue →';
+          document.getElementById('check-btn').classList.remove('primary');
+          document.getElementById('check-btn').classList.add('continue');
+          document.getElementById('check-btn').disabled = false;
+          
+          // Mark that we're waiting for continuation
+          isTypeIdentificationQuiz = false;
+          showAnswer = true; // Reuse this flag to indicate we're in "continue" state
+        } else {
+          // Wrong type identification
+          showAnswer = true;
+          document.getElementById('answer-input').disabled = true;
+          
+          const feedbackResult = document.getElementById('feedback-result');
+          feedbackResult.classList.add('visible', 'incorrect');
+          document.getElementById('feedback-title').textContent = '✗ Incorrect';
+          document.getElementById('feedback-answer').innerHTML = `This is a <strong>${correctType}</strong> verb.`;
+          
+          // Generate detailed explanation
+          let explanation = '';
+          if (correctType === 'godan') {
+            explanation = `<strong>Godan (五段) verbs</strong> end in one of nine う-sound syllables: く、ぐ、す、つ、ぬ、ぶ、む、る、or う. ` +
+                         `${currentVerb.kanji} ends in "${currentVerb.hiragana.slice(-1)}", which is one of these endings. ` +
+                         `They're called "five-step" verbs because they conjugate by moving through the five vowel rows (あ、い、う、え、お). ` +
+                         `<br><br><strong>Watch out:</strong> Some verbs ending in る are godan, not ichidan (like 走る, 帰る, 知る).`;
+          } else if (correctType === 'ichidan') {
+            explanation = `<strong>Ichidan (一段) verbs</strong> typically end in -eru (える) or -iru (いる) sounds. ` +
+                         `${currentVerb.kanji} (${currentVerb.hiragana}) follows this pattern. ` +
+                         `They're called "one-step" verbs because the stem never changes—you just drop る and add endings. ` +
+                         `<br><br><strong>Note:</strong> Not all verbs ending in -eru/-iru are ichidan (there are exceptions like 帰る、走る).`;
+          } else {
+            explanation = `<strong>Suru (する) verbs</strong> are formed by adding する to a noun. ` +
+                         `${currentVerb.kanji} is "${currentVerb.meaning}" = [noun] + する. ` +
+                         `These are irregular verbs with their own conjugation patterns. ` +
+                         `Common examples: 勉強する (to study), 仕事する (to work), 料理する (to cook).`;
+          }
+          
+          document.getElementById('feedback-explanation').innerHTML = explanation;
+          document.getElementById('feedback-explanation').style.display = 'block';
+          
+          document.getElementById('check-btn').style.display = 'none';
+          document.getElementById('next-btn').style.display = 'block';
+        }
+        
+        return;
+      }
+      
+      // ===== NORMAL CONJUGATION MODE =====
+      const correctAnswer = conjugateVerb(currentVerb, currentVerb.form);
+      const isCorrect = userAnswer.toLowerCase() === correctAnswer;
+      const failureKey = `${currentVerb.type}-${currentVerb.form.key}`;
+      
+      if (isCorrect) {
+        // Correct answer!
+        stats.total++;
+        stats.correct++;
+        document.getElementById('score-correct').textContent = stats.correct;
+        document.getElementById('score-total').textContent = stats.total;
+        
+        // Reset failure tracking for this type-form combo
+        failureTracking[failureKey] = 0;
+        
+        showAnswer = true;
+        document.getElementById('answer-input').disabled = true;
+        document.getElementById('feedback-warning').classList.remove('visible');
+        
+        const feedbackResult = document.getElementById('feedback-result');
+        feedbackResult.classList.add('visible', 'correct');
+        document.getElementById('feedback-title').textContent = '✓ Correct!';
+        document.getElementById('feedback-answer').textContent = correctAnswer;
+        document.getElementById('feedback-explanation').innerHTML = '';
+        document.getElementById('feedback-explanation').style.display = 'none';
+        
+        document.getElementById('check-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'block';
+      } else {
+        // Wrong answer - check if it's in the ballpark
+        const inBallpark = isAnswerInBallpark(userAnswer, correctAnswer);
+        
+        if (inBallpark && firstAttempt) {
+          // Close enough - give them another try
+          firstAttempt = false;
+          document.getElementById('answer-input').value = '';
+          document.getElementById('feedback-warning').classList.add('visible');
+          document.getElementById('answer-input').focus();
+        } else {
+          // Either not in ballpark, or second attempt - mark as wrong
+          stats.total++;
+          document.getElementById('score-correct').textContent = stats.correct;
+          document.getElementById('score-total').textContent = stats.total;
+          
+          // Track consecutive failures
+          failureTracking[failureKey] = (failureTracking[failureKey] || 0) + 1;
+          const consecutiveFailures = failureTracking[failureKey];
+          
+          showAnswer = true;
+          document.getElementById('answer-input').disabled = true;
+          document.getElementById('feedback-warning').classList.remove('visible');
+          
+          const feedbackResult = document.getElementById('feedback-result');
+          feedbackResult.classList.add('visible', 'incorrect');
+          document.getElementById('feedback-title').textContent = '✗ Incorrect';
+          document.getElementById('feedback-answer').textContent = correctAnswer;
+          
+          // Generate explanation
+          let explanation = getErrorExplanation(userAnswer, correctAnswer, currentVerb, currentVerb.form);
+          
+          // After 2-3 failures, show a worked example
+          if (consecutiveFailures >= 2 && Math.random() < 0.7) { // 70% chance after 2+ failures
+            explanation += generateWorkedExample(currentVerb, currentVerb.form);
+          }
+          
+          const explanationEl = document.getElementById('feedback-explanation');
+          explanationEl.innerHTML = explanation;
+          explanationEl.style.display = 'block';
+          
+          document.getElementById('check-btn').style.display = 'none';
+          document.getElementById('next-btn').style.display = 'block';
+        }
+      }
+    }
+
+    function handleKeyPress(event) {
+      if (event.key === 'Enter' && !showAnswer) {
+        checkAnswer();
+      }
+    }
+
+    // Enable/disable check button based on input
+    document.getElementById('answer-input').addEventListener('input', function() {
+      document.getElementById('check-btn').disabled = this.value.trim() === '';
+    });
+
+    // Initialize
+    generateNewQuestion();
+  </script>
+</body>
+</html>
