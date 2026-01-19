@@ -9488,6 +9488,9 @@
       if (navLink) {
         navLink.classList.add('active');
       }
+
+      // Update URL hash
+      history.replaceState(null, '', '#' + pageName);
       
       // Scroll to top of page
       window.scrollTo(0, 0);
@@ -9507,6 +9510,18 @@
         initKanji();
       }
     }
+
+     // Handle URL hash on page load and back/forward navigation
+    function handleHashNavigation() {
+      var hash = window.location.hash.slice(1);
+      var validPages = ['home', 'kana', 'learn', 'forms', 'verblist', 'conjugator', 'datedojo', 'vocabulary', 'kanji', 'about'];
+      if (hash && validPages.includes(hash)) {
+        showPage(hash);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', handleHashNavigation);
+    window.addEventListener('hashchange', handleHashNavigation);
 
     // ============ KANA AUDIO ============
     var kanaAudioMap = {
@@ -9669,6 +9684,8 @@
       // Scroll to top of page
       window.scrollTo(0, 0);
     }
+
+    
 
     // ============ MISTAKE TRACKING SYSTEM ============
     let mistakeLog = [];
