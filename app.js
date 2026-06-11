@@ -354,21 +354,21 @@
     // ============ NAVIGATION ============
     function showPage(pageName) {
       // Multi-page site: navigate to the page's own URL
-      var url = PAGE_URLS[pageName] || 'index.html';
+      var url = PAGE_URLS[pageName] || '/';
       window.location.href = url;
     }
 
     var PAGE_URLS = {
-      home: 'index.html',
-      kana: 'kana.html',
-      learn: 'learn.html',
-      forms: 'forms.html',
-      verblist: 'verblist.html',
-      conjugator: 'conjugator.html',
-      datedojo: 'datedojo.html',
-      vocabulary: 'vocabulary.html',
-      kanji: 'kanji.html',
-      about: 'about.html'
+      home: '/',
+      kana: '/kana',
+      learn: '/learn',
+      forms: '/forms',
+      verblist: '/verblist',
+      conjugator: '/conjugator',
+      datedojo: '/datedojo',
+      vocabulary: '/vocabulary',
+      kanji: '/kanji',
+      about: '/about'
     };
 
      // Handle URL hash on page load and back/forward navigation

@@ -14,6 +14,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Conjugator — Japanese Conjugation Practice | Katsuyō Academy</title>
   <meta name="description" content="Practice Japanese verb conjugation with instant feedback, score tracking, and AI-powered explanations.">
+  <link rel="canonical" href="https://katsuyoacademy.com/conjugator">
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -23,24 +24,24 @@
   <!-- NAVIGATION -->
   <nav class="nav">
     <div class="nav-inner">
-      <a class="logo" href="index.html" style="text-decoration: none;">
+      <a class="logo" href="/" style="text-decoration: none;">
         <span class="logo-kanji jp">活用</span>
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="index.html">Home</a>
+        <a class="nav-link" data-page="home" href="/">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="kana.html">Kana</a>
-        <a class="nav-link" data-page="learn" href="learn.html">Learn</a>
-        <a class="nav-link" data-page="forms" href="forms.html">Forms</a>
-        <a class="nav-link" data-page="verblist" href="verblist.html">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link active" data-page="conjugator" href="conjugator.html">Conjugator</a>
-        <a class="nav-link" data-page="datedojo" href="datedojo.html">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="vocabulary.html">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="kanji.html">Kanji</a>
+        <a class="nav-link active" data-page="conjugator" href="/conjugator">Conjugator</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="about.html">Contact</a>
+        <a class="nav-link" data-page="about" href="/about">Contact</a>
       </div>
     </div>
   </nav>
@@ -161,6 +162,29 @@
   </div>
 
   <!-- DATE DOJO PAGE - Dark Gothic Theme -->
+  <!-- MISTAKE REPORT MODAL -->
+  <div id="mistake-report-modal" class="report-modal">
+    <div class="report-content">
+      <div class="report-header">
+        <h2 style="font-size: 1.75rem; font-weight: 700; margin: 0;">📊 Your Practice Report</h2>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="report-download" onclick="downloadReport()" title="Download report (open and print to save as PDF)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download
+          </button>
+          <button class="report-close" onclick="closeMistakeReport()">×</button>
+        </div>
+      </div>
+      <div class="report-body" id="report-body-content">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
 
   <!-- Back to Top Button -->
   <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
