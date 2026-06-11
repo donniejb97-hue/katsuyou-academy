@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4XWJSE6WX0');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn Hiragana & Katakana | Katsuyō Academy</title>
+  <meta name="description" content="Master hiragana and katakana with interactive charts and native audio for every character.">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="kana">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="index.html">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link active" data-page="kana" href="kana.html">Kana</a>
+        <a class="nav-link" data-page="learn" href="learn.html">Learn</a>
+        <a class="nav-link" data-page="forms" href="forms.html">Forms</a>
+        <a class="nav-link" data-page="verblist" href="verblist.html">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="conjugator.html">Conjugator</a>
+        <a class="nav-link" data-page="datedojo" href="datedojo.html">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="vocabulary.html">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="kanji.html">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="about.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-kana" class="page active">
+    <div class="kana-page" style="max-width: 1400px; margin: 0 auto; padding: 2rem;">
+      
+      <!-- QUICK GUIDE -->
+      <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem; border-radius: 8px; margin-bottom: 3rem; color: white;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: #d4786a;">📖 Quick Guide</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #e8e6e3;">Hiragana (ひらがな)</h3>
+            <p style="opacity: 0.9; line-height: 1.6; font-size: 0.95rem;">Curvy, flowing script for native Japanese words, particles, and verb endings. Example: <span class="jp" style="color: #e8e6e3; font-size: 1.2rem;">さくら</span> (sakura)</p>
+          </div>
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #2d7d9a;">Katakana (カタカナ)</h3>
+            <p style="opacity: 0.9; line-height: 1.6; font-size: 0.95rem;">Angular, sharp script for foreign words, emphasis, and technical terms. Example: <span class="jp" style="color: #2d7d9a; font-size: 1.2rem;">コーヒー</span> (kōhī / coffee)</p>
+          </div>
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #d4786a;">Reading the Charts</h3>
+            <p style="opacity: 0.9; line-height: 1.6; font-size: 0.95rem;">Each row shares a consonant (k, s, t, etc.). Each column shares a vowel (a, i, u, e, o). Combine them: k + a = か/カ (ka)</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COLOR KEY -->
+      <div style="background: white; padding: 1.5rem 2rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); border-left: 4px solid var(--accent);">
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.85rem; color: #888; font-weight: 600;">LEGEND:</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="jp" style="font-size: 1.8rem; color: var(--ink);">あ</span>
+            <span style="font-size: 0.9rem; color: var(--text);">Hiragana</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span class="jp" style="font-size: 1.8rem; color: #2d7d9a;">ア</span>
+            <span style="font-size: 0.9rem; color: var(--text);">Katakana</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 0.85rem; color: #888; font-style: italic;">romaji</span>
+            <span style="font-size: 0.9rem; color: var(--text);">Pronunciation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BASIC KANA CHART -->
+      <section style="margin-bottom: 4rem;">
+        <div style="background: white; padding: 2.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <span style="background: var(--accent); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">46 CHARACTERS</span>
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;">Basic Kana (五十音 Gojūon)</h2>
+          </div>
+            <p style="color: var(--text); font-size: 1.05rem;">The 46 fundamental sounds of Japanese. Practice these first!</p>
+          </div>
+          
+          <!-- Kana Grid Table -->
+          <div style="overflow: hidden;">
+            <table class="kana-chart" style="width: 100%; border-collapse: separate; border-spacing: 4px;">
+              <thead>
+                <tr style="background: var(--ink); color: white;">
+                  <th style="padding: 0.5rem; text-align: center; font-size: 0.85rem; font-weight: 600; width: 50px;"></th>
+                  <th style="padding: 0.5rem; text-align: center; font-size: 0.9rem; font-weight: 600;">A</th>
+                  <th style="padding: 0.5rem; text-align: center; font-size: 0.9rem; font-weight: 600;">I</th>
+                  <th style="padding: 0.5rem; text-align: center; font-size: 0.9rem; font-weight: 600;">U</th>
+                  <th style="padding: 0.5rem; text-align: center; font-size: 0.9rem; font-weight: 600;">E</th>
+                  <th style="padding: 0.5rem; text-align: center; font-size: 0.9rem; font-weight: 600;">O</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.65rem; width: 50px;">vowels</td>
+                  <td class="kana-grid-cell" onclick="playKanaAudio('あ')" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px; cursor: pointer;" title="Click to hear">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">a</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">あ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ア</div>
+                  </td>
+                  <td class="kana-grid-cell" onclick="playKanaAudio('い')" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px; cursor: pointer;" title="Click to hear">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">i</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">い</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">イ</div>
+                  </td>
+                  <td class="kana-grid-cell" onclick="playKanaAudio('う')" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px; cursor: pointer;" title="Click to hear">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">u</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">う</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ウ</div>
+                  </td>
+                  <td class="kana-grid-cell" onclick="playKanaAudio('え')" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px; cursor: pointer;" title="Click to hear">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">e</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">え</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">エ</div>
+                  </td>
+                  <td class="kana-grid-cell" onclick="playKanaAudio('お')" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px; cursor: pointer;" title="Click to hear">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">o</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">お</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">オ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">K</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ka</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">か</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">カ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ki</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">き</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">キ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ku</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">く</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ク</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ke</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">け</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ケ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ko</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">こ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">コ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">S</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">sa</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">さ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">サ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">shi</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">し</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">シ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">su</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">す</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ス</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">se</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">せ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">セ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">so</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">そ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ソ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">T</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ta</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">た</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">タ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">chi</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ち</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">チ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">tsu</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">つ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ツ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">te</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">て</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">テ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">to</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">と</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ト</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">N</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">na</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">な</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ナ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ni</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">に</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ニ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">nu</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぬ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヌ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ne</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ね</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ネ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">no</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">の</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ノ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">H</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ha</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">は</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ハ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">hi</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ひ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヒ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">fu</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ふ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">フ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">he</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">へ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヘ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ho</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ほ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ホ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">M</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ma</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ま</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">マ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">mi</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">み</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ミ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">mu</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">む</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ム</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">me</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">め</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">メ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">mo</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">も</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">モ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">Y</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ya</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">や</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヤ</div>
+                  </td>
+                  <td style="background: #f5f5f5; padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;"></td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">yu</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ゆ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ユ</div>
+                  </td>
+                  <td style="background: #f5f5f5; padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;"></td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">yo</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">よ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヨ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">R</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ra</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ら</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ラ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ri</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">り</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">リ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ru</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">る</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ル</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">re</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">れ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">レ</div>
+                  </td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ro</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ろ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ロ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">W</td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">wa</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">わ</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ワ</div>
+                  </td>
+                  <td style="background: #f5f5f5; padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;"></td>
+                  <td style="background: #f5f5f5; padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;"></td>
+                  <td style="background: #f5f5f5; padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;"></td>
+                  <td class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">wo</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">を</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヲ</div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: var(--ink); color: white; padding: 0.3rem; text-align: center; font-weight: 600; font-size: 0.75rem; width: 50px;">N</td>
+                  <td colspan="5" class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+                    <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">n</div>
+                    <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ん</div>
+                    <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ン</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Continue with other sections... -->
+      
+
+      <!-- DAKUTEN (Voiced Sounds) -->
+      <section style="margin-bottom: 4rem;">
+        <div style="background: white; padding: 2.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <span style="background: #2d7d9a; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">25 CHARACTERS</span>
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;">Dakuten (濁点) — Voiced Sounds</h2>
+          </div>
+            <p style="color: var(--text); font-size: 1.05rem;">Add two dots <span class="jp" style="font-size: 1.3rem;">゛</span> (dakuten) to voice consonants (K→G, S→Z, T→D, H→B), or a circle <span class="jp" style="font-size: 1.3rem;">゜</span> (handakuten) for H→P</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;">
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ga</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">が</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ガ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">gi</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぎ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ギ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">gu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぐ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">グ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ge</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">げ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ゲ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">go</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ご</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ゴ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">za</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ざ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ザ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ji</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">じ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ジ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">zu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ず</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ズ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ze</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぜ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ゼ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">zo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぞ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ゾ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">da</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">だ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ダ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ji</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぢ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヂ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">zu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">づ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヅ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">de</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">で</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">デ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">do</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ど</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ド</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ba</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ば</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">バ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">bi</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">び</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ビ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">bu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぶ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ブ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">be</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">べ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ベ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">bo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぼ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ボ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pa</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぱ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">パ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pi</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぴ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ピ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぷ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">プ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pe</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぺ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ペ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">po</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぽ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ポ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMBINATIONS -->
+      <section style="margin-bottom: 4rem;">
+        <div style="background: white; padding: 2.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <div style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <span style="background: #6b9aa3; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">33 CHARACTERS</span>
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;">Combination Sounds (拗音 Yōon)</h2>
+          </div>
+            <p style="color: var(--text); font-size: 1.05rem;">Combine characters with small や, ゆ, よ to create new sounds like kya, shu, cho</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;">
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">kya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">きゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">キャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">kyu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">きゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">キュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">kyo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">きょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">キョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">sha</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">しゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">シャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">shu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">しゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">シュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">sho</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">しょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ショ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">cha</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ちゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">チャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">chu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ちゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">チュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">cho</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ちょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">チョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">nya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">にゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ニャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">nyu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">にゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ニュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">nyo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">にょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ニョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">hya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ひゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヒャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">hyu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ひゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヒュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">hyo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ひょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ヒョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">mya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">みゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ミャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">myu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">みゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ミュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">myo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">みょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ミョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">rya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">りゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">リャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ryu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">りゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">リュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ryo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">りょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">リョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">gya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぎゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ギャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">gyu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぎゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ギュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">gyo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぎょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ギョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ja</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">じゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ジャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">ju</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">じゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ジュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">jo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">じょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ジョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">bya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">びゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ビャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">byu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">びゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ビュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">byo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">びょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ビョ</div>
+            </div>
+            
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pya</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぴゃ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ピャ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pyu</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぴゅ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ピュ</div>
+            </div>
+            <div class="kana-grid-cell" style="background: var(--paper-warm); padding: 0.75rem 0.5rem; text-align: center; border-radius: 4px;">
+              <div style="font-size: 0.7rem; color: #888; margin-bottom: 0.25rem;">pyo</div>
+              <div style="font-size: 1.75rem; color: var(--ink); margin-bottom: 0.15rem;" class="jp">ぴょ</div>
+              <div style="font-size: 1.75rem; color: #2d7d9a;" class="jp">ピョ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRACTICE CTA -->
+      <div style="text-align: center; padding: 3rem 2rem; margin-top: 2rem;">
+        <p style="font-size: 1.1rem; color: var(--text); margin-bottom: 1.5rem;">Ready to practice reading Japanese?</p>
+        <button onclick="showPage('vocabulary')" style="background: var(--accent); color: white; border: none; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: background 0.2s;">
+          Practice with Flashcards →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LEARN PAGE -->
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>

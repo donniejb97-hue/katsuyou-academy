@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4XWJSE6WX0');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Date Dojo — Japanese Dates, Days & Months | Katsuyō Academy</title>
+  <meta name="description" content="Drill Japanese dates, days of the week, and months with interactive quizzes.">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="datedojo">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="index.html">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="kana.html">Kana</a>
+        <a class="nav-link" data-page="learn" href="learn.html">Learn</a>
+        <a class="nav-link" data-page="forms" href="forms.html">Forms</a>
+        <a class="nav-link" data-page="verblist" href="verblist.html">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="conjugator.html">Conjugator</a>
+        <a class="nav-link active" data-page="datedojo" href="datedojo.html">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="vocabulary.html">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="kanji.html">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="about.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-datedojo" class="page active">
+    <style>
+      /* Date Dojo Scoped Styles */
+      #page-datedojo {
+        background: #0c0c0c;
+        padding-top: 0;
+      }
+      .dojo-container {
+        min-height: 100vh;
+        padding-top: 72px;
+        background: #0c0c0c;
+        font-family: 'Noto Sans JP', 'Outfit', sans-serif;
+        color: #f5f5f5;
+        position: relative;
+        overflow-x: hidden;
+      }
+      @media (max-width: 600px) {
+        #page-datedojo {
+          padding-top: 0;
+        }
+        .dojo-container {
+          padding-top: 100px;
+        }
+      }
+      .dojo-bg-kanji {
+        position: fixed;
+        font-family: 'Noto Serif JP', serif;
+        color: rgba(255,255,255,0.02);
+        pointer-events: none;
+        user-select: none;
+        z-index: 0;
+      }
+      @media (max-width: 600px) {
+        .dojo-bg-kanji:nth-child(n+5) {
+          display: none;
+        }
+      }
+      .dojo-accent-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #c41e3a, #ff6b6b, #c41e3a);
+        background-size: 200% 100%;
+        animation: dojo-shimmer 3s ease-in-out infinite;
+      }
+      @keyframes dojo-shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      .dojo-main {
+        position: relative;
+        z-index: 10;
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 20px 24px 40px;
+      }
+      .dojo-header {
+        text-align: center;
+        margin-bottom: 48px;
+      }
+      .dojo-title {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.1em;
+        margin: 0;
+        position: relative;
+        display: inline-block;
+      }
+      .dojo-title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: #c41e3a;
+      }
+      .dojo-subtitle {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.4);
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        margin-top: 20px;
+      }
+      .dojo-stats-row {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .dojo-stat-item {
+        text-align: center;
+        padding: 16px 24px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 4px;
+        min-width: 100px;
+      }
+      .dojo-stat-value {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 1.75rem;
+        font-weight: 600;
+      }
+      .dojo-stat-label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.4);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        margin-top: 4px;
+      }
+      .dojo-icon-btn {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 4px;
+        padding: 16px;
+        color: rgba(255,255,255,0.5);
+        cursor: pointer;
+        font-size: 1.25rem;
+        transition: all 0.3s ease;
+      }
+      .dojo-icon-btn:hover {
+        background: rgba(255,255,255,0.08);
+        color: #fff;
+      }
+      .dojo-question-card {
+        background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 8px;
+        padding: 40px;
+        margin-bottom: 24px;
+        position: relative;
+      }
+      .dojo-question-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, #c41e3a, transparent);
+        border-radius: 8px 0 0 8px;
+      }
+      .dojo-question-type {
+        display: inline-block;
+        font-size: 1rem;
+        color: #c41e3a;
+        letter-spacing: 0.08em;
+        margin-bottom: 24px;
+        padding: 10px 16px;
+        border: 1px solid rgba(196,30,58,0.3);
+        border-radius: 4px;
+        cursor: help;
+      }
+      .dojo-question-text {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 2rem;
+        font-weight: 600;
+        color: #fff;
+        line-height: 1.5;
+        margin-bottom: 8px;
+      }
+      .dojo-question-text-en {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.35);
+        margin-bottom: 32px;
+      }
+      .dojo-answer-input {
+        width: 100%;
+        padding: 20px 24px;
+        font-size: 1.25rem;
+        font-family: 'Noto Sans JP', sans-serif;
+        background: rgba(0,0,0,0.4);
+        border: 2px solid rgba(255,255,255,0.1);
+        border-radius: 4px;
+        color: #fff;
+        outline: none;
+        transition: all 0.3s ease;
+      }
+      .dojo-answer-input:focus {
+        border-color: #c41e3a;
+        box-shadow: 0 0 0 4px rgba(196,30,58,0.15);
+      }
+      .dojo-answer-input::placeholder {
+        color: rgba(255,255,255,0.25);
+      }
+      .dojo-answer-input:disabled {
+        opacity: 0.6;
+      }
+      .dojo-input-hint {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.3);
+        margin: 12px 0 24px;
+      }
+      .dojo-hint-box {
+        background: rgba(196,30,58,0.1);
+        border-left: 3px solid #c41e3a;
+        padding: 16px 20px;
+        margin-bottom: 24px;
+        color: rgba(255,255,255,0.8);
+        font-size: 0.95rem;
+        border-radius: 0 4px 4px 0;
+      }
+      .dojo-feedback {
+        padding: 20px 24px;
+        border-radius: 4px;
+        margin-bottom: 24px;
+      }
+      .dojo-feedback.correct {
+        background: rgba(34,197,94,0.1);
+        border: 1px solid rgba(34,197,94,0.3);
+      }
+      .dojo-feedback.incorrect {
+        background: rgba(239,68,68,0.1);
+        border: 1px solid rgba(239,68,68,0.3);
+      }
+      .dojo-feedback.partial {
+        background: rgba(251,191,36,0.1);
+        border: 1px solid rgba(251,191,36,0.3);
+      }
+      .dojo-feedback-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .dojo-feedback.correct .dojo-feedback-title { color: #22c55e; }
+      .dojo-feedback.incorrect .dojo-feedback-title { color: #ef4444; }
+      .dojo-feedback.partial .dojo-feedback-title { color: #fbbf24; }
+      .dojo-feedback-answer {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.6);
+      }
+      .dojo-feedback-answer strong {
+        color: #fff;
+        font-family: 'Noto Serif JP', serif;
+      }
+      .dojo-btn-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .dojo-btn {
+        padding: 14px 28px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        font-family: 'Noto Sans JP', sans-serif;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .dojo-btn-primary {
+        background: #c41e3a;
+        color: white;
+      }
+      .dojo-btn-primary:hover {
+        background: #a01830;
+        transform: translateY(-2px);
+      }
+      .dojo-btn-secondary {
+        background: rgba(255,255,255,0.05);
+        color: rgba(255,255,255,0.7);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      .dojo-btn-secondary:hover {
+        background: rgba(255,255,255,0.1);
+        color: #fff;
+      }
+      .dojo-btn-secondary.active {
+        background: rgba(196,30,58,0.15);
+        border-color: rgba(196,30,58,0.3);
+        color: #ff6b6b;
+      }
+      .dojo-reference {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 4px;
+        margin-top: 32px;
+      }
+      .dojo-reference summary {
+        padding: 20px 24px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.5);
+      }
+      .dojo-reference-content {
+        padding: 0 24px 24px;
+      }
+      .dojo-reference-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      .dojo-reference-item {
+        background: rgba(255,255,255,0.03);
+        padding: 12px 16px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        text-align: center;
+        border: 1px solid rgba(255,255,255,0.06);
+        flex: 0 1 auto;
+        min-width: 120px;
+        white-space: nowrap;
+      }
+      .dojo-reference-item .num {
+        color: #c41e3a;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      .dojo-reference-title {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.4);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .dojo-numbers-table {
+        margin-bottom: 24px;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 4px;
+        overflow: hidden;
+        width: 100%;
+        max-width: 700px;
+      }
+      .dojo-numbers-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .dojo-numbers-row:last-child {
+        border-bottom: none;
+      }
+      .dojo-numbers-row > div {
+        padding: 10px 12px;
+        font-size: 0.85rem;
+        border-right: 1px solid rgba(255,255,255,0.06);
+        white-space: nowrap;
+      }
+      .dojo-numbers-row > div:last-child {
+        border-right: none;
+      }
+      .dojo-numbers-header {
+        background: rgba(255,255,255,0.05);
+        font-weight: 600;
+        color: rgba(255,255,255,0.6);
+        font-size: 0.75rem;
+      }
+      .dojo-numbers-row .num {
+        color: #c41e3a;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      .dojo-numbers-row strong {
+        color: #ff6b6b;
+      }
+      .dojo-irregular {
+        color: #fbbf24;
+        margin-left: 4px;
+      }
+      /* Tooltips */
+      .dojo-title .dojo-tip::after {
+        bottom: auto;
+        top: calc(100% + 10px);
+      }
+      .dojo-tip {
+        position: relative;
+        cursor: help;
+        border-bottom: 1px dotted rgba(255,255,255,0.3);
+      }
+      .dojo-tip:hover {
+        color: #ff6b6b;
+      }
+      .dojo-tip::after {
+        content: attr(data-reading) '\A' attr(data-en);
+        white-space: pre;
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #222;
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        line-height: 1.7;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        z-index: 100;
+        pointer-events: none;
+      }
+      .dojo-tip:hover::after {
+        opacity: 1;
+        visibility: visible;
+      }
+      .dojo-tip-simple::after {
+        content: attr(data-tip);
+        white-space: nowrap;
+      }
+      .dojo-kanji-tip {
+        position: relative;
+        cursor: help;
+        border-bottom: 1px dotted rgba(255,255,255,0.2);
+      }
+      .dojo-kanji-tip:hover {
+        color: #ff6b6b;
+      }
+      .dojo-kanji-tip::after {
+        content: attr(data-reading) '\A' attr(data-en);
+        white-space: pre;
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #2a2a2a;
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        line-height: 1.7;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 200;
+        pointer-events: none;
+      }
+      .dojo-kanji-tip:hover::after {
+        opacity: 1;
+        visibility: visible;
+      }
+      .dojo-answer-tip {
+        position: relative;
+        cursor: help;
+        border-bottom: 1px dotted rgba(255,255,255,0.4);
+      }
+      .dojo-answer-tip:hover {
+        color: #ff6b6b;
+      }
+      .dojo-answer-tip::after {
+        content: attr(data-en);
+        white-space: nowrap;
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 50%;
+        transform: translateX(-50%);
+        background: #2a2a2a;
+        border: 1px solid rgba(255,255,255,0.15);
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        text-align: center;
+        opacity: 0;
+        visibility: hidden;
+        z-index: 200;
+        pointer-events: none;
+      }
+      .dojo-answer-tip:hover::after {
+        opacity: 1;
+        visibility: visible;
+      }
+      /* Modal */
+      .dojo-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 20px;
+      }
+      .dojo-modal-overlay.visible {
+        display: flex;
+      }
+      .dojo-modal {
+        background: #141414;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 8px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 85vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .dojo-modal-header {
+        padding: 24px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .dojo-modal-header h2 {
+        margin: 0;
+        font-family: 'Noto Serif JP', serif;
+        font-size: 1.25rem;
+        color: #fff;
+      }
+      .dojo-modal-close {
+        background: none;
+        border: none;
+        color: rgba(255,255,255,0.4);
+        font-size: 1.75rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .dojo-modal-close:hover {
+        color: #fff;
+      }
+      .dojo-modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        color: #f5f5f5;
+      }
+      .dojo-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+      .dojo-stats-grid-item {
+        background: rgba(255,255,255,0.03);
+        padding: 20px;
+        border-radius: 4px;
+        text-align: center;
+      }
+      .dojo-stats-grid-item .value {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 2rem;
+        font-weight: 600;
+      }
+      .dojo-stats-grid-item .label {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.4);
+        text-transform: uppercase;
+        margin-top: 4px;
+      }
+      .dojo-section-title {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.4);
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .dojo-category-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 32px;
+      }
+      .dojo-category-tag {
+        background: rgba(196,30,58,0.15);
+        border: 1px solid rgba(196,30,58,0.25);
+        padding: 8px 14px;
+        border-radius: 2px;
+        font-size: 0.8rem;
+      }
+      .dojo-mistake-entry {
+        background: rgba(255,255,255,0.02);
+        border-left: 3px solid #c41e3a;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        border-radius: 0 4px 4px 0;
+      }
+      .dojo-mistake-type {
+        font-size: 0.7rem;
+        color: rgba(255,255,255,0.35);
+        margin-bottom: 8px;
+      }
+      .dojo-mistake-question {
+        font-size: 1.05rem;
+        margin-bottom: 12px;
+        font-family: 'Noto Serif JP', serif;
+      }
+      .dojo-mistake-answers {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        background: rgba(0,0,0,0.3);
+        padding: 12px 16px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+      .dojo-mistake-label {
+        font-size: 0.65rem;
+        color: rgba(255,255,255,0.35);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .dojo-mistake-hint {
+        margin-top: 12px;
+        font-size: 0.85rem;
+        color: rgba(255,200,100,0.7);
+        font-style: italic;
+      }
+      .dojo-empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: rgba(255,255,255,0.4);
+      }
+      .dojo-streak-fire {
+        animation: dojo-pulse 1s ease-in-out infinite;
+        display: inline-block;
+      }
+      @keyframes dojo-pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.15); }
+      }
+      @media (max-width: 600px) {
+        .dojo-main { padding: 16px 16px 32px; }
+        .dojo-header { margin-bottom: 24px; }
+        .dojo-title { font-size: 2rem; }
+        .dojo-subtitle { font-size: 0.7rem; letter-spacing: 0.2em; margin-top: 12px; }
+        .dojo-question-text { font-size: 1.3rem; }
+        .dojo-question-card { padding: 20px; }
+        .dojo-reference-item { min-width: 100px; white-space: normal; }
+        .dojo-stats-row { gap: 12px; margin-bottom: 24px; }
+        .dojo-stat-item { padding: 12px 16px; min-width: 70px; }
+        .dojo-stat-value { font-size: 1.25rem; }
+        .dojo-btn { padding: 12px 20px; font-size: 0.85rem; }
+        .dojo-btn-row { gap: 8px; }
+        .dojo-answer-input { padding: 16px; font-size: 1.1rem; }
+        .dojo-modal { max-height: 90vh; margin: 10px; }
+        .dojo-modal-body { padding: 16px; }
+        .dojo-stats-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .dojo-stats-grid-item { padding: 12px 8px; }
+        .dojo-stats-grid-item .value { font-size: 1.5rem; }
+        .dojo-mistake-answers { grid-template-columns: 1fr; gap: 12px; }
+        .dojo-numbers-row { grid-template-columns: repeat(2, 1fr); }
+        .dojo-numbers-row > div { font-size: 0.75rem; padding: 8px 10px; white-space: normal; }
+        .dojo-numbers-header { font-size: 0.65rem; }
+        /* Disable hover tooltips on mobile */
+        .dojo-tip::after, .dojo-kanji-tip::after, .dojo-answer-tip::after { display: none; }
+        .dojo-tip, .dojo-kanji-tip, .dojo-answer-tip { border-bottom: none; cursor: default; }
+      }
+    </style>
+
+    <div class="dojo-container">
+      <div class="dojo-accent-line"></div>
+      
+      <!-- Background Kanji -->
+      <div class="dojo-bg-kanji" style="font-size: 80px; left: 5%; top: 10vh;">日</div>
+      <div class="dojo-bg-kanji" style="font-size: 100px; left: 28%; top: 41vh;">月</div>
+      <div class="dojo-bg-kanji" style="font-size: 115px; left: 51%; top: 72vh;">火</div>
+      <div class="dojo-bg-kanji" style="font-size: 130px; left: 74%; top: 3vh;">水</div>
+      <div class="dojo-bg-kanji" style="font-size: 95px; left: 97%; top: 34vh;">木</div>
+      <div class="dojo-bg-kanji" style="font-size: 110px; left: 20%; top: 65vh;">金</div>
+      <div class="dojo-bg-kanji" style="font-size: 85px; left: 43%; top: 96vh;">土</div>
+      <div class="dojo-bg-kanji" style="font-size: 145px; left: 66%; top: 27vh;">時</div>
+      <div class="dojo-bg-kanji" style="font-size: 160px; left: 89%; top: 58vh;">年</div>
+      <div class="dojo-bg-kanji" style="font-size: 175px; left: 12%; top: 89vh;">週</div>
+
+      <div class="dojo-main">
+        <header class="dojo-header">
+          <h1 class="dojo-title">
+            <span class="dojo-tip jp" data-reading="ひづけ れんしゅう" data-en="Date Practice">日付練習</span>
+          </h1>
+          <p class="dojo-subtitle">Date & Number Practice</p>
+        </header>
+
+        <!-- Stats Row -->
+        <div class="dojo-stats-row">
+          <div class="dojo-stat-item">
+            <div class="dojo-stat-value" id="dojo-score" style="color: #22c55e;">0/0</div>
+            <div class="dojo-stat-label"><span class="dojo-tip" data-reading="せいかい" data-en="Correct">正解</span></div>
+          </div>
+          <div class="dojo-stat-item">
+            <div class="dojo-stat-value" id="dojo-accuracy" style="color: #60a5fa;">0%</div>
+            <div class="dojo-stat-label"><span class="dojo-tip" data-reading="せいど" data-en="Accuracy">精度</span></div>
+          </div>
+          <div class="dojo-stat-item">
+            <div class="dojo-stat-value" id="dojo-streak" style="color: #fff;">0</div>
+            <div class="dojo-stat-label"><span class="dojo-tip" data-reading="れんぞく" data-en="Streak">連続</span></div>
+          </div>
+          <button class="dojo-icon-btn" onclick="showDojoReview()" title="Review mistakes">
+            📋 <span id="dojo-mistake-count"></span>
+          </button>
+          <button class="dojo-icon-btn" id="dojo-reset-btn" onclick="resetDojoScore()" title="Reset score" style="display: none;">
+            🔄
+          </button>
+        </div>
+
+        <!-- Question Card -->
+        <div class="dojo-question-card">
+          <div class="dojo-question-type" id="dojo-question-type" title="">今日の日付</div>
+          <div class="dojo-question-text" id="dojo-question-text">今日は何日ですか？</div>
+          <div class="dojo-question-text-en" id="dojo-question-text-en">What is today's date?</div>
+
+          <input 
+            type="text" 
+            class="dojo-answer-input" 
+            id="dojo-answer-input"
+            placeholder="答えを入力..."
+            onkeypress="handleDojoKeyPress(event)"
+          >
+          <div class="dojo-input-hint" id="dojo-input-hint">フルセンテンスで答えてね！（〜です / 〜でした）</div>
+
+          <!-- Hint Box -->
+          <div class="dojo-hint-box" id="dojo-hint-box" style="display: none;">
+            💡 <span id="dojo-hint-content"></span>
+          </div>
+
+          <!-- Partial Feedback -->
+          <div class="dojo-feedback partial" id="dojo-partial-feedback" style="display: none;">
+            <div class="dojo-feedback-title">🤔 <span id="dojo-partial-message"></span></div>
+            <div class="dojo-feedback-answer" id="dojo-partial-message-en" style="color: rgba(255,255,255,0.5);"></div>
+          </div>
+
+          <!-- Final Feedback -->
+          <div class="dojo-feedback" id="dojo-feedback" style="display: none;">
+            <div class="dojo-feedback-title" id="dojo-feedback-title"></div>
+            <div class="dojo-feedback-answer">
+              <span id="dojo-feedback-label"></span>: <strong id="dojo-feedback-answer"></strong>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="dojo-btn-row" id="dojo-btn-row">
+            <button class="dojo-btn dojo-btn-primary" onclick="checkDojoAnswer()">
+              <span class="dojo-tip" data-reading="こたえる" data-en="Answer">答える</span>
+            </button>
+            <button class="dojo-btn dojo-btn-secondary" id="dojo-hint-btn" onclick="toggleDojoHint()">
+              🔒 <span class="dojo-tip" data-reading="ヒント" data-en="Hint">ヒント</span>
+            </button>
+            <button class="dojo-btn dojo-btn-secondary" onclick="generateDojoQuestion()">
+              <span class="dojo-tip" data-reading="スキップ" data-en="Skip">スキップ</span>
+            </button>
+          </div>
+          <div class="dojo-btn-row" id="dojo-next-btn-row" style="display: none;">
+            <button class="dojo-btn dojo-btn-primary" onclick="generateDojoQuestion()">
+              <span class="dojo-tip" data-reading="つぎのもんだい" data-en="Next Question">次の問題</span> →
+            </button>
+          </div>
+        </div>
+
+        <!-- Reference Section -->
+        <details class="dojo-reference">
+          <summary>📚 参考表 (Reference Chart)</summary>
+          <div class="dojo-reference-content">
+            <div class="dojo-reference-title">日付 — Dates (1-10)</div>
+            <div class="dojo-reference-grid" id="dojo-ref-dates"></div>
+
+            <div class="dojo-reference-title">曜日 — Weekdays</div>
+            <div class="dojo-reference-grid" id="dojo-ref-weekdays"></div>
+
+            <div class="dojo-reference-title">相対的な日 — Relative Days</div>
+            <div class="dojo-reference-grid" id="dojo-ref-relative"></div>
+
+            <div class="dojo-reference-title">数字 — Numbers</div>
+            <div class="dojo-numbers-table" id="dojo-ref-numbers">
+              <div class="dojo-numbers-row dojo-numbers-header">
+                <div>基本</div>
+                <div>百 (100s)</div>
+                <div>千 (1000s)</div>
+                <div>万+ (10000+)</div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">1</span> いち</div>
+                <div><span class="num">100</span> ひゃく</div>
+                <div><span class="num">1000</span> せん</div>
+                <div><span class="num">10000</span> いちまん</div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">2</span> に</div>
+                <div><span class="num">200</span> にひゃく</div>
+                <div><span class="num">2000</span> にせん</div>
+                <div><span class="num">1億</span> いちおく</div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">3</span> さん</div>
+                <div><span class="num">300</span> さん<strong>び</strong>ゃく <span class="dojo-irregular">★</span></div>
+                <div><span class="num">3000</span> さん<strong>ぜ</strong>ん <span class="dojo-irregular">★</span></div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">4</span> よん、し</div>
+                <div><span class="num">400</span> よんひゃく</div>
+                <div><span class="num">4000</span> よんせん</div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">5</span> ご</div>
+                <div><span class="num">500</span> ごひゃく</div>
+                <div><span class="num">5000</span> ごせん</div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">6</span> ろく</div>
+                <div><span class="num">600</span> ろっ<strong>ぴ</strong>ゃく <span class="dojo-irregular">★</span></div>
+                <div><span class="num">6000</span> ろくせん</div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">7</span> なな、しち</div>
+                <div><span class="num">700</span> ななひゃく</div>
+                <div><span class="num">7000</span> ななせん</div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">8</span> はち</div>
+                <div><span class="num">800</span> はっ<strong>ぴ</strong>ゃく <span class="dojo-irregular">★</span></div>
+                <div><span class="num">8000</span> はっせん <span class="dojo-irregular">★</span></div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">9</span> きゅう</div>
+                <div><span class="num">900</span> きゅうひゃく</div>
+                <div><span class="num">9000</span> きゅうせん</div>
+                <div></div>
+              </div>
+              <div class="dojo-numbers-row">
+                <div><span class="num">10</span> じゅう</div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="dojo-modal-overlay" id="dojo-review-modal">
+      <div class="dojo-modal">
+        <div class="dojo-modal-header">
+          <h2>📋 復習 (Review)</h2>
+          <button class="dojo-modal-close" onclick="closeDojoReview()">×</button>
+        </div>
+        <div class="dojo-modal-body" id="dojo-review-body">
+          <!-- Content populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISTAKE REPORT MODAL -->
+  <div id="mistake-report-modal" class="report-modal">
+    <div class="report-content">
+      <div class="report-header">
+        <h2 style="font-size: 1.75rem; font-weight: 700; margin: 0;">📊 Your Practice Report</h2>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button class="report-download" onclick="downloadReport()" title="Download report (open and print to save as PDF)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download
+          </button>
+          <button class="report-close" onclick="closeMistakeReport()">×</button>
+        </div>
+      </div>
+      <div class="report-body" id="report-body-content">
+        <!-- Content will be populated by JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- VOCABULARY BUILDER PAGE -->
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>

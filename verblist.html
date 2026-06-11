@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4XWJSE6WX0');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Verb List by JLPT Level | Katsuyō Academy</title>
+  <meta name="description" content="Browse essential Japanese verbs organized by type and JLPT level, with kanji, hiragana, and meanings.">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="verblist">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="index.html">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="kana.html">Kana</a>
+        <a class="nav-link" data-page="learn" href="learn.html">Learn</a>
+        <a class="nav-link" data-page="forms" href="forms.html">Forms</a>
+        <a class="nav-link active" data-page="verblist" href="verblist.html">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="conjugator.html">Conjugator</a>
+        <a class="nav-link" data-page="datedojo" href="datedojo.html">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="vocabulary.html">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="kanji.html">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="about.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-verblist" class="page active">
+    <div class="learn-page" style="max-width: 1200px;">
+      <!-- Header -->
+      <div class="page-header" style="text-align: center; margin-bottom: 3rem;">
+        <div class="page-tag">The Database</div>
+        <h1 class="page-title">129 Verbs</h1>
+        <p class="page-desc" style="max-width: 800px; margin: 0 auto; line-height: 1.8;">
+          This collection includes fundamental verbs for everyday conversation, along with verbs used in academic and formal contexts. 
+          The database covers verbs from beginner through intermediate levels, organized into three types—Godan, Ichidan, and Suru—to help 
+          you understand conjugation patterns. Each verb includes kanji, hiragana readings, romaji, and English meanings. 
+          You'll find essential verbs for daily life, emotions, actions, and social interactions.
+        </p>
+        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--paper-warm); border-radius: 4px; border-left: 4px solid var(--accent);">
+          <strong style="color: var(--accent);">📚 This is a living database—new verbs may be added as the collection grows.</strong>
+        </div>
+      </div>
+
+      <!-- Verb Stats - Redesigned -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 3rem;">
+        <div style="background: #4a90a4; padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(74, 144, 164, 0.2);">
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">64</div>
+          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Godan Verbs</div>
+          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">五段</div>
+        </div>
+        <div style="background: var(--sage); padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(106, 138, 106, 0.2);">
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">40</div>
+          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Ichidan Verbs</div>
+          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">一段</div>
+        </div>
+        <div style="background: #7a5ba4; padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(122, 91, 164, 0.2);">
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">24</div>
+          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Suru Verbs</div>
+          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">する</div>
+        </div>
+        <div style="background: var(--accent); padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(196, 92, 74, 0.2);">
+          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">1</div>
+          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Irregular Verb</div>
+          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">不規則</div>
+        </div>
+      </div>
+
+      <!-- Verb Type Tabs - Redesigned -->
+      <div style="margin-bottom: 2rem;">
+        <!-- Search Box -->
+        <div style="margin-bottom: 1.5rem;">
+          <div style="position: relative; max-width: 500px; margin: 0 auto;">
+            <input 
+              type="text" 
+              id="verb-search" 
+              placeholder="Search by kanji, hiragana, romaji, or meaning..." 
+              oninput="filterVerbs()"
+              style="width: 100%; padding: 1rem 1rem 1rem 3rem; font-size: 1rem; border: 2px solid #e5e5e0; border-radius: 8px; font-family: inherit; transition: border-color 0.2s; background: white;"
+            >
+            <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-light);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <div id="search-results-count" style="text-align: center; margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-light); display: none;"></div>
+        </div>
+
+        <!-- JLPT Filter Buttons -->
+        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+          <button onclick="filterByJLPT('all')" id="jlpt-filter-all" class="jlpt-filter-btn active" style="padding: 0.5rem 1rem; border: 2px solid var(--ink); background: var(--ink); color: white; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">All Levels</button>
+          <button onclick="filterByJLPT('N5')" id="jlpt-filter-N5" class="jlpt-filter-btn" style="padding: 0.5rem 1rem; border: 2px solid #22c55e; background: white; color: #22c55e; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">N5</button>
+          <button onclick="filterByJLPT('N4')" id="jlpt-filter-N4" class="jlpt-filter-btn" style="padding: 0.5rem 1rem; border: 2px solid #f59e0b; background: white; color: #f59e0b; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">N4</button>
+          <button onclick="filterByJLPT('N3')" id="jlpt-filter-N3" class="jlpt-filter-btn" style="padding: 0.5rem 1rem; border: 2px solid #ef4444; background: white; color: #ef4444; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">N3</button>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; background: var(--paper-warm); padding: 0.5rem; border-radius: 8px;">
+          <button onclick="showVerbList('godan')" id="verb-tab-godan" class="verb-list-tab active" style="flex: 1; min-width: 120px;">
+            <span style="font-size: 1.2rem; color: #4a90a4;">●</span> Godan <span class="jp">(五段)</span>
+          </button>
+          <button onclick="showVerbList('ichidan')" id="verb-tab-ichidan" class="verb-list-tab" style="flex: 1; min-width: 120px;">
+            <span style="font-size: 1.2rem; color: var(--sage);">●</span> Ichidan <span class="jp">(一段)</span>
+          </button>
+          <button onclick="showVerbList('suru')" id="verb-tab-suru" class="verb-list-tab" style="flex: 1; min-width: 120px;">
+            <span style="font-size: 1.2rem; color: #7a5ba4;">●</span> Suru <span class="jp">(する)</span>
+          </button>
+          <button onclick="showVerbList('irregular')" id="verb-tab-irregular" class="verb-list-tab" style="flex: 1; min-width: 120px;">
+            <span style="font-size: 1.2rem; color: var(--accent);">●</span> Irregular <span class="jp">(不規則)</span>
+          </button>
+        </div>
+
+        <!-- Godan Verb List -->
+        <div id="verb-list-godan" class="verb-list-content active" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Ichidan Verb List -->
+        <div id="verb-list-ichidan" class="verb-list-content" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Suru Verb List -->
+        <div id="verb-list-suru" class="verb-list-content" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Irregular Verb List -->
+        <div id="verb-list-irregular" class="verb-list-content" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+          <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Irregular Verb Explanation (shown when irregular tab is active) -->
+        <div id="irregular-explanation" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3f0 0%, #fef9f8 100%); border-radius: 8px; border-left: 4px solid var(--accent);">
+          <h4 style="color: var(--ink); margin-bottom: 0.75rem; font-size: 1.1rem;">🔸 Why is <span class="jp">来る</span> irregular?</h4>
+          <p style="line-height: 1.8; color: var(--text); margin-bottom: 1rem;">
+            <strong><span class="jp">来る (kuru)</span></strong> is one of only two truly irregular verbs in Japanese (along with <span class="jp">する</span>). 
+            Unlike godan or ichidan verbs, its stem changes unpredictably across conjugations:
+          </p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; font-size: 0.95rem;">
+            <div style="background: white; padding: 0.75rem; border-radius: 4px;">
+              <strong>Dictionary:</strong> <span class="jp">来る</span> (kuru)
+            </div>
+            <div style="background: white; padding: 0.75rem; border-radius: 4px;">
+              <strong>ます form:</strong> <span class="jp">来ます</span> (kimasu)
+            </div>
+            <div style="background: white; padding: 0.75rem; border-radius: 4px;">
+              <strong>て form:</strong> <span class="jp">来て</span> (kite)
+            </div>
+            <div style="background: white; padding: 0.75rem; border-radius: 4px;">
+              <strong>Negative:</strong> <span class="jp">来ない</span> (konai)
+            </div>
+          </div>
+          <p style="line-height: 1.7; color: var(--text-light); margin-top: 1rem; font-size: 0.9rem;">
+            Notice how the reading changes: <strong>ku-ru → ki-masu → ki-te → ko-nai</strong>. This vowel shift (u → i → i → o) doesn't follow any standard pattern, which is why it must be memorized separately.
+          </p>
+        </div>
+      </div>
+
+      <!-- Coverage Info - Redesigned -->
+      <div style="background: linear-gradient(135deg, var(--ink) 0%, #2a3a4a 100%); padding: 2.5rem; border-radius: 8px; margin-top: 3rem; color: white;">
+        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+          📊 Complete JLPT Coverage
+        </h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+          <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 4px;">
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">✅ N5</div>
+            <div style="font-size: 0.95rem; opacity: 0.9;">All essential verbs covered</div>
+          </div>
+          <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 4px;">
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">✅ N4</div>
+            <div style="font-size: 0.95rem; opacity: 0.9;">Comprehensive coverage</div>
+          </div>
+          <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 4px;">
+            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">✅ N3</div>
+            <div style="font-size: 0.95rem; opacity: 0.9;">Strong foundation included</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div style="text-align: center; margin-top: 3rem; padding: 3rem 2rem; background: var(--accent); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
+        <h3 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem;">
+          Ready to Practice?
+        </h3>
+        <p style="color: rgba(255,255,255,0.95); margin-bottom: 2rem; font-size: 1.05rem;">
+          Now that you've seen all 129 verbs, test your knowledge with the conjugator!
+        </p>
+        <button class="btn btn-primary" onclick="showPage('conjugator')" style="background: var(--ink); color: white; padding: 1.25rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.2s;">
+          Start Practicing →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONJUGATOR PAGE -->
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>

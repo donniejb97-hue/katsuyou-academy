@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4XWJSE6WX0');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Japanese Verbs Work | Katsuyō Academy</title>
+  <meta name="description" content="Understand Japanese verb conjugation from the ground up: godan, ichidan, and irregular verbs explained clearly.">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="learn">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="index.html" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="index.html">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="kana.html">Kana</a>
+        <a class="nav-link active" data-page="learn" href="learn.html">Learn</a>
+        <a class="nav-link" data-page="forms" href="forms.html">Forms</a>
+        <a class="nav-link" data-page="verblist" href="verblist.html">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="conjugator.html">Conjugator</a>
+        <a class="nav-link" data-page="datedojo" href="datedojo.html">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="vocabulary.html">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="kanji.html">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="about.html">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-learn" class="page active">
+    <div class="learn-page" style="max-width: 900px;">
+      <div class="page-header">
+        <div class="page-tag">Understanding Conjugation</div>
+        <h1 class="page-title">How Japanese Verbs Work</h1>
+        <p class="page-desc">
+          A clear, visual guide to understanding Japanese verb conjugation patterns.
+          Learn the logic behind the forms so you can conjugate any verb with confidence.
+        </p>
+      </div>
+
+      <!-- INTRODUCTION -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem; margin-bottom: 2rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
+            Why Conjugation Matters
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
+            In Japanese, verbs change their form to express time (past/present), politeness, negation, desire, ability, and more. 
+            Unlike English where we add helper words ("I <em>will</em> go", "I <em>can</em> go"), Japanese transforms the verb itself.
+          </p>
+          <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent);">
+            <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--ink);">Example:</div>
+            <div style="color: var(--text); font-size: 1rem; line-height: 1.8;">
+              <strong class="jp">食べる</strong> (taberu) = to eat<br>
+              <strong class="jp">食べない</strong> (tabenai) = don't eat<br>
+              <strong class="jp">食べます</strong> (tabemasu) = eat (polite)<br>
+              <strong class="jp">食べた</strong> (tabeta) = ate<br>
+              <strong class="jp">食べたい</strong> (tabetai) = want to eat
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THE THREE VERB GROUPS -->
+      <section style="margin-bottom: 3rem;">
+        <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+          The Three Verb Types
+        </h2>
+        <p style="text-align: center; color: var(--text-light); font-size: 1.05rem; margin-bottom: 2rem;">
+          Every Japanese verb falls into one of three categories. Understanding which type you're working with is the first step.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div style="background: #eef4f8; padding: 2rem; border: 3px solid #4a90a4; border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #4a90a4; margin-bottom: 0.5rem;" class="jp">
+              五段 Godan
+            </h3>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
+              "Five-step" verbs that conjugate by shifting through <strong>5 vowel rows</strong>
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text);">
+              Examples:<br>
+              <span class="jp">行く、話す、飲む</span>
+            </div>
+          </div>
+
+          <div style="background: #eef5ef; padding: 2rem; border: 3px solid var(--sage); border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--sage); margin-bottom: 0.5rem;" class="jp">
+              一段 Ichidan
+            </h3>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
+              "One-step" verbs with a <strong>stem that never changes</strong>
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text);">
+              Examples:<br>
+              <span class="jp">食べる、見る、寝る</span>
+            </div>
+          </div>
+
+          <div style="background: #f3eef8; padding: 2rem; border: 3px solid #7a5ba4; border-radius: 4px;">
+            <h3 style="font-size: 1.5rem; font-weight: 700; color: #7a5ba4; margin-bottom: 0.5rem;">
+              する Suru
+            </h3>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
+              <strong>Irregular verbs</strong> formed by adding する to nouns
+            </p>
+            <div style="font-size: 0.9rem; color: var(--text);">
+              Examples:<br>
+              <span class="jp">する、勉強する、料理する</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- IDENTIFYING VERB TYPES -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem;">
+            How to Identify Verb Types
+          </h2>
+
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; font-size: 1.25rem;">
+              Step 1: Does it end in する?
+            </h3>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="font-size: 2rem;">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text);">YES → It's a <strong style="color: #7a5ba4;">Suru verb</strong></div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">Examples: する、勉強する、散歩する</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="font-size: 2rem;">→</div>
+              <div style="color: var(--text);">NO → Continue to Step 2</div>
+            </div>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; font-size: 1.25rem;">
+              Step 2: Does it end in -eru (える) or -iru (いる)?
+            </h3>
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="font-size: 2rem;">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text);">YES → <em>Probably</em> <strong style="color: var(--sage);">Ichidan</strong></div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">Examples: 食べる (taberu), 見る (miru), 起きる (okiru)</div>
+              </div>
+            </div>
+            <div style="background: #fdf8ed; padding: 1rem; border-radius: 4px; margin-top: 1rem; border-left: 4px solid var(--gold);">
+              <div style="font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 0.5rem;">⚠️ Watch Out for Exceptions!</div>
+              <div style="font-size: 0.85rem; color: var(--text);">
+                Some verbs <em>look</em> like ichidan but are actually godan:<br>
+                <span class="jp">走る (hashiru)</span> - to run [GODAN]<br>
+                <span class="jp">帰る (kaeru)</span> - to return [GODAN]<br>
+                <span class="jp">知る (shiru)</span> - to know [GODAN]
+              </div>
+            </div>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; font-size: 1.25rem;">
+              Step 3: Everything else
+            </h3>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div style="font-size: 2rem;">✓</div>
+              <div>
+                <div style="font-weight: 600; color: var(--text);">It's <strong style="color: #4a90a4;">Godan</strong></div>
+                <div style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                  Ends in: く、ぐ、す、つ、ぬ、ぶ、む、る、う<br>
+                  Examples: 行く (iku), 話す (hanasu), 飲む (nomu), 買う (kau)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- THE FOUNDATION - HIRAGANA CHART -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
+            Foundation: The Hiragana Sound System
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
+            Japanese sounds are organized in <strong>rows</strong> and <strong>columns</strong>. Godan verbs work by shifting between these rows:
+          </p>
+
+          <div style="overflow-x: auto; margin-bottom: 2rem;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+              <thead>
+                <tr style="background: var(--ink);">
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">Row</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">k-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">s-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">t-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">m-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">r-</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper); font-weight: 600;">w-</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="background: #fbeef0;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #c45c4a;">あ (A)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">か</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">さ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">た</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ま</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ら</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">わ</td>
+                </tr>
+                <tr style="background: #eef5ef;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #7a9e7e;">い (I)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">き</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">し</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ち</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">み</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">り</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">い</td>
+                </tr>
+                <tr style="background: #eef4f8;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #4a90a4;">う (U)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">く</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">す</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">つ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">む</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">る</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">う</td>
+                </tr>
+                <tr style="background: #f3eef8;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #7a5ba4;">え (E)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">け</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">せ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">て</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">め</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">れ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">え</td>
+                </tr>
+                <tr style="background: #fdf8ed;">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-weight: 700; color: #c9a962;">お (O)</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">こ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">そ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">と</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">も</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">ろ</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem;" class="jp">お</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: #eef4f8; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #4a90a4;">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Key Insight:</div>
+            <div style="color: var(--text); line-height: 1.7;">
+              Notice how each column keeps the same consonant sound (k-, s-, t-, etc.), but the vowel changes (a, i, u, e, o).
+              When we conjugate godan verbs, we're moving <strong>up and down these columns</strong> to create different forms.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GODAN VERBS IN DEPTH -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: #4a90a4; margin-bottom: 1rem;">
+            Godan Verbs: The Five-Row System
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Godan verbs work by <strong>changing the final sound</strong> to a different row. Let's use <span class="jp">話す</span> (hanasu - to speak) as our example:
+          </p>
+
+          <!-- VISUAL TRANSFORMATION -->
+          <div style="background: var(--paper-warm); padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+              Watch the Transformation
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; text-align: center;">
+              <div style="padding: 1rem; background: #fbeef0; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #c45c4a; font-weight: 600; margin-bottom: 0.5rem;">NEGATIVE (あ)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話さない</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanasanai</div>
+              </div>
+              <div style="padding: 1rem; background: #eef5ef; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #7a9e7e; font-weight: 600; margin-bottom: 0.5rem;">ます-STEM (い)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話します</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanashimasu</div>
+              </div>
+              <div style="padding: 1rem; background: #eef4f8; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #4a90a4; font-weight: 600; margin-bottom: 0.5rem;">DICTIONARY (う)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話す</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanasu</div>
+              </div>
+              <div style="padding: 1rem; background: #f3eef8; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #7a5ba4; font-weight: 600; margin-bottom: 0.5rem;">POTENTIAL (え)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話せる</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanaseru</div>
+              </div>
+              <div style="padding: 1rem; background: #fdf8ed; border-radius: 4px;">
+                <div style="font-size: 0.85rem; color: #c9a962; font-weight: 600; margin-bottom: 0.5rem;">VOLITIONAL (お)</div>
+                <div style="font-size: 1.5rem; font-weight: 700;" class="jp">話そう</div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">hanasou</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP BY STEP -->
+          <div style="background: #eef4f8; padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem;">
+              Step-by-Step Process
+            </h3>
+            <div style="font-size: 1rem; line-height: 2; color: var(--text);">
+              <div style="margin-bottom: 1rem;">
+                <strong>1.</strong> Start with the dictionary form: <span class="jp" style="font-size: 1.25rem; color: #4a90a4;">話す</span> (hana<strong>su</strong>)
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <strong>2.</strong> Identify the final sound: <strong style="color: #4a90a4;">す (su)</strong> - this is in the <strong>う-row</strong>
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <strong>3.</strong> Find it in the chart: Look in the <strong>s-column</strong>, <strong>う-row</strong> = す
+              </div>
+              <div style="margin-bottom: 1rem;">
+                <strong>4.</strong> To make negative: Move to the <strong style="color: #c45c4a;">あ-row</strong> in the same column: す → <strong style="color: #c45c4a;">さ</strong>
+              </div>
+              <div>
+                <strong>5.</strong> Add the ending: はな<strong style="color: #c45c4a;">さ</strong> + ない = <span class="jp">話さない</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- PAST TENSE SPECIAL -->
+          <div style="background: #fdf8ed; padding: 2rem; border-radius: 4px; border-left: 4px solid var(--gold);">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1rem;">
+              ⚠️ Past Tense: Special Sound Changes
+            </h3>
+            <p style="color: var(--text); margin-bottom: 1.5rem; line-height: 1.7;">
+              Past tense is the one exception to the row-shift pattern. Instead, godan verbs use special endings based on the final sound:
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+              <div>
+                <strong>く → いた</strong><br>
+                <span class="jp">書く → 書いた</span>
+              </div>
+              <div>
+                <strong>ぐ → いだ</strong><br>
+                <span class="jp">泳ぐ → 泳いだ</span>
+              </div>
+              <div>
+                <strong>す → した</strong><br>
+                <span class="jp">話す → 話した</span>
+              </div>
+              <div>
+                <strong>つ/る/う → った</strong><br>
+                <span class="jp">買う → 買った</span>
+              </div>
+              <div>
+                <strong>む/ぶ/ぬ → んだ</strong><br>
+                <span class="jp">飲む → 飲んだ</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ICHIDAN VERBS -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--sage); margin-bottom: 1rem;">
+            Ichidan Verbs: The Simple Pattern
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Ichidan verbs are called "one-step" because the stem <strong>never changes</strong>. You simply drop る and add endings.
+          </p>
+
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="display: inline-block; background: var(--paper-warm); padding: 2rem 3rem; border-radius: 8px; border: 3px solid var(--sage);">
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--sage); margin-bottom: 1rem;">
+                The Formula
+              </div>
+              <div style="font-size: 1.75rem; line-height: 1.6;">
+                <span style="color: var(--text-light);">Stem</span> + 
+                <span style="color: var(--accent); text-decoration: line-through; margin: 0 0.5rem;">る</span> → 
+                <span style="color: var(--text-light); margin-left: 0.5rem;">Stem</span> + 
+                <span style="color: var(--sage); font-weight: 700; margin-left: 0.5rem;">ending</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #eef5ef; padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+              Example: <span class="jp">食べる</span> (taberu - to eat)
+            </h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: var(--sage);">
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Form</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Process</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Result</th>
+                </tr>
+              </thead>
+              <tbody style="font-size: 1rem;">
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Negative</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + ない</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べない</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Polite</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + ます</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べます</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Past</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + た</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べた</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Want to</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + たい</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べたい</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Potential</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + られる</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べられる</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Volitional</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">たべ + よう</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">食べよう</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--sage);">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Why It's Easy:</div>
+            <div style="color: var(--text); line-height: 1.7;">
+              With ichidan verbs, once you memorize the endings (ない, ます, た, たい, られる, よう), 
+              you can conjugate <strong>any</strong> ichidan verb. No row-shifting, no special rules, no exceptions!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SURU VERBS -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--paper); border: 1px solid rgba(0,0,0,0.08); padding: 2.5rem;">
+          <h2 style="font-size: 1.75rem; font-weight: 700; color: #7a5ba4; margin-bottom: 1rem;">
+            Suru Verbs: The Irregular Pattern
+          </h2>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Suru verbs are formed by adding <span class="jp">する</span> to a noun. They're irregular, but once you learn how <span class="jp">する</span> conjugates, you can apply it to all suru verbs.
+          </p>
+
+          <div style="background: #f3eef8; padding: 2rem; border-radius: 4px; margin-bottom: 2rem;">
+            <h3 style="font-weight: 600; color: var(--ink); margin-bottom: 1.5rem; text-align: center;">
+              Example: <span class="jp">勉強する</span> (benkyou suru - to study)
+            </h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr style="background: #7a5ba4;">
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Form</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">する becomes...</th>
+                  <th style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; color: var(--paper);">Result</th>
+                </tr>
+              </thead>
+              <tbody style="font-size: 1rem;">
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Negative</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">しない</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強しない</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Polite</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">します</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強します</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Past</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">した</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強した</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Want to</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">したい</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強したい</td>
+                </tr>
+                <tr style="background: var(--paper);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Potential</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">できる</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強できる</td>
+                </tr>
+                <tr style="background: var(--paper-warm);">
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;">Volitional</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem;" class="jp">しよう</td>
+                  <td style="border: 1px solid rgba(0,0,0,0.1); padding: 0.75rem; font-size: 1.25rem; font-weight: 700;" class="jp">勉強しよう</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid #7a5ba4;">
+            <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Special Note:</div>
+            <div style="color: var(--text); line-height: 1.7;">
+              Notice that the potential form uses <span class="jp">できる</span> instead of following the regular pattern. 
+              This is why suru verbs are considered "irregular" - they have their own special rules!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PUTTING IT ALL TOGETHER -->
+      <section style="margin-bottom: 3rem;">
+        <div style="background: var(--ink); padding: 3rem 2.5rem; border-radius: 4px; color: var(--paper);">
+          <h2 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+            Putting It All Together
+          </h2>
+          <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 2rem; text-align: center; color: rgba(255,255,255,0.8);">
+            Now that you understand the patterns, here's your strategy for success:
+          </p>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">1️⃣</div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Identify the Type</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                First, figure out if your verb is godan, ichidan, or suru
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">2️⃣</div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Apply the Pattern</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                Use the right conjugation method for that verb type
+              </div>
+            </div>
+
+            <div style="background: rgba(255,255,255,0.1); padding: 1.5rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.2);">
+              <div style="font-size: 2rem; margin-bottom: 0.75rem;">3️⃣</div>
+              <div style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Practice, Practice!</div>
+              <div style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                Use The Conjugator to drill until it becomes automatic
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CALL TO ACTION -->
+      <div style="text-align: center; margin-top: 3rem;">
+        <button 
+          class="btn btn-primary" 
+          onclick="showPage('conjugator')"
+          style="font-size: 1.15rem; padding: 1.25rem 2.5rem;"
+        >
+          Start Practicing with The Conjugator →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FORMS PAGE -->
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>
