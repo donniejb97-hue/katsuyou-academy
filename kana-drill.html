@@ -19,21 +19,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* --- Scoped fallbacks: guarantee the drill's right/wrong colors render
-       even if the global styles.css is missing these variables. A defined
-       --sage/--accent/--gold in styles.css will still win on :root; these
-       only fill gaps. --- */
-    .drill-page {
-      --sage: var(--sage, #7a9e7e);
-      --accent: var(--accent, #c45c4a);
-      --accent-soft: var(--accent-soft, #d4786a);
-      --gold: var(--gold, #c9a227);
-      --ink: var(--ink, #2b2b33);
-      --paper: var(--paper, #ffffff);
-      --paper-warm: var(--paper-warm, #f6f1ea);
-      --text: var(--text, #2b2b33);
-      --text-light: var(--text-light, #6b6b73);
-    }
     .drill-page { max-width: 720px; margin: 0 auto; padding: 2rem; }
     .drill-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
     .drill-scores { display: flex; gap: 0.75rem; align-items: stretch; }
@@ -130,7 +115,6 @@
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
         <a class="nav-link active" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
         <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
         <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
         <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
