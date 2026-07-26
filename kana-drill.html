@@ -59,6 +59,16 @@
     .drill-feedback.show { display: block; }
     .drill-feedback.good { background: rgba(122,158,126,0.15); border: 1px solid var(--sage); color: #3f5c42; }
     .drill-feedback.bad { background: rgba(196,92,74,0.1); border: 1px solid var(--accent-soft); color: #8a3d2f; }
+    .drill-feedback.warn { background: rgba(249,168,37,0.14); border: 1px solid #f9a825; color: #7a5a10; font-weight: 500; }
+    .drill-input.almost { border-color: #f9a825; animation: drill-shake 0.35s; }
+    @keyframes drill-shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .drill-input.almost { animation: none; }
+    }
     .drill-feedback .big { font-size: 1.6rem; margin-top: 0.25rem; }
     .drill-audio-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0.2rem 0.4rem; vertical-align: middle; }
 
@@ -305,6 +315,7 @@
       var sc = pickScript();
       state.current = { item: item, script: sc };
       state.answered = false;
+      state.retried = false;
 
       var fb = $('drill-feedback');
       fb.className = 'drill-feedback';
@@ -389,15 +400,66 @@
       showFeedback(right);
     }
 
+    // Edit distance for "almost there" detection
+    function levenshtein(a, b) {
+      if (a === b) return 0;
+      var m = a.length, n = b.length;
+      if (!m) return n;
+      if (!n) return m;
+      var row = [];
+      for (var j = 0; j <= n; j++) row[j] = j;
+      for (var i = 1; i <= m; i++) {
+        var prev = row[0];
+        row[0] = i;
+        for (var k = 1; k <= n; k++) {
+          var tmp = row[k];
+          row[k] = Math.min(
+            row[k] + 1,
+            row[k - 1] + 1,
+            prev + (a.charAt(i - 1) === b.charAt(k - 1) ? 0 : 1)
+          );
+          prev = tmp;
+        }
+      }
+      return row[n];
+    }
+
+    // "Almost" = one letter off from any accepted spelling.
+    // Single-letter answers (a, i, u, e, o, n) are excluded — one letter
+    // off from those is a different sound entirely, not a typo.
+    function isClose(val, item) {
+      var list = accepted(item);
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].length >= 2 && levenshtein(val, list[i]) === 1) return true;
+      }
+      return false;
+    }
+
     function checkDrillAnswer() {
       if (state.answered || state.mode !== 'kana2romaji') return;
       var input = $('drill-input');
       var val = input.value.trim().toLowerCase().replace(/\s+/g, '');
       if (!val) return;
-      state.answered = true;
       var item = state.current.item;
       var right = accepted(item).indexOf(val) !== -1;
+
+      // Almost there? Give one more shot before revealing.
+      if (!right && !state.retried && isClose(val, item)) {
+        state.retried = true;
+        input.classList.remove('almost');
+        void input.offsetWidth; // restart the shake animation
+        input.classList.add('almost');
+        var fb = $('drill-feedback');
+        fb.className = 'drill-feedback show warn';
+        fb.innerHTML = '⚠️ So close — check your spelling and try once more!';
+        input.select();
+        input.focus();
+        return;
+      }
+
+      state.answered = true;
       input.disabled = true;
+      input.classList.remove('almost');
       input.classList.add(right ? 'correct' : 'wrong');
       record(right);
       showFeedback(right);
@@ -535,6 +597,7 @@
       var input = $('drill-input');
       input.addEventListener('input', function () {
         if (!state.answered) $('drill-check').disabled = input.value.trim() === '';
+        input.classList.remove('almost');
       });
       input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
