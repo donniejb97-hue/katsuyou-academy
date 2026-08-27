@@ -79,11 +79,30 @@
     .drill-missed-chip .jp { font-size: 1.35rem; margin-right: 0.4rem; }
     .drill-missed-chip small { color: var(--text-light); font-style: italic; }
 
+    /* ---------- Cheat sheet modal ---------- */
+    .cheat-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
+    .cheat-overlay.show { display: flex; }
+    .cheat-box { background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.25); max-width: 560px; width: 100%; max-height: 88vh; overflow-y: auto; padding: 1.75rem 1.75rem 2rem; position: relative; }
+    .cheat-close { position: absolute; top: 0.75rem; right: 0.9rem; background: none; border: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--text-light); padding: 0.25rem; }
+    .cheat-close:hover { color: var(--accent); }
+    .cheat-title { font-size: 1.3rem; color: var(--ink); margin-bottom: 0.25rem; }
+    .cheat-hint { font-size: 0.8rem; color: var(--text-light); margin-bottom: 1.25rem; }
+    .cheat-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin: 1.25rem 0 0.5rem; }
+    .cheat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
+    .cheat-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cheat-cell { background: var(--paper-warm); border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 0.45rem 0.2rem; text-align: center; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .cheat-cell:hover { border-color: var(--accent-soft); transform: translateY(-1px); }
+    .cheat-cell.empty { background: none; border: none; cursor: default; }
+    .cheat-cell .kana { display: block; font-size: 1.45rem; color: var(--ink); line-height: 1.3; }
+    .cheat-cell .romaji { display: block; font-size: 0.68rem; color: var(--text-light); font-style: italic; }
+
     @media (max-width: 540px) {
       .drill-page { padding: 1.25rem; }
       .drill-question { font-size: 3.5rem; }
       .drill-question.romaji-q { font-size: 2.6rem; }
       .drill-choices { grid-template-columns: repeat(2, 1fr); }
+      .cheat-box { padding: 1.25rem 1rem 1.5rem; }
+      .cheat-cell .kana { font-size: 1.2rem; }
     }
   </style>
 </head>
@@ -158,6 +177,11 @@
           <button class="drill-chip set-chip" data-set="dakuten" onclick="toggleSet('dakuten')">Dakuten (25)</button>
           <button class="drill-chip set-chip" data-set="combos" onclick="toggleSet('combos')">Combos (33)</button>
         </div>
+        <div class="drill-control-row">
+          <span class="drill-control-label">Charts</span>
+          <button class="drill-chip" onclick="openCheatSheet('h')">ひらがな Cheat Sheet</button>
+          <button class="drill-chip" onclick="openCheatSheet('k')">カタカナ Cheat Sheet</button>
+        </div>
       </div>
 
       <div class="drill-card">
@@ -186,6 +210,16 @@
         <div class="drill-missed-list" id="drill-missed-list"></div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Kana Cheat Sheet Modal -->
+  <div id="cheat-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="cheat-title">
+    <div class="cheat-box">
+      <button class="cheat-close" onclick="closeCheatSheet()" aria-label="Close cheat sheet">×</button>
+      <h2 class="cheat-title" id="cheat-title"></h2>
+      <div class="cheat-hint">Tap any kana to hear its pronunciation 🔊</div>
+      <div id="cheat-content"></div>
     </div>
   </div>
 
@@ -524,6 +558,86 @@
     window.checkDrillAnswer = checkDrillAnswer;
     window.skipDrill = skipDrill;
 
+    // ---------- cheat sheet ----------
+    // Gojūon layout for the basic set so columns line up (a-i-u-e-o).
+    var GOJUON_ROWS = [
+      ['a','i','u','e','o'],
+      ['ka','ki','ku','ke','ko'],
+      ['sa','shi','su','se','so'],
+      ['ta','chi','tsu','te','to'],
+      ['na','ni','nu','ne','no'],
+      ['ha','hi','fu','he','ho'],
+      ['ma','mi','mu','me','mo'],
+      ['ya',null,'yu',null,'yo'],
+      ['ra','ri','ru','re','ro'],
+      ['wa',null,null,null,'wo'],
+      ['n',null,null,null,null]
+    ];
+
+    var BASIC_BY_ROMAJI = {};
+    KANA.basic.forEach(function (item) { BASIC_BY_ROMAJI[item.r] = item; });
+
+    function cheatCell(item, sc) {
+      if (!item) {
+        var gap = document.createElement('div');
+        gap.className = 'cheat-cell empty';
+        return gap;
+      }
+      var b = document.createElement('button');
+      b.className = 'cheat-cell';
+      b.title = 'Hear pronunciation';
+      b.innerHTML = '<span class="kana jp">' + (sc === 'h' ? item.h : item.k) + '</span>' +
+                    '<span class="romaji">' + item.r + '</span>';
+      b.onclick = function () { playAudio(item); };
+      return b;
+    }
+
+    function cheatSection(title, cols) {
+      var wrap = document.createElement('div');
+      var h = document.createElement('div');
+      h.className = 'cheat-section-title';
+      h.textContent = title;
+      var grid = document.createElement('div');
+      grid.className = 'cheat-grid' + (cols === 3 ? ' cols-3' : '');
+      wrap.appendChild(h);
+      wrap.appendChild(grid);
+      return { wrap: wrap, grid: grid };
+    }
+
+    window.openCheatSheet = function (sc) {
+      $('cheat-title').textContent = sc === 'h'
+        ? 'Hiragana ひらがな'
+        : 'Katakana カタカナ';
+
+      var content = $('cheat-content');
+      content.innerHTML = '';
+
+      // Basic — gojūon-aligned grid
+      var basic = cheatSection('Basic (46)', 5);
+      GOJUON_ROWS.forEach(function (row) {
+        row.forEach(function (r) {
+          basic.grid.appendChild(cheatCell(r ? BASIC_BY_ROMAJI[r] : null, sc));
+        });
+      });
+      content.appendChild(basic.wrap);
+
+      // Dakuten & handakuten — already in gojūon order, rows of 5
+      var dak = cheatSection('Dakuten & Handakuten (25)', 5);
+      KANA.dakuten.forEach(function (item) { dak.grid.appendChild(cheatCell(item, sc)); });
+      content.appendChild(dak.wrap);
+
+      // Combination kana — rows of 3 (ya / yu / yo)
+      var com = cheatSection('Combos (33)', 3);
+      KANA.combos.forEach(function (item) { com.grid.appendChild(cheatCell(item, sc)); });
+      content.appendChild(com.wrap);
+
+      $('cheat-overlay').classList.add('show');
+    };
+
+    window.closeCheatSheet = function () {
+      $('cheat-overlay').classList.remove('show');
+    };
+
     window.resetDrill = function () {
       state.correct = 0; state.total = 0; state.streak = 0;
       state.missed = {};
@@ -545,9 +659,15 @@
         }
       });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && state.answered && document.activeElement !== input) {
+        var cheatOpen = $('cheat-overlay').classList.contains('show');
+        if (e.key === 'Escape' && cheatOpen) { closeCheatSheet(); return; }
+        if (e.key === 'Enter' && state.answered && !cheatOpen && document.activeElement !== input) {
           newQuestion();
         }
+      });
+      // Click outside the cheat sheet box to close it
+      $('cheat-overlay').addEventListener('click', function (e) {
+        if (e.target === this) closeCheatSheet();
       });
       // The primary button doubles as Check / Next
       $('drill-check').addEventListener('click', function () {
