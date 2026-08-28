@@ -87,6 +87,8 @@
     .cheat-close:hover { color: var(--accent); }
     .cheat-title { font-size: 1.3rem; color: var(--ink); margin-bottom: 0.25rem; }
     .cheat-hint { font-size: 0.8rem; color: var(--text-light); margin-bottom: 1.25rem; }
+    .cheat-cell.current { background: rgba(196,92,74,0.14); border: 2px solid var(--accent); padding: calc(0.45rem - 1px) calc(0.2rem - 1px); }
+    .cheat-cell.current .kana { color: var(--accent); font-weight: 600; }
     .cheat-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin: 1.25rem 0 0.5rem; }
     .cheat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
     .cheat-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
@@ -179,8 +181,8 @@
         </div>
         <div class="drill-control-row">
           <span class="drill-control-label">Charts</span>
-          <button class="drill-chip" onclick="openCheatSheet('h')">ひらがな Cheat Sheet</button>
-          <button class="drill-chip" onclick="openCheatSheet('k')">カタカナ Cheat Sheet</button>
+          <button class="drill-chip" onclick="openCheatSheet('h')" title="Hold Alt+H to peek">ひらがな Cheat Sheet</button>
+          <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek">カタカナ Cheat Sheet</button>
         </div>
       </div>
 
@@ -218,7 +220,7 @@
     <div class="cheat-box">
       <button class="cheat-close" onclick="closeCheatSheet()" aria-label="Close cheat sheet">×</button>
       <h2 class="cheat-title" id="cheat-title"></h2>
-      <div class="cheat-hint">Tap any kana to hear its pronunciation 🔊</div>
+      <div class="cheat-hint">Tap any kana to hear its pronunciation 🔊 &nbsp;·&nbsp; Hold Alt+H / Alt+K to peek</div>
       <div id="cheat-content"></div>
     </div>
   </div>
@@ -577,6 +579,13 @@
     var BASIC_BY_ROMAJI = {};
     KANA.basic.forEach(function (item) { BASIC_BY_ROMAJI[item.r] = item; });
 
+    // Current drill kana is always highlighted in the cheat sheet
+    var lastCheatScript = 'h';
+
+    function isCurrentItem(item) {
+      return state.current && state.current.item.h === item.h;
+    }
+
     function cheatCell(item, sc) {
       if (!item) {
         var gap = document.createElement('div');
@@ -584,7 +593,7 @@
         return gap;
       }
       var b = document.createElement('button');
-      b.className = 'cheat-cell';
+      b.className = 'cheat-cell' + (isCurrentItem(item) ? ' current' : '');
       b.title = 'Hear pronunciation';
       b.innerHTML = '<span class="kana jp">' + (sc === 'h' ? item.h : item.k) + '</span>' +
                     '<span class="romaji">' + item.r + '</span>';
@@ -605,6 +614,7 @@
     }
 
     window.openCheatSheet = function (sc) {
+      lastCheatScript = sc;
       $('cheat-title').textContent = sc === 'h'
         ? 'Hiragana ひらがな'
         : 'Katakana カタカナ';
@@ -632,11 +642,50 @@
       content.appendChild(com.wrap);
 
       $('cheat-overlay').classList.add('show');
+
+      // Bring the highlighted kana into view
+      var cur = content.querySelector('.cheat-cell.current');
+      if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'center' });
     };
 
     window.closeCheatSheet = function () {
       $('cheat-overlay').classList.remove('show');
     };
+
+    // Alt+H / Alt+K — hold to peek at the cheat sheet, release to hide.
+    // Registered on window in the CAPTURE phase so no other script on the
+    // page can swallow the event first, and without a ctrlKey check so
+    // AltGr (which Windows reports as Ctrl+Alt) also works.
+    var cheatHeld = false; // opened via keyboard hold (vs. the buttons)
+
+    window.addEventListener('keydown', function (e) {
+      if (!e.altKey || e.metaKey) return;
+      var code = e.code || '';
+      var key = (e.key || '').toLowerCase();
+      var isH = code === 'KeyH' || key === 'h';
+      var isK = code === 'KeyK' || key === 'k';
+      if (!isH && !isK) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.repeat) return; // held keys re-fire keydown — open once
+      openCheatSheet(isH ? 'h' : 'k');
+      cheatHeld = true;
+    }, true);
+
+    window.addEventListener('keyup', function (e) {
+      if (!cheatHeld) return; // button-opened sheets stay until closed manually
+      var code = e.code || '';
+      var key = (e.key || '').toLowerCase();
+      if (code === 'KeyH' || code === 'KeyK' || key === 'h' || key === 'k' || e.key === 'Alt' || e.key === 'AltGraph') {
+        cheatHeld = false;
+        closeCheatSheet();
+      }
+    }, true);
+
+    // If focus leaves the page mid-hold, don't leave the sheet stuck open
+    window.addEventListener('blur', function () {
+      if (cheatHeld) { cheatHeld = false; closeCheatSheet(); }
+    });
 
     window.resetDrill = function () {
       state.correct = 0; state.total = 0; state.streak = 0;
