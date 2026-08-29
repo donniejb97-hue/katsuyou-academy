@@ -330,3 +330,252 @@ I18N_addText({
 "辞书形只用于亲近的朋友和家人。拿不准时就用 ます形。"
 ]
 });
+
+// batch 3 — ます section body, report modal, vocab categories
+I18N_addText({
+"Start practicing to see your statistics, mistake patterns, and personalized advice from Conju!": [
+"Fangen Sie an zu üben, um Ihre Statistiken, Fehlermuster und persönliche Tipps von Conju zu sehen!",
+"Commencez à pratiquer pour voir vos statistiques, vos erreurs récurrentes et les conseils personnalisés de Conju !",
+"开始练习后，即可查看您的统计数据、错误规律，以及来自 Conju 的个性化建议！"
+],
+"Start Practicing →": [
+"Jetzt üben →",
+"Commencer à pratiquer →",
+"开始练习 →"
+],
+"Download": [
+"Herunterladen",
+"Télécharger",
+"下载"
+],
+"noun": [
+"Substantiv",
+"nom",
+"名词"
+],
+"NOUN": [
+"SUBSTANTIV",
+"NOM",
+"名词"
+],
+"verb": [
+"Verb",
+"verbe",
+"动词"
+],
+"VERB": [
+"VERB",
+"VERBE",
+"动词"
+],
+"adjective": [
+"Adjektiv",
+"adjectif",
+"形容词"
+],
+"ADJECTIVE": [
+"ADJEKTIV",
+"ADJECTIF",
+"形容词"
+],
+"adverb": [
+"Adverb",
+"adverbe",
+"副词"
+],
+"ADVERB": [
+"ADVERB",
+"ADVERBE",
+"副词"
+],
+"particle": [
+"Partikel",
+"particule",
+"助词"
+],
+"PARTICLE": [
+"PARTIKEL",
+"PARTICULE",
+"助词"
+],
+"phrase": [
+"Wendung",
+"expression",
+"短语"
+],
+"PHRASE": [
+"WENDUNG",
+"EXPRESSION",
+"短语"
+],
+"pronoun": [
+"Pronomen",
+"pronom",
+"代词"
+],
+"PRONOUN": [
+"PRONOMEN",
+"PRONOM",
+"代词"
+],
+"number": [
+"Zahlwort",
+"numéral",
+"数词"
+],
+"NUMBER": [
+"ZAHLWORT",
+"NUMÉRAL",
+"数词"
+],
+"counter": [
+"Zählwort",
+"spécificatif",
+"量词"
+],
+"COUNTER": [
+"ZÄHLWORT",
+"SPÉCIFICATIF",
+"量词"
+],
+"expression": [
+"Ausdruck",
+"expression",
+"表达"
+],
+"EXPRESSION": [
+"AUSDRUCK",
+"EXPRESSION",
+"表达"
+],
+"conjunction": [
+"Konjunktion",
+"conjonction",
+"连词"
+],
+"CONJUNCTION": [
+"KONJUNKTION",
+"CONJONCTION",
+"连词"
+],
+"interjection": [
+"Interjektion",
+"interjection",
+"感叹词"
+],
+"INTERJECTION": [
+"INTERJEKTION",
+"INTERJECTION",
+"感叹词"
+],
+"The ます form is technically called the": [
+"Die ます-Form heißt fachsprachlich",
+"La forme en ます s'appelle techniquement",
+"ます形在术语上称为"
+],
+"polite present/future form": [
+"höfliche Gegenwarts-/Zukunftsform",
+"forme polie présent/futur",
+"敬体现在/将来形"
+],
+". Despite its name, it doesn't just indicate present tense—it can express:": [
+". Trotz des Namens bezeichnet sie nicht nur die Gegenwart — sie kann ausdrücken:",
+". Malgré son nom, elle n'indique pas seulement le présent : elle peut exprimer :",
+"。尽管名字如此，它并不只表示现在时——它还可以表达："
+],
+"Habitual actions:": [
+"Gewohnheiten:",
+"Actions habituelles :",
+"习惯性动作："
+],
+"Future actions:": [
+"Zukünftige Handlungen:",
+"Actions futures :",
+"将来的动作："
+],
+"General truths:": [
+"Allgemeingültige Aussagen:",
+"Vérités générales :",
+"普遍事实："
+],
+"Scheduled events:": [
+"Geplante Ereignisse:",
+"Événements programmés :",
+"既定安排："
+],
+"(I study every day)": [
+"(Ich lerne jeden Tag)",
+"(J'étudie tous les jours)",
+"（我每天学习）"
+],
+"(I will go tomorrow)": [
+"(Ich gehe morgen)",
+"(J'irai demain)",
+"（我明天去）"
+],
+"(The sun rises from the east)": [
+"(Die Sonne geht im Osten auf)",
+"(Le soleil se lève à l'est)",
+"（太阳从东方升起）"
+],
+"(The meeting starts at 3:00)": [
+"(Die Besprechung beginnt um 3 Uhr)",
+"(La réunion commence à 3 h)",
+"（会议 3 点开始）"
+],
+"Key Point:": [
+"Kernpunkt:",
+"Point clé :",
+"要点："
+],
+"Japanese doesn't distinguish between present and future tense the way English does. Context determines whether ます refers to now or later.": [
+"Das Japanische unterscheidet nicht wie das Englische zwischen Gegenwart und Zukunft. Der Kontext entscheidet, ob ます sich auf jetzt oder später bezieht.",
+"Le japonais ne distingue pas présent et futur comme l'anglais. C'est le contexte qui détermine si ます renvoie à maintenant ou plus tard.",
+"日语不像英语那样区分现在时和将来时。ます 指的是现在还是稍后，由语境决定。"
+],
+"How to Form ます — Step by Step": [
+"ます bilden — Schritt für Schritt",
+"Former ます — étape par étape",
+"如何构成 ます——分步讲解"
+],
+"Explanation": [
+"Erklärung",
+"Explication",
+"说明"
+],
+"Change final う-row sound to い-row + ます": [
+"Endlaut der う-Reihe zur い-Reihe wechseln + ます",
+"Changer le son final de la rangée う vers la rangée い + ます",
+"把词尾的う段音变为い段 + ます"
+],
+"Drop る + ます": [
+"る weglassen + ます",
+"Enlever る + ます",
+"去掉 る + ます"
+],
+"Remove る, add ます": [
+"る entfernen, ます anhängen",
+"Enlever る, ajouter ます",
+"去掉 る，加 ます"
+],
+"Irregular conjugation": [
+"Unregelmäßige Konjugation",
+"Conjugaison irrégulière",
+"不规则变形"
+],
+"する part becomes します": [
+"する wird zu します",
+"する devient します",
+"する 部分变为 します"
+],
+"Understanding Godan Conjugation:": [
+"Die Godan-Konjugation verstehen:",
+"Comprendre la conjugaison godan :",
+"理解五段变形："
+],
+"Godan verbs shift from the う-row to the い-row of the same consonant column. Think of it as moving up one row in the hiragana chart:": [
+"Godan-Verben wechseln von der う-Reihe zur い-Reihe derselben Konsonantenspalte. Stellen Sie sich vor, Sie gehen in der Hiragana-Tabelle eine Reihe nach oben:",
+"Les verbes godan passent de la rangée う à la rangée い de la même colonne de consonnes. Imaginez que vous montez d'une rangée dans le tableau des hiragana :",
+"五段动词从同一辅音列的う段移到い段。可以理解为在平假名表中向上移动一段："
+]
+});

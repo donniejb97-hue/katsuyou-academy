@@ -58,7 +58,7 @@ var I18N = {
     kd_title:'Kanji Drill', mode_k2w:'Kanji → Keyword', mode_w2k:'Keyword → Kanji',
     range:'Range', kd_placeholder:'Type the keyword in English…', kd_missed:'📝 Missed this session',
     // ---- vocabulary ----
-    show_en_first:'Show English First', show_kanji:'Show Kanji', show_katakana:'Show Katakana',
+    show_en_first:'Show Translation First', show_kanji:'Show Kanji', show_katakana:'Show Katakana',
     prev_card:'← Previous', next_card:'Next →', shuffle:'🔀 Shuffle',
     cards_studied:'Cards Studied', total_cards:'Total Cards',
     // ---- kanji browser ----
@@ -154,7 +154,7 @@ var I18N = {
     toolkit_sub:'Sechs miteinander verbundene Werkzeuge für die Grundlagen des Japanischen',
     kd_title:'Kanji-Drill', mode_k2w:'Kanji → Schlüsselwort', mode_w2k:'Schlüsselwort → Kanji',
     range:'Bereich', kd_placeholder:'Schlüsselwort auf Englisch eingeben …', kd_missed:'📝 In dieser Runde verfehlt',
-    show_en_first:'Zuerst Englisch zeigen', show_kanji:'Kanji zeigen', show_katakana:'Katakana zeigen',
+    show_en_first:'Zuerst Übersetzung zeigen', show_kanji:'Kanji zeigen', show_katakana:'Katakana zeigen',
     prev_card:'← Zurück', next_card:'Weiter →', shuffle:'🔀 Mischen',
     cards_studied:'Gelernte Karten', total_cards:'Karten gesamt',
     kanji_sub:'Üben Sie 2.300 Kanji aus dem Kodansha Learner\u2019s Course',
@@ -244,7 +244,7 @@ var I18N = {
     toolkit_sub:'Six outils complémentaires couvrant les bases du japonais',
     kd_title:'Drill Kanji', mode_k2w:'Kanji → mot-clé', mode_w2k:'Mot-clé → kanji',
     range:'Plage', kd_placeholder:'Tapez le mot-clé en anglais…', kd_missed:'📝 Manqués cette session',
-    show_en_first:"Afficher l'anglais d'abord", show_kanji:'Afficher les kanji', show_katakana:'Afficher les katakana',
+    show_en_first:'Afficher la traduction d\u2019abord', show_kanji:'Afficher les kanji', show_katakana:'Afficher les katakana',
     prev_card:'← Précédent', next_card:'Suivant →', shuffle:'🔀 Mélanger',
     cards_studied:'Cartes étudiées', total_cards:'Total des cartes',
     kanji_sub:'Pratiquez 2 300 kanji du Kodansha Learner\u2019s Course',
@@ -334,7 +334,7 @@ var I18N = {
     toolkit_sub:'六个相互衔接的工具，涵盖日语基础',
     kd_title:'汉字练习', mode_k2w:'汉字 → 关键词', mode_w2k:'关键词 → 汉字',
     range:'范围', kd_placeholder:'输入英文关键词…', kd_missed:'📝 本次答错的汉字',
-    show_en_first:'先显示英文', show_kanji:'显示汉字', show_katakana:'显示片假名',
+    show_en_first:'先显示译文', show_kanji:'显示汉字', show_katakana:'显示片假名',
     prev_card:'← 上一个', next_card:'下一个 →', shuffle:'🔀 随机',
     cards_studied:'已学卡片', total_cards:'卡片总数',
     kanji_sub:'练习《Kodansha Learner\u2019s Course》中的 2300 个汉字',
@@ -1608,5 +1608,139 @@ I18N_addText({
 "Wie lautet das Schlüsselwort?",
 "Quel est le mot-clé ?",
 "关键词是什么？"
+]
+});
+
+// site-wide: practice report + vocabulary card categories
+I18N_addText({
+"Start practicing to see your statistics, mistake patterns, and personalized advice from Conju!": [
+"Fangen Sie an zu üben, um Ihre Statistiken, Fehlermuster und persönliche Tipps von Conju zu sehen!",
+"Commencez à pratiquer pour voir vos statistiques, vos erreurs récurrentes et les conseils personnalisés de Conju !",
+"开始练习后，即可查看您的统计数据、错误规律，以及来自 Conju 的个性化建议！"
+],
+"Start Practicing →": [
+"Jetzt üben →",
+"Commencer à pratiquer →",
+"开始练习 →"
+],
+"noun": [
+"Substantiv",
+"nom",
+"名词"
+],
+"NOUN": [
+"SUBSTANTIV",
+"NOM",
+"名词"
+],
+"verb": [
+"Verb",
+"verbe",
+"动词"
+],
+"VERB": [
+"VERB",
+"VERBE",
+"动词"
+],
+"adjective": [
+"Adjektiv",
+"adjectif",
+"形容词"
+],
+"ADJECTIVE": [
+"ADJEKTIV",
+"ADJECTIF",
+"形容词"
+],
+"adverb": [
+"Adverb",
+"adverbe",
+"副词"
+],
+"ADVERB": [
+"ADVERB",
+"ADVERBE",
+"副词"
+],
+"particle": [
+"Partikel",
+"particule",
+"助词"
+],
+"PARTICLE": [
+"PARTIKEL",
+"PARTICULE",
+"助词"
+],
+"phrase": [
+"Wendung",
+"expression",
+"短语"
+],
+"PHRASE": [
+"WENDUNG",
+"EXPRESSION",
+"短语"
+],
+"pronoun": [
+"Pronomen",
+"pronom",
+"代词"
+],
+"PRONOUN": [
+"PRONOMEN",
+"PRONOM",
+"代词"
+],
+"number": [
+"Zahlwort",
+"numéral",
+"数词"
+],
+"NUMBER": [
+"ZAHLWORT",
+"NUMÉRAL",
+"数词"
+],
+"counter": [
+"Zählwort",
+"spécificatif",
+"量词"
+],
+"COUNTER": [
+"ZÄHLWORT",
+"SPÉCIFICATIF",
+"量词"
+],
+"expression": [
+"Ausdruck",
+"expression",
+"表达"
+],
+"EXPRESSION": [
+"AUSDRUCK",
+"EXPRESSION",
+"表达"
+],
+"conjunction": [
+"Konjunktion",
+"conjonction",
+"连词"
+],
+"CONJUNCTION": [
+"KONJUNKTION",
+"CONJONCTION",
+"连词"
+],
+"interjection": [
+"Interjektion",
+"interjection",
+"感叹词"
+],
+"INTERJECTION": [
+"INTERJEKTION",
+"INTERJECTION",
+"感叹词"
 ]
 });
