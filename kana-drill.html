@@ -78,6 +78,11 @@
     .drill-missed-chip { background: var(--paper-warm); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 0.4rem 0.8rem; font-size: 1rem; cursor: pointer; }
     .drill-missed-chip .jp { font-size: 1.35rem; margin-right: 0.4rem; }
     .drill-missed-chip small { color: var(--text-light); font-style: italic; }
+    .drill-missed-chip .miss-count { display: inline-block; margin-left: 0.5rem; padding: 0.05rem 0.4rem;
+      border-radius: 999px; background: rgba(0,0,0,0.08); color: var(--text-light);
+      font-size: 0.78rem; font-weight: 700; font-style: normal; vertical-align: middle; }
+    .drill-missed-chip.hot { border-color: var(--accent); background: rgba(196,92,74,0.08); }
+    .drill-missed-chip.hot .miss-count { background: var(--accent); color: #fff; }
 
     /* ---------- Language selector ---------- */
     .lang-select { margin-left: 0.75rem; background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.35); border-radius: 6px; padding: 0.2rem 0.35rem; font-family: inherit; font-size: 0.8rem; cursor: pointer; }
@@ -243,12 +248,12 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
 
-  <script src="i18n.js"></script>
 
   <script>
   // ==========================================================================
@@ -485,7 +490,9 @@
       } else {
         state.streak = 0;
         var item = state.current.item;
-        state.missed[item.h] = item;
+        // track how many times each kana has been missed this session
+        var prev = state.missed[item.h];
+        state.missed[item.h] = { item: item, count: prev ? prev.count + 1 : 1 };
         renderMissed();
       }
       renderScores();
@@ -527,12 +534,23 @@
       box.className = 'drill-missed show';
       var list = $('drill-missed-list');
       list.innerHTML = '';
+      // worst first, so the kana needing most practice sit at the top
+      keys.sort(function (a, b) {
+        var d = state.missed[b].count - state.missed[a].count;
+        return d !== 0 ? d : a.localeCompare(b);
+      });
       keys.forEach(function (h) {
-        var item = state.missed[h];
+        var rec = state.missed[h];
+        var item = rec.item;
         var chip = document.createElement('button');
-        chip.className = 'drill-missed-chip';
+        chip.className = 'drill-missed-chip' + (rec.count >= 3 ? ' hot' : '');
         chip.title = t('click_hear');
-        chip.innerHTML = '<span class="jp">' + item.h + '・' + item.k + '</span><small>' + item.r + '</small>';
+        // no badge on a single miss — it only appears once it's a repeat problem
+        var badge = rec.count > 1
+          ? '<span class="miss-count" aria-label="' + rec.count + '">×' + rec.count + '</span>'
+          : '';
+        chip.innerHTML = '<span class="jp">' + item.h + '・' + item.k + '</span>' +
+          '<small>' + item.r + '</small>' + badge;
         chip.onclick = function () { playAudio(item); };
         list.appendChild(chip);
       });
