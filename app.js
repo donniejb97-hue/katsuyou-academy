@@ -1352,7 +1352,7 @@ ${recentMistakes || 'none'}
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        prompt: prompt,
+        prompt: prompt + (window.KA_aiLangSuffix ? window.KA_aiLangSuffix() : ''),
         maxTokens: 3000  // Longer report needs more tokens
       })
     });
@@ -2679,7 +2679,7 @@ Format: Use steps or bullet points.`;
     const response = await fetch(VERCEL_BACKEND_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: prompt, maxTokens: 300 })
+      body: JSON.stringify({ prompt: prompt + (window.KA_aiLangSuffix ? window.KA_aiLangSuffix() : ''), maxTokens: 300 })
     });
 
     if (!response.ok) {
@@ -2992,7 +2992,7 @@ Format: Plain text with HTML bold tags for the form name. No extra formatting.`;
     const response = await fetch(VERCEL_BACKEND_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: prompt, maxTokens: 200 })
+      body: JSON.stringify({ prompt: prompt + (window.KA_aiLangSuffix ? window.KA_aiLangSuffix() : ''), maxTokens: 200 })
     });
 
     if (!response.ok) {
@@ -3070,7 +3070,8 @@ function generateNewQuestionWithAI() {
     
     // Get phrase prompt
     const phraseTemplate = currentVerb.form.templates.find(t => t.type === 'phrase');
-    const phraseText = phraseTemplate ? phraseTemplate.text.replace('{meaning}', currentVerb.meaning.replace('to ', '')) : '';
+    const phraseText = (window.KA_phrase && window.KA_phrase(currentVerb.form.key, currentVerb.meaning))
+      || (phraseTemplate ? phraseTemplate.text.replace('{meaning}', currentVerb.meaning.replace('to ', '')) : '');
     
     // Display both examples AND phrase
     promptFormDiv.innerHTML = smartExamples + (phraseText ? '<br><span style="font-size: 1rem; color: var(--accent); margin-top: 0.5rem; display: block;">' + phraseText + '</span>' : '');
@@ -3078,7 +3079,8 @@ function generateNewQuestionWithAI() {
   
   document.getElementById('verb-kanji').textContent = currentVerb.kanji;
   document.getElementById('verb-hiragana').textContent = currentVerb.hiragana;
-  document.getElementById('verb-meaning').textContent = currentVerb.meaning;
+  document.getElementById('verb-meaning').textContent =
+    (window.KA_meaning ? window.KA_meaning(currentVerb.meaning) : currentVerb.meaning);
   
   document.getElementById('answer-input').value = '';
   document.getElementById('answer-input').disabled = false;
@@ -3100,6 +3102,30 @@ function generateNewQuestionWithAI() {
   
   document.getElementById('answer-input').focus();
 }
+
+// Re-render the current question's localized parts when the language changes.
+window.refreshConjugatorI18n = function () {
+  if (typeof currentVerb === 'undefined' || !currentVerb) return;
+  var mEl = document.getElementById('verb-meaning');
+  if (mEl) mEl.textContent = (window.KA_meaning ? window.KA_meaning(currentVerb.meaning) : currentVerb.meaning);
+  var inTypeQuiz = (typeof isTypeIdentificationQuiz !== 'undefined' && isTypeIdentificationQuiz);
+  var typeEl = document.getElementById('verb-type');
+  // never reveal the type while the type-identification quiz is asking for it
+  if (typeEl && currentVerb.type && !inTypeQuiz) {
+    typeEl.textContent =
+      currentVerb.type === 'godan' ? 'Godan Verb' :
+      currentVerb.type === 'ichidan' ? 'Ichidan Verb' :
+      currentVerb.type === 'irregular' ? 'Irregular Verb' : 'Suru Verb';
+  }
+  var promptDiv = document.getElementById('prompt-form');
+  if (promptDiv && currentVerb.form && !inTypeQuiz) {
+    var examples = generateSmartExamples(currentVerb.form.key, currentVerb.type);
+    var tpl = currentVerb.form.templates.find(function (t) { return t.type === 'phrase'; });
+    var phrase = (window.KA_phrase && window.KA_phrase(currentVerb.form.key, currentVerb.meaning))
+      || (tpl ? tpl.text.replace('{meaning}', currentVerb.meaning.replace('to ', '')) : '');
+    promptDiv.innerHTML = examples + (phrase ? '<br><span style="font-size: 1rem; color: var(--accent); margin-top: 0.5rem; display: block;">' + phrase + '</span>' : '');
+  }
+};
 
 // Wrapper function with standard name
 function generateNewQuestion() {
@@ -3123,7 +3149,8 @@ function generateNewQuestion() {
           currentVerb.type === 'ichidan' ? 'Ichidan Verb' : 
           currentVerb.type === 'irregular' ? 'Irregular Verb' : 'Suru Verb';
         
-        let promptText = currentPrompt.text.replace('{meaning}', currentVerb.meaning.replace('to ', ''));
+        let promptText = (window.KA_phrase && window.KA_phrase(currentVerb.form.key, currentVerb.meaning))
+          || currentPrompt.text.replace('{meaning}', currentVerb.meaning.replace('to ', ''));
         document.getElementById('prompt-form').innerHTML = promptText;
         
         // Reset UI for conjugation

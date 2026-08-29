@@ -29,21 +29,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link active" data-page="about" href="/about">Contact</a>
+        <a class="nav-link active" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -53,12 +59,12 @@
       
       <!-- Page Header -->
       <div class="page-header" style="text-align: center; margin-bottom: 2rem;">
-        <h1 class="page-title" style="font-size: 1.75rem; font-weight: 600; color: var(--accent);">
+        <h1 class="page-title" style="font-size: 1.75rem; font-weight: 600; color: var(--accent);" data-i18n="get_in_touch">
           Get in Touch
         </h1>
         <p style="margin-top: 1.5rem; font-style: italic; color: var(--text-light); font-size: 1.1rem;">
           <span class="jp" style="font-size: 1.25rem; display: block; margin-bottom: 0.5rem;">千里の道も一歩から</span>
-          <span style="font-size: 0.95rem; opacity: 0.8;">"A journey of a thousand miles begins with a single step."</span>
+          <span style="font-size: 0.95rem; opacity: 0.8;" data-i18n="proverb_tr">"A journey of a thousand miles begins with a single step."</span>
         </p>
       </div>
 
@@ -90,15 +96,11 @@
       <!-- About & Contact Section -->
       <section style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border-radius: 12px; padding: 2.5rem; margin-bottom: 2rem;">
         <div style="color: rgba(255,255,255,0.85); line-height: 1.9; font-size: 1.05rem; margin-bottom: 2rem;">
-          <p style="margin-bottom: 1.25rem;">
-            Hi, I'm <strong style="color: #fff;">Brandon</strong>. I built this site because I wanted a clean, focused place to study Japanese without ads or distractions. Everything here is free and always will be.
-          </p>
-          <p style="margin: 0;">
-            This is an ongoing project, and your feedback helps make it better. If you run into any bugs, notice incorrect information, have ideas for new features, or just want to share your thoughts — please reach out. I genuinely appreciate hearing from people who use the site, whether it's a quick note or detailed feedback.
-          </p>
+          <p style="margin-bottom: 1.25rem;" data-i18n-html="about_p1">Hi, I'm <strong style="color: #fff;">Brandon</strong>. I built this site because I wanted a clean, focused place to study Japanese without ads or distractions. Everything here is free and always will be.</p>
+          <p style="margin: 0;" data-i18n-html="about_p2">This is an ongoing project, and your feedback helps make it better. If you run into any bugs, notice incorrect information, have ideas for new features, or just want to share your thoughts — please reach out. I genuinely appreciate hearing from people who use the site, whether it's a quick note or detailed feedback.</p>
         </div>
         
-        <h2 style="color: #6b9ebb; font-size: 1.3rem; margin-bottom: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+        <h2 style="color: #6b9ebb; font-size: 1.3rem; margin-bottom: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);" data-i18n="send_message_h">
           Send a Message
         </h2>
         
@@ -110,7 +112,7 @@
           
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
             <div>
-              <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Your Name</label>
+              <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;" data-i18n="your_name">Your Name</label>
               <input type="text" name="name" placeholder="Name" required style="
                 width: 100%;
                 padding: 0.75rem 1rem;
@@ -123,7 +125,7 @@
               ">
             </div>
             <div>
-              <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Your Email</label>
+              <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;" data-i18n="your_email">Your Email</label>
               <input type="email" name="email" placeholder="email@example.com" required style="
                 width: 100%;
                 padding: 0.75rem 1rem;
@@ -138,7 +140,7 @@
           </div>
           
           <div>
-            <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Subject</label>
+            <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;" data-i18n="subject">Subject</label>
             <select name="subject_type" style="
               width: 100%;
               padding: 0.75rem 1rem;
@@ -150,17 +152,17 @@
               box-sizing: border-box;
               cursor: pointer;
             ">
-              <option value="General Question" style="background: #1a1a2e;">General Question</option>
-              <option value="Bug Report" style="background: #1a1a2e;">Bug Report</option>
-              <option value="Feature Request" style="background: #1a1a2e;">Feature Request</option>
-              <option value="Content Correction" style="background: #1a1a2e;">Content Correction</option>
-              <option value="Other" style="background: #1a1a2e;">Other</option>
+              <option value="General Question" style="background: #1a1a2e;" data-i18n="opt_general">General Question</option>
+              <option value="Bug Report" style="background: #1a1a2e;" data-i18n="opt_bug">Bug Report</option>
+              <option value="Feature Request" style="background: #1a1a2e;" data-i18n="opt_feature">Feature Request</option>
+              <option value="Content Correction" style="background: #1a1a2e;" data-i18n="opt_correction">Content Correction</option>
+              <option value="Other" style="background: #1a1a2e;" data-i18n="opt_other">Other</option>
             </select>
           </div>
           
           <div>
-            <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;">Message</label>
-            <textarea name="message" rows="5" placeholder="Your message..." required style="
+            <label style="display: block; color: rgba(255,255,255,0.7); font-size: 0.85rem; margin-bottom: 0.5rem;" data-i18n="message">Message</label>
+            <textarea name="message" rows="5" placeholder="Your message..." data-i18n-placeholder="msg_placeholder" required style="
               width: 100%;
               padding: 0.75rem 1rem;
               background: rgba(255,255,255,0.05);
@@ -185,13 +187,13 @@
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
             align-self: flex-start;
-          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(212,120,106,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(212,120,106,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';" data-i18n="send_btn">
             Send Message
           </button>
         </form>
         
         <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin-top: 1.5rem;">
-          Or email directly: <a href="mailto:support@katsuyōacademy.com" style="color: #6b9ebb; text-decoration: none;">support@katsuyōacademy.com</a>
+          <span data-i18n="or_email">Or email directly:</span> <a href="mailto:support@katsuyōacademy.com" style="color: #6b9ebb; text-decoration: none;">support@katsuyōacademy.com</a>
         </p>
       </section>
 
@@ -215,6 +217,8 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
