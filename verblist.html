@@ -29,21 +29,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" data-i18n="nav_home" href="/">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link active" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" data-i18n="nav_kana" href="/kana">Kana</a>
+        <a class="nav-link" data-page="learn" data-i18n="nav_learn" href="/learn">Learn</a>
+        <a class="nav-link" data-page="forms" data-i18n="nav_forms" href="/forms">Forms</a>
+        <a class="nav-link active" data-page="verblist" data-i18n="nav_verbs" href="/verblist">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" data-i18n="nav_conjugator" href="/conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" data-i18n="nav_kana_drill" href="/kana-drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" data-i18n="nav_kanji_drill" href="/kanji-drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" data-i18n="nav_dates" href="/datedojo">Dates</a>
+        <a class="nav-link" data-page="vocabulary" data-i18n="nav_vocab" href="/vocabulary">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" data-i18n="nav_kanji" href="/kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" data-i18n="nav_contact" href="/about">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -97,7 +103,7 @@
             <input 
               type="text" 
               id="verb-search" 
-              placeholder="Search by kanji, hiragana, romaji, or meaning..." 
+              data-i18n-placeholder="vl_search" placeholder="Search by kanji, hiragana, romaji, or meaning..." 
               oninput="filterVerbs()"
               style="width: 100%; padding: 1rem 1rem 1rem 3rem; font-size: 1rem; border: 2px solid #e5e5e0; border-radius: 8px; font-family: inherit; transition: border-color 0.2s; background: white;"
             >
@@ -224,6 +230,9 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
+  <script src="verblist.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>

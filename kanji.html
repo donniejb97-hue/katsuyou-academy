@@ -29,21 +29,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link active" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link active" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -647,17 +653,17 @@
           <span class="kanji-japanese-title jp">漢字</span>
           <span class="kanji-romaji-title">Kanji Flashcards</span>
         </h1>
-        <p class="kanji-subtitle">Practice 2,300 Kanji from the Kodansha Learner's Course</p>
+        <p class="kanji-subtitle" data-i18n="kanji_sub">Practice 2,300 Kanji</p>
       
         <a href="/kanji-drill" style="display: inline-block; margin-top: 1rem; background: linear-gradient(135deg, #d4786a 0%, #c96b5d 100%); color: #fff; text-decoration: none; padding: 0.75rem 1.6rem; border-radius: 8px; font-weight: 600;">🎯 Quiz yourself — Kanji Drill →</a>
       </div>
       
       <!-- Level Filters -->
       <div class="kanji-filters">
-        <button class="kanji-filter-btn active" onclick="filterKanjiLevel('all')">All (2300)</button>
-        <button class="kanji-filter-btn" onclick="filterKanjiLevel('beginner')">Beginner (1-500)</button>
-        <button class="kanji-filter-btn" onclick="filterKanjiLevel('intermediate')">Intermediate (501-1200)</button>
-        <button class="kanji-filter-btn" onclick="filterKanjiLevel('advanced')">Advanced (1201-2300)</button>
+        <button class="kanji-filter-btn active" onclick="filterKanjiLevel('all')" data-i18n="filter_all">All (2300)</button>
+        <button class="kanji-filter-btn" onclick="filterKanjiLevel('beginner')" data-i18n="filter_beginner">Beginner (1-500)</button>
+        <button class="kanji-filter-btn" onclick="filterKanjiLevel('intermediate')" data-i18n="filter_intermediate">Intermediate (501-1200)</button>
+        <button class="kanji-filter-btn" onclick="filterKanjiLevel('advanced')" data-i18n="filter_advanced">Advanced (1201-2300)</button>
       </div>
       
       <!-- Flashcard Area -->
@@ -682,11 +688,11 @@
                 <div class="kanji-keyword" id="kanji-keyword">SUN ・ DAY ・ JAPAN</div>
                 <div class="kanji-readings">
                   <div class="kanji-reading-group">
-                    <div class="kanji-reading-label">On'yomi</div>
+                    <div class="kanji-reading-label" data-i18n="onyomi">On'yomi</div>
                     <div class="kanji-onyomi jp" id="kanji-onyomi">ニチ, ジツ</div>
                   </div>
                   <div class="kanji-reading-group">
-                    <div class="kanji-reading-label">Kun'yomi</div>
+                    <div class="kanji-reading-label" data-i18n="kunyomi">Kun'yomi</div>
                     <div class="kanji-kunyomi jp" id="kanji-kunyomi">ひ, -び, -か</div>
                   </div>
                 </div>
@@ -704,25 +710,25 @@
       
       <!-- Navigation -->
       <div class="kanji-nav">
-        <button class="kanji-btn" id="kanji-prev-btn" onclick="prevKanjiCard()">◀ Previous</button>
+        <button class="kanji-btn" id="kanji-prev-btn" onclick="prevKanjiCard()" data-i18n="kanji_prev">◀ Previous</button>
         <span class="kanji-progress" id="kanji-progress">1 / 2300</span>
-        <button class="kanji-btn" id="kanji-next-btn" onclick="nextKanjiCard()">Next ▶</button>
+        <button class="kanji-btn" id="kanji-next-btn" onclick="nextKanjiCard()" data-i18n="kanji_next">Next ▶</button>
       </div>
       
       <div class="kanji-nav">
-        <button class="kanji-btn kanji-shuffle-btn" onclick="shuffleKanjiCards()">🔀 Shuffle</button>
-        <button class="kanji-btn kanji-goto-btn" onclick="showKanjiGotoModal()">📍 Go To KLC #</button>
+        <button class="kanji-btn kanji-shuffle-btn" onclick="shuffleKanjiCards()" data-i18n="shuffle">🔀 Shuffle</button>
+        <button class="kanji-btn kanji-goto-btn" onclick="showKanjiGotoModal()" data-i18n="goto_klc">📍 Go To KLC #</button>
       </div>
       
       <!-- Stats -->
       <div class="kanji-stats">
         <div class="kanji-stat">
           <div class="kanji-stat-value" id="kanji-cards-studied">0</div>
-          <div class="kanji-stat-label">Cards Studied</div>
+          <div class="kanji-stat-label" data-i18n="cards_studied">Cards Studied</div>
         </div>
         <div class="kanji-stat">
           <div class="kanji-stat-value" id="kanji-total-cards">2300</div>
-          <div class="kanji-stat-label">Total Cards</div>
+          <div class="kanji-stat-label" data-i18n="total_cards">Total Cards</div>
         </div>
       </div>
     </div>
@@ -731,10 +737,10 @@
     <div class="kanji-modal" id="kanji-goto-modal">
       <div class="kanji-modal-content">
         <div class="kanji-modal-title">Go to KLC Number</div>
-        <input type="number" class="kanji-modal-input" id="kanji-goto-input" min="1" max="2300" placeholder="Enter 1-2300">
+        <input type="number" class="kanji-modal-input" id="kanji-goto-input" min="1" max="2300" placeholder="Enter 1-2300" data-i18n-placeholder="goto_placeholder">
         <div class="kanji-modal-buttons">
-          <button class="kanji-modal-btn kanji-modal-cancel" onclick="hideKanjiGotoModal()">Cancel</button>
-          <button class="kanji-modal-btn kanji-modal-go" onclick="gotoKanjiCard()">Go</button>
+          <button class="kanji-modal-btn kanji-modal-cancel" onclick="hideKanjiGotoModal()" data-i18n="cancel">Cancel</button>
+          <button class="kanji-modal-btn kanji-modal-go" onclick="gotoKanjiCard()" data-i18n="go">Go</button>
         </div>
       </div>
     </div>
@@ -750,6 +756,8 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="kanji-data.js"></script>
   <script src="ai.js"></script>

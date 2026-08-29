@@ -112,21 +112,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link active" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link active" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -136,20 +142,20 @@
 
       <div class="drill-header">
         <div>
-          <div class="page-tag">Interactive Practice</div>
-          <h1 class="page-title" style="font-size: 2rem;">Kanji Drill</h1>
+          <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
+          <h1 class="page-title" style="font-size: 2rem;" data-i18n="kd_title">Kanji Drill</h1>
         </div>
         <div class="drill-scores">
           <div class="drill-score-box">
-            <div class="drill-score-label">Score</div>
+            <div class="drill-score-label" data-i18n="score">Score</div>
             <div class="drill-score-value"><span id="drill-correct">0</span>/<span id="drill-total">0</span></div>
           </div>
           <div class="drill-score-box streak">
-            <div class="drill-score-label">Streak</div>
+            <div class="drill-score-label" data-i18n="streak">Streak</div>
             <div class="drill-score-value" id="drill-streak">0</div>
           </div>
           <div class="drill-score-box streak">
-            <div class="drill-score-label">Best</div>
+            <div class="drill-score-label" data-i18n="best">Best</div>
             <div class="drill-score-value" id="drill-best">0</div>
           </div>
         </div>
@@ -157,12 +163,12 @@
 
       <div class="drill-controls">
         <div class="drill-control-row">
-          <span class="drill-control-label">Mode</span>
-          <button class="drill-chip mode-chip on" data-mode="kanji2keyword" onclick="setMode('kanji2keyword')">Kanji → Keyword</button>
-          <button class="drill-chip mode-chip" data-mode="keyword2kanji" onclick="setMode('keyword2kanji')">Keyword → Kanji</button>
+          <span class="drill-control-label" data-i18n="mode">Mode</span>
+          <button class="drill-chip mode-chip on" data-mode="kanji2keyword" onclick="setMode('kanji2keyword')" data-i18n="mode_k2w">Kanji → Keyword</button>
+          <button class="drill-chip mode-chip" data-mode="keyword2kanji" onclick="setMode('keyword2kanji')" data-i18n="mode_w2k">Keyword → Kanji</button>
         </div>
         <div class="drill-control-row">
-          <span class="drill-control-label">Range</span>
+          <span class="drill-control-label" data-i18n="range">Range</span>
           <button class="drill-chip set-chip on" data-set="r1" onclick="toggleSet('r1')">KLC 1–500</button>
           <button class="drill-chip set-chip" data-set="r2" onclick="toggleSet('r2')">501–1200</button>
           <button class="drill-chip set-chip" data-set="r3" onclick="toggleSet('r3')">1201–2300</button>
@@ -177,7 +183,7 @@
 
       <!-- Type-in answer (kanji → keyword mode) -->
       <div class="drill-answer-row" id="drill-type-row">
-        <input type="text" id="drill-input" class="drill-input" placeholder="Type the keyword in English…" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <input type="text" id="drill-input" class="drill-input" placeholder="Type the keyword in English…" data-i18n-placeholder="kd_placeholder" autocomplete="off" autocapitalize="off" spellcheck="false">
       </div>
 
       <!-- Multiple choice (keyword → kanji mode) -->
@@ -186,13 +192,13 @@
       <div class="drill-feedback" id="drill-feedback"></div>
 
       <div class="drill-actions">
-        <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled>Check Answer</button>
-        <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()">Skip (show answer)</button>
-        <button class="drill-btn ghost" onclick="resetDrill()">↺ Reset Score</button>
+        <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled data-i18n="check">Check Answer</button>
+        <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()" data-i18n="skip">Skip (show answer)</button>
+        <button class="drill-btn ghost" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
       </div>
 
       <div class="drill-missed" id="drill-missed">
-        <h2>📝 Missed this session</h2>
+        <h2 data-i18n="kd_missed">📝 Missed this session</h2>
         <div class="drill-missed-list" id="drill-missed-list"></div>
       </div>
 
@@ -207,6 +213,8 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>

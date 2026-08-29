@@ -29,21 +29,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link active" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link active" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -52,18 +58,18 @@
     <div class="conjugator-page">
       <div class="conjugator-header">
         <div>
-          <div class="page-tag">Interactive Practice</div>
-          <h1 class="page-title" style="font-size: 2rem">The Conjugator</h1>
+          <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
+          <h1 class="page-title" style="font-size: 2rem" data-i18n="conj_title">The Conjugator</h1>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
-          <button id="report-btn" class="report-btn" onclick="showMistakeReport()" title="View your practice report">
+          <button id="report-btn" class="report-btn" onclick="showMistakeReport()" title="View your practice report" data-i18n="view_report">
             📊 View Report
           </button>
-          <button type="button" id="reset-stats-btn" class="reset-btn" title="Reset score" onclick="resetScoreNow()" style="padding: 0.75rem 1rem; font-size: 0.85rem;">
+          <button type="button" id="reset-stats-btn" class="reset-btn" title="Reset score" onclick="resetScoreNow()" style="padding: 0.75rem 1rem; font-size: 0.85rem;" data-i18n="reset_short">
             ↺ Reset
           </button>
           <div class="score-box">
-            <div class="score-label">Score</div>
+            <div class="score-label" data-i18n="score">Score</div>
             <div class="score-value"><span id="score-correct">0</span> / <span id="score-total">0</span></div>
           </div>
         </div>
@@ -73,43 +79,43 @@
       <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
         <!-- Form Select -->
         <select id="form-select" class="form-select" onchange="generateNewQuestion()" style="flex: 2; min-width: 200px; margin-bottom: 0;">
-          <optgroup label="🎲 Random Modes">
-            <option value="random">Random (All Forms)</option>
-            <option value="random-basic">Random (Basic Only)</option>
-            <option value="random-intermediate">Random (Intermediate)</option>
-            <option value="random-advanced">Random (Advanced)</option>
+          <optgroup label="🎲 Random Modes" data-i18n-label="og_random">
+            <option value="random" data-i18n="f_random">Random (All Forms)</option>
+            <option value="random-basic" data-i18n="f_random_basic">Random (Basic Only)</option>
+            <option value="random-intermediate" data-i18n="f_random_int">Random (Intermediate)</option>
+            <option value="random-advanced" data-i18n="f_random_adv">Random (Advanced)</option>
           </optgroup>
-          <optgroup label="📚 Basic Forms (N5)">
-            <option value="masu">Polite (ます)</option>
-            <option value="negative">Negative (ない)</option>
-            <option value="past">Past (た)</option>
-            <option value="te">Te-form (て)</option>
-            <option value="masen">Polite Negative (ません)</option>
-            <option value="mashita">Polite Past (ました)</option>
-            <option value="nakatta">Negative Past (なかった)</option>
+          <optgroup label="📚 Basic Forms (N5)" data-i18n-label="og_basic">
+            <option value="masu" data-i18n="f_masu">Polite (ます)</option>
+            <option value="negative" data-i18n="f_negative">Negative (ない)</option>
+            <option value="past" data-i18n="f_past">Past (た)</option>
+            <option value="te" data-i18n="f_te">Te-form (て)</option>
+            <option value="masen" data-i18n="f_masen">Polite Negative (ません)</option>
+            <option value="mashita" data-i18n="f_mashita">Polite Past (ました)</option>
+            <option value="nakatta" data-i18n="f_nakatta">Negative Past (なかった)</option>
           </optgroup>
-          <optgroup label="🎯 Intermediate Forms (N4)">
-            <option value="tai">Want to (たい)</option>
-            <option value="potential">Potential (られる/える)</option>
-            <option value="volitional">Volitional (よう/おう)</option>
-            <option value="ba">Conditional (ば)</option>
-            <option value="tara">Conditional (たら)</option>
-            <option value="imperative">Imperative (命令形)</option>
+          <optgroup label="🎯 Intermediate Forms (N4)" data-i18n-label="og_intermediate">
+            <option value="tai" data-i18n="f_tai">Want to (たい)</option>
+            <option value="potential" data-i18n="f_potential">Potential (られる/える)</option>
+            <option value="volitional" data-i18n="f_volitional">Volitional (よう/おう)</option>
+            <option value="ba" data-i18n="f_ba">Conditional (ば)</option>
+            <option value="tara" data-i18n="f_tara">Conditional (たら)</option>
+            <option value="imperative" data-i18n="f_imperative">Imperative (命令形)</option>
           </optgroup>
-          <optgroup label="🔥 Advanced Forms (N3+)">
-            <option value="passive">Passive (られる/あれる)</option>
-            <option value="causative">Causative (させる/あせる)</option>
-            <option value="causative-passive">Causative-Passive (させられる)</option>
+          <optgroup label="🔥 Advanced Forms (N3+)" data-i18n-label="og_advanced">
+            <option value="passive" data-i18n="f_passive">Passive (られる/あれる)</option>
+            <option value="causative" data-i18n="f_causative">Causative (させる/あせる)</option>
+            <option value="causative-passive" data-i18n="f_caus_pass">Causative-Passive (させられる)</option>
           </optgroup>
         </select>
 
         <!-- JLPT Filter -->
         <select id="jlpt-filter" class="form-select" onchange="generateNewQuestion()" style="flex: 1; min-width: 120px; margin-bottom: 0;">
-          <option value="all">All Levels</option>
-          <option value="N5">N5 Only</option>
-          <option value="N4">N4 Only</option>
-          <option value="N3">N3 Only</option>
-          <option value="N5-N4">N5 + N4</option>
+          <option value="all" data-i18n="jlpt_all">All Levels</option>
+          <option value="N5" data-i18n="jlpt_n5">N5 Only</option>
+          <option value="N4" data-i18n="jlpt_n4">N4 Only</option>
+          <option value="N3" data-i18n="jlpt_n3">N3 Only</option>
+          <option value="N5-N4" data-i18n="jlpt_n54">N5 + N4</option>
         </select>
       </div>
 
@@ -126,12 +132,12 @@
           <span id="prompt-form" class="prompt-form">Negative</span>
         </span>
         <button class="hint-btn" onclick="toggleHint()">
-          <span id="hint-btn-text">💡 Show hint</span>
+          <span id="hint-btn-text" data-i18n="show_hint">💡 Show hint</span>
         </button>
       </div>
 
       <div id="hint-box" class="hint-box">
-        <div class="hint-label">💡 Hint</div>
+        <div class="hint-label" data-i18n="hint_label">💡 Hint</div>
         <div id="hint-content"></div>
       </div>
 
@@ -144,22 +150,22 @@
       >
 
       <div id="feedback-warning" class="feedback warning">
-        <div class="feedback-title">⚠️ Not quite — try again!</div>
+        <div class="feedback-title" data-i18n="warn_try_again">⚠️ Not quite — try again!</div>
       </div>
 
       <div id="feedback-result" class="feedback">
         <div id="feedback-title" class="feedback-title"></div>
-        <div class="feedback-answer jp">Answer: <strong id="feedback-answer"></strong></div>
+        <div class="feedback-answer jp"><span data-i18n="fb_answer">Answer:</span> <strong id="feedback-answer"></strong></div>
         <div id="feedback-explanation" class="feedback-explanation"></div>
         <div id="ai-examples" style="margin-top: 15px; display: none;"></div>
-        <button id="more-examples-btn" onclick="showMoreExamples()" style="display: none; margin-top: 10px; background: #4a90a4; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+        <button id="more-examples-btn" onclick="showMoreExamples()" style="display: none; margin-top: 10px; background: #4a90a4; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;" data-i18n="more_examples">
           📚 Show More Examples
         </button>
       </div>
 
-      <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled>Check Answer</button>
-      <button id="skip-btn" class="skip-btn" onclick="skipQuestion()">Skip (show answer)</button>
-      <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()">Next Question →</button>
+      <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled data-i18n="check">Check Answer</button>
+      <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="skip">Skip (show answer)</button>
+      <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="next">Next Question →</button>
     </div>
   </div>
 
@@ -196,6 +202,8 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>

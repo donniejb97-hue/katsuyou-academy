@@ -29,21 +29,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link active" data-page="home" href="/">Home</a>
+        <a class="nav-link active" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -52,19 +58,19 @@
     <div class="home">
       <section class="hero">
         <div class="hero-content">
-          <div class="hero-badge">Japanese Study Toolkit</div>
+          <div class="hero-badge" data-i18n="hero_badge">Japanese Study Toolkit</div>
           <h1 class="hero-title">Katsuyō Academy</h1>
           <p class="hero-subtitle jp">日本語を学ぶ</p>
           <p class="hero-desc">
             A free, self-contained Japanese learning platform. Practice kana, kanji, vocabulary, and verb conjugation—all in one beautifully designed toolkit.
           </p>
           <div class="hero-cta">
-            <button class="btn btn-primary" style="min-width: 220px;" onclick="showPage('kana')">Start with Kana</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('kanji')">Explore Kanji</button>
+            <button class="btn btn-primary" style="min-width: 220px;" onclick="showPage('kana')" data-i18n="btn_start_kana">Start with Kana</button>
+            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('kanji')" data-i18n="btn_explore_kanji">Explore Kanji</button>
           </div>
           <div class="hero-cta" style="margin-top: 1rem;">
-            <button class="btn" style="min-width: 220px; background: var(--sage); color: var(--paper);" onclick="showPage('learn')">Learn the Basics</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('conjugator')">Practice Conjugation</button>
+            <button class="btn" style="min-width: 220px; background: var(--sage); color: var(--paper);" onclick="showPage('learn')" data-i18n="btn_learn_basics">Learn the Basics</button>
+            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('conjugator')" data-i18n="btn_practice_conj">Practice Conjugation</button>
           </div>
         </div>
       </section>
@@ -125,93 +131,93 @@
       <section class="features" style="background: var(--paper-warm); padding: 4rem 2rem;">
         <div class="features-inner" style="max-width: 1200px; margin: 0 auto;">
           <div class="features-header" style="text-align: center; margin-bottom: 3rem;">
-            <h2 class="features-title" style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">The Toolkit</h2>
-            <p class="features-subtitle" style="font-size: 1.1rem; color: var(--text-light);">Six interconnected tools covering the foundations of Japanese</p>
+            <h2 class="features-title" style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;" data-i18n="toolkit_title">The Toolkit</h2>
+            <p class="features-subtitle" style="font-size: 1.1rem; color: var(--text-light);" data-i18n="toolkit_sub">Six interconnected tools covering the foundations of Japanese</p>
           </div>
           <div class="features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
             <div class="feature-card" onclick="showPage('kana')" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(212,120,106,0.3); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem; color: white;">あ</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #d4786a; margin-bottom: 0.75rem;"><span class="jp" style="color: #d4786a;">仮名</span> — Kana</h3>
-              <p class="feature-desc" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #d4786a; margin-bottom: 0.75rem;" data-i18n-html="card_kana_t"><span class="jp" style="color: #d4786a;">仮名</span> — Kana</h3>
+              <p class="feature-desc" data-i18n-html="card_kana_d" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
                 Practice all <strong style="color: #d4786a;">104 hiragana and katakana</strong> characters. Learn both Japanese writing systems side-by-side with 
                 <strong>audio pronunciation</strong>, clear charts for basic kana, dakuten (voiced sounds), and combination characters. 
                 Click any character to hear how it sounds.
               </p>
-              <div style="color: #d4786a; font-weight: 600; font-size: 0.9rem;">Learn Kana →</div>
+              <div style="color: #d4786a; font-weight: 600; font-size: 0.9rem;" data-i18n="card_kana_cta">Learn Kana →</div>
             </div>
             <div class="feature-card" onclick="showPage('learn')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">Learn</h3>
-              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;" data-i18n="card_learn_t">Learn</h3>
+              <p class="feature-desc" data-i18n-html="card_learn_d" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
                 Clear, visual explanations of how Japanese verb conjugation actually works. Understand the <em>why</em> 
                 behind the patterns, not just the rules. Learn to identify verb types, understand the hiragana sound 
                 system, and see step-by-step walkthroughs of each conjugation type.
               </p>
-              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">Start Learning →</div>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;" data-i18n="card_learn_cta">Start Learning →</div>
             </div>
             <div class="feature-card" onclick="showPage('forms')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📖</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">Forms</h3>
-              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;" data-i18n="card_forms_t">Forms</h3>
+              <p class="feature-desc" data-i18n-html="card_forms_d" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
                 Comprehensive quick-reference conjugation charts covering 16 verb forms for all three verb types: Godan (五段), Ichidan (一段), and Suru (する). 
                 From basic forms (negative, polite, past) to advanced (passive, causative, conditional), color-coded tables show you exactly how each form is created. 
                 Perfect for quick lookups or comparing patterns side-by-side.
               </p>
-              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">View Forms →</div>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;" data-i18n="card_forms_cta">View Forms →</div>
             </div>
             <div class="feature-card" onclick="showPage('verblist')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">Verb List</h3>
-              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;" data-i18n="card_verbs_t">Verb List</h3>
+              <p class="feature-desc" data-i18n-html="card_verbs_d" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
                 Browse all <strong>129 verbs</strong> in our database, organized by type (Godan, Ichidan, Suru) with kanji, hiragana, and English meanings. 
                 <strong>Search</strong> to find specific verbs instantly, or <strong>filter by JLPT level</strong> (N5, N4, N3) to focus on vocabulary appropriate for your level.
               </p>
-              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">Browse Verbs →</div>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;" data-i18n="card_verbs_cta">Browse Verbs →</div>
             </div>
             <div class="feature-card" onclick="showPage('conjugator')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">✏️</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;">The Conjugator</h3>
-              <p class="feature-desc" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.75rem;" data-i18n="card_conj_t">The Conjugator</h3>
+              <p class="feature-desc" data-i18n-html="card_conj_d" style="color: var(--text); line-height: 1.7; margin-bottom: 1rem;">
                 The heart of Katsuyō Academy. Practice conjugating verbs across <strong>16 different forms</strong> with instant feedback. 
                 Choose <strong>Random modes by difficulty</strong> (Basic/Intermediate/Advanced) or focus on specific forms. 
                 <strong>Filter by JLPT level</strong> to match your study goals. Get <strong>detailed hints</strong> showing exact rules and examples, 
                 plus <strong>error explanations</strong> when you make mistakes. <strong>Skip</strong> questions without penalty when stuck. 
                 Your <strong>progress saves automatically</strong>, and the <strong>Practice Report</strong> shows your statistics and weak areas.
               </p>
-              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;">Start Practicing →</div>
+              <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;" data-i18n="card_conj_cta">Start Practicing →</div>
             </div>
             <div class="feature-card" onclick="showPage('datedojo')" style="background: linear-gradient(135deg, #1a1a2e 0%, #0c0c0c 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(196,30,58,0.3); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem;"><span class="jp">日付</span> — Dates & Numbers</h3>
-              <p class="feature-desc" style="color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem;" data-i18n-html="card_dojo_t"><span class="jp">日付</span> — Dates & Numbers</h3>
+              <p class="feature-desc" data-i18n-html="card_dojo_d" style="color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 1rem;">
                 Practice Japanese dates, weekdays, months, and numbers. Questions cover today's date, future/past calculations, 
                 relative days (<span class="jp">きのう</span>, <span class="jp">あした</span>), and large numbers.
                 <strong style="color: #ff6b6b;">Full sentence answers required</strong> — build proper grammar habits with です and でした endings.
                 Includes a handy <strong style="color: #ff6b6b;">reference chart</strong> for the tricky readings.
               </p>
-              <div style="color: #c41e3a; font-weight: 600; font-size: 0.9rem;">Enter the Dojo →</div>
+              <div style="color: #c41e3a; font-weight: 600; font-size: 0.9rem;" data-i18n="card_dojo_cta">Enter the Dojo →</div>
             </div>
             <div class="feature-card" onclick="showPage('vocabulary')" style="background: linear-gradient(135deg, #4a4539 0%, #322d26 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(212,120,106,0.3); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">🎴</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #d4786a; margin-bottom: 0.75rem;"><span class="jp" style="color: #d4786a;">単語</span> — Vocabulary</h3>
-              <p class="feature-desc" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #d4786a; margin-bottom: 0.75rem;" data-i18n-html="card_vocab_t"><span class="jp" style="color: #d4786a;">単語</span> — Vocabulary</h3>
+              <p class="feature-desc" data-i18n-html="card_vocab_d" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
                 Practice <strong style="color: #d4786a;">496 essential Japanese words</strong> with intelligent flashcards. 
                 Study with <strong>hiragana, kanji, and katakana</strong> across <strong style="color: #d4786a;">8 different learning modes</strong>. 
                 Toggle between Japanese→English or English→Japanese practice, show/hide kanji and katakana readings, and see both scripts side-by-side. 
                 <strong>Smart shuffle prioritizes unseen cards</strong>, progress tracking shows cards studied, and the beautiful vintage design makes learning engaging.
               </p>
-              <div style="color: #d4786a; font-weight: 600; font-size: 0.9rem;">Start Learning Words →</div>
+              <div style="color: #d4786a; font-weight: 600; font-size: 0.9rem;" data-i18n="card_vocab_cta">Start Learning Words →</div>
             </div>
             <div class="feature-card" onclick="showPage('kanji')" style="background: linear-gradient(135deg, #2a2535 0%, #1e1a28 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(140,100,170,0.3); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon jp" style="font-size: 3rem; margin-bottom: 1rem; color: white;">字</div>
-              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #e94560; margin-bottom: 0.75rem;"><span class="jp" style="color: #e94560;">漢字</span> — Kanji</h3>
-              <p class="feature-desc" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #e94560; margin-bottom: 0.75rem;" data-i18n-html="card_kanji_t"><span class="jp" style="color: #e94560;">漢字</span> — Kanji</h3>
+              <p class="feature-desc" data-i18n-html="card_kanji_d" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
                 Practice <strong style="color: #e94560;">2,300 kanji</strong> from the acclaimed <strong>Kodansha Learner's Course</strong>. 
                 Each card shows the kanji character, English keyword, <strong style="color: #ff6b6b;">on'yomi</strong> and <strong style="color: #4ecdc4;">kun'yomi</strong> readings, 
                 plus <strong>example vocabulary</strong> with meanings. Filter by level (Beginner, Intermediate, Advanced), 
                 <strong>shuffle cards</strong>, or <strong>jump to any KLC number</strong>. Keyboard shortcuts included!
               </p>
-              <div style="color: #e94560; font-weight: 600; font-size: 0.9rem;">Learn Kanji →</div>
+              <div style="color: #e94560; font-weight: 600; font-size: 0.9rem;" data-i18n="card_kanji_cta">Learn Kanji →</div>
             </div>
           </div>
         </div>
@@ -350,6 +356,8 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>

@@ -79,6 +79,10 @@
     .drill-missed-chip .jp { font-size: 1.35rem; margin-right: 0.4rem; }
     .drill-missed-chip small { color: var(--text-light); font-style: italic; }
 
+    /* ---------- Language selector ---------- */
+    .lang-select { margin-left: 0.75rem; background: transparent; color: inherit; border: 1px solid rgba(255,255,255,0.35); border-radius: 6px; padding: 0.2rem 0.35rem; font-family: inherit; font-size: 0.8rem; cursor: pointer; }
+    .lang-select option { color: #1a1a2e; }
+
     /* ---------- Cheat sheet modal ---------- */
     .cheat-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 2000; justify-content: center; align-items: center; padding: 1rem; }
     .cheat-overlay.show { display: flex; }
@@ -118,21 +122,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link active" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link active" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -142,20 +152,20 @@
 
       <div class="drill-header">
         <div>
-          <div class="page-tag">Interactive Practice</div>
-          <h1 class="page-title" style="font-size: 2rem;">Kana Drill</h1>
+          <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
+          <h1 class="page-title" style="font-size: 2rem;" data-i18n="page_title">Kana Drill</h1>
         </div>
         <div class="drill-scores">
           <div class="drill-score-box">
-            <div class="drill-score-label">Score</div>
+            <div class="drill-score-label" data-i18n="score">Score</div>
             <div class="drill-score-value"><span id="drill-correct">0</span>/<span id="drill-total">0</span></div>
           </div>
           <div class="drill-score-box streak">
-            <div class="drill-score-label">Streak</div>
+            <div class="drill-score-label" data-i18n="streak">Streak</div>
             <div class="drill-score-value" id="drill-streak">0</div>
           </div>
           <div class="drill-score-box streak">
-            <div class="drill-score-label">Best</div>
+            <div class="drill-score-label" data-i18n="best">Best</div>
             <div class="drill-score-value" id="drill-best">0</div>
           </div>
         </div>
@@ -163,26 +173,26 @@
 
       <div class="drill-controls">
         <div class="drill-control-row">
-          <span class="drill-control-label">Mode</span>
-          <button class="drill-chip mode-chip on" data-mode="kana2romaji" onclick="setMode('kana2romaji')">Kana → Rōmaji</button>
-          <button class="drill-chip mode-chip" data-mode="romaji2kana" onclick="setMode('romaji2kana')">Rōmaji → Kana</button>
+          <span class="drill-control-label" data-i18n="mode">Mode</span>
+          <button class="drill-chip mode-chip on" data-mode="kana2romaji" onclick="setMode('kana2romaji')" data-i18n="mode_k2r">Kana → Rōmaji</button>
+          <button class="drill-chip mode-chip" data-mode="romaji2kana" onclick="setMode('romaji2kana')" data-i18n="mode_r2k">Rōmaji → Kana</button>
         </div>
         <div class="drill-control-row">
-          <span class="drill-control-label">Script</span>
+          <span class="drill-control-label" data-i18n="script">Script</span>
           <button class="drill-chip script-chip on" data-script="hiragana" onclick="setScript('hiragana')">ひらがな</button>
           <button class="drill-chip script-chip" data-script="katakana" onclick="setScript('katakana')">カタカナ</button>
-          <button class="drill-chip script-chip" data-script="mixed" onclick="setScript('mixed')">Mixed</button>
+          <button class="drill-chip script-chip" data-script="mixed" onclick="setScript('mixed')" data-i18n="mixed">Mixed</button>
         </div>
         <div class="drill-control-row">
-          <span class="drill-control-label">Sets</span>
-          <button class="drill-chip set-chip on" data-set="basic" onclick="toggleSet('basic')">Basic (46)</button>
-          <button class="drill-chip set-chip" data-set="dakuten" onclick="toggleSet('dakuten')">Dakuten (25)</button>
-          <button class="drill-chip set-chip" data-set="combos" onclick="toggleSet('combos')">Combos (33)</button>
+          <span class="drill-control-label" data-i18n="sets">Sets</span>
+          <button class="drill-chip set-chip on" data-set="basic" onclick="toggleSet('basic')" data-i18n="set_basic">Basic (46)</button>
+          <button class="drill-chip set-chip" data-set="dakuten" onclick="toggleSet('dakuten')" data-i18n="set_dakuten">Dakuten (25)</button>
+          <button class="drill-chip set-chip" data-set="combos" onclick="toggleSet('combos')" data-i18n="set_combos">Combos (33)</button>
         </div>
         <div class="drill-control-row">
-          <span class="drill-control-label">Charts</span>
-          <button class="drill-chip" onclick="openCheatSheet('h')" title="Hold Alt+H to peek">ひらがな Cheat Sheet</button>
-          <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek">カタカナ Cheat Sheet</button>
+          <span class="drill-control-label" data-i18n="charts">Charts</span>
+          <button class="drill-chip" onclick="openCheatSheet('h')" title="Hold Alt+H to peek" data-i18n="sheet_h" data-i18n-title="hold_h">ひらがな Cheat Sheet</button>
+          <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek" data-i18n="sheet_k" data-i18n-title="hold_k">カタカナ Cheat Sheet</button>
         </div>
       </div>
 
@@ -193,7 +203,7 @@
 
       <!-- Type-in answer (kana → romaji mode) -->
       <div class="drill-answer-row" id="drill-type-row">
-        <input type="text" id="drill-input" class="drill-input" placeholder="Type the rōmaji…" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <input type="text" id="drill-input" class="drill-input" placeholder="Type the rōmaji…" data-i18n-placeholder="placeholder" autocomplete="off" autocapitalize="off" spellcheck="false">
       </div>
 
       <!-- Multiple choice (romaji → kana mode) -->
@@ -202,13 +212,13 @@
       <div class="drill-feedback" id="drill-feedback"></div>
 
       <div class="drill-actions">
-        <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled>Check Answer</button>
-        <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()">Skip (show answer)</button>
-        <button class="drill-btn ghost" onclick="resetDrill()">↺ Reset Score</button>
+        <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled data-i18n="check">Check Answer</button>
+        <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()" data-i18n="skip">Skip (show answer)</button>
+        <button class="drill-btn ghost" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
       </div>
 
       <div class="drill-missed" id="drill-missed">
-        <h2>📝 Missed this session — click to hear</h2>
+        <h2 data-i18n="missed_title">📝 Missed this session — click to hear</h2>
         <div class="drill-missed-list" id="drill-missed-list"></div>
       </div>
 
@@ -220,7 +230,7 @@
     <div class="cheat-box">
       <button class="cheat-close" onclick="closeCheatSheet()" aria-label="Close cheat sheet">×</button>
       <h2 class="cheat-title" id="cheat-title"></h2>
-      <div class="cheat-hint">Tap any kana to hear its pronunciation 🔊 &nbsp;·&nbsp; Hold Alt+H / Alt+K to peek</div>
+      <div class="cheat-hint" data-i18n-html="cheat_hint">Tap any kana to hear its pronunciation 🔊 &nbsp;·&nbsp; Hold Alt+H / Alt+K to peek</div>
       <div id="cheat-content"></div>
     </div>
   </div>
@@ -233,9 +243,12 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
+
+  <script src="i18n.js"></script>
 
   <script>
   // ==========================================================================
@@ -349,7 +362,7 @@
       fb.innerHTML = '';
 
       if (state.mode === 'kana2romaji') {
-        $('drill-tag').textContent = sc === 'h' ? 'Hiragana — type the reading' : 'Katakana — type the reading';
+        $('drill-tag').textContent = sc === 'h' ? t('tag_type_h') : t('tag_type_k');
         var q = $('drill-question');
         q.className = 'drill-question jp';
         q.textContent = sc === 'h' ? item.h : item.k;
@@ -362,10 +375,10 @@
         input.focus();
         $('drill-check').style.display = 'block';
         $('drill-check').disabled = true;
-        $('drill-check').textContent = 'Check Answer';
+        $('drill-check').textContent = t('check');
         $('drill-skip').style.display = 'block';
       } else {
-        $('drill-tag').textContent = sc === 'h' ? 'Pick the hiragana' : 'Pick the katakana';
+        $('drill-tag').textContent = sc === 'h' ? t('tag_pick_h') : t('tag_pick_k');
         var q2 = $('drill-question');
         q2.className = 'drill-question romaji-q';
         q2.textContent = item.r;
@@ -484,18 +497,18 @@
       var shown = sc === 'h' ? item.h : item.k;
       var fb = $('drill-feedback');
       fb.className = 'drill-feedback show ' + (right ? 'good' : 'bad');
-      var head = right ? '⭕ Correct!' : (skipped ? 'Answer:' : '❌ Not quite — the answer is:');
+      var head = right ? t('fb_correct') : (skipped ? t('fb_answer') : t('fb_wrong'));
       fb.innerHTML =
         '<div>' + head + '</div>' +
         '<div class="big"><span class="jp">' + shown + '</span> = <strong>' + item.r + '</strong>' +
-        '<button class="drill-audio-btn" title="Hear pronunciation" aria-label="Hear pronunciation">🔊</button></div>';
+        '<button class="drill-audio-btn" title="' + t('hear_pron') + '" aria-label="' + t('hear_pron') + '">🔊</button></div>';
       fb.querySelector('.drill-audio-btn').onclick = function () { playAudio(item); };
       playAudio(item);
       // Repurpose the primary button as "Next"
       var check = $('drill-check');
       check.style.display = 'block';
       check.disabled = false;
-      check.textContent = 'Next Question →';
+      check.textContent = t('next');
       check.focus();
       $('drill-skip').style.display = 'none';
     }
@@ -518,7 +531,7 @@
         var item = state.missed[h];
         var chip = document.createElement('button');
         chip.className = 'drill-missed-chip';
-        chip.title = 'Click to hear';
+        chip.title = t('click_hear');
         chip.innerHTML = '<span class="jp">' + item.h + '・' + item.k + '</span><small>' + item.r + '</small>';
         chip.onclick = function () { playAudio(item); };
         list.appendChild(chip);
@@ -594,7 +607,7 @@
       }
       var b = document.createElement('button');
       b.className = 'cheat-cell' + (isCurrentItem(item) ? ' current' : '');
-      b.title = 'Hear pronunciation';
+      b.title = t('hear_pron');
       b.innerHTML = '<span class="kana jp">' + (sc === 'h' ? item.h : item.k) + '</span>' +
                     '<span class="romaji">' + item.r + '</span>';
       b.onclick = function () { playAudio(item); };
@@ -615,15 +628,13 @@
 
     window.openCheatSheet = function (sc) {
       lastCheatScript = sc;
-      $('cheat-title').textContent = sc === 'h'
-        ? 'Hiragana ひらがな'
-        : 'Katakana カタカナ';
+      $('cheat-title').textContent = sc === 'h' ? t('cheat_title_h') : t('cheat_title_k');
 
       var content = $('cheat-content');
       content.innerHTML = '';
 
       // Basic — gojūon-aligned grid
-      var basic = cheatSection('Basic (46)', 5);
+      var basic = cheatSection(t('cheat_basic'), 5);
       GOJUON_ROWS.forEach(function (row) {
         row.forEach(function (r) {
           basic.grid.appendChild(cheatCell(r ? BASIC_BY_ROMAJI[r] : null, sc));
@@ -632,12 +643,12 @@
       content.appendChild(basic.wrap);
 
       // Dakuten & handakuten — already in gojūon order, rows of 5
-      var dak = cheatSection('Dakuten & Handakuten (25)', 5);
+      var dak = cheatSection(t('cheat_dakuten'), 5);
       KANA.dakuten.forEach(function (item) { dak.grid.appendChild(cheatCell(item, sc)); });
       content.appendChild(dak.wrap);
 
       // Combination kana — rows of 3 (ya / yu / yo)
-      var com = cheatSection('Combos (33)', 3);
+      var com = cheatSection(t('cheat_combos'), 3);
       KANA.combos.forEach(function (item) { com.grid.appendChild(cheatCell(item, sc)); });
       content.appendChild(com.wrap);
 
@@ -650,6 +661,18 @@
 
     window.closeCheatSheet = function () {
       $('cheat-overlay').classList.remove('show');
+    };
+
+    // Re-render language-dependent dynamic labels after a language switch
+    window.refreshDrillI18n = function () {
+      if (state.current) {
+        var sc = state.current.script;
+        $('drill-tag').textContent = state.mode === 'kana2romaji'
+          ? (sc === 'h' ? t('tag_type_h') : t('tag_type_k'))
+          : (sc === 'h' ? t('tag_pick_h') : t('tag_pick_k'));
+      }
+      $('drill-check').textContent = state.answered ? t('next') : t('check');
+      if ($('cheat-overlay').classList.contains('show')) openCheatSheet(lastCheatScript);
     };
 
     // Alt+H / Alt+K — hold to peek at the cheat sheet, release to hide.

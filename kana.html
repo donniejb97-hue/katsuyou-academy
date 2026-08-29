@@ -29,21 +29,27 @@
         <span class="logo-text">Katsuyō Academy</span>
       </a>
       <div class="nav-links">
-        <a class="nav-link" data-page="home" href="/">Home</a>
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link active" data-page="kana" href="/kana">Kana</a>
-        <a class="nav-link" data-page="learn" href="/learn">Learn</a>
-        <a class="nav-link" data-page="forms" href="/forms">Forms</a>
-        <a class="nav-link" data-page="verblist" href="/verblist">Verbs</a>
+        <a class="nav-link active" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator">Conjugator</a>
-        <a class="nav-link" data-page="kana-drill" href="/kana-drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill">Kanji Drill</a>
-        <a class="nav-link" data-page="datedojo" href="/datedojo">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary">Vocabulary</a>
-        <a class="nav-link" data-page="kanji" href="/kanji">Kanji</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="about" href="/about">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
       </div>
     </div>
   </nav>
@@ -53,7 +59,7 @@
       
       <!-- QUICK GUIDE -->
       <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem; border-radius: 8px; margin-bottom: 3rem; color: white;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: #d4786a;">📖 Quick Guide</h2>
+        <h2 style="font-size: 1.5rem; margin-bottom: 1rem; color: #d4786a;" data-i18n="quick_guide">📖 Quick Guide</h2>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
           <div>
             <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #e8e6e3;">Hiragana (ひらがな)</h3>
@@ -97,7 +103,7 @@
           <div style="margin-bottom: 2rem;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
             <span style="background: var(--accent); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">46 CHARACTERS</span>
-            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;">Basic Kana (五十音 Gojūon)</h2>
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;" data-i18n="basic_kana_h">Basic Kana (五十音 Gojūon)</h2>
           </div>
             <p style="color: var(--text); font-size: 1.05rem;">The 46 fundamental sounds of Japanese. Practice these first!</p>
           </div>
@@ -399,7 +405,7 @@
           <div style="margin-bottom: 2rem;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
             <span style="background: #2d7d9a; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">25 CHARACTERS</span>
-            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;">Dakuten (濁点) — Voiced Sounds</h2>
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;" data-i18n="dakuten_h">Dakuten (濁点) — Voiced Sounds</h2>
           </div>
             <p style="color: var(--text); font-size: 1.05rem;">Add two dots <span class="jp" style="font-size: 1.3rem;">゛</span> (dakuten) to voice consonants (K→G, S→Z, T→D, H→B), or a circle <span class="jp" style="font-size: 1.3rem;">゜</span> (handakuten) for H→P</p>
           </div>
@@ -544,7 +550,7 @@
           <div style="margin-bottom: 2rem;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
             <span style="background: #6b9aa3; color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">33 CHARACTERS</span>
-            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;">Combination Sounds (拗音 Yōon)</h2>
+            <h2 style="font-size: 2rem; font-weight: 700; color: var(--ink); margin: 0;" data-i18n="yoon_h">Combination Sounds (拗音 Yōon)</h2>
           </div>
             <p style="color: var(--text); font-size: 1.05rem;">Combine characters with small や, ゆ, よ to create new sounds like kya, shu, cho</p>
           </div>
@@ -750,6 +756,8 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
