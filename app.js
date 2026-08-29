@@ -4988,6 +4988,7 @@ function generateNewQuestion() {
     let showReverseVocab = false;  // false = Japanese→English, true = English→Japanese  
     let showKanjiVocab = false;    // false = hide kanji, true = show kanji
     let showKatakanaVocab = false; // false = hide katakana, true = show katakana
+    let showRomajiVocab = false;   // false = hide romaji, true = show romaji
 
     // Shuffle array using Fisher-Yates algorithm
     function shuffleArrayVocab(array) {
@@ -5015,6 +5016,11 @@ function generateNewQuestion() {
     function toggleKatakanaVocab() {
       showKatakanaVocab = document.getElementById('toggle-katakana-vocab').checked;
       loadCardVocab();  // Reload current card with katakana
+    }
+
+    function toggleRomajiVocab() {
+      showRomajiVocab = document.getElementById('toggle-romaji-vocab').checked;
+      loadCardVocab();  // Reload current card with romaji
     }
 
     // Initialize vocabulary
@@ -5129,6 +5135,19 @@ function generateNewQuestion() {
         if (scriptContainerBack) scriptContainerBack.style.display = 'none';
       }
       
+      // --- romaji line (display only; generated from the kana) ---
+      var romajiFront = document.getElementById('card-romaji-vocab');
+      var romajiBack = document.getElementById('card-romaji-vocab-back');
+      var romajiText = (showRomajiVocab && window.toRomaji) ? window.toRomaji(card.japanese) : '';
+      // the Japanese sits on the back in reverse mode, on the front otherwise
+      var romajiTarget = showReverseVocab ? romajiBack : romajiFront;
+      var romajiOther = showReverseVocab ? romajiFront : romajiBack;
+      if (romajiOther) romajiOther.style.display = 'none';
+      if (romajiTarget) {
+        romajiTarget.textContent = romajiText;
+        romajiTarget.style.display = romajiText ? 'block' : 'none';
+      }
+
       categoryEl.textContent = getCategoryLabelVocab(card.category);
       
       // Reset flip state

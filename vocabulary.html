@@ -18,6 +18,15 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .card-romaji { font-family: 'Outfit', sans-serif; font-style: italic; letter-spacing: 0.02em;
+      opacity: 0.75; margin-top: 0.4rem; font-size: 1.15rem; }
+  </style>
+  <style>
+    .flashcard-romaji { font-family: 'Outfit', sans-serif; font-style: italic;
+      letter-spacing: 0.03em; opacity: 0.7; margin-top: 0.5rem; font-size: 1.2rem; }
+    @media (max-width: 640px) { .flashcard-romaji { font-size: 1rem; } }
+  </style>
 </head>
 <body data-page="vocabulary">
 
@@ -685,6 +694,14 @@
             <span class="toggle-slider"></span>
           </label>
         </div>
+
+        <div class="toggle-item">
+          <span class="toggle-label" data-i18n="show_romaji">Show Rōmaji</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggle-romaji-vocab" onchange="toggleRomajiVocab()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
       </div>
 
 <div class="flashcard-area">
@@ -699,6 +716,7 @@
                   <div class="flashcard-katakana jp" id="card-katakana-vocab"></div>
                 </div>
                 <div class="flashcard-japanese jp" id="card-japanese-vocab"></div>
+                <div class="flashcard-romaji" id="card-romaji-vocab" style="display:none;"></div>
               </div>
             </div>
             <div class="flashcard-back">
@@ -710,6 +728,7 @@
                   <div class="flashcard-katakana jp" id="card-katakana-vocab-back"></div>
                 </div>
                 <div class="flashcard-english" id="card-english-vocab"></div>
+                <div class="flashcard-romaji" id="card-romaji-vocab-back" style="display:none;"></div>
                 <div class="flashcard-category" id="card-category-vocab"></div>
               </div>
               <div class="flashcard-hint">Click to flip back</div>
@@ -751,6 +770,7 @@
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="vocab.i18n.js"></script>
+  <script src="romaji.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
