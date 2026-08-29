@@ -493,13 +493,21 @@ function setLang(lang) {
     /* the | separators: thinner, quieter, evenly spaced */
     '.nav-links > span{padding:0 0.25rem !important;font-size:1.05rem !important;opacity:0.45 !important;}',
     /* push the language switch to the far right, away from Contact */
-    '.nav-links .lang-switch{margin-left:auto;padding-left:1rem;flex:0 0 auto;}',
+    '.nav-inner{position:relative;}',
+    '.nav-inner > .lang-switch{margin-left:auto;flex:0 0 auto;}',
     /* narrow screens: let the bar scroll sideways instead of stacking */
     '@media (max-width:1400px){',
     '  .nav-links{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
     '  .nav-links::-webkit-scrollbar{display:none;}',
     '  .nav-links .nav-link{padding-left:0.45rem;padding-right:0.45rem;font-size:0.9rem;}',
-    '  .nav-links .lang-switch{position:sticky;right:0;margin-left:0.5rem;}',
+    '}',
+    /* narrow screens: pin it to the top-right of the bar so it is always tappable */
+    '@media (max-width:900px){',
+    '  .nav-inner > .lang-switch{position:absolute;top:0.55rem;right:0.75rem;z-index:1400;margin-left:0;}',
+    '  .nav-links{padding-right:5.5rem;}',
+    '  .lang-btn{padding:0.4rem 0.7rem;font-size:0.85rem;}',
+    '  .lang-menu{right:0;left:auto;min-width:10rem;}',
+    '  .lang-menu button{padding:0.7rem 0.7rem;font-size:0.95rem;}',
     '}'
   ].join('');
   var navStyle = document.createElement('style');
@@ -587,7 +595,10 @@ function setLang(lang) {
     paintMenu();
     wrap.appendChild(btn);
     wrap.appendChild(menu);
-    sel.parentNode.insertBefore(wrap, sel.nextSibling);
+    // Place it in .nav-inner rather than inside .nav-links: on narrow screens
+    // .nav-links scrolls sideways, which pushed the switch off-screen.
+    var host = document.querySelector('.nav-inner') || sel.parentNode;
+    host.appendChild(wrap);
 
     // keep the button label in sync if the language changes elsewhere
     window.refreshLangSwitch = function () { paintButton(); paintMenu(); };
