@@ -154,8 +154,10 @@
        otherwise the gold "active" state floods the whole open list. */
     .drill-select option, .drill-select optgroup { background-color: white; color: var(--text); font-weight: 500; }
     .drill-select optgroup { font-weight: 700; color: var(--ink); }
-    .drill-chip.info-chip { font-size: 1.05rem; line-height: 1; padding: 0.4rem 0.7rem; font-weight: 700; }
-    .drill-chip.howto-chip { align-self: center; white-space: nowrap; border-color: var(--sage); color: #3f5c42; font-weight: 600; }
+    .drill-chip.info-chip { width: 2.15rem; height: 2.15rem; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 1.1rem; font-weight: 700; line-height: 1; color: var(--text-light); }
+    .drill-chip.info-chip:hover { color: var(--accent); border-color: var(--accent-soft); }
+    .drill-chip.howto-chip { align-self: center; white-space: nowrap; border-color: var(--sage); color: #3f5c42; font-weight: 600; display: inline-flex; align-items: center; gap: 0.45rem; }
+    .i-badge { flex: 0 0 auto; width: 1.2rem; height: 1.2rem; border: 1.5px solid currentColor; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 0.8rem; font-weight: 700; line-height: 1; }
     .drill-chip.howto-chip:hover { background: rgba(122,158,126,0.12); border-color: var(--sage); }
     .drill-chip:disabled { opacity: 0.4; cursor: default; }
     .drill-chip:disabled:hover { border-color: rgba(0,0,0,0.15); }
@@ -255,7 +257,7 @@
             <div class="drill-score-label" data-i18n="best">Best</div>
             <div class="drill-score-value" id="drill-best">0</div>
           </div>
-          <button class="drill-chip howto-chip" id="howto-chip" onclick="openHowTo()"></button>
+          <button class="drill-chip howto-chip" id="howto-chip" onclick="openHowTo()"><span class="i-badge" aria-hidden="true">i</span><span id="howto-chip-text"></span></button>
         </div>
       </div>
 
@@ -294,7 +296,7 @@
             <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek" data-i18n="sheet_k" data-i18n-title="hold_k">カタカナ Cheat Sheet</button>
             <span class="drill-sep" aria-hidden="true">|</span>
             <button class="drill-chip charts-chip" id="charts-toggle-chip" onclick="toggleCharts()"></button>
-            <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts">ⓘ</button>
+            <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts">i</button>
           </div>
         </div>
       </div>
@@ -437,7 +439,7 @@
         charts_off:     'Charts: off',
         charts_disabled:'Cheat sheets are switched off',
         info_title:     "Charts & shortcuts",
-        howto_chip:  "\u24d8 How it works",
+        howto_chip:  "How it works",
         howto_title: "How the Kana Drill works",
         howto_sub:   "What every control does, and how to read your progress.",
         info_sub:       "Keyboard shortcuts and what the chart controls do.",
@@ -500,7 +502,7 @@
         charts_off:     'Tabellen: aus',
         charts_disabled:'Die Übersichtstabellen sind ausgeschaltet',
         info_title:     "Tabellen & Tastenk\u00fcrzel",
-        howto_chip:  "\u24d8 So funktioniert es",
+        howto_chip:  "So funktioniert es",
         howto_title: "So funktioniert der Kana-Drill",
         howto_sub:   "Was jede Schaltfl\u00e4che bewirkt und wie Sie Ihren Fortschritt lesen.",
         info_sub:       "Tastenk\u00fcrzel und was die Tabellen-Schaltfl\u00e4chen bewirken.",
@@ -563,7 +565,7 @@
         charts_off:     'Tableaux : désactivés',
         charts_disabled:'Les tableaux sont désactivés',
         info_title:     "Tableaux et raccourcis",
-        howto_chip:  "\u24d8 Comment \u00e7a marche",
+        howto_chip:  "Comment \u00e7a marche",
         howto_title: "Comment fonctionne l'exercice de kana",
         howto_sub:   "Ce que fait chaque commande, et comment lire votre progression.",
         info_sub:       "Les raccourcis clavier et le r\u00f4le des commandes de tableaux.",
@@ -626,7 +628,7 @@
         charts_off:     '速查表：关',
         charts_disabled:'速查表已关闭',
         info_title:     "\u901f\u67e5\u8868\u4e0e\u5feb\u6377\u952e",
-        howto_chip:  "\u24d8\u4f7f\u7528\u8bf4\u660e",
+        howto_chip:  "\u4f7f\u7528\u8bf4\u660e",
         howto_title: "\u5047\u540d\u7ec3\u4e60\u4f7f\u7528\u8bf4\u660e",
         howto_sub:   "\u6bcf\u4e2a\u63a7\u4ef6\u7684\u4f5c\u7528\uff0c\u4ee5\u53ca\u5982\u4f55\u8bfb\u61c2\u60a8\u7684\u8fdb\u5ea6\u3002",
         info_sub:       "\u952e\u76d8\u5feb\u6377\u952e\uff0c\u4ee5\u53ca\u901f\u67e5\u8868\u76f8\u5173\u63a7\u4ef6\u7684\u4f5c\u7528\u3002",
@@ -1225,7 +1227,9 @@
       var ic = $('info-chip');
       if (ic) ic.title = t2('info_title');
       var hc = $('howto-chip');
-      if (hc) { hc.textContent = t2('howto_chip'); hc.title = t2('howto_title'); }
+      if (hc) hc.title = t2('howto_title');
+      var hct = $('howto-chip-text');
+      if (hct) hct.textContent = t2('howto_chip');
       // Grey out the cheat sheet buttons when charts are switched off
       document.querySelectorAll('.drill-control-row button[onclick^="openCheatSheet"]').forEach(function (b) {
         b.disabled = !state.chartsEnabled;
