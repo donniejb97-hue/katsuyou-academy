@@ -276,6 +276,8 @@
           <div class="drill-chip-group">
             <button class="drill-chip mode-chip on" data-mode="kana2romaji" onclick="setMode('kana2romaji')" data-i18n="mode_k2r">Kana → Rōmaji</button>
             <button class="drill-chip mode-chip" data-mode="romaji2kana" onclick="setMode('romaji2kana')" data-i18n="mode_r2k">Rōmaji → Kana</button>
+            <span class="drill-sep choice-rows-ctl" aria-hidden="true">|</span>
+            <select class="drill-select choice-rows-ctl" id="choice-rows-select" onchange="setChoiceRows(this.value)"></select>
           </div>
         </div>
         <div class="drill-control-row">
@@ -444,6 +446,9 @@
     // the site dictionary whenever it has them.
     var EXTRA_I18N = {
       en: {
+        choices_label:  'Choices',
+        choice_rows_1:  '1 row \u2014 4 tiles',
+        choice_rows_n:  '{n} rows \u2014 {c} tiles',
         charts_on:      'Charts: on',
         charts_off:     'Charts: off',
         charts_disabled:'Cheat sheets are switched off',
@@ -507,6 +512,9 @@
         progress_hint:  '{n} of {total} answered'
       },
       de: {
+        choices_label:  'Auswahl',
+        choice_rows_1:  '1 Reihe \u2014 4 Felder',
+        choice_rows_n:  '{n} Reihen \u2014 {c} Felder',
         charts_on:      'Tabellen: ein',
         charts_off:     'Tabellen: aus',
         charts_disabled:'Die Übersichtstabellen sind ausgeschaltet',
@@ -570,6 +578,9 @@
         progress_hint:  '{n} von {total} beantwortet'
       },
       fr: {
+        choices_label:  'Choix',
+        choice_rows_1:  '1 rangée \u2014 4 cases',
+        choice_rows_n:  '{n} rangées \u2014 {c} cases',
         charts_on:      'Tableaux : activés',
         charts_off:     'Tableaux : désactivés',
         charts_disabled:'Les tableaux sont désactivés',
@@ -633,6 +644,9 @@
         progress_hint:  '{n} sur {total} répondus'
       },
       zh: {
+        choices_label:  '选项',
+        choice_rows_1:  '1 行 \u2014 4 个选项',
+        choice_rows_n:  '{n} 行 \u2014 {c} 个选项',
         charts_on:      '速查表：开',
         charts_off:     '速查表：关',
         charts_disabled:'速查表已关闭',
@@ -742,7 +756,8 @@
       progressView: false, // cheat sheet shows encountered/unencountered
       snapToCurrent: true, // scroll the current kana into view when a chart opens
       chartsEnabled: true, // cheat sheets available, or switched off to test yourself
-      row: null            // null = every row; else { set: 'basic', idx: 2 }
+      row: null,           // null = every row; else { set: 'basic', idx: 2 }
+      choiceRows: 2        // rows of multiple-choice tiles, 4 to a row
     };
 
     // Restore best streak if the browser allows it
@@ -758,6 +773,8 @@
       state.progressView = localStorage.getItem('kanaDrillProgressView') === '1';
       // Defaults to on — only an explicit '0' turns it off
       state.snapToCurrent = localStorage.getItem('kanaDrillSnap') !== '0';
+      var savedRows = parseInt(localStorage.getItem('kanaDrillChoiceRows'), 10);
+      if (savedRows >= 1 && savedRows <= 3) state.choiceRows = savedRows;
       state.chartsEnabled = localStorage.getItem('kanaDrillCharts') !== '0';
     } catch (e) { state.seen = {}; }
 
@@ -929,14 +946,63 @@
       }
     }
 
+    // Katakana lookalikes. In hiragana these are easy to tell apart, but in
+    // katakana the difference is stroke angle and direction alone — so when the
+    // answer is one of these, its twins are forced into the choices rather than
+    // left to chance. Hiragana questions ignore this table.
+    var LOOKALIKES = [
+      ['\u30b7', '\u30c4', '\u30bd', '\u30f3', '\u30ce'],   // shi tsu so n no
+      ['\u30b8', '\u30c5', '\u30be'],                      // ji zu zo
+      ['\u30af', '\u30bf', '\u30b1'],                      // ku ta ke
+      ['\u30a6', '\u30ef', '\u30d5', '\u30e9'],             // u wa fu ra
+      ['\u30b9', '\u30cc', '\u30e1', '\u30ca', '\u30e0'],   // su nu me na mu
+      ['\u30a2', '\u30de', '\u30e4'],                      // a ma ya
+      ['\u30c1', '\u30c6'],                               // chi te
+      ['\u30aa', '\u30db', '\u30cd'],                      // o ho ne
+      ['\u30b3', '\u30e6', '\u30e8']                       // ko yu yo
+    ];
+
+    function lookalikesFor(k) {
+      for (var i = 0; i < LOOKALIKES.length; i++) {
+        if (LOOKALIKES[i].indexOf(k) !== -1) return LOOKALIKES[i];
+      }
+      return null;
+    }
+
+    // Four tiles to a row, so the answer plus this many wrong ones fills the grid.
+    function distractorCount() {
+      return state.choiceRows * 4 - 1;
+    }
+
     function buildChoices(answer, sc, p) {
+      var need = distractorCount();
       var distractors = [];
       var used = { };
       used[answer.h] = true;
       var usedRomaji = { };
       usedRomaji[answer.r] = true;
       var guard = 0;
-      while (distractors.length < 7 && guard < 400) {
+
+      // Twins go in first; the rest of the tiles fill in at random around them.
+      if (sc === 'k') {
+        var twins = lookalikesFor(answer.k);
+        if (twins) {
+          twins.forEach(function (ch) {
+            if (distractors.length >= need) return;
+            for (var i = 0; i < p.length; i++) {
+              var cand = p[i];
+              if (cand.k !== ch) continue;
+              if (used[cand.h] || usedRomaji[cand.r]) return;
+              used[cand.h] = true;
+              usedRomaji[cand.r] = true;
+              distractors.push(cand);
+              return;
+            }
+          });
+        }
+      }
+
+      while (distractors.length < need && guard < 60 * need) {
         guard++;
         var cand = p[Math.floor(Math.random() * p.length)];
         if (used[cand.h] || usedRomaji[cand.r]) continue;
@@ -1100,6 +1166,7 @@
     // ---------- controls ----------
     window.setMode = function (mode) {
       state.mode = mode;
+      syncChoiceRowsVisibility();
       document.querySelectorAll('.mode-chip').forEach(function (c) {
         c.classList.toggle('on', c.getAttribute('data-mode') === mode);
       });
@@ -1114,6 +1181,38 @@
       });
       newQuestion();
     };
+
+    window.setChoiceRows = function (v) {
+      var n = parseInt(v, 10);
+      if (!(n >= 1 && n <= 3)) return;
+      state.choiceRows = n;
+      try { localStorage.setItem('kanaDrillChoiceRows', String(n)); } catch (e) {}
+      newQuestion();
+    };
+
+    // The tile-count selector only means anything when there are tiles
+    function syncChoiceRowsVisibility() {
+      var show = state.mode === 'romaji2kana';
+      document.querySelectorAll('.choice-rows-ctl').forEach(function (el) {
+        el.style.display = show ? '' : 'none';
+      });
+    }
+
+    function renderChoiceRowsSelect() {
+      var sel = $('choice-rows-select');
+      if (!sel) return;
+      sel.innerHTML = '';
+      sel.setAttribute('aria-label', t2('choices_label'));
+      [1, 2, 3].forEach(function (n) {
+        var o = document.createElement('option');
+        o.value = String(n);
+        o.textContent = n === 1 ? t2('choice_rows_1')
+                                : fmt(t2('choice_rows_n'), { n: n, c: n * 4 });
+        sel.appendChild(o);
+      });
+      sel.value = String(state.choiceRows);
+      syncChoiceRowsVisibility();
+    }
 
     window.toggleSet = function (set) {
       // Never allow zero sets selected
@@ -1670,6 +1769,7 @@
       renderScores();
       renderDynamicLabels();
       renderRowChips();
+      renderChoiceRowsSelect();
       newQuestion();
     }
 
