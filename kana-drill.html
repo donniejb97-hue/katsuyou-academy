@@ -28,9 +28,13 @@
     .drill-score-box.streak .drill-score-value { color: var(--gold); }
 
     .drill-controls { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
-    .drill-control-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
-    .drill-control-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); min-width: 60px; }
-    .drill-chip { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 1rem; border-radius: 999px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    /* Label sits in its own fixed column; chips wrap inside their group so a
+       second line lines up with the first chip, not under the label. The width
+       is set in ch units so longer translations (GRUPPEN, TABELLEN) still fit. */
+    .drill-control-row { display: flex; gap: 0.5rem; align-items: flex-start; }
+    .drill-control-label { flex: 0 0 auto; min-width: 9ch; padding-top: 0.6rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); }
+    .drill-chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; flex: 1 1 auto; min-width: 0; }
+    .drill-chip { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem clamp(0.65rem, 0.4rem + 0.7vw, 1rem); border-radius: 999px; font-family: inherit; font-size: clamp(0.8rem, 0.74rem + 0.22vw, 0.9rem); font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
     .drill-chip:hover { border-color: var(--accent-soft); }
     .drill-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
     .drill-chip.on.set-chip { background: var(--sage); border-color: var(--sage); }
@@ -63,8 +67,10 @@
     .drill-feedback .big { font-size: 1.6rem; margin-top: 0.25rem; }
     .drill-audio-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; padding: 0.2rem 0.4rem; vertical-align: middle; }
 
-    .drill-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-    .drill-btn { flex: 1; padding: 1rem; font-family: inherit; font-size: 1rem; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; transition: all 0.15s; min-width: 140px; }
+    .drill-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: stretch; }
+    /* flex-basis 9rem lets all three share the row evenly and wrap only when
+       genuinely too narrow; min-height keeps them level if one label wraps. */
+    .drill-btn { flex: 1 1 9rem; min-width: 0; min-height: 3.5rem; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.25; padding: 0.85rem 0.75rem; font-family: inherit; font-size: clamp(0.85rem, 0.75rem + 0.35vw, 1rem); font-weight: 600; border-radius: 10px; border: none; cursor: pointer; transition: all 0.15s; }
     .drill-btn.primary { background: var(--accent); color: white; }
     .drill-btn.primary:hover:not(:disabled) { background: var(--accent-soft); }
     .drill-btn.primary:disabled { opacity: 0.45; cursor: default; }
@@ -141,6 +147,9 @@
     @media (max-width: 540px) {
       .info-row { flex-direction: column; gap: 0.15rem; }
       .info-keys { flex: none; }
+      .drill-control-row { flex-direction: column; gap: 0.35rem; }
+      .drill-control-label { padding-top: 0; min-width: 0; }
+      .drill-chip { white-space: normal; }
     }
 
     @media (max-width: 540px) {
@@ -215,30 +224,38 @@
       <div class="drill-controls">
         <div class="drill-control-row">
           <span class="drill-control-label" data-i18n="mode">Mode</span>
-          <button class="drill-chip mode-chip on" data-mode="kana2romaji" onclick="setMode('kana2romaji')" data-i18n="mode_k2r">Kana → Rōmaji</button>
-          <button class="drill-chip mode-chip" data-mode="romaji2kana" onclick="setMode('romaji2kana')" data-i18n="mode_r2k">Rōmaji → Kana</button>
+          <div class="drill-chip-group">
+            <button class="drill-chip mode-chip on" data-mode="kana2romaji" onclick="setMode('kana2romaji')" data-i18n="mode_k2r">Kana → Rōmaji</button>
+            <button class="drill-chip mode-chip" data-mode="romaji2kana" onclick="setMode('romaji2kana')" data-i18n="mode_r2k">Rōmaji → Kana</button>
+          </div>
         </div>
         <div class="drill-control-row">
           <span class="drill-control-label" data-i18n="script">Script</span>
-          <button class="drill-chip script-chip on" data-script="hiragana" onclick="setScript('hiragana')">ひらがな</button>
-          <button class="drill-chip script-chip" data-script="katakana" onclick="setScript('katakana')">カタカナ</button>
-          <button class="drill-chip script-chip" data-script="mixed" onclick="setScript('mixed')" data-i18n="mixed">Mixed</button>
+          <div class="drill-chip-group">
+            <button class="drill-chip script-chip on" data-script="hiragana" onclick="setScript('hiragana')">ひらがな</button>
+            <button class="drill-chip script-chip" data-script="katakana" onclick="setScript('katakana')">カタカナ</button>
+            <button class="drill-chip script-chip" data-script="mixed" onclick="setScript('mixed')" data-i18n="mixed">Mixed</button>
+          </div>
         </div>
         <div class="drill-control-row">
           <span class="drill-control-label" data-i18n="sets">Sets</span>
-          <button class="drill-chip set-chip on" data-set="basic" onclick="toggleSet('basic')" data-i18n="set_basic">Basic (46)</button>
-          <button class="drill-chip set-chip" data-set="dakuten" onclick="toggleSet('dakuten')" data-i18n="set_dakuten">Dakuten (25)</button>
-          <button class="drill-chip set-chip" data-set="combos" onclick="toggleSet('combos')" data-i18n="set_combos">Combos (33)</button>
-          <span class="drill-sep" aria-hidden="true">|</span>
-          <button class="drill-chip filter-chip" id="unseen-only-chip" onclick="toggleUnseenOnly()"></button>
+          <div class="drill-chip-group">
+            <button class="drill-chip set-chip on" data-set="basic" onclick="toggleSet('basic')" data-i18n="set_basic">Basic (46)</button>
+            <button class="drill-chip set-chip" data-set="dakuten" onclick="toggleSet('dakuten')" data-i18n="set_dakuten">Dakuten (25)</button>
+            <button class="drill-chip set-chip" data-set="combos" onclick="toggleSet('combos')" data-i18n="set_combos">Combos (33)</button>
+            <span class="drill-sep" aria-hidden="true">|</span>
+            <button class="drill-chip filter-chip" id="unseen-only-chip" onclick="toggleUnseenOnly()"></button>
+          </div>
         </div>
         <div class="drill-control-row">
           <span class="drill-control-label" data-i18n="charts">Charts</span>
-          <button class="drill-chip" onclick="openCheatSheet('h')" title="Hold Alt+H to peek" data-i18n="sheet_h" data-i18n-title="hold_h">ひらがな Cheat Sheet</button>
-          <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek" data-i18n="sheet_k" data-i18n-title="hold_k">カタカナ Cheat Sheet</button>
-          <span class="drill-sep" aria-hidden="true">|</span>
-          <button class="drill-chip charts-chip" id="charts-toggle-chip" onclick="toggleCharts()"></button>
-          <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts and options">ⓘ</button>
+          <div class="drill-chip-group">
+            <button class="drill-chip" onclick="openCheatSheet('h')" title="Hold Alt+H to peek" data-i18n="sheet_h" data-i18n-title="hold_h">ひらがな Cheat Sheet</button>
+            <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek" data-i18n="sheet_k" data-i18n-title="hold_k">カタカナ Cheat Sheet</button>
+            <span class="drill-sep" aria-hidden="true">|</span>
+            <button class="drill-chip charts-chip" id="charts-toggle-chip" onclick="toggleCharts()"></button>
+            <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts and options">ⓘ</button>
+          </div>
         </div>
       </div>
 
