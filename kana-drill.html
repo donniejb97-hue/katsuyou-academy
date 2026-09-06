@@ -104,6 +104,11 @@
     .cheat-hint { font-size: 0.8rem; color: var(--text-light); margin-bottom: 1.25rem; }
     .cheat-cell.current { background: rgba(196,92,74,0.14); border: 2px solid var(--accent); padding: calc(0.45rem - 1px) calc(0.2rem - 1px); }
     .cheat-cell.current .kana { color: var(--accent); font-weight: 600; }
+    /* Progress mode already uses green for answered and red for missed, so the
+       current marker switches to neutral ink rather than clashing with them. */
+    .cheat-cell.current.seen, .cheat-cell.current.unseen, .cheat-cell.current.skipped { background: rgba(26,26,46,0.07); border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+    .cheat-cell.current.seen .kana, .cheat-cell.current.unseen .kana, .cheat-cell.current.skipped .kana { color: var(--ink); }
+    .cheat-cell.current.unseen { opacity: 1; }
     .cheat-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin: 1.25rem 0 0.5rem; }
     .cheat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
     .cheat-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
@@ -120,11 +125,17 @@
     .cheat-toggle { padding: 0.35rem 0.85rem; font-size: 0.8rem; }
 
     .cheat-cell .cheat-counts { display: block; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.02em; color: var(--text-light); line-height: 1.4; font-style: normal; }
+    .cheat-counts .c-ok   { color: #3f5c42; }
+    .cheat-counts .c-bad  { color: #a13a28; }
+    .cheat-counts .c-skip { color: #8a6a1a; }
     .cheat-cell.unseen { opacity: 0.34; }
     .cheat-cell.unseen .kana { color: var(--text-light); }
     .cheat-cell.seen { border-color: var(--sage); background: rgba(122,158,126,0.10); }
     .cheat-cell.seen .cheat-counts { color: #3f5c42; }
     .cheat-cell.missed { border-color: var(--accent); background: rgba(196,92,74,0.09); }
+    .cheat-cell.skipped { border-color: var(--gold); background: rgba(201,169,98,0.16); }
+    .cheat-cell.skipped .cheat-counts { color: #7a6326; }
+    .cheat-cell.skipped:hover { background: rgba(201,169,98,0.28); border-color: var(--gold); }
     .cheat-cell.missed .cheat-counts { color: #8a3d2f; }
     /* wrong answers announce themselves on hover */
     .cheat-cell.missed:hover { background: rgba(196,92,74,0.20); border-color: var(--accent); }
@@ -136,12 +147,38 @@
     .drill-chip.progress-chip:hover { background: rgba(122,158,126,0.12); border-color: var(--sage); }
     .drill-chip.charts-chip.on { background: var(--sage); border-color: var(--sage); color: var(--paper); }
     .drill-chip.charts-chip { border-color: var(--sage); color: #3f5c42; font-weight: 600; }
+    .drill-select { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 2rem 0.45rem 0.9rem; border-radius: 999px; font-family: inherit; font-size: clamp(0.8rem, 0.74rem + 0.22vw, 0.9rem); font-weight: 500; cursor: pointer; transition: all 0.15s; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236b6b6b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.8rem center; }
+    .drill-select:hover { border-color: var(--accent-soft); }
+    .drill-select.on { background-color: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
+    /* The popup inherits the select's background, so reset it explicitly —
+       otherwise the gold "active" state floods the whole open list. */
+    .drill-select option, .drill-select optgroup { background-color: white; color: var(--text); font-weight: 500; }
+    .drill-select optgroup { font-weight: 700; color: var(--ink); }
     .drill-chip.info-chip { font-size: 1.05rem; line-height: 1; padding: 0.4rem 0.7rem; font-weight: 700; }
+    .drill-chip.howto-chip { align-self: center; white-space: nowrap; border-color: var(--sage); color: #3f5c42; font-weight: 600; }
+    .drill-chip.howto-chip:hover { background: rgba(122,158,126,0.12); border-color: var(--sage); }
     .drill-chip:disabled { opacity: 0.4; cursor: default; }
     .drill-chip:disabled:hover { border-color: rgba(0,0,0,0.15); }
 
     .info-row { display: flex; gap: 0.9rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
     .info-row:last-child { border-bottom: none; }
+    .info-section { margin-top: 1.4rem; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; color: var(--accent); }
+    .info-section:first-child { margin-top: 0.5rem; }
+    .info-legend { display: flex; align-items: center; gap: 0.8rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .info-swatch { flex: 0 0 auto; width: 54px; text-align: center; border: 1.5px solid rgba(0,0,0,0.12); border-radius: 6px; padding: 0.3rem 0.1rem; background: white; }
+    .info-swatch .kana { display: block; font-size: 1.1rem; color: var(--ink); line-height: 1.2; }
+    .info-swatch .cnt { display: block; font-size: 0.55rem; font-weight: 700; color: var(--text-light); }
+    .info-swatch .c-ok { color: #3f5c42; }
+    .info-swatch .c-bad { color: #a13a28; }
+    .info-swatch .c-skip { color: #8a6a1a; }
+    .info-swatch.unseen { opacity: 0.34; }
+    .info-swatch.seen { border-color: var(--sage); background: rgba(122,158,126,0.10); }
+    .info-swatch.seen .cnt { color: #3f5c42; }
+    .info-swatch.missed { border-color: var(--accent); background: rgba(196,92,74,0.09); }
+    .info-swatch.missed .cnt { color: #8a3d2f; }
+    .info-swatch.skipped { border-color: var(--gold); background: rgba(201,169,98,0.16); }
+    .info-swatch.skipped .cnt { color: #7a6326; }
+    .info-swatch.current { border-color: var(--ink); background: rgba(26,26,46,0.07); box-shadow: 0 0 0 1px var(--ink); }
     .info-keys { flex: 0 0 96px; font-weight: 700; font-size: 0.85rem; color: var(--ink); }
     .info-desc { font-size: 0.9rem; color: var(--text); line-height: 1.55; }
     @media (max-width: 540px) {
@@ -218,6 +255,7 @@
             <div class="drill-score-label" data-i18n="best">Best</div>
             <div class="drill-score-value" id="drill-best">0</div>
           </div>
+          <button class="drill-chip howto-chip" id="howto-chip" onclick="openHowTo()"></button>
         </div>
       </div>
 
@@ -235,6 +273,8 @@
             <button class="drill-chip script-chip on" data-script="hiragana" onclick="setScript('hiragana')">ひらがな</button>
             <button class="drill-chip script-chip" data-script="katakana" onclick="setScript('katakana')">カタカナ</button>
             <button class="drill-chip script-chip" data-script="mixed" onclick="setScript('mixed')" data-i18n="mixed">Mixed</button>
+            <span class="drill-sep" aria-hidden="true">|</span>
+            <select class="drill-select" id="row-select" onchange="selectRowFromValue(this.value)"></select>
           </div>
         </div>
         <div class="drill-control-row">
@@ -254,7 +294,7 @@
             <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek" data-i18n="sheet_k" data-i18n-title="hold_k">カタカナ Cheat Sheet</button>
             <span class="drill-sep" aria-hidden="true">|</span>
             <button class="drill-chip charts-chip" id="charts-toggle-chip" onclick="toggleCharts()"></button>
-            <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts and options">ⓘ</button>
+            <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts">ⓘ</button>
           </div>
         </div>
       </div>
@@ -309,6 +349,16 @@
       <h2 class="cheat-title" id="info-title"></h2>
       <div class="cheat-hint" id="info-sub"></div>
       <div id="info-content"></div>
+    </div>
+  </div>
+
+  <!-- How It Works Modal -->
+  <div id="howto-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="howto-title">
+    <div class="cheat-box" style="max-width: 520px;">
+      <button class="cheat-close" onclick="closeHowTo()" aria-label="Close">×</button>
+      <h2 class="cheat-title" id="howto-title"></h2>
+      <div class="cheat-hint" id="howto-sub"></div>
+      <div id="howto-content"></div>
     </div>
   </div>
 
@@ -386,17 +436,48 @@
         charts_on:      'Charts: on',
         charts_off:     'Charts: off',
         charts_disabled:'Cheat sheets are switched off',
-        info_title:     'Shortcuts & options',
-        info_sub:       'Everything this page can do without a mouse.',
+        info_title:     "Charts & shortcuts",
+        howto_chip:  "\u24d8 How it works",
+        howto_title: "How the Kana Drill works",
+        howto_sub:   "What every control does, and how to read your progress.",
+        info_sub:       "Keyboard shortcuts and what the chart controls do.",
+        info_chip:   "\u24d8 Shortcuts",
+        sec_setup:   "Setting up a drill",
+        sec_progress:"Reading the progress view",
+        sec_keys:    "Buttons & shortcuts",
+        rows:        "Line",
+        row_fmt:     "{r} row",
+        all_rows:    "All lines",
+        setup_rows: [
+          ["Mode", "Kana \u2192 R\u014dmaji asks you to type the reading. R\u014dmaji \u2192 Kana shows you a reading and you pick the character."],
+          ["Script", "Drill hiragana, katakana, or both mixed together."],
+          ["Sets", "Basic is the 46 core kana. Dakuten adds the voiced sounds (\u304c, \u3071). Combos adds the small-ya pairs (\u304d\u3083). At least one stays on."],
+          ["Line", "Narrow the drill to a single row \u2014 \u3042\u884c is \u3042\u3044\u3046\u3048\u304a, \u304b\u884c is \u304b\u304d\u304f\u3051\u3053. Good for learning a chart five characters at a time. Tap the same line again to clear it."],
+          ["Unseen only", "Serves only kana you have never answered, inside your current script, set and line choices. It switches itself off once you have met them all."]
+        ],
+        progress_rows: [
+          ["\u2713 and \u2717", "Under each kana: how many times you answered it correctly, and how many times you missed it."],
+          ["\u21b7", "How many times you skipped that kana. It shows on answered kana too, next to the \u2713 and \u2717."],
+          ["Section totals", "Each heading shows how many of that section you have answered \u2014 \"BASIC (46) 39/46\"."],
+          ["Overall", "The line at the top counts every kana in that script, all three sections together."],
+          ["Skipping", "Skipping does not count as answering. A kana you only ever skipped stays unanswered, so Unseen only will bring it back."],
+          ["Reset Score", "Clears every count here and empties the view. Your best streak is kept."]
+        ],
+        legend: [
+          ["unseen", "Not answered yet", "Faded, with a dot instead of counts. This is what you still have to learn."],
+          ["seen", "Answered, never missed", "Green. You have got this one right every time so far."],
+          ["missed", "Answered, missed before", "Red. The \u2717 count tells you how often. These are worth drilling with Unseen only switched off."],
+          ["skipped", "Only ever skipped", "Gold. You have passed on this one without answering, so it still counts as unlearned."],
+          ["current", "The question on screen", "Dark outline, so it stands out without being confused with the red above."]
+        ],
         info_rows: [
-          ['Alt+H / Alt+K', 'Hold to peek at the hiragana or katakana chart, release to hide.'],
-          ['Alt+P', 'Open the progress view, or hide it if a chart is already open.'],
-          ['Alt+C', 'Jump to the current kana when a chart opens — on or off.'],
-          ['Enter', 'Check your answer, then again to move to the next question.'],
-          ['Esc', 'Close an open chart.'],
-          ['Charts', 'Switch the cheat sheets off when you want to test yourself honestly. Your progress stays reachable.'],
-          ['Unseen only', 'Drill only the kana you have never answered, within your current script and set choices.'],
-          ['Reset Score', 'Clears your score and everything the progress view remembers. Your best streak survives.']
+          ["Alt+H / Alt+K", "Hold to peek at the hiragana or katakana chart, release to hide."],
+          ["Alt+P", "Open the progress view, or hide it if a chart is already open."],
+          ["Alt+C", "Jump to the current kana when a chart opens \u2014 on or off."],
+          ["Enter", "Check your answer, then again to move to the next question."],
+          ["Esc", "Close an open chart."],
+          ["Charts", "Switch the cheat sheets off when you want to test yourself honestly."],
+          ["Skip", "Reveals the answer and counts against your score, but leaves the kana marked unanswered."]
         ],
         snap_on:        'Snap to current kana: on',
         snap_off:       'Snap to current kana: off',
@@ -406,6 +487,9 @@
         progress_show:  'Show progress',
         progress_hide:  'Hide progress',
         all_seen:       "You've answered every kana in this selection — showing all again.",
+        tip_skips:   ", skipped {s}\u00d7",
+        tip_skipped_only: "Only ever skipped",
+        progress_skipped: " \u00b7 {s} skipped",
         tip_unseen:     'Not yet answered',
         tip_counts:     '{r} — {c} correct, {m} missed',
         one_set:        'At least one set must stay on',
@@ -415,17 +499,48 @@
         charts_on:      'Tabellen: ein',
         charts_off:     'Tabellen: aus',
         charts_disabled:'Die Übersichtstabellen sind ausgeschaltet',
-        info_title:     'Tastenkürzel & Optionen',
-        info_sub:       'Alles, was diese Seite ohne Maus kann.',
+        info_title:     "Tabellen & Tastenk\u00fcrzel",
+        howto_chip:  "\u24d8 So funktioniert es",
+        howto_title: "So funktioniert der Kana-Drill",
+        howto_sub:   "Was jede Schaltfl\u00e4che bewirkt und wie Sie Ihren Fortschritt lesen.",
+        info_sub:       "Tastenk\u00fcrzel und was die Tabellen-Schaltfl\u00e4chen bewirken.",
+        info_chip:   "\u24d8 Tastenk\u00fcrzel",
+        sec_setup:   "Eine \u00dcbung einrichten",
+        sec_progress:"Die Fortschrittsansicht lesen",
+        sec_keys:    "Schaltfl\u00e4chen & Tastenk\u00fcrzel",
+        rows:        "Reihe",
+        row_fmt:     "{r}-Reihe",
+        all_rows:    "Alle Reihen",
+        setup_rows: [
+          ["Modus", "Kana \u2192 R\u014dmaji: Sie tippen die Lesung ein. R\u014dmaji \u2192 Kana: Sie sehen eine Lesung und w\u00e4hlen das Zeichen."],
+          ["Schrift", "\u00dcben Sie Hiragana, Katakana oder beides gemischt."],
+          ["Gruppen", "Grundzeichen sind die 46 Kernzeichen. Dakuten erg\u00e4nzt die stimmhaften Laute (\u304c, \u3071). Kombinationen erg\u00e4nzt die Paare mit kleinem ya (\u304d\u3083). Mindestens eine Gruppe bleibt aktiv."],
+          ["Reihe", "Beschr\u00e4nkt die \u00dcbung auf eine einzelne Reihe \u2014 \u3042\u884c ist \u3042\u3044\u3046\u3048\u304a, \u304b\u884c ist \u304b\u304d\u304f\u3051\u3053. Ideal, um eine Tabelle in F\u00fcnferschritten zu lernen. Tippen Sie dieselbe Reihe erneut an, um die Auswahl aufzuheben."],
+          ["Nur ungesehene", "Zeigt nur Kana, die Sie noch nie beantwortet haben \u2014 innerhalb Ihrer Schrift-, Gruppen- und Reihenauswahl. Sobald Sie alle kennen, schaltet sich die Option selbst ab."]
+        ],
+        progress_rows: [
+          ["\u2713 und \u2717", "Unter jedem Kana: wie oft Sie es richtig beantwortet und wie oft Sie es falsch hatten."],
+          ["\u21b7", "Wie oft Sie dieses Kana \u00fcbersprungen haben. Erscheint auch bei beantworteten Kana, neben \u2713 und \u2717."],
+          ["Abschnittssummen", "Jede \u00dcberschrift zeigt, wie viele Zeichen des Abschnitts Sie beantwortet haben \u2014 \u201eGRUNDZEICHEN (46) 39/46\"."],
+          ["Gesamt", "Die Zeile oben z\u00e4hlt alle Kana dieser Schrift, alle drei Abschnitte zusammen."],
+          ["\u00dcberspringen", "\u00dcberspringen gilt nicht als Beantworten. Ein nur \u00fcbersprungenes Kana bleibt unbeantwortet und taucht bei \u201eNur ungesehene\" wieder auf."],
+          ["Punkte zur\u00fccksetzen", "L\u00f6scht alle Z\u00e4hlungen hier und leert die Ansicht. Ihre Bestleistung bleibt erhalten."]
+        ],
+        legend: [
+          ["unseen", "Noch nicht beantwortet", "Blass, mit einem Punkt statt Zahlen. Das ist, was Sie noch lernen m\u00fcssen."],
+          ["seen", "Beantwortet, nie falsch", "Gr\u00fcn. Dieses Zeichen hatten Sie bisher immer richtig."],
+          ["missed", "Beantwortet, schon falsch gehabt", "Rot. Die \u2717-Zahl zeigt, wie oft. Diese lohnen sich mit ausgeschalteter Option \u201eNur ungesehene\"."],
+          ["skipped", "Bisher nur \u00fcbersprungen", "Gold. Sie haben dieses Zeichen \u00fcbergangen, ohne zu antworten \u2014 es gilt weiterhin als ungelernt."],
+          ["current", "Die aktuelle Frage", "Dunkle Umrandung, damit sie auff\u00e4llt, ohne mit dem Rot verwechselt zu werden."]
+        ],
         info_rows: [
-          ['Alt+H / Alt+K', 'Gedrückt halten, um in die Hiragana- oder Katakana-Tabelle zu spicken; loslassen zum Ausblenden.'],
-          ['Alt+P', 'Die Fortschrittsansicht öffnen — oder ausblenden, wenn bereits eine Tabelle offen ist.'],
-          ['Alt+C', 'Beim Öffnen einer Tabelle zum aktuellen Kana springen — ein oder aus.'],
-          ['Enter', 'Antwort prüfen, dann erneut drücken für die nächste Frage.'],
-          ['Esc', 'Eine geöffnete Tabelle schließen.'],
-          ['Tabellen', 'Schalten Sie die Übersichtstabellen aus, wenn Sie sich ehrlich prüfen möchten. Ihr Fortschritt bleibt erreichbar.'],
-          ['Nur ungesehene', 'Nur die Kana üben, die Sie noch nie beantwortet haben — innerhalb Ihrer aktuellen Schrift- und Satzauswahl.'],
-          ['Punktzahl zurücksetzen', 'Löscht Ihre Punktzahl und alles, was die Fortschrittsansicht gespeichert hat. Ihre Bestleistung bleibt erhalten.']
+          ["Alt+H / Alt+K", "Gedr\u00fcckt halten, um in die Hiragana- oder Katakana-Tabelle zu spicken; loslassen zum Ausblenden."],
+          ["Alt+P", "Die Fortschrittsansicht \u00f6ffnen \u2014 oder ausblenden, wenn bereits eine Tabelle offen ist."],
+          ["Alt+C", "Beim \u00d6ffnen einer Tabelle zum aktuellen Kana springen \u2014 ein oder aus."],
+          ["Enter", "Antwort pr\u00fcfen, dann erneut dr\u00fccken f\u00fcr die n\u00e4chste Frage."],
+          ["Esc", "Eine ge\u00f6ffnete Tabelle schlie\u00dfen."],
+          ["Tabellen", "Schalten Sie die \u00dcbersichtstabellen aus, wenn Sie sich ehrlich pr\u00fcfen m\u00f6chten."],
+          ["\u00dcberspringen", "Deckt die Antwort auf und z\u00e4hlt gegen Ihre Punktzahl, l\u00e4sst das Kana aber als unbeantwortet stehen."]
         ],
         snap_on:        'Zum aktuellen Kana springen: ein',
         snap_off:       'Zum aktuellen Kana springen: aus',
@@ -435,6 +550,9 @@
         progress_show:  'Fortschritt anzeigen',
         progress_hide:  'Fortschritt ausblenden',
         all_seen:       'Sie haben alle Kana dieser Auswahl beantwortet — es werden wieder alle angezeigt.',
+        tip_skips:   ", {s}\u00d7 \u00fcbersprungen",
+        tip_skipped_only: "Bisher nur \u00fcbersprungen",
+        progress_skipped: " \u00b7 {s} \u00fcbersprungen",
         tip_unseen:     'Noch nicht beantwortet',
         tip_counts:     '{r} — {c} richtig, {m} falsch',
         one_set:        'Mindestens ein Satz muss aktiviert bleiben',
@@ -444,17 +562,48 @@
         charts_on:      'Tableaux : activés',
         charts_off:     'Tableaux : désactivés',
         charts_disabled:'Les tableaux sont désactivés',
-        info_title:     'Raccourcis et options',
-        info_sub:       'Tout ce que cette page permet sans souris.',
+        info_title:     "Tableaux et raccourcis",
+        howto_chip:  "\u24d8 Comment \u00e7a marche",
+        howto_title: "Comment fonctionne l'exercice de kana",
+        howto_sub:   "Ce que fait chaque commande, et comment lire votre progression.",
+        info_sub:       "Les raccourcis clavier et le r\u00f4le des commandes de tableaux.",
+        info_chip:   "\u24d8 Raccourcis",
+        sec_setup:   "Configurer un exercice",
+        sec_progress:"Lire la vue de progression",
+        sec_keys:    "Boutons et raccourcis",
+        rows:        "Ligne",
+        row_fmt:     "Ligne {r}",
+        all_rows:    "Toutes les lignes",
+        setup_rows: [
+          ["Mode", "Kana \u2192 r\u014dmaji : vous tapez la lecture. R\u014dmaji \u2192 kana : une lecture est affich\u00e9e et vous choisissez le caract\u00e8re."],
+          ["\u00c9criture", "Travaillez les hiragana, les katakana, ou les deux m\u00e9lang\u00e9s."],
+          ["Ensembles", "Base : les 46 kana fondamentaux. Dakuten : les sons vois\u00e9s (\u304c, \u3071). Combinaisons : les paires avec petit ya (\u304d\u3083). Au moins un ensemble reste actif."],
+          ["Ligne", "Limite l'exercice \u00e0 une seule ligne \u2014 \u3042\u884c correspond \u00e0 \u3042\u3044\u3046\u3048\u304a, \u304b\u884c \u00e0 \u304b\u304d\u304f\u3051\u3053. Id\u00e9al pour apprendre un tableau cinq caract\u00e8res \u00e0 la fois. Retouchez la m\u00eame ligne pour l'annuler."],
+          ["Non vus uniquement", "Ne propose que les kana auxquels vous n'avez jamais r\u00e9pondu, selon vos choix d'\u00e9criture, d'ensemble et de ligne. L'option se d\u00e9sactive seule une fois que vous les avez tous rencontr\u00e9s."]
+        ],
+        progress_rows: [
+          ["\u2713 et \u2717", "Sous chaque kana : combien de fois vous avez r\u00e9pondu correctement, et combien de fois vous vous \u00eates tromp\u00e9."],
+          ["\u21b7", "Combien de fois vous avez pass\u00e9 ce kana. Appara\u00eet aussi sur les kana r\u00e9pondus, \u00e0 c\u00f4t\u00e9 des \u2713 et \u2717."],
+          ["Totaux par section", "Chaque titre indique combien de caract\u00e8res de la section vous avez trait\u00e9s \u2014 \u00ab BASE (46) 39/46 \u00bb."],
+          ["Total g\u00e9n\u00e9ral", "La ligne du haut compte tous les kana de cette \u00e9criture, les trois sections r\u00e9unies."],
+          ["Passer", "Passer ne compte pas comme r\u00e9pondre. Un kana seulement pass\u00e9 reste sans r\u00e9ponse et reviendra avec \u00ab Non vus uniquement \u00bb."],
+          ["R\u00e9initialiser", "Efface tous les compteurs et vide la vue. Votre record de s\u00e9rie est conserv\u00e9."]
+        ],
+        legend: [
+          ["unseen", "Pas encore r\u00e9pondu", "Estomp\u00e9, avec un point au lieu des compteurs. C'est ce qu'il vous reste \u00e0 apprendre."],
+          ["seen", "R\u00e9pondu, jamais manqu\u00e9", "Vert. Vous avez toujours eu ce caract\u00e8re juste jusqu'ici."],
+          ["missed", "R\u00e9pondu, d\u00e9j\u00e0 manqu\u00e9", "Rouge. Le compteur \u2717 indique combien de fois. \u00c0 travailler avec \u00ab Non vus uniquement \u00bb d\u00e9sactiv\u00e9."],
+          ["skipped", "Seulement pass\u00e9", "Dor\u00e9. Vous l'avez pass\u00e9 sans r\u00e9pondre, il compte donc toujours comme non appris."],
+          ["current", "La question affich\u00e9e", "Contour fonc\u00e9, pour ressortir sans \u00eatre confondu avec le rouge ci-dessus."]
+        ],
         info_rows: [
-          ['Alt+H / Alt+K', 'Maintenez pour jeter un œil au tableau des hiragana ou des katakana ; relâchez pour le masquer.'],
-          ['Alt+P', 'Ouvrir la vue de progression, ou la masquer si un tableau est déjà ouvert.'],
-          ['Alt+C', 'Aller au kana actuel à l\'ouverture d\'un tableau — activé ou désactivé.'],
-          ['Enter', 'Vérifier votre réponse, puis à nouveau pour passer à la question suivante.'],
-          ['Esc', 'Fermer un tableau ouvert.'],
-          ['Tableaux', 'Désactivez les tableaux quand vous voulez vous tester honnêtement. Votre progression reste accessible.'],
-          ['Non vus uniquement', 'N\'exercer que les kana auxquels vous n\'avez jamais répondu, selon vos choix d\'écriture et d\'ensemble.'],
-          ['Réinitialiser', 'Efface votre score et tout ce que la vue de progression retient. Votre record de série est conservé.']
+          ["Alt+H / Alt+K", "Maintenez pour jeter un \u0153il au tableau des hiragana ou des katakana ; rel\u00e2chez pour le masquer."],
+          ["Alt+P", "Ouvrir la vue de progression, ou la masquer si un tableau est d\u00e9j\u00e0 ouvert."],
+          ["Alt+C", "Aller au kana actuel \u00e0 l'ouverture d'un tableau \u2014 activ\u00e9 ou d\u00e9sactiv\u00e9."],
+          ["Enter", "V\u00e9rifier votre r\u00e9ponse, puis \u00e0 nouveau pour passer \u00e0 la question suivante."],
+          ["Esc", "Fermer un tableau ouvert."],
+          ["Tableaux", "D\u00e9sactivez les tableaux quand vous voulez vous tester honn\u00eatement."],
+          ["Passer", "R\u00e9v\u00e8le la r\u00e9ponse et compte contre votre score, mais laisse le kana marqu\u00e9 comme sans r\u00e9ponse."]
         ],
         snap_on:        'Aller au kana actuel : activé',
         snap_off:       'Aller au kana actuel : désactivé',
@@ -464,6 +613,9 @@
         progress_show:  'Afficher la progression',
         progress_hide:  'Masquer la progression',
         all_seen:       'Vous avez répondu à tous les kana de cette sélection — affichage complet rétabli.',
+        tip_skips:   ", pass\u00e9 {s} fois",
+        tip_skipped_only: "Seulement pass\u00e9",
+        progress_skipped: " \u00b7 {s} pass\u00e9s",
         tip_unseen:     'Pas encore répondu',
         tip_counts:     '{r} — {c} correct(s), {m} manqué(s)',
         one_set:        'Au moins un ensemble doit rester actif',
@@ -473,17 +625,48 @@
         charts_on:      '速查表：开',
         charts_off:     '速查表：关',
         charts_disabled:'速查表已关闭',
-        info_title:     '快捷键与选项',
-        info_sub:       '本页无需鼠标即可完成的所有操作。',
+        info_title:     "\u901f\u67e5\u8868\u4e0e\u5feb\u6377\u952e",
+        howto_chip:  "\u24d8\u4f7f\u7528\u8bf4\u660e",
+        howto_title: "\u5047\u540d\u7ec3\u4e60\u4f7f\u7528\u8bf4\u660e",
+        howto_sub:   "\u6bcf\u4e2a\u63a7\u4ef6\u7684\u4f5c\u7528\uff0c\u4ee5\u53ca\u5982\u4f55\u8bfb\u61c2\u60a8\u7684\u8fdb\u5ea6\u3002",
+        info_sub:       "\u952e\u76d8\u5feb\u6377\u952e\uff0c\u4ee5\u53ca\u901f\u67e5\u8868\u76f8\u5173\u63a7\u4ef6\u7684\u4f5c\u7528\u3002",
+        info_chip:   "\u24d8\u5feb\u6377\u952e",
+        sec_setup:   "\u8bbe\u7f6e\u7ec3\u4e60",
+        sec_progress:"\u8bfb\u61c2\u8fdb\u5ea6\u89c6\u56fe",
+        sec_keys:    "\u6309\u94ae\u4e0e\u5feb\u6377\u952e",
+        rows:        "\u884c",
+        row_fmt:     "{r}\u884c",
+        all_rows:    "\u5168\u90e8\u884c",
+        setup_rows: [
+          ["\u6a21\u5f0f", "\u5047\u540d \u2192 \u7f57\u9a6c\u5b57\uff1a\u7531\u60a8\u8f93\u5165\u8bfb\u97f3\u3002\u7f57\u9a6c\u5b57 \u2192 \u5047\u540d\uff1a\u663e\u793a\u8bfb\u97f3\uff0c\u7531\u60a8\u9009\u51fa\u5bf9\u5e94\u5b57\u7b26\u3002"],
+          ["\u5b57\u4f53", "\u53ef\u7ec3\u4e60\u5e73\u5047\u540d\u3001\u7247\u5047\u540d\uff0c\u6216\u4e24\u8005\u6df7\u5408\u3002"],
+          ["\u5047\u540d\u96c6", "\u57fa\u672c\u4e3a 46 \u4e2a\u6838\u5fc3\u5047\u540d\uff1b\u6d4a\u97f3\u589e\u52a0\u6d4a\u97f3\u4e0e\u534a\u6d4a\u97f3\uff08\u304c\u3001\u3071\uff09\uff1b\u62d7\u97f3\u589e\u52a0\u5c0f\u5199 ya \u7c7b\u7ec4\u5408\uff08\u304d\u3083\uff09\u3002\u81f3\u5c11\u9700\u4fdd\u7559\u4e00\u4e2a\u3002"],
+          ["\u884c", "\u5c06\u7ec3\u4e60\u9650\u5b9a\u5728\u5355\u72ec\u4e00\u884c\u2014\u2014\u3042\u884c\u5373\u3042\u3044\u3046\u3048\u304a\uff0c\u304b\u884c\u5373\u304b\u304d\u304f\u3051\u3053\u3002\u9002\u5408\u6bcf\u6b21\u5b66\u4e60\u4e94\u4e2a\u5b57\u7b26\u3002\u518d\u6b21\u70b9\u51fb\u540c\u4e00\u884c\u5373\u53ef\u53d6\u6d88\u3002"],
+          ["\u4ec5\u672a\u4f5c\u7b54", "\u53ea\u51fa\u793a\u60a8\u4ece\u672a\u4f5c\u7b54\u8fc7\u7684\u5047\u540d\uff0c\u8303\u56f4\u53d6\u51b3\u4e8e\u5f53\u524d\u7684\u5b57\u4f53\u3001\u5047\u540d\u96c6\u4e0e\u884c\u9009\u62e9\u3002\u5168\u90e8\u9047\u5230\u4e4b\u540e\u4f1a\u81ea\u52a8\u5173\u95ed\u3002"]
+        ],
+        progress_rows: [
+          ["\u2713 \u4e0e \u2717", "\u6bcf\u4e2a\u5047\u540d\u4e0b\u65b9\uff1a\u7b54\u5bf9\u7684\u6b21\u6570\u4e0e\u7b54\u9519\u7684\u6b21\u6570\u3002"],
+          ["\u21b7", "\u8be5\u5047\u540d\u88ab\u8df3\u8fc7\u7684\u6b21\u6570\u3002\u5df2\u4f5c\u7b54\u7684\u5047\u540d\u4e5f\u4f1a\u663e\u793a\uff0c\u4f4d\u4e8e \u2713 \u4e0e \u2717 \u65c1\u8fb9\u3002"],
+          ["\u5206\u533a\u7edf\u8ba1", "\u6bcf\u4e2a\u6807\u9898\u663e\u793a\u8be5\u5206\u533a\u5df2\u4f5c\u7b54\u7684\u6570\u91cf\u2014\u2014\u201c\u57fa\u672c (46) 39/46\u201d\u3002"],
+          ["\u603b\u8ba1", "\u9876\u90e8\u90a3\u4e00\u884c\u7edf\u8ba1\u8be5\u5b57\u4f53\u7684\u5168\u90e8\u5047\u540d\uff0c\u4e09\u4e2a\u5206\u533a\u5408\u8ba1\u3002"],
+          ["\u8df3\u8fc7", "\u8df3\u8fc7\u4e0d\u7b97\u4f5c\u7b54\u3002\u53ea\u8df3\u8fc7\u800c\u672a\u4f5c\u7b54\u7684\u5047\u540d\u4ecd\u89c6\u4e3a\u672a\u4f5c\u7b54\uff0c\u4f1a\u5728\u201c\u4ec5\u672a\u4f5c\u7b54\u201d\u4e2d\u518d\u6b21\u51fa\u73b0\u3002"],
+          ["\u91cd\u7f6e\u5206\u6570", "\u6e05\u9664\u6b64\u5904\u6240\u6709\u8ba1\u6570\u5e76\u6e05\u7a7a\u89c6\u56fe\u3002\u6700\u4f73\u8fde\u7eed\u7b54\u5bf9\u7eaa\u5f55\u4f1a\u4fdd\u7559\u3002"]
+        ],
+        legend: [
+          ["unseen", "\u5c1a\u672a\u4f5c\u7b54", "\u5448\u6de1\u8272\uff0c\u5e76\u4ee5\u5706\u70b9\u4ee3\u66ff\u8ba1\u6570\u3002\u8fd9\u4e9b\u662f\u60a8\u8fd8\u9700\u8981\u5b66\u4e60\u7684\u3002"],
+          ["seen", "\u5df2\u4f5c\u7b54\uff0c\u4ece\u672a\u7b54\u9519", "\u7eff\u8272\u3002\u5230\u76ee\u524d\u4e3a\u6b62\u60a8\u6bcf\u6b21\u90fd\u7b54\u5bf9\u4e86\u3002"],
+          ["missed", "\u5df2\u4f5c\u7b54\uff0c\u66fe\u7ecf\u7b54\u9519", "\u7ea2\u8272\u3002\u2717 \u7684\u6570\u5b57\u8868\u793a\u9519\u8bef\u6b21\u6570\u3002\u5efa\u8bae\u5173\u95ed\u201c\u4ec5\u672a\u4f5c\u7b54\u201d\u540e\u91cd\u70b9\u7ec3\u4e60\u3002"],
+          ["skipped", "\u4ec5\u88ab\u8df3\u8fc7", "\u91d1\u8272\u3002\u60a8\u53ea\u662f\u8df3\u8fc7\u800c\u4ece\u672a\u4f5c\u7b54\uff0c\u56e0\u6b64\u4ecd\u7b97\u4f5c\u672a\u638c\u63e1\u3002"],
+          ["current", "\u5f53\u524d\u9898\u76ee", "\u6df1\u8272\u63cf\u8fb9\uff0c\u65e2\u9192\u76ee\u53c8\u4e0d\u4f1a\u4e0e\u4e0a\u9762\u7684\u7ea2\u8272\u6df7\u6dc6\u3002"]
+        ],
         info_rows: [
-          ['Alt+H / Alt+K', '按住可查看平假名或片假名速查表，松开即隐藏。'],
-          ['Alt+P', '打开进度视图；若已打开速查表，则切换其显示。'],
-          ['Alt+C', '打开图表时定位到当前假名——可开可关。'],
-          ['Enter', '检查答案，再按一次进入下一题。'],
-          ['Esc', '关闭已打开的图表。'],
-          ['速查表', '想认真自测时可关闭速查表。您的进度仍可查看。'],
-          ['仅未作答', '仅练习您从未作答过的假名，范围取决于当前的字体与假名集选择。'],
-          ['重置分数', '清除您的分数以及进度视图记录的一切。最佳连续答对纪录会保留。']
+          ["Alt+H / Alt+K", "\u6309\u4f4f\u53ef\u67e5\u770b\u5e73\u5047\u540d\u6216\u7247\u5047\u540d\u901f\u67e5\u8868\uff0c\u677e\u5f00\u5373\u9690\u85cf\u3002"],
+          ["Alt+P", "\u6253\u5f00\u8fdb\u5ea6\u89c6\u56fe\uff1b\u82e5\u5df2\u6253\u5f00\u901f\u67e5\u8868\uff0c\u5219\u5207\u6362\u5176\u663e\u793a\u3002"],
+          ["Alt+C", "\u6253\u5f00\u56fe\u8868\u65f6\u5b9a\u4f4d\u5230\u5f53\u524d\u5047\u540d\u2014\u2014\u53ef\u5f00\u53ef\u5173\u3002"],
+          ["Enter", "\u68c0\u67e5\u7b54\u6848\uff0c\u518d\u6309\u4e00\u6b21\u8fdb\u5165\u4e0b\u4e00\u9898\u3002"],
+          ["Esc", "\u5173\u95ed\u5df2\u6253\u5f00\u7684\u56fe\u8868\u3002"],
+          ["\u901f\u67e5\u8868", "\u60f3\u8ba4\u771f\u81ea\u6d4b\u65f6\u53ef\u5173\u95ed\u901f\u67e5\u8868\u3002"],
+          ["\u8df3\u8fc7", "\u4f1a\u63ed\u6653\u7b54\u6848\u5e76\u8ba1\u5165\u5931\u5206\uff0c\u4f46\u8be5\u5047\u540d\u4ecd\u6807\u8bb0\u4e3a\u672a\u4f5c\u7b54\u3002"]
         ],
         snap_on:        '定位到当前假名：开',
         snap_off:       '定位到当前假名：关',
@@ -493,6 +676,9 @@
         progress_show:  '显示进度',
         progress_hide:  '隐藏进度',
         all_seen:       '此选择中的假名您都已作答 — 已恢复显示全部。',
+        tip_skips:   "\uff0c\u8df3\u8fc7 {s} \u6b21",
+        tip_skipped_only: "\u4ec5\u88ab\u8df3\u8fc7",
+        progress_skipped: " \u00b7 \u8df3\u8fc7 {s} \u4e2a",
         tip_unseen:     '尚未作答',
         tip_counts:     '{r} — 正确 {c} 次，错误 {m} 次',
         one_set:        '至少需保留一个假名集',
@@ -517,9 +703,9 @@
     }
 
     // info_rows is an array, so it bypasses t2()'s string handling
-    function rows2() {
+    function arr2(key) {
       var d = EXTRA_I18N[curLang()] || EXTRA_I18N.en;
-      return d.info_rows || EXTRA_I18N.en.info_rows;
+      return d[key] || EXTRA_I18N.en[key] || [];
     }
 
     function fmt(str, vars) {
@@ -544,7 +730,8 @@
       unseenOnly: false,   // restrict the pool to kana never answered
       progressView: false, // cheat sheet shows encountered/unencountered
       snapToCurrent: true, // scroll the current kana into view when a chart opens
-      chartsEnabled: true  // cheat sheets available, or switched off to test yourself
+      chartsEnabled: true, // cheat sheets available, or switched off to test yourself
+      row: null            // null = every row; else { set: 'basic', idx: 2 }
     };
 
     // Restore best streak if the browser allows it
@@ -571,18 +758,72 @@
     function seenKey(item, sc) { return item.h + '|' + sc; }
     function seenRec(item, sc) { return state.seen[seenKey(item, sc)]; }
 
-    // Only a submitted answer counts as encountered. Skipping doesn't.
+    // Only a submitted answer counts as encountered. Skipping is tracked
+    // separately so you can see what you keep dodging.
     function markSeen(item, sc, right) {
       var k = seenKey(item, sc);
-      var rec = state.seen[k] || { c: 0, m: 0 };
+      var rec = state.seen[k] || { c: 0, m: 0, s: 0 };
       if (right) rec.c++; else rec.m++;
       state.seen[k] = rec;
       saveSeen();
     }
 
+    function markSkipped(item, sc) {
+      var k = seenKey(item, sc);
+      var rec = state.seen[k] || { c: 0, m: 0, s: 0 };
+      rec.s = (rec.s || 0) + 1;
+      state.seen[k] = rec;
+      saveSeen();
+    }
+
+    // Answered means submitted, so a skip-only kana is still "unseen"
+    function isAnswered(rec) { return !!rec && (rec.c + rec.m) > 0; }
+
     function $(id) { return document.getElementById(id); }
 
+    // Each kana set splits into rows (gyō): あ行, か行, さ行 … Basic and dakuten
+    // run five to a row (with two short rows), combos run three.
+    var ROW_DEFS = {
+      basic:   [[0,5],[5,10],[10,15],[15,20],[20,25],[25,30],[30,35],[35,38],[38,43],[43,46]],
+      dakuten: [[0,5],[5,10],[10,15],[15,20],[20,25]],
+      combos:  (function () {
+        var out = [];
+        for (var i = 0; i < KANA.combos.length; i += 3) out.push([i, Math.min(i + 3, KANA.combos.length)]);
+        return out;
+      })()
+    };
+
+    // "KA row · かきくけこ" — English-led, since 行 assumes kanji the learner
+    // may not have yet, with the actual characters for recognition.
+    function rowLabel(setName, idx) {
+      var r = ROW_DEFS[setName][idx];
+      var items = KANA[setName].slice(r[0], r[1]);
+      var kata = (state.script === 'katakana');
+      var chars = items.map(function (it) { return kata ? it.k : it.h; }).join('');
+      var name = fmt(t2('row_fmt'), { r: items[0].r.toUpperCase() });
+      return name + ' · ' + chars;
+    }
+
+    // Items a set contributes, narrowed to the selected row if there is one
+    function setItems(setName) {
+      var list = KANA[setName];
+      if (!state.row) return list;
+      if (state.row.set !== setName) return [];
+      var r = ROW_DEFS[setName][state.row.idx];
+      return list.slice(r[0], r[1]);
+    }
+
     function pool() {
+      var out = [];
+      if (state.sets.basic) out = out.concat(setItems('basic'));
+      if (state.sets.dakuten) out = out.concat(setItems('dakuten'));
+      if (state.sets.combos) out = out.concat(setItems('combos'));
+      return out;
+    }
+
+    // Wrong answers are drawn from every enabled set, ignoring the row filter —
+    // otherwise a three-kana row can't fill four multiple-choice buttons.
+    function distractorPool() {
       var out = [];
       if (state.sets.basic) out = out.concat(KANA.basic);
       if (state.sets.dakuten) out = out.concat(KANA.dakuten);
@@ -591,7 +832,7 @@
     }
 
     function unseenIn(p, sc) {
-      return p.filter(function (it) { return !seenRec(it, sc); });
+      return p.filter(function (it) { return !isAnswered(seenRec(it, sc)); });
     }
 
     function accepted(item) {
@@ -671,7 +912,7 @@
         q2.textContent = item.r;
         $('drill-type-row').style.display = 'none';
         $('drill-choices').style.display = 'grid';
-        buildChoices(item, sc, full);
+        buildChoices(item, sc, distractorPool());
         $('drill-check').style.display = 'none';
         $('drill-skip').style.display = 'block';
       }
@@ -765,6 +1006,7 @@
     function record(right, attempted) {
       state.total++;
       if (attempted) markSeen(state.current.item, state.current.script, right);
+      else markSkipped(state.current.item, state.current.script);
       if (right) {
         state.correct++;
         state.streak++;
@@ -855,6 +1097,7 @@
 
     window.setScript = function (script) {
       state.script = script;
+      setTimeout(renderRowChips, 0);   // row labels follow the script (あ行 vs ア行)
       document.querySelectorAll('.script-chip').forEach(function (c) {
         c.classList.toggle('on', c.getAttribute('data-script') === script);
       });
@@ -869,6 +1112,8 @@
         return;
       }
       state.sets[set] = !state.sets[set];
+      if (state.row && !state.sets[state.row.set]) state.row = null;
+      renderRowChips();
       document.querySelectorAll('.set-chip').forEach(function (c) {
         var s = c.getAttribute('data-set');
         c.classList.toggle('on', !!state.sets[s]);
@@ -908,6 +1153,62 @@
 
     // Labels rendered from JS rather than data-i18n, so they stay correct
     // whether or not these keys have been added to i18n.js yet.
+    // Dropdown values are "set:index", or "" for every line
+    function selectRowFromValue(val) {
+      if (!val) state.row = null;
+      else {
+        var p = val.split(':');
+        state.row = { set: p[0], idx: parseInt(p[1], 10) };
+      }
+      renderRowChips();
+      newQuestion();
+    }
+    window.selectRowFromValue = selectRowFromValue;
+
+    function selectRow(setName, idx) {
+      state.row = (setName === null) ? null : { set: setName, idx: idx };
+      renderRowChips();
+      newQuestion();
+    }
+    window.selectRow = selectRow;
+
+    var SET_LABEL = { basic: 'set_basic', dakuten: 'set_dakuten', combos: 'set_combos' };
+
+    function renderRowChips() {
+      var sel = $('row-select');
+      if (!sel) return;
+      sel.innerHTML = '';
+      sel.setAttribute('aria-label', t2('rows'));
+
+      var all = document.createElement('option');
+      all.value = '';
+      all.textContent = t2('all_rows');
+      sel.appendChild(all);
+
+      // One optgroup per enabled set, so か行 and が行 never look interchangeable
+      ['basic', 'dakuten', 'combos'].forEach(function (setName) {
+        if (!state.sets[setName]) return;
+        var g = document.createElement('optgroup');
+        var lbl = (typeof t === 'function' ? t(SET_LABEL[setName]) : '') || setName;
+        g.label = String(lbl).replace(/\s*\(\d+\)\s*$/, '');
+        ROW_DEFS[setName].forEach(function (_, idx) {
+          var o = document.createElement('option');
+          o.value = setName + ':' + idx;
+          o.textContent = rowLabel(setName, idx);
+          g.appendChild(o);
+        });
+        sel.appendChild(g);
+      });
+
+      sel.value = state.row ? (state.row.set + ':' + state.row.idx) : '';
+      // A stored row whose set was switched off leaves the select unmatched
+      if (sel.value !== (state.row ? state.row.set + ':' + state.row.idx : '')) {
+        state.row = null;
+        sel.value = '';
+      }
+      sel.classList.toggle('on', !!state.row);
+    }
+
     function renderDynamicLabels() {
       var chip = $('unseen-only-chip');
       if (chip) {
@@ -923,6 +1224,8 @@
       }
       var ic = $('info-chip');
       if (ic) ic.title = t2('info_title');
+      var hc = $('howto-chip');
+      if (hc) { hc.textContent = t2('howto_chip'); hc.title = t2('howto_title'); }
       // Grey out the cheat sheet buttons when charts are switched off
       document.querySelectorAll('.drill-control-row button[onclick^="openCheatSheet"]').forEach(function (b) {
         b.disabled = !state.chartsEnabled;
@@ -977,10 +1280,21 @@
 
       if (state.progressView) {
         var rec = seenRec(item, sc);
-        if (rec) {
+        var skips = (rec && rec.s) || 0;
+        if (isAnswered(rec)) {
           cls += ' seen' + (rec.m > 0 ? ' missed' : '');
-          counts = '<span class="cheat-counts">✓' + rec.c + ' ✗' + rec.m + '</span>';
-          b.title = fmt(t2('tip_counts'), { r: item.r, c: rec.c, m: rec.m });
+          counts = '<span class="cheat-counts">'
+                 + '<span class="c-ok">✓' + rec.c + '</span> '
+                 + '<span class="c-bad">✗' + rec.m + '</span>'
+                 + (skips ? ' <span class="c-skip">↷' + skips + '</span>' : '')
+                 + '</span>';
+          b.title = fmt(t2('tip_counts'), { r: item.r, c: rec.c, m: rec.m })
+                  + (skips ? fmt(t2('tip_skips'), { s: skips }) : '');
+        } else if (skips) {
+          // Skipped but never actually answered — gold, and still "unseen"
+          cls += ' skipped';
+          counts = '<span class="cheat-counts"><span class="c-skip">↷' + skips + '</span></span>';
+          b.title = t2('tip_skipped_only') + fmt(t2('tip_skips'), { s: skips });
         } else {
           cls += ' unseen';
           counts = '<span class="cheat-counts">·</span>';
@@ -1001,7 +1315,7 @@
     function sectionCount(list, sc) {
       if (!state.progressView) return '';
       var n = 0;
-      list.forEach(function (it) { if (seenRec(it, sc)) n++; });
+      list.forEach(function (it) { if (isAnswered(seenRec(it, sc))) n++; });
       return ' <span class="cheat-section-count">' + n + '/' + list.length + '</span>';
     }
 
@@ -1034,9 +1348,14 @@
       if (summary) {
         if (state.progressView) {
           var all = KANA.basic.concat(KANA.dakuten, KANA.combos);
-          var done = 0;
-          all.forEach(function (it) { if (seenRec(it, sc)) done++; });
-          summary.textContent = fmt(t2('progress_hint'), { n: done, total: all.length });
+          var done = 0, skipped = 0;
+          all.forEach(function (it) {
+            var r = seenRec(it, sc);
+            if (isAnswered(r)) done++;
+            else if (r && r.s) skipped++;   // only ever skipped, never answered
+          });
+          summary.textContent = fmt(t2('progress_hint'), { n: done, total: all.length })
+                              + (skipped ? fmt(t2('progress_skipped'), { s: skipped }) : '');
           summary.classList.remove('hidden');
         } else {
           summary.classList.add('hidden');
@@ -1073,12 +1392,15 @@
     }
     window.openCheatSheet = openCheatSheet;
 
-    function openInfo() {
-      $('info-title').textContent = t2('info_title');
-      $('info-sub').textContent = t2('info_sub');
-      var box = $('info-content');
-      box.innerHTML = '';
-      rows2().forEach(function (row) {
+    function sectionInto(box, label) {
+      var h = document.createElement('div');
+      h.className = 'info-section';
+      h.textContent = label;
+      box.appendChild(h);
+    }
+
+    function termRowsInto(box, key) {
+      arr2(key).forEach(function (row) {
         var r = document.createElement('div');
         r.className = 'info-row';
         var k = document.createElement('div');
@@ -1090,9 +1412,59 @@
         r.appendChild(k); r.appendChild(d);
         box.appendChild(r);
       });
+    }
+
+    // ⓘ beside Charts — charts, keyboard shortcuts, nothing else
+    function openInfo() {
+      $('info-title').textContent = t2('info_title');
+      $('info-sub').textContent = t2('info_sub');
+      var box = $('info-content');
+      box.innerHTML = '';
+      termRowsInto(box, 'info_rows');
       $('info-overlay').classList.add('show');
     }
     window.openInfo = openInfo;
+
+    // How it works — the guide: setting up a drill, and reading your progress
+    function openHowTo() {
+      $('howto-title').textContent = t2('howto_title');
+      $('howto-sub').textContent = t2('howto_sub');
+      var box = $('howto-content');
+      box.innerHTML = '';
+
+      sectionInto(box, t2('sec_setup'));
+      termRowsInto(box, 'setup_rows');
+
+      sectionInto(box, t2('sec_progress'));
+      // Real swatches, so the legend looks like what's actually on screen
+      var samples = { unseen: ['ヌ', '·'], seen: ['エ', '✓5 ✗0'], missed: ['ソ', '✓1 ✗2'], skipped: ['ネ', '↷3'], current: ['カ', '✓3 ✗0'] };
+      arr2('legend').forEach(function (row) {
+        var wrap = document.createElement('div');
+        wrap.className = 'info-legend';
+        var sw = document.createElement('div');
+        sw.className = 'info-swatch ' + row[0];
+        var s = samples[row[0]] || ['あ', ''];
+        sw.innerHTML = '<span class="kana jp">' + s[0] + '</span><span class="cnt">' + s[1] + '</span>';
+        sw.querySelector('.cnt').innerHTML = String(s[1])
+          .replace(/(✓\d+)/, '<span class="c-ok">$1</span>')
+          .replace(/(✗\d+)/, '<span class="c-bad">$1</span>')
+          .replace(/(↷\d+)/, '<span class="c-skip">$1</span>');
+        var txt = document.createElement('div');
+        txt.className = 'info-desc';
+        txt.innerHTML = '<strong>' + row[1] + '</strong><br>' + row[2];
+        wrap.appendChild(sw); wrap.appendChild(txt);
+        box.appendChild(wrap);
+      });
+      termRowsInto(box, 'progress_rows');
+
+      $('howto-overlay').classList.add('show');
+    }
+    window.openHowTo = openHowTo;
+
+    function closeHowTo() {
+      $('howto-overlay').classList.remove('show');
+    }
+    window.closeHowTo = closeHowTo;
 
     function closeInfo() {
       $('info-overlay').classList.remove('show');
@@ -1138,6 +1510,7 @@
       }
       $('drill-check').textContent = state.answered ? t('next') : t('check');
       renderDynamicLabels();
+      renderRowChips();
       if ($('cheat-overlay').classList.contains('show')) openCheatSheet(lastCheatScript);
     };
 
@@ -1223,6 +1596,7 @@
       document.addEventListener('keydown', function (e) {
         var cheatOpen = $('cheat-overlay').classList.contains('show');
         var infoOpen = $('info-overlay').classList.contains('show');
+        if (e.key === 'Escape' && $('howto-overlay').classList.contains('show')) { closeHowTo(); return; }
         if (e.key === 'Escape' && infoOpen) { closeInfo(); return; }
         if (e.key === 'Escape' && cheatOpen) { closeCheatSheet(); return; }
         if (e.key === 'Enter' && state.answered && !cheatOpen && document.activeElement !== input) {
@@ -1236,12 +1610,16 @@
       $('info-overlay').addEventListener('click', function (e) {
         if (e.target === this) closeInfo();
       });
+      $('howto-overlay').addEventListener('click', function (e) {
+        if (e.target === this) closeHowTo();
+      });
       // The primary button doubles as Check / Next
       $('drill-check').addEventListener('click', function () {
         if (state.answered) newQuestion();
       });
       renderScores();
       renderDynamicLabels();
+      renderRowChips();
       newQuestion();
     }
 
