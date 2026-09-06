@@ -1321,3 +1321,11 @@ a.nav-link {
   text-decoration: none;
   display: inline-block;
 }
+
+/* === Hidden nav links ===================================================
+   Every page loads this file, so these rules hide the links across the whole
+   site without touching any HTML. Delete a selector to bring a link back. */
+.nav-link[data-page="datedojo"],
+.nav-link[data-page="kanji-drill"] {
+  display: none !important;
+}

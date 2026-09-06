@@ -13,7 +13,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Katsuyō Academy — Japanese Learning Platform</title>
-  <meta name="description" content="Free Japanese learning platform: kana, kanji flashcards, vocabulary, and interactive verb conjugation practice.">
+  <meta name="description" content="Free Japanese learning platform: kana and kanji drills, flashcards, vocabulary, dates, and interactive verb conjugation practice — in English, German, French and Chinese.">
   <link rel="canonical" href="https://katsuyoacademy.com/">
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -62,11 +62,16 @@
           <h1 class="hero-title">Katsuyō Academy</h1>
           <p class="hero-subtitle jp">日本語を学ぶ</p>
           <p class="hero-desc">
-            A free, self-contained Japanese learning platform. Practice kana, kanji, vocabulary, and verb conjugation—all in one beautifully designed toolkit.
+            A free Japanese learning platform. Learn and drill kana, kanji, vocabulary, dates, and verb conjugation—all in one beautifully designed toolkit.
           </p>
           <div class="hero-cta">
             <button class="btn btn-primary" style="min-width: 220px;" onclick="showPage('kana')" data-i18n="btn_start_kana">Start with Kana</button>
+            <button class="btn btn-secondary" style="min-width: 220px;" onclick="location.href='/kana-drill'">Practice Kana</button>
+          </div>
+          <!-- HIDDEN ROW — delete the "display: none;" below to bring Explore Kanji / Practice Kanji back -->
+          <div class="hero-cta" style="display: none; margin-top: 1rem;">
             <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('kanji')" data-i18n="btn_explore_kanji">Explore Kanji</button>
+            <button class="btn btn-secondary" style="min-width: 220px;" onclick="location.href='/kanji-drill'">Practice Kanji</button>
           </div>
           <div class="hero-cta" style="margin-top: 1rem;">
             <button class="btn" style="min-width: 220px; background: var(--sage); color: var(--paper);" onclick="showPage('learn')" data-i18n="btn_learn_basics">Learn the Basics</button>
@@ -91,19 +96,20 @@
             </p>
             
             <p style="margin-bottom: 1.5rem;">
-              Everything runs locally in your browser. No accounts, no tracking, no servers. Just open it and learn.
+              No accounts, no sign-ups, no paywalls. Your scores, streaks, and flashcard progress live in your own browser
+              and are never uploaded—the only feature that reaches a server is Katsu, the optional AI tutor.
             </p>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
               <div style="text-align: center; padding: 1.5rem; background: var(--paper-warm); border-radius: 4px;">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">あ</div>
                 <div style="font-weight: 600; color: var(--ink);">104 Kana</div>
-                <div style="font-size: 0.9rem; color: var(--text-light);">with audio</div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">audio + drills</div>
               </div>
               <div style="text-align: center; padding: 1.5rem; background: var(--paper-warm); border-radius: 4px;">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;" class="jp">字</div>
                 <div style="font-weight: 600; color: var(--ink);">2,300 Kanji</div>
-                <div style="font-size: 0.9rem; color: var(--text-light);">KLC course</div>
+                <div style="font-size: 0.9rem; color: var(--text-light);">KLC course + drill</div>
               </div>
               <div style="text-align: center; padding: 1.5rem; background: var(--paper-warm); border-radius: 4px;">
                 <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📚</div>
@@ -119,8 +125,8 @@
             
             <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent); margin-top: 2rem;">
               <p style="margin: 0; font-style: italic; color: var(--text);">
-                "A free, offline-capable Japanese study suite built by a learner for learners—covering kana, kanji, 
-                vocabulary, and verb conjugation in one cohesive, beautifully designed package."
+                "A free Japanese study suite built by a learner for learners—covering kana, kanji, vocabulary, dates 
+                and verb conjugation, with drills that track what you've learned, in one cohesive, beautifully designed package."
               </p>
             </div>
           </div>
@@ -132,7 +138,7 @@
         <div class="features-inner" style="max-width: 1200px; margin: 0 auto;">
           <div class="features-header" style="text-align: center; margin-bottom: 3rem;">
             <h2 class="features-title" style="font-size: 2rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;" data-i18n="toolkit_title">The Toolkit</h2>
-            <p class="features-subtitle" style="font-size: 1.1rem; color: var(--text-light);" data-i18n="toolkit_sub">Six interconnected tools covering the foundations of Japanese</p>
+            <p class="features-subtitle" style="font-size: 1.1rem; color: var(--text-light);" data-i18n="toolkit_sub">Eight interconnected tools covering the foundations of Japanese</p>
           </div>
           <div class="features-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
             <div class="feature-card" onclick="showPage('kana')" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(212,120,106,0.3); cursor: pointer; transition: transform 0.2s;">
@@ -144,6 +150,18 @@
                 Click any character to hear how it sounds.
               </p>
               <div style="color: #d4786a; font-weight: 600; font-size: 0.9rem;" data-i18n="card_kana_cta">Learn Kana →</div>
+            </div>
+            <div class="feature-card" onclick="location.href='/kana-drill'" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(122,158,126,0.35); cursor: pointer; transition: transform 0.2s;">
+              <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem; color: white;">✍️</div>
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #8fbf93; margin-bottom: 0.75rem;"><span class="jp" style="color: #8fbf93;">仮名練習</span> — Kana Drill</h3>
+              <p class="feature-desc" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
+                Quiz yourself in both directions—<strong style="color: #8fbf93;">kana → rōmaji</strong> by typing, or <strong style="color: #8fbf93;">rōmaji → kana</strong> by
+                picking the right character. Filter by script and by set (basic, dakuten, combinations), and watch your
+                <strong>score, streak and personal best</strong> climb. Stuck? <strong>Hold Alt+H or Alt+K</strong> to peek at a cheat sheet
+                without leaving the question. A <strong style="color: #8fbf93;">progress chart</strong> shows every kana you've answered and how
+                often you've missed it, and <strong>Unseen only</strong> narrows the drill to the ones you've never met.
+              </p>
+              <div style="color: #8fbf93; font-weight: 600; font-size: 0.9rem;">Start Drilling →</div>
             </div>
             <div class="feature-card" onclick="showPage('learn')" style="background: var(--paper); padding: 2rem; border-radius: 4px; border: 1px solid rgba(0,0,0,0.08); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📚</div>
@@ -186,7 +204,8 @@
               </p>
               <div style="color: var(--accent); font-weight: 600; font-size: 0.9rem;" data-i18n="card_conj_cta">Start Practicing →</div>
             </div>
-            <div class="feature-card" onclick="showPage('datedojo')" style="background: linear-gradient(135deg, #1a1a2e 0%, #0c0c0c 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(196,30,58,0.3); cursor: pointer; transition: transform 0.2s;">
+<!-- HIDDEN — delete the "display: none;" below to bring this back -->
+            <div class="feature-card" onclick="showPage('datedojo')" style="display: none; background: linear-gradient(135deg, #1a1a2e 0%, #0c0c0c 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(196,30,58,0.3); cursor: pointer; transition: transform 0.2s;">
               <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
               <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem;" data-i18n-html="card_dojo_t"><span class="jp">日付</span> — Dates & Numbers</h3>
               <p class="feature-desc" data-i18n-html="card_dojo_d" style="color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 1rem;">
@@ -219,6 +238,18 @@
               </p>
               <div style="color: #e94560; font-weight: 600; font-size: 0.9rem;" data-i18n="card_kanji_cta">Learn Kanji →</div>
             </div>
+<!-- HIDDEN — delete the "display: none;" below to bring this back -->
+            <div class="feature-card" onclick="location.href='/kanji-drill'" style="display: none; background: linear-gradient(135deg, #2a2535 0%, #1e1a28 100%); padding: 2rem; border-radius: 4px; border: 1px solid rgba(233,69,96,0.35); cursor: pointer; transition: transform 0.2s;">
+              <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem; color: white;">🎯</div>
+              <h3 class="feature-title" style="font-size: 1.4rem; font-weight: 600; color: #e94560; margin-bottom: 0.75rem;"><span class="jp" style="color: #e94560;">漢字練習</span> — Kanji Drill</h3>
+              <p class="feature-desc" style="color: #e8e6e3; line-height: 1.7; margin-bottom: 1rem;">
+                Test yourself on all <strong style="color: #e94560;">2,300 KLC kanji</strong>, either character → keyword or keyword → character.
+                <strong>Pick a range</strong> so you drill only the block you're studying rather than the whole course.
+                Typed answers get <strong style="color: #e94560;">three-tier feedback</strong>—correct, close enough to try again, or the answer revealed—
+                and everything you miss collects in a <strong>review list</strong> at the bottom of the page.
+              </p>
+              <div style="color: #e94560; font-weight: 600; font-size: 0.9rem;">Start Drilling →</div>
+            </div>
           </div>
         </div>
       </section>
@@ -233,11 +264,11 @@
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.5rem;">
             <div>
               <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
-                📦 Self-Contained
+                📦 Nothing to Install
               </h3>
               <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
-                One HTML file. No installation, no accounts, no internet required after loading. Save it locally and 
-                study anywhere—on a plane, in a café, wherever you learn best.
+                Ten fast, focused pages that open straight in your browser. No app to download, no account to create, 
+                nothing to configure—on your desktop, your tablet or your phone.
               </p>
             </div>
             
@@ -267,7 +298,8 @@
               </h3>
               <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
                 The Conjugator doesn't just say "wrong"—it shows the exact rule you needed and identifies your 
-                specific error. Flashcards track your progress and prioritize unseen cards.
+                specific error. Flashcards prioritise unseen cards, and the kana and kanji drills remember every 
+                character you've answered so you can see exactly what's left to learn.
               </p>
             </div>
             
@@ -281,6 +313,26 @@
               </p>
             </div>
             
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🌐 Four Languages
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                The whole site—every page, every button, every explanation—reads in English, German, French or 
+                Simplified Chinese. Switch language from the menu at any time; your place is kept.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
+                🤖 Ask Katsu
+              </h3>
+              <p style="line-height: 1.7; color: rgba(255,255,255,0.85); font-size: 0.95rem;">
+                <span class="jp">カツ先生</span>, an AI tutor, waits in the corner of every page. Ask why a conjugation works, 
+                what separates は from が, or anything that has you stuck—and get an answer in the language you're reading in.
+              </p>
+            </div>
+
             <div>
               <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--accent);">
                 🆓 Free Forever
@@ -301,11 +353,14 @@
             Ready to Get Started?
           </h2>
           <p style="font-size: 1.08rem; color: var(--text); margin-bottom: 2rem; line-height: 1.7;">
-            Whether you're learning kana, mastering kanji, studying verbs, building vocabulary, or practicing dates—choose your path below.
+            Whether you're learning kana, drilling characters, studying verbs, or building vocabulary—choose your path below.
           </p>
           <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 2rem;">
             <button onclick="showPage('kana')" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); color: #d4786a; border: 2px solid #d4786a; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
               あ Learn Kana
+            </button>
+            <button onclick="location.href='/kana-drill'" style="background: var(--sage); color: var(--paper); border: none; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
+              ✍️ Practice Kana
             </button>
             <button onclick="showPage('learn')" style="background: var(--ink); color: var(--paper); border: none; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
               📚 Learn the Basics
@@ -319,7 +374,8 @@
             <button onclick="showPage('conjugator')" style="background: var(--sage); color: var(--paper); border: none; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
               ✏️ Start Practicing
             </button>
-            <button onclick="showPage('datedojo')" style="background: #1a1a2e; color: #fff; border: 2px solid #c41e3a; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
+            <!-- HIDDEN — delete the "display: none;" below to bring this back -->
+            <button onclick="showPage('datedojo')" style="display: none; background: #1a1a2e; color: #fff; border: 2px solid #c41e3a; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
               📅 Dates & Numbers
             </button>
             <button onclick="showPage('vocabulary')" style="background: linear-gradient(135deg, #4a4539 0%, #322d26 100%); color: #d4786a; border: 2px solid #d4786a; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
@@ -327,6 +383,10 @@
             </button>
             <button onclick="showPage('kanji')" style="background: linear-gradient(135deg, #2a2535 0%, #1e1a28 100%); color: #e94560; border: 2px solid #e94560; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
               <span class="jp">字</span> Learn Kanji
+            </button>
+            <!-- HIDDEN — delete the "display: none;" below to bring this back -->
+            <button onclick="location.href='/kanji-drill'" style="display: none; background: linear-gradient(135deg, #2a2535 0%, #1e1a28 100%); color: #e94560; border: 2px solid #e94560; padding: 1rem 1.75rem; font-size: 1rem; font-weight: 600; border-radius: 4px; cursor: pointer; font-family: inherit; transition: all 0.2s;">
+              🎯 Practice Kanji
             </button>
           </div>
             
@@ -345,8 +405,6 @@
   </div>
 
 
-
-  <!-- KANA DOJO PAGE -->
 
   <!-- Back to Top Button -->
   <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">

@@ -126,6 +126,22 @@
     .cheat-section-count { font-weight: 700; color: var(--text-light); }
 
     .drill-sep { color: var(--accent); opacity: 0.5; user-select: none; padding: 0 0.15rem; font-size: 1.1rem; line-height: 1; }
+    .drill-chip.progress-chip { border-color: var(--sage); color: #3f5c42; font-weight: 600; }
+    .drill-chip.progress-chip:hover { background: rgba(122,158,126,0.12); border-color: var(--sage); }
+    .drill-chip.charts-chip.on { background: var(--sage); border-color: var(--sage); color: var(--paper); }
+    .drill-chip.charts-chip { border-color: var(--sage); color: #3f5c42; font-weight: 600; }
+    .drill-chip.info-chip { font-size: 1.05rem; line-height: 1; padding: 0.4rem 0.7rem; font-weight: 700; }
+    .drill-chip:disabled { opacity: 0.4; cursor: default; }
+    .drill-chip:disabled:hover { border-color: rgba(0,0,0,0.15); }
+
+    .info-row { display: flex; gap: 0.9rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(0,0,0,0.06); }
+    .info-row:last-child { border-bottom: none; }
+    .info-keys { flex: 0 0 96px; font-weight: 700; font-size: 0.85rem; color: var(--ink); }
+    .info-desc { font-size: 0.9rem; color: var(--text); line-height: 1.55; }
+    @media (max-width: 540px) {
+      .info-row { flex-direction: column; gap: 0.15rem; }
+      .info-keys { flex: none; }
+    }
 
     @media (max-width: 540px) {
       .drill-page { padding: 1.25rem; }
@@ -220,6 +236,9 @@
           <span class="drill-control-label" data-i18n="charts">Charts</span>
           <button class="drill-chip" onclick="openCheatSheet('h')" title="Hold Alt+H to peek" data-i18n="sheet_h" data-i18n-title="hold_h">ひらがな Cheat Sheet</button>
           <button class="drill-chip" onclick="openCheatSheet('k')" title="Hold Alt+K to peek" data-i18n="sheet_k" data-i18n-title="hold_k">カタカナ Cheat Sheet</button>
+          <span class="drill-sep" aria-hidden="true">|</span>
+          <button class="drill-chip charts-chip" id="charts-toggle-chip" onclick="toggleCharts()"></button>
+          <button class="drill-chip info-chip" id="info-chip" onclick="openInfo()" aria-label="Shortcuts and options">ⓘ</button>
         </div>
       </div>
 
@@ -239,7 +258,7 @@
       <div class="drill-feedback" id="drill-feedback"></div>
 
       <div class="drill-actions">
-        <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled data-i18n="check">Check Answer</button>
+        <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled>Check Answer</button>
         <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()" data-i18n="skip">Skip (show answer)</button>
         <button class="drill-btn ghost" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
       </div>
@@ -263,6 +282,16 @@
         <span class="cheat-progress-summary hidden" id="cheat-progress-summary"></span>
       </div>
       <div id="cheat-content"></div>
+    </div>
+  </div>
+
+  <!-- Shortcuts & Options Modal -->
+  <div id="info-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="info-title">
+    <div class="cheat-box" style="max-width: 480px;">
+      <button class="cheat-close" onclick="closeInfo()" aria-label="Close">×</button>
+      <h2 class="cheat-title" id="info-title"></h2>
+      <div class="cheat-hint" id="info-sub"></div>
+      <div id="info-content"></div>
     </div>
   </div>
 
@@ -337,6 +366,25 @@
     // the site dictionary whenever it has them.
     var EXTRA_I18N = {
       en: {
+        charts_on:      'Charts: on',
+        charts_off:     'Charts: off',
+        charts_disabled:'Cheat sheets are switched off',
+        info_title:     'Shortcuts & options',
+        info_sub:       'Everything this page can do without a mouse.',
+        info_rows: [
+          ['Alt+H / Alt+K', 'Hold to peek at the hiragana or katakana chart, release to hide.'],
+          ['Alt+P', 'Open the progress view, or hide it if a chart is already open.'],
+          ['Alt+C', 'Jump to the current kana when a chart opens — on or off.'],
+          ['Enter', 'Check your answer, then again to move to the next question.'],
+          ['Esc', 'Close an open chart.'],
+          ['Charts', 'Switch the cheat sheets off when you want to test yourself honestly. Your progress stays reachable.'],
+          ['Unseen only', 'Drill only the kana you have never answered, within your current script and set choices.'],
+          ['Reset Score', 'Clears your score and everything the progress view remembers. Your best streak survives.']
+        ],
+        snap_on:        'Snap to current kana: on',
+        snap_off:       'Snap to current kana: off',
+        shortcut_hint:  'Alt+P toggles this · Alt+C toggles snapping to the current kana',
+        progress:       '◎ My progress',
         unseen_only:    'Unseen only',
         progress_show:  'Show progress',
         progress_hide:  'Hide progress',
@@ -347,6 +395,25 @@
         progress_hint:  '{n} of {total} answered'
       },
       de: {
+        charts_on:      'Tabellen: ein',
+        charts_off:     'Tabellen: aus',
+        charts_disabled:'Die Übersichtstabellen sind ausgeschaltet',
+        info_title:     'Tastenkürzel & Optionen',
+        info_sub:       'Alles, was diese Seite ohne Maus kann.',
+        info_rows: [
+          ['Alt+H / Alt+K', 'Gedrückt halten, um in die Hiragana- oder Katakana-Tabelle zu spicken; loslassen zum Ausblenden.'],
+          ['Alt+P', 'Die Fortschrittsansicht öffnen — oder ausblenden, wenn bereits eine Tabelle offen ist.'],
+          ['Alt+C', 'Beim Öffnen einer Tabelle zum aktuellen Kana springen — ein oder aus.'],
+          ['Enter', 'Antwort prüfen, dann erneut drücken für die nächste Frage.'],
+          ['Esc', 'Eine geöffnete Tabelle schließen.'],
+          ['Tabellen', 'Schalten Sie die Übersichtstabellen aus, wenn Sie sich ehrlich prüfen möchten. Ihr Fortschritt bleibt erreichbar.'],
+          ['Nur ungesehene', 'Nur die Kana üben, die Sie noch nie beantwortet haben — innerhalb Ihrer aktuellen Schrift- und Satzauswahl.'],
+          ['Punktzahl zurücksetzen', 'Löscht Ihre Punktzahl und alles, was die Fortschrittsansicht gespeichert hat. Ihre Bestleistung bleibt erhalten.']
+        ],
+        snap_on:        'Zum aktuellen Kana springen: ein',
+        snap_off:       'Zum aktuellen Kana springen: aus',
+        shortcut_hint:  'Alt+P schaltet dies um · Alt+C schaltet das Springen zum aktuellen Kana um',
+        progress:       '◎ Mein Fortschritt',
         unseen_only:    'Nur ungesehene',
         progress_show:  'Fortschritt anzeigen',
         progress_hide:  'Fortschritt ausblenden',
@@ -357,6 +424,25 @@
         progress_hint:  '{n} von {total} beantwortet'
       },
       fr: {
+        charts_on:      'Tableaux : activés',
+        charts_off:     'Tableaux : désactivés',
+        charts_disabled:'Les tableaux sont désactivés',
+        info_title:     'Raccourcis et options',
+        info_sub:       'Tout ce que cette page permet sans souris.',
+        info_rows: [
+          ['Alt+H / Alt+K', 'Maintenez pour jeter un œil au tableau des hiragana ou des katakana ; relâchez pour le masquer.'],
+          ['Alt+P', 'Ouvrir la vue de progression, ou la masquer si un tableau est déjà ouvert.'],
+          ['Alt+C', 'Aller au kana actuel à l\'ouverture d\'un tableau — activé ou désactivé.'],
+          ['Enter', 'Vérifier votre réponse, puis à nouveau pour passer à la question suivante.'],
+          ['Esc', 'Fermer un tableau ouvert.'],
+          ['Tableaux', 'Désactivez les tableaux quand vous voulez vous tester honnêtement. Votre progression reste accessible.'],
+          ['Non vus uniquement', 'N\'exercer que les kana auxquels vous n\'avez jamais répondu, selon vos choix d\'écriture et d\'ensemble.'],
+          ['Réinitialiser', 'Efface votre score et tout ce que la vue de progression retient. Votre record de série est conservé.']
+        ],
+        snap_on:        'Aller au kana actuel : activé',
+        snap_off:       'Aller au kana actuel : désactivé',
+        shortcut_hint:  'Alt+P bascule ceci · Alt+C bascule le saut vers le kana actuel',
+        progress:       '◎ Ma progression',
         unseen_only:    'Non vus uniquement',
         progress_show:  'Afficher la progression',
         progress_hide:  'Masquer la progression',
@@ -367,6 +453,25 @@
         progress_hint:  '{n} sur {total} répondus'
       },
       zh: {
+        charts_on:      '速查表：开',
+        charts_off:     '速查表：关',
+        charts_disabled:'速查表已关闭',
+        info_title:     '快捷键与选项',
+        info_sub:       '本页无需鼠标即可完成的所有操作。',
+        info_rows: [
+          ['Alt+H / Alt+K', '按住可查看平假名或片假名速查表，松开即隐藏。'],
+          ['Alt+P', '打开进度视图；若已打开速查表，则切换其显示。'],
+          ['Alt+C', '打开图表时定位到当前假名——可开可关。'],
+          ['Enter', '检查答案，再按一次进入下一题。'],
+          ['Esc', '关闭已打开的图表。'],
+          ['速查表', '想认真自测时可关闭速查表。您的进度仍可查看。'],
+          ['仅未作答', '仅练习您从未作答过的假名，范围取决于当前的字体与假名集选择。'],
+          ['重置分数', '清除您的分数以及进度视图记录的一切。最佳连续答对纪录会保留。']
+        ],
+        snap_on:        '定位到当前假名：开',
+        snap_off:       '定位到当前假名：关',
+        shortcut_hint:  'Alt+P 切换此项 · Alt+C 切换定位到当前假名',
+        progress:       '◎ 我的进度',
         unseen_only:    '仅未作答',
         progress_show:  '显示进度',
         progress_hide:  '隐藏进度',
@@ -394,6 +499,12 @@
       return d[key] || EXTRA_I18N.en[key] || key;
     }
 
+    // info_rows is an array, so it bypasses t2()'s string handling
+    function rows2() {
+      var d = EXTRA_I18N[curLang()] || EXTRA_I18N.en;
+      return d.info_rows || EXTRA_I18N.en.info_rows;
+    }
+
     function fmt(str, vars) {
       return String(str).replace(/\{(\w+)\}/g, function (m, k) {
         return vars[k] !== undefined ? vars[k] : m;
@@ -414,7 +525,9 @@
       missed: {},          // key: hiragana → item  (this session only)
       seen: {},            // key: "あ|h" → { c: correct, m: missed }
       unseenOnly: false,   // restrict the pool to kana never answered
-      progressView: false  // cheat sheet shows encountered/unencountered
+      progressView: false, // cheat sheet shows encountered/unencountered
+      snapToCurrent: true, // scroll the current kana into view when a chart opens
+      chartsEnabled: true  // cheat sheets available, or switched off to test yourself
     };
 
     // Restore best streak if the browser allows it
@@ -428,6 +541,9 @@
       var savedSeen = localStorage.getItem('kanaDrillSeen');
       if (savedSeen) state.seen = JSON.parse(savedSeen) || {};
       state.progressView = localStorage.getItem('kanaDrillProgressView') === '1';
+      // Defaults to on — only an explicit '0' turns it off
+      state.snapToCurrent = localStorage.getItem('kanaDrillSnap') !== '0';
+      state.chartsEnabled = localStorage.getItem('kanaDrillCharts') !== '0';
     } catch (e) { state.seen = {}; }
 
     function saveSeen() {
@@ -755,11 +871,23 @@
       newQuestion();
     };
 
-    window.toggleProgressView = function () {
+    // Opens the chart for whichever script you're drilling, progress already on
+    function openProgress() {
+      state.progressView = true;
+      try { localStorage.setItem('kanaDrillProgressView', '1'); } catch (e) {}
+      openCheatSheet(state.script === 'katakana' ? 'k' : 'h', true);
+    }
+    window.openProgress = openProgress;
+
+    function toggleProgressView() {
       state.progressView = !state.progressView;
       try { localStorage.setItem('kanaDrillProgressView', state.progressView ? '1' : '0'); } catch (e) {}
-      openCheatSheet(lastCheatScript);
-    };
+      // Turning progress off with charts disabled would leave a cheat sheet on
+      // screen, so close instead of re-rendering
+      if (!state.progressView && !state.chartsEnabled) { closeCheatSheet(); return; }
+      openCheatSheet(lastCheatScript, true);
+    }
+    window.toggleProgressView = toggleProgressView;
 
     // Labels rendered from JS rather than data-i18n, so they stay correct
     // whether or not these keys have been added to i18n.js yet.
@@ -770,8 +898,21 @@
         chip.classList.toggle('on', state.unseenOnly);
         chip.setAttribute('aria-pressed', state.unseenOnly ? 'true' : 'false');
       }
+      var ct = $('charts-toggle-chip');
+      if (ct) {
+        ct.textContent = state.chartsEnabled ? t2('charts_on') : t2('charts_off');
+        ct.classList.toggle('on', state.chartsEnabled);
+        ct.setAttribute('aria-pressed', state.chartsEnabled ? 'true' : 'false');
+      }
+      var ic = $('info-chip');
+      if (ic) ic.title = t2('info_title');
+      // Grey out the cheat sheet buttons when charts are switched off
+      document.querySelectorAll('.drill-control-row button[onclick^="openCheatSheet"]').forEach(function (b) {
+        b.disabled = !state.chartsEnabled;
+      });
       var pt = $('cheat-progress-toggle');
       if (pt) {
+        pt.title = t2('shortcut_hint');
         pt.textContent = state.progressView ? t2('progress_hide') : t2('progress_show');
         pt.classList.toggle('on', state.progressView);
         pt.setAttribute('aria-pressed', state.progressView ? 'true' : 'false');
@@ -859,7 +1000,13 @@
       return { wrap: wrap, grid: grid };
     }
 
-    window.openCheatSheet = function (sc) {
+    function openCheatSheet(sc, force) {
+      // The toggle blocks the cheat sheets, never the progress view — reviewing
+      // what you've answered isn't peeking at the answer.
+      if (!state.chartsEnabled && !force && !state.progressView) {
+        toast(t2('charts_disabled'));
+        return;
+      }
       lastCheatScript = sc;
       $('cheat-title').textContent = sc === 'h' ? t('cheat_title_h') : t('cheat_title_k');
 
@@ -903,14 +1050,66 @@
 
       $('cheat-overlay').classList.add('show');
 
-      // Bring the highlighted kana into view
-      var cur = content.querySelector('.cheat-cell.current');
-      if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'center' });
-    };
+      // Bring the highlighted kana into view — unless snapping is switched off.
+      // The highlight itself stays either way.
+      if (state.snapToCurrent) snapToCurrent();
+    }
+    window.openCheatSheet = openCheatSheet;
 
-    window.closeCheatSheet = function () {
+    function openInfo() {
+      $('info-title').textContent = t2('info_title');
+      $('info-sub').textContent = t2('info_sub');
+      var box = $('info-content');
+      box.innerHTML = '';
+      rows2().forEach(function (row) {
+        var r = document.createElement('div');
+        r.className = 'info-row';
+        var k = document.createElement('div');
+        k.className = 'info-keys';
+        k.textContent = row[0];
+        var d = document.createElement('div');
+        d.className = 'info-desc';
+        d.textContent = row[1];
+        r.appendChild(k); r.appendChild(d);
+        box.appendChild(r);
+      });
+      $('info-overlay').classList.add('show');
+    }
+    window.openInfo = openInfo;
+
+    function closeInfo() {
+      $('info-overlay').classList.remove('show');
+    }
+    window.closeInfo = closeInfo;
+
+    function snapToCurrent() {
+      var cur = $('cheat-content').querySelector('.cheat-cell.current');
+      if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'center' });
+    }
+
+    function toggleCharts() {
+      state.chartsEnabled = !state.chartsEnabled;
+      try { localStorage.setItem('kanaDrillCharts', state.chartsEnabled ? '1' : '0'); } catch (e) {}
+      if (!state.chartsEnabled && $('cheat-overlay').classList.contains('show') && !state.progressView) {
+        closeCheatSheet();
+      }
+      renderDynamicLabels();
+    }
+    window.toggleCharts = toggleCharts;
+
+    function toggleSnapToCurrent() {
+      state.snapToCurrent = !state.snapToCurrent;
+      try { localStorage.setItem('kanaDrillSnap', state.snapToCurrent ? '1' : '0'); } catch (e) {}
+      toast(t2(state.snapToCurrent ? 'snap_on' : 'snap_off'), 'info');
+      // Turning it on with a chart already open jumps there straight away
+      if (state.snapToCurrent && $('cheat-overlay').classList.contains('show')) snapToCurrent();
+    }
+    window.toggleSnapToCurrent = toggleSnapToCurrent;
+
+    function closeCheatSheet() {
       $('cheat-overlay').classList.remove('show');
-    };
+    }
+    window.closeCheatSheet = closeCheatSheet;
 
     // Re-render language-dependent dynamic labels after a language switch
     window.refreshDrillI18n = function () {
@@ -937,10 +1136,29 @@
       var key = (e.key || '').toLowerCase();
       var isH = code === 'KeyH' || key === 'h';
       var isK = code === 'KeyK' || key === 'k';
+      var isP = code === 'KeyP' || key === 'p';
+      var isC = code === 'KeyC' || key === 'c';
+
+      // Alt+P / Alt+C are press-to-toggle, so they never set cheatHeld and
+      // the keyup handler below leaves them alone.
+      if (isP || isC) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (e.repeat) return;
+        if (isP) {
+          if ($('cheat-overlay').classList.contains('show')) toggleProgressView();
+          else openProgress();
+        } else {
+          toggleSnapToCurrent();
+        }
+        return;
+      }
+
       if (!isH && !isK) return;
       e.preventDefault();
       e.stopPropagation();
       if (e.repeat) return; // held keys re-fire keydown — open once
+      if (!state.chartsEnabled) { toast(t2('charts_disabled')); return; }
       openCheatSheet(isH ? 'h' : 'k');
       cheatHeld = true;
     }, true);
@@ -987,6 +1205,8 @@
       });
       document.addEventListener('keydown', function (e) {
         var cheatOpen = $('cheat-overlay').classList.contains('show');
+        var infoOpen = $('info-overlay').classList.contains('show');
+        if (e.key === 'Escape' && infoOpen) { closeInfo(); return; }
         if (e.key === 'Escape' && cheatOpen) { closeCheatSheet(); return; }
         if (e.key === 'Enter' && state.answered && !cheatOpen && document.activeElement !== input) {
           newQuestion();
@@ -995,6 +1215,9 @@
       // Click outside the cheat sheet box to close it
       $('cheat-overlay').addEventListener('click', function (e) {
         if (e.target === this) closeCheatSheet();
+      });
+      $('info-overlay').addEventListener('click', function (e) {
+        if (e.target === this) closeInfo();
       });
       // The primary button doubles as Check / Next
       $('drill-check').addEventListener('click', function () {
