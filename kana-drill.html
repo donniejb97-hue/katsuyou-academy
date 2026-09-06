@@ -107,6 +107,26 @@
     .cheat-cell .kana { display: block; font-size: 1.45rem; color: var(--ink); line-height: 1.3; }
     .cheat-cell .romaji { display: block; font-size: 0.68rem; color: var(--text-light); font-style: italic; }
 
+    /* ---------- Progress view (inside the cheat sheet) ---------- */
+    .cheat-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .cheat-progress-summary { font-size: 0.78rem; font-weight: 600; color: var(--text-light); }
+    .cheat-progress-summary.hidden { display: none; }
+    .cheat-toggle { padding: 0.35rem 0.85rem; font-size: 0.8rem; }
+
+    .cheat-cell .cheat-counts { display: block; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.02em; color: var(--text-light); line-height: 1.4; font-style: normal; }
+    .cheat-cell.unseen { opacity: 0.34; }
+    .cheat-cell.unseen .kana { color: var(--text-light); }
+    .cheat-cell.seen { border-color: var(--sage); background: rgba(122,158,126,0.10); }
+    .cheat-cell.seen .cheat-counts { color: #3f5c42; }
+    .cheat-cell.missed { border-color: var(--accent); background: rgba(196,92,74,0.09); }
+    .cheat-cell.missed .cheat-counts { color: #8a3d2f; }
+    /* wrong answers announce themselves on hover */
+    .cheat-cell.missed:hover { background: rgba(196,92,74,0.20); border-color: var(--accent); }
+    .cheat-cell.unseen:hover { opacity: 0.7; }
+    .cheat-section-count { font-weight: 700; color: var(--text-light); }
+
+    .drill-sep { color: var(--accent); opacity: 0.5; user-select: none; padding: 0 0.15rem; font-size: 1.1rem; line-height: 1; }
+
     @media (max-width: 540px) {
       .drill-page { padding: 1.25rem; }
       .drill-question { font-size: 3.5rem; }
@@ -193,6 +213,8 @@
           <button class="drill-chip set-chip on" data-set="basic" onclick="toggleSet('basic')" data-i18n="set_basic">Basic (46)</button>
           <button class="drill-chip set-chip" data-set="dakuten" onclick="toggleSet('dakuten')" data-i18n="set_dakuten">Dakuten (25)</button>
           <button class="drill-chip set-chip" data-set="combos" onclick="toggleSet('combos')" data-i18n="set_combos">Combos (33)</button>
+          <span class="drill-sep" aria-hidden="true">|</span>
+          <button class="drill-chip filter-chip" id="unseen-only-chip" onclick="toggleUnseenOnly()"></button>
         </div>
         <div class="drill-control-row">
           <span class="drill-control-label" data-i18n="charts">Charts</span>
@@ -236,6 +258,10 @@
       <button class="cheat-close" onclick="closeCheatSheet()" aria-label="Close cheat sheet">×</button>
       <h2 class="cheat-title" id="cheat-title"></h2>
       <div class="cheat-hint" data-i18n-html="cheat_hint">Tap any kana to hear its pronunciation 🔊 &nbsp;·&nbsp; Hold Alt+H / Alt+K to peek</div>
+      <div class="cheat-toolbar">
+        <button class="drill-chip cheat-toggle" id="cheat-progress-toggle" onclick="toggleProgressView()"></button>
+        <span class="cheat-progress-summary hidden" id="cheat-progress-summary"></span>
+      </div>
       <div id="cheat-content"></div>
     </div>
   </div>
@@ -306,6 +332,78 @@
       ja:['zya','jya'], ju:['zyu','jyu'], jo:['zyo','jyo']
     };
 
+    // Strings for the progress feature. Used as a fallback so the page is
+    // never half-translated if these keys aren't in i18n.js yet — t2() prefers
+    // the site dictionary whenever it has them.
+    var EXTRA_I18N = {
+      en: {
+        unseen_only:    'Unseen only',
+        progress_show:  'Show progress',
+        progress_hide:  'Hide progress',
+        all_seen:       "You've answered every kana in this selection — showing all again.",
+        tip_unseen:     'Not yet answered',
+        tip_counts:     '{r} — {c} correct, {m} missed',
+        one_set:        'At least one set must stay on',
+        progress_hint:  '{n} of {total} answered'
+      },
+      de: {
+        unseen_only:    'Nur ungesehene',
+        progress_show:  'Fortschritt anzeigen',
+        progress_hide:  'Fortschritt ausblenden',
+        all_seen:       'Sie haben alle Kana dieser Auswahl beantwortet — es werden wieder alle angezeigt.',
+        tip_unseen:     'Noch nicht beantwortet',
+        tip_counts:     '{r} — {c} richtig, {m} falsch',
+        one_set:        'Mindestens ein Satz muss aktiviert bleiben',
+        progress_hint:  '{n} von {total} beantwortet'
+      },
+      fr: {
+        unseen_only:    'Non vus uniquement',
+        progress_show:  'Afficher la progression',
+        progress_hide:  'Masquer la progression',
+        all_seen:       'Vous avez répondu à tous les kana de cette sélection — affichage complet rétabli.',
+        tip_unseen:     'Pas encore répondu',
+        tip_counts:     '{r} — {c} correct(s), {m} manqué(s)',
+        one_set:        'Au moins un ensemble doit rester actif',
+        progress_hint:  '{n} sur {total} répondus'
+      },
+      zh: {
+        unseen_only:    '仅未作答',
+        progress_show:  '显示进度',
+        progress_hide:  '隐藏进度',
+        all_seen:       '此选择中的假名您都已作答 — 已恢复显示全部。',
+        tip_unseen:     '尚未作答',
+        tip_counts:     '{r} — 正确 {c} 次，错误 {m} 次',
+        one_set:        '至少需保留一个假名集',
+        progress_hint:  '已作答 {n} / {total}'
+      }
+    };
+
+    function curLang() {
+      var s = document.getElementById('lang-select');
+      if (s && s.value) return s.value;
+      return (document.documentElement.lang || 'en').slice(0, 2);
+    }
+
+    // Site dictionary first, local fallback second.
+    function t2(key) {
+      if (typeof t === 'function') {
+        var v = t(key);
+        if (v && v !== key) return v;
+      }
+      var d = EXTRA_I18N[curLang()] || EXTRA_I18N.en;
+      return d[key] || EXTRA_I18N.en[key] || key;
+    }
+
+    function fmt(str, vars) {
+      return String(str).replace(/\{(\w+)\}/g, function (m, k) {
+        return vars[k] !== undefined ? vars[k] : m;
+      });
+    }
+
+    function toast(msg, kind) {
+      if (typeof showToast === 'function') showToast(msg, kind || 'warning');
+    }
+
     var state = {
       mode: 'kana2romaji',
       script: 'hiragana',
@@ -313,7 +411,10 @@
       correct: 0, total: 0, streak: 0, best: 0,
       current: null,       // { item, script, prompt }
       answered: false,
-      missed: {}           // key: hiragana → item
+      missed: {},          // key: hiragana → item  (this session only)
+      seen: {},            // key: "あ|h" → { c: correct, m: missed }
+      unseenOnly: false,   // restrict the pool to kana never answered
+      progressView: false  // cheat sheet shows encountered/unencountered
     };
 
     // Restore best streak if the browser allows it
@@ -321,6 +422,30 @@
       var saved = localStorage.getItem('kanaDrillBest');
       if (saved) state.best = parseInt(saved, 10) || 0;
     } catch (e) { /* storage unavailable — fine */ }
+
+    // Restore what's been encountered. Cleared by Reset Score.
+    try {
+      var savedSeen = localStorage.getItem('kanaDrillSeen');
+      if (savedSeen) state.seen = JSON.parse(savedSeen) || {};
+      state.progressView = localStorage.getItem('kanaDrillProgressView') === '1';
+    } catch (e) { state.seen = {}; }
+
+    function saveSeen() {
+      try { localStorage.setItem('kanaDrillSeen', JSON.stringify(state.seen)); } catch (e) {}
+    }
+
+    // A kana is tracked per script — seeing あ tells you nothing about ア.
+    function seenKey(item, sc) { return item.h + '|' + sc; }
+    function seenRec(item, sc) { return state.seen[seenKey(item, sc)]; }
+
+    // Only a submitted answer counts as encountered. Skipping doesn't.
+    function markSeen(item, sc, right) {
+      var k = seenKey(item, sc);
+      var rec = state.seen[k] || { c: 0, m: 0 };
+      if (right) rec.c++; else rec.m++;
+      state.seen[k] = rec;
+      saveSeen();
+    }
 
     function $(id) { return document.getElementById(id); }
 
@@ -330,6 +455,10 @@
       if (state.sets.dakuten) out = out.concat(KANA.dakuten);
       if (state.sets.combos) out = out.concat(KANA.combos);
       return out;
+    }
+
+    function unseenIn(p, sc) {
+      return p.filter(function (it) { return !seenRec(it, sc); });
     }
 
     function accepted(item) {
@@ -350,7 +479,28 @@
 
     // ---------- question generation ----------
     function newQuestion() {
-      var p = pool();
+      var full = pool();
+      var sc = pickScript();
+      var p = full;
+
+      if (state.unseenOnly) {
+        var u = unseenIn(full, sc);
+        // In mixed mode, fall back to the other script before giving up
+        if (!u.length && state.script === 'mixed') {
+          var other = sc === 'h' ? 'k' : 'h';
+          var u2 = unseenIn(full, other);
+          if (u2.length) { sc = other; u = u2; }
+        }
+        if (!u.length) {
+          // Everything in this selection has been answered — drop the filter
+          state.unseenOnly = false;
+          renderDynamicLabels();
+          toast(t2('all_seen'), 'success');
+        } else {
+          p = u;
+        }
+      }
+
       var item = p[Math.floor(Math.random() * p.length)];
       // Avoid immediate repeats
       if (state.current && p.length > 3) {
@@ -358,7 +508,6 @@
           item = p[Math.floor(Math.random() * p.length)];
         }
       }
-      var sc = pickScript();
       state.current = { item: item, script: sc };
       state.answered = false;
 
@@ -389,7 +538,7 @@
         q2.textContent = item.r;
         $('drill-type-row').style.display = 'none';
         $('drill-choices').style.display = 'grid';
-        buildChoices(item, sc, p);
+        buildChoices(item, sc, full);
         $('drill-check').style.display = 'none';
         $('drill-skip').style.display = 'block';
       }
@@ -414,7 +563,7 @@
       // shuffle
       for (var i = options.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
-        var t = options[i]; options[i] = options[j]; options[j] = t;
+        var tmp = options[i]; options[i] = options[j]; options[j] = tmp;
       }
       var box = $('drill-choices');
       box.innerHTML = '';
@@ -441,7 +590,7 @@
         else if (b === btn) b.classList.add('wrong');
         else b.classList.add('dim');
       });
-      record(right);
+      record(right, true);
       showFeedback(right);
     }
 
@@ -455,7 +604,7 @@
       var right = accepted(item).indexOf(val) !== -1;
       input.disabled = true;
       input.classList.add(right ? 'correct' : 'wrong');
-      record(right);
+      record(right, true);
       showFeedback(right);
     }
 
@@ -474,12 +623,15 @@
           if (isAnswer) b.classList.add('correct'); else b.classList.add('dim');
         });
       }
-      record(false);
+      // A skip is not an answer — it scores as a miss but leaves the kana
+      // marked unencountered, so "Unseen only" will bring it back around.
+      record(false, false);
       showFeedback(false, true);
     }
 
-    function record(right) {
+    function record(right, attempted) {
       state.total++;
+      if (attempted) markSeen(state.current.item, state.current.script, right);
       if (right) {
         state.correct++;
         state.streak++;
@@ -496,6 +648,9 @@
         renderMissed();
       }
       renderScores();
+      if (document.getElementById('cheat-overlay').classList.contains('show')) {
+        openCheatSheet(lastCheatScript);
+      }
     }
 
     function showFeedback(right, skipped) {
@@ -577,7 +732,7 @@
       // Never allow zero sets selected
       var onCount = Object.keys(state.sets).filter(function (s) { return state.sets[s]; }).length;
       if (state.sets[set] && onCount === 1) {
-        if (typeof showToast === 'function') showToast('At least one set must stay on', 'warning');
+        toast(t2('one_set'));
         return;
       }
       state.sets[set] = !state.sets[set];
@@ -587,6 +742,41 @@
       });
       newQuestion();
     };
+
+    window.toggleUnseenOnly = function () {
+      if (!state.unseenOnly) {
+        // Don't switch into an empty pool — say so and stay put
+        var full = pool();
+        var any = unseenIn(full, 'h').length || unseenIn(full, 'k').length;
+        if (!any) { toast(t2('all_seen')); return; }
+      }
+      state.unseenOnly = !state.unseenOnly;
+      renderDynamicLabels();
+      newQuestion();
+    };
+
+    window.toggleProgressView = function () {
+      state.progressView = !state.progressView;
+      try { localStorage.setItem('kanaDrillProgressView', state.progressView ? '1' : '0'); } catch (e) {}
+      openCheatSheet(lastCheatScript);
+    };
+
+    // Labels rendered from JS rather than data-i18n, so they stay correct
+    // whether or not these keys have been added to i18n.js yet.
+    function renderDynamicLabels() {
+      var chip = $('unseen-only-chip');
+      if (chip) {
+        chip.textContent = t2('unseen_only');
+        chip.classList.toggle('on', state.unseenOnly);
+        chip.setAttribute('aria-pressed', state.unseenOnly ? 'true' : 'false');
+      }
+      var pt = $('cheat-progress-toggle');
+      if (pt) {
+        pt.textContent = state.progressView ? t2('progress_hide') : t2('progress_show');
+        pt.classList.toggle('on', state.progressView);
+        pt.setAttribute('aria-pressed', state.progressView ? 'true' : 'false');
+      }
+    }
 
     window.checkDrillAnswer = checkDrillAnswer;
     window.skipDrill = skipDrill;
@@ -624,19 +814,44 @@
         return gap;
       }
       var b = document.createElement('button');
-      b.className = 'cheat-cell' + (isCurrentItem(item) ? ' current' : '');
-      b.title = t('hear_pron');
+      var cls = 'cheat-cell' + (isCurrentItem(item) ? ' current' : '');
+      var counts = '';
+
+      if (state.progressView) {
+        var rec = seenRec(item, sc);
+        if (rec) {
+          cls += ' seen' + (rec.m > 0 ? ' missed' : '');
+          counts = '<span class="cheat-counts">✓' + rec.c + ' ✗' + rec.m + '</span>';
+          b.title = fmt(t2('tip_counts'), { r: item.r, c: rec.c, m: rec.m });
+        } else {
+          cls += ' unseen';
+          counts = '<span class="cheat-counts">·</span>';
+          b.title = t2('tip_unseen');
+        }
+      } else {
+        b.title = t('hear_pron');
+      }
+
+      b.className = cls;
       b.innerHTML = '<span class="kana jp">' + (sc === 'h' ? item.h : item.k) + '</span>' +
-                    '<span class="romaji">' + item.r + '</span>';
+                    '<span class="romaji">' + item.r + '</span>' + counts;
       b.onclick = function () { playAudio(item); };
       return b;
+    }
+
+    // "20/46" beside a section heading while the progress view is on
+    function sectionCount(list, sc) {
+      if (!state.progressView) return '';
+      var n = 0;
+      list.forEach(function (it) { if (seenRec(it, sc)) n++; });
+      return ' <span class="cheat-section-count">' + n + '/' + list.length + '</span>';
     }
 
     function cheatSection(title, cols) {
       var wrap = document.createElement('div');
       var h = document.createElement('div');
       h.className = 'cheat-section-title';
-      h.textContent = title;
+      h.innerHTML = title;
       var grid = document.createElement('div');
       grid.className = 'cheat-grid' + (cols === 3 ? ' cols-3' : '');
       wrap.appendChild(h);
@@ -648,11 +863,27 @@
       lastCheatScript = sc;
       $('cheat-title').textContent = sc === 'h' ? t('cheat_title_h') : t('cheat_title_k');
 
+      renderDynamicLabels();
+
+      // Overall progress across every kana in this script
+      var summary = $('cheat-progress-summary');
+      if (summary) {
+        if (state.progressView) {
+          var all = KANA.basic.concat(KANA.dakuten, KANA.combos);
+          var done = 0;
+          all.forEach(function (it) { if (seenRec(it, sc)) done++; });
+          summary.textContent = fmt(t2('progress_hint'), { n: done, total: all.length });
+          summary.classList.remove('hidden');
+        } else {
+          summary.classList.add('hidden');
+        }
+      }
+
       var content = $('cheat-content');
       content.innerHTML = '';
 
       // Basic — gojūon-aligned grid
-      var basic = cheatSection(t('cheat_basic'), 5);
+      var basic = cheatSection(t('cheat_basic') + sectionCount(KANA.basic, sc), 5);
       GOJUON_ROWS.forEach(function (row) {
         row.forEach(function (r) {
           basic.grid.appendChild(cheatCell(r ? BASIC_BY_ROMAJI[r] : null, sc));
@@ -661,12 +892,12 @@
       content.appendChild(basic.wrap);
 
       // Dakuten & handakuten — already in gojūon order, rows of 5
-      var dak = cheatSection(t('cheat_dakuten'), 5);
+      var dak = cheatSection(t('cheat_dakuten') + sectionCount(KANA.dakuten, sc), 5);
       KANA.dakuten.forEach(function (item) { dak.grid.appendChild(cheatCell(item, sc)); });
       content.appendChild(dak.wrap);
 
       // Combination kana — rows of 3 (ya / yu / yo)
-      var com = cheatSection(t('cheat_combos'), 3);
+      var com = cheatSection(t('cheat_combos') + sectionCount(KANA.combos, sc), 3);
       KANA.combos.forEach(function (item) { com.grid.appendChild(cheatCell(item, sc)); });
       content.appendChild(com.wrap);
 
@@ -690,6 +921,7 @@
           : (sc === 'h' ? t('tag_pick_h') : t('tag_pick_k'));
       }
       $('drill-check').textContent = state.answered ? t('next') : t('check');
+      renderDynamicLabels();
       if ($('cheat-overlay').classList.contains('show')) openCheatSheet(lastCheatScript);
     };
 
@@ -731,8 +963,13 @@
     window.resetDrill = function () {
       state.correct = 0; state.total = 0; state.streak = 0;
       state.missed = {};
+      // Reset Score also clears what you've encountered, per spec
+      state.seen = {};
+      saveSeen();
       renderScores();
       renderMissed();
+      renderDynamicLabels();
+      if ($('cheat-overlay').classList.contains('show')) openCheatSheet(lastCheatScript);
       newQuestion();
     };
 
@@ -764,6 +1001,7 @@
         if (state.answered) newQuestion();
       });
       renderScores();
+      renderDynamicLabels();
       newQuestion();
     }
 
