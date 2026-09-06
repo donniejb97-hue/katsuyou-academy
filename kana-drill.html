@@ -46,7 +46,7 @@
     .drill-question.romaji-q { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 3.5rem; font-style: italic; color: var(--ink); }
 
     .drill-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
-    .drill-choice { background: white; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 1rem 0.5rem; font-size: 2.2rem; cursor: pointer; transition: all 0.15s; color: var(--ink); }
+    .drill-choice { background: white; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 0.7rem 0.5rem; font-size: 2rem; cursor: pointer; transition: all 0.15s; color: var(--ink); }
     .drill-choice:hover:not(:disabled) { border-color: var(--accent-soft); transform: translateY(-2px); }
     .drill-choice:disabled { cursor: default; }
     .drill-choice.correct { background: rgba(122,158,126,0.18); border-color: var(--sage); }
@@ -110,8 +110,12 @@
     .cheat-cell.current.seen .kana, .cheat-cell.current.unseen .kana, .cheat-cell.current.skipped .kana { color: var(--ink); }
     .cheat-cell.current.unseen { opacity: 1; }
     .cheat-section-title { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin: 1.25rem 0 0.5rem; }
-    .cheat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem; }
-    .cheat-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .cheat-grid { display: grid; grid-template-columns: 2.1rem repeat(5, 1fr); gap: 0.4rem; align-items: stretch; }
+    .cheat-grid.cols-3 { grid-template-columns: 2.1rem repeat(3, 1fr); }
+    /* Row and column headers, as on a printed gojūon chart */
+    .cheat-head { display: flex; align-items: center; justify-content: center; font-size: 0.78rem; font-weight: 700; color: var(--text-light); letter-spacing: 0.04em; }
+    .cheat-head.col { align-items: flex-end; padding-bottom: 0.15rem; color: var(--accent); }
+    .cheat-head.corner { }
     .cheat-cell { background: var(--paper-warm); border: 1px solid rgba(0,0,0,0.08); border-radius: 8px; padding: 0.45rem 0.2rem; text-align: center; cursor: pointer; transition: all 0.15s; font-family: inherit; }
     .cheat-cell:hover { border-color: var(--accent-soft); transform: translateY(-1px); }
     .cheat-cell.empty { background: none; border: none; cursor: default; }
@@ -186,6 +190,10 @@
     @media (max-width: 540px) {
       .info-row { flex-direction: column; gap: 0.15rem; }
       .info-keys { flex: none; }
+      /* The label column costs width, so tighten it on small screens */
+      .cheat-grid { grid-template-columns: 1.45rem repeat(5, 1fr); gap: 0.25rem; }
+      .cheat-grid.cols-3 { grid-template-columns: 1.45rem repeat(3, 1fr); }
+      .cheat-head { font-size: 0.66rem; }
       .drill-control-row { flex-direction: column; gap: 0.35rem; }
       .drill-control-label { padding-top: 0; min-width: 0; }
       .drill-chip { white-space: normal; }
@@ -195,7 +203,8 @@
       .drill-page { padding: 1.25rem; }
       .drill-question { font-size: 3.5rem; }
       .drill-question.romaji-q { font-size: 2.6rem; }
-      .drill-choices { grid-template-columns: repeat(2, 1fr); }
+      .drill-choices { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+      .drill-choice { padding: 0.55rem 0.2rem; font-size: 1.55rem; }
       .cheat-box { padding: 1.25rem 1rem 1.5rem; }
       .cheat-cell .kana { font-size: 1.2rem; }
     }
@@ -824,7 +833,7 @@
     }
 
     // Wrong answers are drawn from every enabled set, ignoring the row filter —
-    // otherwise a three-kana row can't fill four multiple-choice buttons.
+    // otherwise a three-kana row can't fill eight multiple-choice buttons.
     function distractorPool() {
       var out = [];
       if (state.sets.basic) out = out.concat(KANA.basic);
@@ -927,7 +936,7 @@
       var usedRomaji = { };
       usedRomaji[answer.r] = true;
       var guard = 0;
-      while (distractors.length < 3 && guard < 200) {
+      while (distractors.length < 7 && guard < 400) {
         guard++;
         var cand = p[Math.floor(Math.random() * p.length)];
         if (used[cand.h] || usedRomaji[cand.r]) continue;
@@ -1262,6 +1271,20 @@
       ['n',null,null,null,null]
     ];
 
+    // Consonant labels down the left of each chart, matching the row order
+    // the grids are actually built in.
+    var VOWEL_COLS = ['a', 'i', 'u', 'e', 'o'];
+    var COMBO_COLS = ['a', 'u', 'o'];
+    var BASIC_ROW_HEADS = ['', 'k', 's', 't', 'n', 'h', 'm', 'y', 'r', 'w', 'n'];
+    var DAKUTEN_ROW_HEADS = ['g', 'z', 'd', 'b', 'p'];
+
+    // Derived from the data, so reordering KANA.combos can't desync the labels
+    function comboRowHead(idx) {
+      var first = KANA.combos[idx * 3];
+      if (!first) return '';
+      return first.r.replace(/[aiueo]+$/, '');
+    }
+
     var BASIC_BY_ROMAJI = {};
     KANA.basic.forEach(function (item) { BASIC_BY_ROMAJI[item.r] = item; });
 
@@ -1323,6 +1346,19 @@
       return ' <span class="cheat-section-count">' + n + '/' + list.length + '</span>';
     }
 
+    function headCell(text, kind) {
+      var d = document.createElement('div');
+      d.className = 'cheat-head' + (kind ? ' ' + kind : '');
+      d.textContent = text;
+      return d;
+    }
+
+    // Corner spacer plus one label per vowel column
+    function addColumnHeads(grid, cols) {
+      grid.appendChild(headCell('', 'corner'));
+      cols.forEach(function (v) { grid.appendChild(headCell(v, 'col')); });
+    }
+
     function cheatSection(title, cols) {
       var wrap = document.createElement('div');
       var h = document.createElement('div');
@@ -1371,7 +1407,9 @@
 
       // Basic — gojūon-aligned grid
       var basic = cheatSection(t('cheat_basic') + sectionCount(KANA.basic, sc), 5);
-      GOJUON_ROWS.forEach(function (row) {
+      addColumnHeads(basic.grid, VOWEL_COLS);
+      GOJUON_ROWS.forEach(function (row, i) {
+        basic.grid.appendChild(headCell(BASIC_ROW_HEADS[i] || ''));
         row.forEach(function (r) {
           basic.grid.appendChild(cheatCell(r ? BASIC_BY_ROMAJI[r] : null, sc));
         });
@@ -1380,12 +1418,20 @@
 
       // Dakuten & handakuten — already in gojūon order, rows of 5
       var dak = cheatSection(t('cheat_dakuten') + sectionCount(KANA.dakuten, sc), 5);
-      KANA.dakuten.forEach(function (item) { dak.grid.appendChild(cheatCell(item, sc)); });
+      addColumnHeads(dak.grid, VOWEL_COLS);
+      KANA.dakuten.forEach(function (item, i) {
+        if (i % 5 === 0) dak.grid.appendChild(headCell(DAKUTEN_ROW_HEADS[i / 5] || ''));
+        dak.grid.appendChild(cheatCell(item, sc));
+      });
       content.appendChild(dak.wrap);
 
       // Combination kana — rows of 3 (ya / yu / yo)
       var com = cheatSection(t('cheat_combos') + sectionCount(KANA.combos, sc), 3);
-      KANA.combos.forEach(function (item) { com.grid.appendChild(cheatCell(item, sc)); });
+      addColumnHeads(com.grid, COMBO_COLS);
+      KANA.combos.forEach(function (item, i) {
+        if (i % 3 === 0) com.grid.appendChild(headCell(comboRowHead(i / 3)));
+        com.grid.appendChild(cheatCell(item, sc));
+      });
       content.appendChild(com.wrap);
 
       $('cheat-overlay').classList.add('show');
