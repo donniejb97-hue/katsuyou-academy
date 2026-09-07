@@ -26,9 +26,16 @@ var I18N = {
     cheat_basic:'Basic (46)', cheat_dakuten:'Dakuten & Handakuten (25)', cheat_combos:'Combos (33)',
     // ---- index ----
     hero_badge:'Japanese Study Toolkit',
+    back_to_top:'Back to top',
     card_kana_t:"<span class=\"jp\" style=\"color: #d4786a;\">仮名</span> — Kana",
     card_kana_d:"Practice all <strong style=\"color: #d4786a;\">104 hiragana and katakana</strong> characters. Learn both Japanese writing systems side-by-side with <strong>audio pronunciation</strong>, clear charts for basic kana, dakuten (voiced sounds), and combination characters. Click any character to hear how it sounds.",
     card_kana_cta:"Learn Kana →",
+    card_kdrill_t:"<span class=\"jp\" style=\"color: #a3d1a7;\">仮名練習</span> — Kana Drill",
+    card_kdrill_d:"Quiz yourself in both directions—<strong style=\"color: #a3d1a7;\">kana → rōmaji</strong> by typing, or <strong style=\"color: #a3d1a7;\">rōmaji → kana</strong> by picking the right character. Filter by script and by set (basic, dakuten, combinations), and watch your <strong>score, streak and personal best</strong> climb. Stuck? <strong>Hold Alt+H or Alt+K</strong> to peek at a cheat sheet without leaving the question. A <strong style=\"color: #a3d1a7;\">progress chart</strong> shows every kana you've answered and how often you've missed it, and <strong>Unseen only</strong> or <strong>Under 80%</strong> narrows the drill to the ones you've never met, or the ones you keep getting wrong.",
+    card_kdrill_cta:"Start Drilling →",
+    card_kjdrill_t:"<span class=\"jp\" style=\"color: #e94560;\">漢字練習</span> — Kanji Drill",
+    card_kjdrill_d:"Test yourself on all <strong style=\"color: #e94560;\">2,300 KLC kanji</strong>, either character → keyword or keyword → character. <strong>Pick a range</strong> so you drill only the block you're studying rather than the whole course. Typed answers get <strong style=\"color: #e94560;\">three-tier feedback</strong>—correct, close enough to try again, or the answer revealed—and everything you miss collects in a <strong>review list</strong> at the bottom of the page.",
+    card_kjdrill_cta:"Start Drilling →",
     card_learn_t:"Learn",
     card_learn_d:"Clear, visual explanations of how Japanese verb conjugation actually works. Understand the <em>why</em> behind the patterns, not just the rules. Learn to identify verb types, understand the hiragana sound system, and see step-by-step walkthroughs of each conjugation type.",
     card_learn_cta:"Start Learning →",
@@ -53,7 +60,7 @@ var I18N = {
     btn_start_kana:'Start with Kana', btn_explore_kanji:'Explore Kanji',
     btn_learn_basics:'Learn the Basics', btn_practice_conj:'Practice Conjugation',
     toolkit_title:'The Toolkit',
-    toolkit_sub:'Six interconnected tools covering the foundations of Japanese',
+    toolkit_sub:'Eight interconnected tools covering the foundations of Japanese',
     // ---- kanji drill ----
     kd_title:'Kanji Drill', mode_k2w:'Kanji → Keyword', mode_w2k:'Keyword → Kanji',
     range:'Range', kd_placeholder:'Type the keyword in English…', kd_missed:'📝 Missed this session',
@@ -124,9 +131,16 @@ var I18N = {
     cheat_title_h:'Hiragana ひらがな', cheat_title_k:'Katakana カタカナ',
     cheat_basic:'Grundzeichen (46)', cheat_dakuten:'Dakuten & Handakuten (25)', cheat_combos:'Kombinationen (33)',
     hero_badge:'Japanisch-Lernwerkzeuge',
+    back_to_top:'Nach oben',
     card_kana_t:"<span class=\"jp\" style=\"color: #d4786a;\">仮名</span> — Kana",
     card_kana_d:"Üben Sie alle <strong style=\"color: #d4786a;\">104 Hiragana- und Katakana-Zeichen</strong>. Lernen Sie beide japanischen Schriftsysteme nebeneinander — mit <strong>Audio-Aussprache</strong> und übersichtlichen Tabellen für Grundzeichen, Dakuten (stimmhafte Laute) und Kombinationszeichen. Klicken Sie ein Zeichen an, um es zu hören.",
     card_kana_cta:"Kana lernen →",
+    card_kdrill_t:"<span class=\"jp\" style=\"color: #a3d1a7;\">仮名練習</span> — Kana-Drill",
+    card_kdrill_d:"Prüfen Sie sich in beide Richtungen — <strong style=\"color: #a3d1a7;\">Kana → Rōmaji</strong> durch Tippen oder <strong style=\"color: #a3d1a7;\">Rōmaji → Kana</strong> durch Auswählen des richtigen Zeichens. Filtern Sie nach Schrift und nach Satz (Grundzeichen, Dakuten, Kombinationen) und sehen Sie zu, wie <strong>Punktzahl, Serie und persönliche Bestleistung</strong> steigen. Nicht weiter? <strong>Halten Sie Alt+H oder Alt+K gedrückt</strong>, um einen Blick auf die Tabelle zu werfen, ohne die Frage zu verlassen. Ein <strong style=\"color: #a3d1a7;\">Fortschrittsdiagramm</strong> zeigt jedes beantwortete Kana und wie oft Sie danebenlagen, und <strong>Nur ungesehene</strong> oder <strong>Unter 80 %</strong> beschränkt den Drill auf die, die Ihnen noch nie begegnet sind, oder auf die, die Sie immer wieder falsch haben.",
+    card_kdrill_cta:"Drill starten →",
+    card_kjdrill_t:"<span class=\"jp\" style=\"color: #e94560;\">漢字練習</span> — Kanji-Drill",
+    card_kjdrill_d:"Testen Sie sich an allen <strong style=\"color: #e94560;\">2.300 KLC-Kanji</strong>, wahlweise Zeichen → Schlüsselwort oder Schlüsselwort → Zeichen. <strong>Wählen Sie einen Bereich</strong>, damit Sie nur den Block üben, den Sie gerade lernen, statt des ganzen Kurses. Getippte Antworten erhalten <strong style=\"color: #e94560;\">dreistufiges Feedback</strong> — richtig, nah genug für einen zweiten Versuch oder Antwort aufgedeckt — und alles, was Sie verfehlen, sammelt sich in einer <strong>Wiederholungsliste</strong> am Seitenende.",
+    card_kjdrill_cta:"Drill starten →",
     card_learn_t:"Lernen",
     card_learn_d:"Klare, visuelle Erklärungen, wie die japanische Verbkonjugation wirklich funktioniert. Verstehen Sie das <em>Warum</em> hinter den Mustern, nicht nur die Regeln. Lernen Sie, Verbtypen zu erkennen, verstehen Sie das Hiragana-Lautsystem und folgen Sie Schritt-für-Schritt-Anleitungen zu jeder Konjugationsart.",
     card_learn_cta:"Jetzt lernen →",
@@ -151,7 +165,7 @@ var I18N = {
     btn_start_kana:'Mit Kana beginnen', btn_explore_kanji:'Kanji entdecken',
     btn_learn_basics:'Grundlagen lernen', btn_practice_conj:'Konjugation üben',
     toolkit_title:'Die Werkzeuge',
-    toolkit_sub:'Sechs miteinander verbundene Werkzeuge für die Grundlagen des Japanischen',
+    toolkit_sub:'Acht miteinander verbundene Werkzeuge für die Grundlagen des Japanischen',
     kd_title:'Kanji-Drill', mode_k2w:'Kanji → Schlüsselwort', mode_w2k:'Schlüsselwort → Kanji',
     range:'Bereich', kd_placeholder:'Schlüsselwort auf Englisch eingeben …', kd_missed:'📝 In dieser Runde verfehlt',
     show_romaji:'Rōmaji zeigen', show_en_first:'Zuerst Übersetzung zeigen', show_kanji:'Kanji zeigen', show_katakana:'Katakana zeigen',
@@ -214,9 +228,16 @@ var I18N = {
     cheat_title_h:'Hiragana ひらがな', cheat_title_k:'Katakana カタカナ',
     cheat_basic:'Base (46)', cheat_dakuten:'Dakuten et handakuten (25)', cheat_combos:'Combinaisons (33)',
     hero_badge:'Boîte à outils pour le japonais',
+    back_to_top:'Retour en haut',
     card_kana_t:"<span class=\"jp\" style=\"color: #d4786a;\">仮名</span> — Kana",
     card_kana_d:"Pratiquez les <strong style=\"color: #d4786a;\">104 caractères hiragana et katakana</strong>. Apprenez les deux systèmes d'écriture japonais côte à côte, avec <strong>prononciation audio</strong> et des tableaux clairs pour les kana de base, les dakuten (sons voisés) et les combinaisons. Cliquez sur un caractère pour l'écouter.",
     card_kana_cta:"Apprendre les kana →",
+    card_kdrill_t:"<span class=\"jp\" style=\"color: #a3d1a7;\">仮名練習</span> — Exercice de kana",
+    card_kdrill_d:"Testez-vous dans les deux sens : <strong style=\"color: #a3d1a7;\">kana → rōmaji</strong> en tapant, ou <strong style=\"color: #a3d1a7;\">rōmaji → kana</strong> en choisissant le bon caractère. Filtrez par écriture et par série (base, dakuten, combinaisons) et regardez grimper votre <strong>score, votre série et votre record personnel</strong>. Bloqué ? <strong>Maintenez Alt+H ou Alt+K</strong> pour jeter un œil à la table sans quitter la question. Un <strong style=\"color: #a3d1a7;\">graphique de progression</strong> montre chaque kana auquel vous avez répondu et combien de fois vous vous êtes trompé, et <strong>Non vus uniquement</strong> ou <strong>Sous 80 %</strong> limite l'exercice à ceux que vous n'avez jamais rencontrés, ou à ceux que vous ratez sans cesse.",
+    card_kdrill_cta:"Commencer l'exercice →",
+    card_kjdrill_t:"<span class=\"jp\" style=\"color: #e94560;\">漢字練習</span> — Exercice de kanji",
+    card_kjdrill_d:"Testez-vous sur les <strong style=\"color: #e94560;\">2 300 kanji du KLC</strong>, au choix caractère → mot-clé ou mot-clé → caractère. <strong>Choisissez une plage</strong> pour ne travailler que le bloc que vous étudiez plutôt que le cours entier. Les réponses tapées reçoivent un <strong style=\"color: #e94560;\">retour à trois niveaux</strong> — correct, assez proche pour réessayer, ou réponse dévoilée — et tout ce que vous manquez s'accumule dans une <strong>liste de révision</strong> en bas de page.",
+    card_kjdrill_cta:"Commencer l'exercice →",
     card_learn_t:"Apprendre",
     card_learn_d:"Des explications claires et visuelles du fonctionnement réel de la conjugaison japonaise. Comprenez le <em>pourquoi</em> derrière les schémas, pas seulement les règles. Apprenez à identifier les types de verbes, comprenez le système sonore des hiragana et suivez chaque type de conjugaison pas à pas.",
     card_learn_cta:"Commencer →",
@@ -241,7 +262,7 @@ var I18N = {
     btn_start_kana:'Commencer par les kana', btn_explore_kanji:'Explorer les kanji',
     btn_learn_basics:'Apprendre les bases', btn_practice_conj:'Pratiquer la conjugaison',
     toolkit_title:'La boîte à outils',
-    toolkit_sub:'Six outils complémentaires couvrant les bases du japonais',
+    toolkit_sub:'Huit outils complémentaires couvrant les bases du japonais',
     kd_title:'Drill Kanji', mode_k2w:'Kanji → mot-clé', mode_w2k:'Mot-clé → kanji',
     range:'Plage', kd_placeholder:'Tapez le mot-clé en anglais…', kd_missed:'📝 Manqués cette session',
     show_romaji:'Afficher les rōmaji', show_en_first:'Afficher la traduction d\u2019abord', show_kanji:'Afficher les kanji', show_katakana:'Afficher les katakana',
@@ -304,9 +325,16 @@ var I18N = {
     cheat_title_h:'平假名 ひらがな', cheat_title_k:'片假名 カタカナ',
     cheat_basic:'清音 (46)', cheat_dakuten:'浊音・半浊音 (25)', cheat_combos:'拗音 (33)',
     hero_badge:'日语学习工具箱',
+    back_to_top:'回到顶部',
     card_kana_t:"<span class=\"jp\" style=\"color: #d4786a;\">仮名</span> — 假名",
     card_kana_d:"练习全部 <strong style=\"color: #d4786a;\">104 个平假名和片假名</strong>。并排学习两套日语书写系统，配有<strong>发音音频</strong>，以及清音、浊音和拗音的清晰对照表。点击任意假名即可听发音。",
     card_kana_cta:"学习假名 →",
+    card_kdrill_t:"<span class=\"jp\" style=\"color: #a3d1a7;\">仮名練習</span> — 假名练习",
+    card_kdrill_d:"双向测试：输入<strong style=\"color: #a3d1a7;\">假名 → 罗马音</strong>，或选出正确字符完成<strong style=\"color: #a3d1a7;\">罗马音 → 假名</strong>。可按字体和字组（基本、浊音、拗音）筛选，并看着<strong>得分、连胜和个人最佳</strong>不断上升。卡住了？<strong>按住 Alt+H 或 Alt+K</strong> 即可在不离开题目的情况下查看速查表。<strong style=\"color: #a3d1a7;\">进度图表</strong>会展示你答过的每个假名以及错过的次数，<strong>仅未见过</strong>与<strong>低于 80%</strong>则把练习限定在你从未遇到过、或总是答错的字符。",
+    card_kdrill_cta:"开始练习 →",
+    card_kjdrill_t:"<span class=\"jp\" style=\"color: #e94560;\">漢字練習</span> — 汉字练习",
+    card_kjdrill_d:"测试全部 <strong style=\"color: #e94560;\">2,300 个 KLC 汉字</strong>，可选字符 → 关键词或关键词 → 字符。<strong>选择范围</strong>，只练习你正在学的那一段，而不是整门课程。输入的答案会得到<strong style=\"color: #e94560;\">三级反馈</strong> — 正确、接近可再试一次、或直接公布答案 — 所有答错的字都会收入页面底部的<strong>复习列表</strong>。",
+    card_kjdrill_cta:"开始练习 →",
     card_learn_t:"学习",
     card_learn_d:"清晰直观地讲解日语动词变形的真正原理。理解规律背后的<em>为什么</em>，而不只是死记规则。学会辨别动词类型，理解平假名音系，并跟随每种变形的分步讲解。",
     card_learn_cta:"开始学习 →",
@@ -331,7 +359,7 @@ var I18N = {
     btn_start_kana:'从假名开始', btn_explore_kanji:'探索汉字',
     btn_learn_basics:'学习基础', btn_practice_conj:'练习动词变形',
     toolkit_title:'工具一览',
-    toolkit_sub:'六个相互衔接的工具，涵盖日语基础',
+    toolkit_sub:'八个相互衔接的工具，涵盖日语基础',
     kd_title:'汉字练习', mode_k2w:'汉字 → 关键词', mode_w2k:'关键词 → 汉字',
     range:'范围', kd_placeholder:'输入英文关键词…', kd_missed:'📝 本次答错的汉字',
     show_romaji:'显示罗马音', show_en_first:'先显示译文', show_kanji:'显示汉字', show_katakana:'显示片假名',
@@ -493,21 +521,13 @@ function setLang(lang) {
     /* the | separators: thinner, quieter, evenly spaced */
     '.nav-links > span{padding:0 0.25rem !important;font-size:1.05rem !important;opacity:0.45 !important;}',
     /* push the language switch to the far right, away from Contact */
-    '.nav-inner{position:relative;}',
-    '.nav-inner > .lang-switch{margin-left:auto;flex:0 0 auto;}',
+    '.nav-links .lang-switch{margin-left:auto;padding-left:1rem;flex:0 0 auto;}',
     /* narrow screens: let the bar scroll sideways instead of stacking */
     '@media (max-width:1400px){',
     '  .nav-links{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
     '  .nav-links::-webkit-scrollbar{display:none;}',
     '  .nav-links .nav-link{padding-left:0.45rem;padding-right:0.45rem;font-size:0.9rem;}',
-    '}',
-    /* narrow screens: pin it to the top-right of the bar so it is always tappable */
-    '@media (max-width:900px){',
-    '  .nav-inner > .lang-switch{position:absolute;top:0.55rem;right:0.75rem;z-index:1400;margin-left:0;}',
-    '  .nav-links{padding-right:5.5rem;}',
-    '  .lang-btn{padding:0.4rem 0.7rem;font-size:0.85rem;}',
-    '  .lang-menu{right:0;left:auto;min-width:10rem;}',
-    '  .lang-menu button{padding:0.7rem 0.7rem;font-size:0.95rem;}',
+    '  .nav-links .lang-switch{position:sticky;right:0;margin-left:0.5rem;}',
     '}'
   ].join('');
   var navStyle = document.createElement('style');
@@ -595,10 +615,7 @@ function setLang(lang) {
     paintMenu();
     wrap.appendChild(btn);
     wrap.appendChild(menu);
-    // Place it in .nav-inner rather than inside .nav-links: on narrow screens
-    // .nav-links scrolls sideways, which pushed the switch off-screen.
-    var host = document.querySelector('.nav-inner') || sel.parentNode;
-    host.appendChild(wrap);
+    sel.parentNode.insertBefore(wrap, sel.nextSibling);
 
     // keep the button label in sync if the language changes elsewhere
     window.refreshLangSwitch = function () { paintButton(); paintMenu(); };
@@ -1753,5 +1770,94 @@ I18N_addText({
 "INTERJEKTION",
 "INTERJECTION",
 "感叹词"
+]
+});
+
+// ---------- index: strings added after the first translation pass ----------
+I18N_addText({
+"A free Japanese learning platform. Learn and drill kana, kanji, vocabulary, dates, and verb conjugation\u2014all in one beautifully designed toolkit.": [
+"Eine kostenlose Japanisch-Lernplattform. Lernen und \u00fcben Sie Kana, Kanji, Vokabeln, Datumsangaben und Verbkonjugation \u2014 alles in einem sch\u00f6n gestalteten Werkzeugkasten.",
+"Une plateforme gratuite d'apprentissage du japonais. Apprenez et travaillez les kana, les kanji, le vocabulaire, les dates et la conjugaison des verbes \u2014 le tout dans une bo\u00eete \u00e0 outils au design soign\u00e9.",
+"\u514d\u8d39\u7684\u65e5\u8bed\u5b66\u4e60\u5e73\u53f0\u3002\u5b66\u4e60\u5e76\u7ec3\u4e60\u5047\u540d\u3001\u6c49\u5b57\u3001\u8bcd\u6c47\u3001\u65e5\u671f\u548c\u52a8\u8bcd\u53d8\u4f4d \u2014 \u5168\u90e8\u96c6\u4e2d\u5728\u4e00\u4e2a\u7cbe\u5fc3\u8bbe\u8ba1\u7684\u5de5\u5177\u5305\u91cc\u3002"
+],
+"Practice Kana": [
+"Kana \u00fcben",
+"S'exercer aux kana",
+"\u7ec3\u4e60\u5047\u540d"
+],
+"Practice Kanji": [
+"Kanji \u00fcben",
+"S'exercer aux kanji",
+"\u7ec3\u4e60\u6c49\u5b57"
+],
+"\u270d\ufe0f Practice Kana": [
+"\u270d\ufe0f Kana \u00fcben",
+"\u270d\ufe0f S'exercer aux kana",
+"\u270d\ufe0f \u7ec3\u4e60\u5047\u540d"
+],
+"\ud83c\udfaf Practice Kanji": [
+"\ud83c\udfaf Kanji \u00fcben",
+"\ud83c\udfaf S'exercer aux kanji",
+"\ud83c\udfaf \u7ec3\u4e60\u6c49\u5b57"
+],
+"No accounts, no sign-ups, no paywalls. Your scores, streaks, and flashcard progress live in your own browser and are never uploaded\u2014the only feature that reaches a server is Katsu, the optional AI tutor.": [
+"Keine Konten, keine Anmeldung, keine Bezahlschranken. Ihre Punktzahlen, Serien und Karteikarten-Fortschritte bleiben in Ihrem eigenen Browser und werden nie hochgeladen \u2014 die einzige Funktion, die einen Server erreicht, ist Katsu, der optionale KI-Tutor.",
+"Pas de compte, pas d'inscription, pas de paywall. Vos scores, vos s\u00e9ries et votre progression sur les cartes restent dans votre propre navigateur et ne sont jamais envoy\u00e9s \u2014 la seule fonction qui atteint un serveur est Katsu, le tuteur IA facultatif.",
+"\u65e0\u9700\u8d26\u53f7\u3001\u65e0\u9700\u6ce8\u518c\u3001\u6ca1\u6709\u4ed8\u8d39\u5899\u3002\u4f60\u7684\u5f97\u5206\u3001\u8fde\u80dc\u548c\u5361\u7247\u8fdb\u5ea6\u90fd\u4fdd\u5b58\u5728\u4f60\u81ea\u5df1\u7684\u6d4f\u89c8\u5668\u91cc\uff0c\u4ece\u4e0d\u4e0a\u4f20 \u2014 \u552f\u4e00\u4f1a\u8fde\u63a5\u670d\u52a1\u5668\u7684\u529f\u80fd\u662f\u53ef\u9009\u7684 AI \u5bfc\u5e08 Katsu\u3002"
+],
+"audio + drills": [
+"Audio + \u00dcbungen",
+"audio + exercices",
+"\u8bed\u97f3 + \u7ec3\u4e60"
+],
+"KLC course + drill": [
+"KLC-Kurs + \u00dcbung",
+"cours KLC + exercice",
+"KLC \u8bfe\u7a0b + \u7ec3\u4e60"
+],
+"\"A free Japanese study suite built by a learner for learners\u2014covering kana, kanji, vocabulary, dates and verb conjugation, with drills that track what you've learned, in one cohesive, beautifully designed package.\"": [
+"\u201eEine kostenlose Japanisch-Lernsuite, gebaut von einem Lernenden f\u00fcr Lernende \u2014 Kana, Kanji, Vokabeln, Datumsangaben und Verbkonjugation, mit \u00dcbungen, die mitverfolgen, was Sie gelernt haben, in einem stimmigen, sch\u00f6n gestalteten Paket.\u201c",
+"\u00ab Une suite d'\u00e9tude du japonais gratuite, con\u00e7ue par un apprenant pour les apprenants \u2014 kana, kanji, vocabulaire, dates et conjugaison des verbes, avec des exercices qui suivent ce que vous avez appris, dans un ensemble coh\u00e9rent au design soign\u00e9. \u00bb",
+"\u201c\u4e00\u5957\u514d\u8d39\u7684\u65e5\u8bed\u5b66\u4e60\u5957\u4ef6\uff0c\u7531\u5b66\u4e60\u8005\u4e3a\u5b66\u4e60\u8005\u800c\u5efa \u2014 \u6db5\u76d6\u5047\u540d\u3001\u6c49\u5b57\u3001\u8bcd\u6c47\u3001\u65e5\u671f\u548c\u52a8\u8bcd\u53d8\u4f4d\uff0c\u914d\u6709\u80fd\u8bb0\u5f55\u5b66\u4e60\u60c5\u51b5\u7684\u7ec3\u4e60\uff0c\u96c6\u6210\u4e3a\u4e00\u4e2a\u8fde\u8d2f\u800c\u7cbe\u7f8e\u7684\u6574\u4f53\u3002\u201d"
+],
+"\ud83d\udce6 Nothing to Install": [
+"\ud83d\udce6 Nichts zu installieren",
+"\ud83d\udce6 Rien \u00e0 installer",
+"\ud83d\udce6 \u65e0\u9700\u5b89\u88c5"
+],
+"Ten fast, focused pages that open straight in your browser. No app to download, no account to create, nothing to configure\u2014on your desktop, your tablet or your phone.": [
+"Zehn schnelle, fokussierte Seiten, die direkt im Browser \u00f6ffnen. Keine App zum Herunterladen, kein Konto zum Anlegen, nichts zu konfigurieren \u2014 auf dem Desktop, dem Tablet oder dem Handy.",
+"Dix pages rapides et cibl\u00e9es qui s'ouvrent directement dans votre navigateur. Aucune application \u00e0 t\u00e9l\u00e9charger, aucun compte \u00e0 cr\u00e9er, rien \u00e0 configurer \u2014 sur votre ordinateur, votre tablette ou votre t\u00e9l\u00e9phone.",
+"\u5341\u4e2a\u5feb\u901f\u3001\u4e13\u6ce8\u7684\u9875\u9762\uff0c\u76f4\u63a5\u5728\u6d4f\u89c8\u5668\u4e2d\u6253\u5f00\u3002\u65e0\u9700\u4e0b\u8f7d\u5e94\u7528\u3001\u65e0\u9700\u521b\u5efa\u8d26\u53f7\u3001\u65e0\u9700\u914d\u7f6e \u2014 \u5728\u7535\u8111\u3001\u5e73\u677f\u6216\u624b\u673a\u4e0a\u90fd\u4e00\u6837\u3002"
+],
+"The Conjugator doesn't just say \"wrong\"\u2014it shows the exact rule you needed and identifies your specific error. Flashcards prioritise unseen cards, and the kana and kanji drills remember every character you've answered so you can see exactly what's left to learn.": [
+"Der Konjugator sagt nicht einfach \u201efalsch\u201c \u2014 er zeigt genau die Regel, die Sie gebraucht h\u00e4tten, und benennt Ihren konkreten Fehler. Karteikarten bevorzugen ungesehene Karten, und die Kana- und Kanji-Drills merken sich jedes beantwortete Zeichen, sodass Sie genau sehen, was noch zu lernen bleibt.",
+"Le Conjugueur ne se contente pas de dire \u00ab faux \u00bb : il montre la r\u00e8gle exacte qu'il vous fallait et identifie votre erreur pr\u00e9cise. Les cartes privil\u00e9gient celles que vous n'avez pas encore vues, et les exercices de kana et de kanji retiennent chaque caract\u00e8re auquel vous avez r\u00e9pondu, pour que vous voyiez exactement ce qu'il reste \u00e0 apprendre.",
+"\u53d8\u4f4d\u5668\u4e0d\u53ea\u662f\u8bf4\u201c\u9519\u4e86\u201d \u2014 \u5b83\u4f1a\u5c55\u793a\u4f60\u9700\u8981\u7684\u90a3\u6761\u89c4\u5219\uff0c\u5e76\u6307\u51fa\u4f60\u5177\u4f53\u9519\u5728\u54ea\u91cc\u3002\u5361\u7247\u4f1a\u4f18\u5148\u5b89\u6392\u672a\u89c1\u8fc7\u7684\uff0c\u5047\u540d\u548c\u6c49\u5b57\u7ec3\u4e60\u4f1a\u8bb0\u4f4f\u4f60\u7b54\u8fc7\u7684\u6bcf\u4e2a\u5b57\u7b26\uff0c\u8ba9\u4f60\u6e05\u695a\u770b\u5230\u8fd8\u5269\u4ec0\u4e48\u8981\u5b66\u3002"
+],
+"\ud83c\udf10 Four Languages": [
+"\ud83c\udf10 Vier Sprachen",
+"\ud83c\udf10 Quatre langues",
+"\ud83c\udf10 \u56db\u79cd\u8bed\u8a00"
+],
+"The whole site\u2014every page, every button, every explanation\u2014reads in English, German, French or Simplified Chinese. Switch language from the menu at any time; your place is kept.": [
+"Die ganze Website \u2014 jede Seite, jede Schaltfl\u00e4che, jede Erkl\u00e4rung \u2014 liest sich auf Englisch, Deutsch, Franz\u00f6sisch oder in vereinfachtem Chinesisch. Wechseln Sie die Sprache jederzeit \u00fcber das Men\u00fc; Ihre Stelle bleibt erhalten.",
+"Tout le site \u2014 chaque page, chaque bouton, chaque explication \u2014 se lit en anglais, allemand, fran\u00e7ais ou chinois simplifi\u00e9. Changez de langue depuis le menu \u00e0 tout moment ; votre position est conserv\u00e9e.",
+"\u6574\u4e2a\u7f51\u7ad9 \u2014 \u6bcf\u4e00\u9875\u3001\u6bcf\u4e2a\u6309\u94ae\u3001\u6bcf\u6bb5\u8bf4\u660e \u2014 \u90fd\u53ef\u4ee5\u7528\u82f1\u8bed\u3001\u5fb7\u8bed\u3001\u6cd5\u8bed\u6216\u7b80\u4f53\u4e2d\u6587\u9605\u8bfb\u3002\u968f\u65f6\u4ece\u83dc\u5355\u5207\u6362\u8bed\u8a00\uff0c\u4f60\u6240\u5728\u7684\u4f4d\u7f6e\u4f1a\u4fdd\u7559\u3002"
+],
+"\ud83e\udd16 Ask Katsu": [
+"\ud83e\udd16 Katsu fragen",
+"\ud83e\udd16 Demandez \u00e0 Katsu",
+"\ud83e\udd16 \u95ee\u95ee Katsu"
+],
+", an AI tutor, waits in the corner of every page. Ask why a conjugation works, what separates \u306f from \u304c, or anything that has you stuck\u2014and get an answer in the language you're reading in.": [
+", ein KI-Tutor, wartet in der Ecke jeder Seite. Fragen Sie, warum eine Konjugation funktioniert, was \u306f von \u304c unterscheidet, oder was immer Sie gerade aufh\u00e4lt \u2014 und erhalten Sie die Antwort in der Sprache, in der Sie gerade lesen.",
+", un tuteur IA, attend dans le coin de chaque page. Demandez pourquoi une conjugaison fonctionne, ce qui distingue \u306f de \u304c, ou tout ce qui vous bloque \u2014 et recevez la r\u00e9ponse dans la langue que vous lisez.",
+"\uff08AI \u5bfc\u5e08\uff09\u5c31\u7b49\u5728\u6bcf\u4e00\u9875\u7684\u89d2\u843d\u3002\u95ee\u95ee\u67d0\u4e2a\u53d8\u4f4d\u4e3a\u4ec0\u4e48\u8fd9\u6837\u3001\u306f \u548c \u304c \u6709\u4f55\u533a\u522b\uff0c\u6216\u4efb\u4f55\u8ba9\u4f60\u5361\u4f4f\u7684\u95ee\u9898 \u2014 \u5e76\u7528\u4f60\u6b63\u5728\u9605\u8bfb\u7684\u8bed\u8a00\u5f97\u5230\u7b54\u6848\u3002"
+],
+"Whether you're learning kana, drilling characters, studying verbs, or building vocabulary\u2014choose your path below.": [
+"Ob Sie Kana lernen, Zeichen \u00fcben, Verben studieren oder Vokabeln aufbauen \u2014 w\u00e4hlen Sie unten Ihren Weg.",
+"Que vous appreniez les kana, travailliez les caract\u00e8res, \u00e9tudiiez les verbes ou construisiez votre vocabulaire \u2014 choisissez votre parcours ci-dessous.",
+"\u65e0\u8bba\u4f60\u662f\u5728\u5b66\u5047\u540d\u3001\u7ec3\u5b57\u7b26\u3001\u5b66\u52a8\u8bcd\u8fd8\u662f\u79ef\u7d2f\u8bcd\u6c47 \u2014 \u5728\u4e0b\u9762\u9009\u62e9\u4f60\u7684\u8def\u5f84\u3002"
 ]
 });
