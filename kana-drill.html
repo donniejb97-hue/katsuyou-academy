@@ -20,12 +20,24 @@
   <link rel="stylesheet" href="styles.css">
   <style>
     .drill-page { max-width: 720px; margin: 0 auto; padding: 2rem; }
-    .drill-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .drill-scores { display: flex; gap: 0.75rem; align-items: stretch; }
-    .drill-score-box { background: var(--ink); color: var(--paper); border-radius: 8px; padding: 0.6rem 1.1rem; text-align: center; min-width: 84px; }
+    /* Nothing here shrinks or wraps. A wide score like 200/220 makes the strip
+       run further right, past the 720px column and into the page margin, instead
+       of dropping under the title. Below 820px there is no margin left to use,
+       so the media query further down puts the strip back on its own line. */
+    .drill-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: nowrap; }
+    .drill-header > :first-child { flex: 0 0 auto; }
+    .drill-scores { display: flex; gap: 0.75rem; align-items: stretch; flex: 0 0 auto; flex-wrap: nowrap; margin-left: auto; }
+    .drill-score-box { background: var(--ink); color: var(--paper); border-radius: 8px; padding: 0.6rem 1.1rem; text-align: center; min-width: 84px; white-space: nowrap; }
     .drill-score-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; }
     .drill-score-value { font-size: 1.25rem; font-weight: 700; }
     .drill-score-box.streak .drill-score-value { color: var(--gold); }
+
+    /* No page margin left to run into — stack instead of forcing a sideways scroll */
+    @media (max-width: 820px) {
+      .drill-header { flex-wrap: wrap; }
+      .drill-header > :first-child { flex: 1 1 100%; }
+      .drill-scores { flex-wrap: wrap; margin-left: 0; }
+    }
 
     .drill-controls { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
     /* Label sits in its own fixed column; chips wrap inside their group so a
@@ -46,7 +58,7 @@
     .drill-question.romaji-q { font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 3.5rem; font-style: italic; color: var(--ink); }
 
     .drill-choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.25rem; }
-    .drill-choice { background: white; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 1rem 0.5rem; font-size: 2.2rem; cursor: pointer; transition: all 0.15s; color: var(--ink); }
+    .drill-choice { background: white; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 0.7rem 0.5rem; font-size: 2rem; cursor: pointer; transition: all 0.15s; color: var(--ink); }
     .drill-choice:hover:not(:disabled) { border-color: var(--accent-soft); transform: translateY(-2px); }
     .drill-choice:disabled { cursor: default; }
     .drill-choice.correct { background: rgba(122,158,126,0.18); border-color: var(--sage); }
@@ -204,7 +216,8 @@
       .drill-page { padding: 1.25rem; }
       .drill-question { font-size: 3.5rem; }
       .drill-question.romaji-q { font-size: 2.6rem; }
-      .drill-choices { grid-template-columns: repeat(2, 1fr); }
+      .drill-choices { grid-template-columns: repeat(4, 1fr); gap: 0.5rem; }
+      .drill-choice { padding: 0.55rem 0.2rem; font-size: 1.55rem; }
       .cheat-box { padding: 1.25rem 1rem 1.5rem; }
       .cheat-cell .kana { font-size: 1.2rem; }
     }
@@ -279,6 +292,10 @@
             <span class="drill-sep" aria-hidden="true">|</span>
             <button class="drill-chip order-chip" id="order-random" onclick="setOrder('random')"></button>
             <button class="drill-chip order-chip" id="order-seq" onclick="setOrder('seq')"></button>
+            <span class="drill-sep" aria-hidden="true">|</span>
+            <button class="drill-chip filter-chip" id="weak-only-chip" onclick="toggleWeakOnly()"></button>
+            <span class="drill-sep choice-rows-ctl" aria-hidden="true">|</span>
+            <select class="drill-select choice-rows-ctl" id="choice-rows-select" onchange="setChoiceRows(this.value)"></select>
           </div>
         </div>
         <div class="drill-control-row">
@@ -447,6 +464,9 @@
     // the site dictionary whenever it has them.
     var EXTRA_I18N = {
       en: {
+        choices_label:  'Choices',
+        choice_rows_1:  '1 row \u2014 4 tiles',
+        choice_rows_n:  '{n} rows \u2014 {c} tiles',
         charts_on:      'Charts: on',
         charts_off:     'Charts: off',
         charts_disabled:'Cheat sheets are switched off',
@@ -468,10 +488,12 @@
         setup_rows: [
           ["Mode", "Kana \u2192 R\u014dmaji asks you to type the reading. R\u014dmaji \u2192 Kana shows you a reading and you pick the character."],
           ["Random / In order", "Random shuffles the questions. In order walks straight through the chart from \u3042 to \u3093, which is the way to learn a row or a whole script in sequence. The counter on the button shows how far along you are."],
+          ["Choices", "In R\u014dmaji \u2192 Kana only: how many answer tiles you get, one to three rows of four. When the answer is a katakana with a lookalike \u2014 \u30b7 and \u30c4, \u30bd and \u30f3 \u2014 the twins are always put on the board with it, since telling those apart is the whole exercise."],
           ["Script", "Drill hiragana, katakana, or both mixed together."],
           ["Sets", "Basic is the 46 core kana. Dakuten adds the voiced sounds (\u304c, \u3071). Combos adds the small-ya pairs (\u304d\u3083). At least one stays on."],
           ["Line", "Narrow the drill to a single row \u2014 \u3042\u884c is \u3042\u3044\u3046\u3048\u304a, \u304b\u884c is \u304b\u304d\u304f\u3051\u3053. Good for learning a chart five characters at a time. Tap the same line again to clear it."],
-          ["Unseen only", "Serves only kana you have never answered, inside your current script, set and line choices. It switches itself off once you have met them all."]
+          ["Unseen only", "Serves only kana you have never answered, inside your current script, set and line choices. It switches itself off once you have met them all."],
+          ["Under 80%", "Serves only kana you get right less than 80% of the time; kana you have never answered belong to Unseen only. It switches itself off once nothing is below 80%."]
         ],
         progress_rows: [
           ["\u2713 and \u2717", "Under each kana: how many times you answered it correctly, and how many times you missed it."],
@@ -502,6 +524,8 @@
         shortcut_hint:  'Alt+P toggles this · Alt+C toggles snapping to the current kana',
         progress:       '◎ My progress',
         unseen_only:    'Unseen only',
+        weak_only:      'Under 80%',
+        none_weak:      'Nothing in this selection is under 80% \u2014 showing all again.',
         progress_show:  'Show progress',
         progress_hide:  'Hide progress',
         all_seen:       "You've answered every kana in this selection — showing all again.",
@@ -514,6 +538,9 @@
         progress_hint:  '{n} of {total} answered'
       },
       de: {
+        choices_label:  'Auswahl',
+        choice_rows_1:  '1 Reihe \u2014 4 Felder',
+        choice_rows_n:  '{n} Reihen \u2014 {c} Felder',
         charts_on:      'Tabellen: ein',
         charts_off:     'Tabellen: aus',
         charts_disabled:'Die Übersichtstabellen sind ausgeschaltet',
@@ -535,10 +562,12 @@
         setup_rows: [
           ["Modus", "Kana \u2192 R\u014dmaji: Sie tippen die Lesung ein. R\u014dmaji \u2192 Kana: Sie sehen eine Lesung und w\u00e4hlen das Zeichen."],
           ["Zuf\u00e4llig / Der Reihe nach", "Zuf\u00e4llig mischt die Fragen. Der Reihe nach geht die Tabelle geradlinig von \u3042 bis \u3093 durch \u2014 so lernen Sie eine Reihe oder eine ganze Schrift der Ordnung nach. Der Z\u00e4hler auf der Schaltfl\u00e4che zeigt, wie weit Sie sind."],
+          ["Auswahl", "Nur bei R\u014dmaji \u2192 Kana: wie viele Antwortfelder Sie bekommen, ein bis drei Reihen zu je vier. Ist die Antwort ein Katakana mit Doppelg\u00e4nger \u2014 \u30b7 und \u30c4, \u30bd und \u30f3 \u2014, stehen die Zwillinge immer mit auf dem Feld, denn genau dieses Unterscheiden ist die \u00dcbung."],
           ["Schrift", "\u00dcben Sie Hiragana, Katakana oder beides gemischt."],
           ["Gruppen", "Grundzeichen sind die 46 Kernzeichen. Dakuten erg\u00e4nzt die stimmhaften Laute (\u304c, \u3071). Kombinationen erg\u00e4nzt die Paare mit kleinem ya (\u304d\u3083). Mindestens eine Gruppe bleibt aktiv."],
           ["Reihe", "Beschr\u00e4nkt die \u00dcbung auf eine einzelne Reihe \u2014 \u3042\u884c ist \u3042\u3044\u3046\u3048\u304a, \u304b\u884c ist \u304b\u304d\u304f\u3051\u3053. Ideal, um eine Tabelle in F\u00fcnferschritten zu lernen. Tippen Sie dieselbe Reihe erneut an, um die Auswahl aufzuheben."],
-          ["Nur ungesehene", "Zeigt nur Kana, die Sie noch nie beantwortet haben \u2014 innerhalb Ihrer Schrift-, Gruppen- und Reihenauswahl. Sobald Sie alle kennen, schaltet sich die Option selbst ab."]
+          ["Nur ungesehene", "Zeigt nur Kana, die Sie noch nie beantwortet haben \u2014 innerhalb Ihrer Schrift-, Gruppen- und Reihenauswahl. Sobald Sie alle kennen, schaltet sich die Option selbst ab."],
+          ["Unter 80 %", "Zeigt nur Kana, die Sie in weniger als 80 % der F\u00e4lle richtig haben; nie beantwortete Kana geh\u00f6ren zu \u201eNur ungesehene\u201c. Sobald nichts mehr unter 80 % liegt, schaltet sich die Option selbst ab."]
         ],
         progress_rows: [
           ["\u2713 und \u2717", "Unter jedem Kana: wie oft Sie es richtig beantwortet und wie oft Sie es falsch hatten."],
@@ -569,6 +598,8 @@
         shortcut_hint:  'Alt+P schaltet dies um · Alt+C schaltet das Springen zum aktuellen Kana um',
         progress:       '◎ Mein Fortschritt',
         unseen_only:    'Nur ungesehene',
+        weak_only:      'Unter 80 %',
+        none_weak:      'Nichts in dieser Auswahl liegt unter 80 % \u2014 es werden wieder alle angezeigt.',
         progress_show:  'Fortschritt anzeigen',
         progress_hide:  'Fortschritt ausblenden',
         all_seen:       'Sie haben alle Kana dieser Auswahl beantwortet — es werden wieder alle angezeigt.',
@@ -581,6 +612,9 @@
         progress_hint:  '{n} von {total} beantwortet'
       },
       fr: {
+        choices_label:  'Choix',
+        choice_rows_1:  '1 rangée \u2014 4 cases',
+        choice_rows_n:  '{n} rangées \u2014 {c} cases',
         charts_on:      'Tableaux : activés',
         charts_off:     'Tableaux : désactivés',
         charts_disabled:'Les tableaux sont désactivés',
@@ -602,10 +636,12 @@
         setup_rows: [
           ["Mode", "Kana \u2192 r\u014dmaji : vous tapez la lecture. R\u014dmaji \u2192 kana : une lecture est affich\u00e9e et vous choisissez le caract\u00e8re."],
           ["Al\u00e9atoire / Dans l'ordre", "Al\u00e9atoire m\u00e9lange les questions. Dans l'ordre parcourt le tableau de \u3042 \u00e0 \u3093, la fa\u00e7on d'apprendre une ligne ou une \u00e9criture enti\u00e8re dans l'ordre. Le compteur sur le bouton indique votre avancement."],
+          ["Choix", "Uniquement en r\u014dmaji \u2192 kana : le nombre de cases de r\u00e9ponse, d'une \u00e0 trois rang\u00e9es de quatre. Si la r\u00e9ponse est un katakana \u00e0 sosie \u2014 \u30b7 et \u30c4, \u30bd et \u30f3 \u2014, les jumeaux sont toujours plac\u00e9s avec lui, puisque les distinguer est tout l'int\u00e9r\u00eat."],
           ["\u00c9criture", "Travaillez les hiragana, les katakana, ou les deux m\u00e9lang\u00e9s."],
           ["Ensembles", "Base : les 46 kana fondamentaux. Dakuten : les sons vois\u00e9s (\u304c, \u3071). Combinaisons : les paires avec petit ya (\u304d\u3083). Au moins un ensemble reste actif."],
           ["Ligne", "Limite l'exercice \u00e0 une seule ligne \u2014 \u3042\u884c correspond \u00e0 \u3042\u3044\u3046\u3048\u304a, \u304b\u884c \u00e0 \u304b\u304d\u304f\u3051\u3053. Id\u00e9al pour apprendre un tableau cinq caract\u00e8res \u00e0 la fois. Retouchez la m\u00eame ligne pour l'annuler."],
-          ["Non vus uniquement", "Ne propose que les kana auxquels vous n'avez jamais r\u00e9pondu, selon vos choix d'\u00e9criture, d'ensemble et de ligne. L'option se d\u00e9sactive seule une fois que vous les avez tous rencontr\u00e9s."]
+          ["Non vus uniquement", "Ne propose que les kana auxquels vous n'avez jamais r\u00e9pondu, selon vos choix d'\u00e9criture, d'ensemble et de ligne. L'option se d\u00e9sactive seule une fois que vous les avez tous rencontr\u00e9s."],
+          ["Sous 80 %", "Ne propose que les kana que vous r\u00e9ussissez moins de 80 % du temps ; les kana jamais vus rel\u00e8vent de \u00ab Non vus uniquement \u00bb. L'option se d\u00e9sactive seule quand plus rien n'est sous les 80 %."]
         ],
         progress_rows: [
           ["\u2713 et \u2717", "Sous chaque kana : combien de fois vous avez r\u00e9pondu correctement, et combien de fois vous vous \u00eates tromp\u00e9."],
@@ -636,6 +672,8 @@
         shortcut_hint:  'Alt+P bascule ceci · Alt+C bascule le saut vers le kana actuel',
         progress:       '◎ Ma progression',
         unseen_only:    'Non vus uniquement',
+        weak_only:      'Sous 80 %',
+        none_weak:      "Rien dans cette s\u00e9lection n'est sous 80 % \u2014 affichage complet r\u00e9tabli.",
         progress_show:  'Afficher la progression',
         progress_hide:  'Masquer la progression',
         all_seen:       'Vous avez répondu à tous les kana de cette sélection — affichage complet rétabli.',
@@ -648,6 +686,9 @@
         progress_hint:  '{n} sur {total} répondus'
       },
       zh: {
+        choices_label:  '选项',
+        choice_rows_1:  '1 行 \u2014 4 个选项',
+        choice_rows_n:  '{n} 行 \u2014 {c} 个选项',
         charts_on:      '速查表：开',
         charts_off:     '速查表：关',
         charts_disabled:'速查表已关闭',
@@ -669,10 +710,12 @@
         setup_rows: [
           ["\u6a21\u5f0f", "\u5047\u540d \u2192 \u7f57\u9a6c\u5b57\uff1a\u7531\u60a8\u8f93\u5165\u8bfb\u97f3\u3002\u7f57\u9a6c\u5b57 \u2192 \u5047\u540d\uff1a\u663e\u793a\u8bfb\u97f3\uff0c\u7531\u60a8\u9009\u51fa\u5bf9\u5e94\u5b57\u7b26\u3002"],
           ["\u968f\u673a / \u6309\u987a\u5e8f", "\u968f\u673a\u4f1a\u6253\u4e71\u9898\u76ee\u987a\u5e8f\uff1b\u6309\u987a\u5e8f\u5219\u4ece \u3042 \u5230 \u3093 \u4f9d\u6b21\u901a\u8bfb\u6574\u5f20\u8868\uff0c\u9002\u5408\u6309\u987a\u5e8f\u5b66\u4e60\u67d0\u4e00\u884c\u6216\u6574\u5957\u5b57\u4f53\u3002\u6309\u94ae\u4e0a\u7684\u8ba1\u6570\u663e\u793a\u60a8\u7684\u8fdb\u5ea6\u3002"],
+          ["\u9009\u9879", "\u4ec5\u7f57\u9a6c\u5b57 \u2192 \u5047\u540d\uff1a\u53ef\u9009\u7b54\u6848\u683c\u7684\u6570\u91cf\uff0c\u4e00\u5230\u4e09\u884c\uff0c\u6bcf\u884c\u56db\u4e2a\u3002\u5f53\u7b54\u6848\u662f\u6709\u5f62\u4f3c\u5b57\u7684\u7247\u5047\u540d \u2014 \u30b7 \u4e0e \u30c4\u3001\u30bd \u4e0e \u30f3 \u2014 \u5b83\u4eec\u4f1a\u4e00\u8d77\u51fa\u73b0\uff0c\u56e0\u4e3a\u533a\u5206\u5b83\u4eec\u6b63\u662f\u7ec3\u4e60\u7684\u91cd\u70b9\u3002"],
           ["\u5b57\u4f53", "\u53ef\u7ec3\u4e60\u5e73\u5047\u540d\u3001\u7247\u5047\u540d\uff0c\u6216\u4e24\u8005\u6df7\u5408\u3002"],
           ["\u5047\u540d\u96c6", "\u57fa\u672c\u4e3a 46 \u4e2a\u6838\u5fc3\u5047\u540d\uff1b\u6d4a\u97f3\u589e\u52a0\u6d4a\u97f3\u4e0e\u534a\u6d4a\u97f3\uff08\u304c\u3001\u3071\uff09\uff1b\u62d7\u97f3\u589e\u52a0\u5c0f\u5199 ya \u7c7b\u7ec4\u5408\uff08\u304d\u3083\uff09\u3002\u81f3\u5c11\u9700\u4fdd\u7559\u4e00\u4e2a\u3002"],
           ["\u884c", "\u5c06\u7ec3\u4e60\u9650\u5b9a\u5728\u5355\u72ec\u4e00\u884c\u2014\u2014\u3042\u884c\u5373\u3042\u3044\u3046\u3048\u304a\uff0c\u304b\u884c\u5373\u304b\u304d\u304f\u3051\u3053\u3002\u9002\u5408\u6bcf\u6b21\u5b66\u4e60\u4e94\u4e2a\u5b57\u7b26\u3002\u518d\u6b21\u70b9\u51fb\u540c\u4e00\u884c\u5373\u53ef\u53d6\u6d88\u3002"],
-          ["\u4ec5\u672a\u4f5c\u7b54", "\u53ea\u51fa\u793a\u60a8\u4ece\u672a\u4f5c\u7b54\u8fc7\u7684\u5047\u540d\uff0c\u8303\u56f4\u53d6\u51b3\u4e8e\u5f53\u524d\u7684\u5b57\u4f53\u3001\u5047\u540d\u96c6\u4e0e\u884c\u9009\u62e9\u3002\u5168\u90e8\u9047\u5230\u4e4b\u540e\u4f1a\u81ea\u52a8\u5173\u95ed\u3002"]
+          ["\u4ec5\u672a\u4f5c\u7b54", "\u53ea\u51fa\u793a\u60a8\u4ece\u672a\u4f5c\u7b54\u8fc7\u7684\u5047\u540d\uff0c\u8303\u56f4\u53d6\u51b3\u4e8e\u5f53\u524d\u7684\u5b57\u4f53\u3001\u5047\u540d\u96c6\u4e0e\u884c\u9009\u62e9\u3002\u5168\u90e8\u9047\u5230\u4e4b\u540e\u4f1a\u81ea\u52a8\u5173\u95ed\u3002"],
+          ["\u4f4e\u4e8e 80%", "\u53ea\u51fa\u793a\u60a8\u6b63\u786e\u7387\u4e0d\u8db3 80% \u7684\u5047\u540d\uff1b\u4ece\u672a\u4f5c\u7b54\u7684\u5047\u540d\u5c5e\u4e8e\u201c\u4ec5\u672a\u4f5c\u7b54\u201d\u3002\u5f53\u6ca1\u6709\u4f4e\u4e8e 80% \u7684\u5047\u540d\u65f6\uff0c\u5b83\u4f1a\u81ea\u52a8\u5173\u95ed\u3002"]
         ],
         progress_rows: [
           ["\u2713 \u4e0e \u2717", "\u6bcf\u4e2a\u5047\u540d\u4e0b\u65b9\uff1a\u7b54\u5bf9\u7684\u6b21\u6570\u4e0e\u7b54\u9519\u7684\u6b21\u6570\u3002"],
@@ -703,6 +746,8 @@
         shortcut_hint:  'Alt+P 切换此项 · Alt+C 切换定位到当前假名',
         progress:       '◎ 我的进度',
         unseen_only:    '仅未作答',
+        weak_only:      '低于 80%',
+        none_weak:      '此选择中没有低于 80% 的 — 已恢复显示全部。',
         progress_show:  '显示进度',
         progress_hide:  '隐藏进度',
         all_seen:       '此选择中的假名您都已作答 — 已恢复显示全部。',
@@ -758,12 +803,14 @@
       missed: {},          // key: hiragana → item  (this session only)
       seen: {},            // key: "あ|h" → { c: correct, m: missed }
       unseenOnly: false,   // restrict the pool to kana never answered
+      weakOnly: false,     // restrict the pool to answered kana scoring under 80%
       progressView: false, // cheat sheet shows encountered/unencountered
       snapToCurrent: true, // scroll the current kana into view when a chart opens
       chartsEnabled: true, // cheat sheets available, or switched off to test yourself
       row: null,           // null = every row; else { set: 'basic', idx: 2 }
+      choiceRows: 2,       // rows of multiple-choice tiles, 4 to a row
       order: 'random',     // 'random' or 'seq' (straight through the chart)
-      seqIdx: 0            // position in the sequence when order === 'seq'
+      seqIdx: 0            // position in the run when order === 'seq'
     };
 
     // Restore best streak if the browser allows it
@@ -779,6 +826,8 @@
       state.progressView = localStorage.getItem('kanaDrillProgressView') === '1';
       // Defaults to on — only an explicit '0' turns it off
       state.snapToCurrent = localStorage.getItem('kanaDrillSnap') !== '0';
+      var savedRows = parseInt(localStorage.getItem('kanaDrillChoiceRows'), 10);
+      if (savedRows >= 1 && savedRows <= 3) state.choiceRows = savedRows;
       state.chartsEnabled = localStorage.getItem('kanaDrillCharts') !== '0';
     } catch (e) { state.seen = {}; }
 
@@ -853,6 +902,8 @@
       return out;
     }
 
+    // Wrong answers are drawn from every enabled set, ignoring the row filter —
+    // otherwise a three-kana row can't fill eight multiple-choice buttons.
     // The full run in chart order. For Mixed that's every kana in hiragana
     // first, then the same list in katakana — predictable rather than shuffled.
     function sequence() {
@@ -867,12 +918,8 @@
       return out;
     }
 
-    function resetSequence() {
-      state.seqIdx = 0;
-    }
+    function resetSequence() { state.seqIdx = 0; }
 
-    // Wrong answers are drawn from every enabled set, ignoring the row filter —
-    // otherwise a three-kana row can't fill four multiple-choice buttons.
     function distractorPool() {
       var out = [];
       if (state.sets.basic) out = out.concat(KANA.basic);
@@ -883,6 +930,20 @@
 
     function unseenIn(p, sc) {
       return p.filter(function (it) { return !isAnswered(seenRec(it, sc)); });
+    }
+
+    // A kana is "weak" once you've answered it and got it right less than 80% of
+    // the time. Kana you've never answered have no rate at all and are left out —
+    // those belong to the Unseen only filter, not this one.
+    var WEAK_THRESHOLD = 0.8;
+
+    function isWeak(rec) {
+      if (!isAnswered(rec)) return false;
+      return rec.c / (rec.c + rec.m) < WEAK_THRESHOLD;
+    }
+
+    function weakIn(p, sc) {
+      return p.filter(function (it) { return isWeak(seenRec(it, sc)); });
     }
 
     function accepted(item) {
@@ -912,20 +973,25 @@
             state.seqIdx = 0;
             toast(t2('seq_restart'), 'success');
           }
+          // Unseen only / Under 80% still apply — walk forward to the next
+          // entry that qualifies rather than stalling on one that doesn't.
+          function seqOk(c) {
+            if (state.unseenOnly) return !isAnswered(seenRec(c.item, c.script));
+            if (state.weakOnly) return isWeak(seenRec(c.item, c.script));
+            return true;
+          }
           var start = state.seqIdx, chosen = null;
-          // Unseen only still applies — walk forward to the next unanswered one
           for (var k = 0; k < seq.length; k++) {
             var cand = seq[(start + k) % seq.length];
-            if (state.unseenOnly && isAnswered(seenRec(cand.item, cand.script))) continue;
+            if (!seqOk(cand)) continue;
             chosen = cand;
             state.seqIdx = start + k + 1;
             break;
           }
           if (!chosen) {
-            // Nothing unanswered left; drop the filter and carry on in order
-            state.unseenOnly = false;
-            renderDynamicLabels();
-            toast(t2('all_seen'), 'success');
+            // Nothing qualifies any more — drop the filter and carry on in order
+            if (state.unseenOnly) { state.unseenOnly = false; toast(t2('all_seen'), 'success'); }
+            else if (state.weakOnly) { state.weakOnly = false; toast(t2('none_weak'), 'success'); }
             chosen = seq[start % seq.length];
             state.seqIdx = (start % seq.length) + 1;
           }
@@ -953,6 +1019,21 @@
         } else {
           p = u;
         }
+      } else if (state.weakOnly) {
+        var wk = weakIn(full, sc);
+        if (!wk.length && state.script === 'mixed') {
+          var otherW = sc === 'h' ? 'k' : 'h';
+          var wk2 = weakIn(full, otherW);
+          if (wk2.length) { sc = otherW; wk = wk2; }
+        }
+        if (!wk.length) {
+          // Nothing under the threshold any more — say so and drop the filter
+          state.weakOnly = false;
+          renderDynamicLabels();
+          toast(t2('none_weak'), 'success');
+        } else {
+          p = wk;
+        }
       }
 
       var item = p[Math.floor(Math.random() * p.length)];
@@ -965,8 +1046,7 @@
       return askQuestion(item, sc, full);
     }
 
-    // Everything from here on is the same whether the kana was picked at
-    // random or taken from the sequence.
+    // Shared by both paths — everything after the kana has been chosen.
     function askQuestion(item, sc, full) {
       state.current = { item: item, script: sc };
       state.answered = false;
@@ -1004,14 +1084,63 @@
       }
     }
 
+    // Katakana lookalikes. In hiragana these are easy to tell apart, but in
+    // katakana the difference is stroke angle and direction alone — so when the
+    // answer is one of these, its twins are forced into the choices rather than
+    // left to chance. Hiragana questions ignore this table.
+    var LOOKALIKES = [
+      ['\u30b7', '\u30c4', '\u30bd', '\u30f3', '\u30ce'],   // shi tsu so n no
+      ['\u30b8', '\u30c5', '\u30be'],                      // ji zu zo
+      ['\u30af', '\u30bf', '\u30b1'],                      // ku ta ke
+      ['\u30a6', '\u30ef', '\u30d5', '\u30e9'],             // u wa fu ra
+      ['\u30b9', '\u30cc', '\u30e1', '\u30ca', '\u30e0'],   // su nu me na mu
+      ['\u30a2', '\u30de', '\u30e4'],                      // a ma ya
+      ['\u30c1', '\u30c6'],                               // chi te
+      ['\u30aa', '\u30db', '\u30cd'],                      // o ho ne
+      ['\u30b3', '\u30e6', '\u30e8']                       // ko yu yo
+    ];
+
+    function lookalikesFor(k) {
+      for (var i = 0; i < LOOKALIKES.length; i++) {
+        if (LOOKALIKES[i].indexOf(k) !== -1) return LOOKALIKES[i];
+      }
+      return null;
+    }
+
+    // Four tiles to a row, so the answer plus this many wrong ones fills the grid.
+    function distractorCount() {
+      return state.choiceRows * 4 - 1;
+    }
+
     function buildChoices(answer, sc, p) {
+      var need = distractorCount();
       var distractors = [];
       var used = { };
       used[answer.h] = true;
       var usedRomaji = { };
       usedRomaji[answer.r] = true;
       var guard = 0;
-      while (distractors.length < 3 && guard < 200) {
+
+      // Twins go in first; the rest of the tiles fill in at random around them.
+      if (sc === 'k') {
+        var twins = lookalikesFor(answer.k);
+        if (twins) {
+          twins.forEach(function (ch) {
+            if (distractors.length >= need) return;
+            for (var i = 0; i < p.length; i++) {
+              var cand = p[i];
+              if (cand.k !== ch) continue;
+              if (used[cand.h] || usedRomaji[cand.r]) return;
+              used[cand.h] = true;
+              usedRomaji[cand.r] = true;
+              distractors.push(cand);
+              return;
+            }
+          });
+        }
+      }
+
+      while (distractors.length < need && guard < 60 * need) {
         guard++;
         var cand = p[Math.floor(Math.random() * p.length)];
         if (used[cand.h] || usedRomaji[cand.r]) continue;
@@ -1175,6 +1304,7 @@
     // ---------- controls ----------
     window.setMode = function (mode) {
       state.mode = mode;
+      syncChoiceRowsVisibility();
       document.querySelectorAll('.mode-chip').forEach(function (c) {
         c.classList.toggle('on', c.getAttribute('data-mode') === mode);
       });
@@ -1197,6 +1327,38 @@
       });
       newQuestion();
     };
+
+    window.setChoiceRows = function (v) {
+      var n = parseInt(v, 10);
+      if (!(n >= 1 && n <= 3)) return;
+      state.choiceRows = n;
+      try { localStorage.setItem('kanaDrillChoiceRows', String(n)); } catch (e) {}
+      newQuestion();
+    };
+
+    // The tile-count selector only means anything when there are tiles
+    function syncChoiceRowsVisibility() {
+      var show = state.mode === 'romaji2kana';
+      document.querySelectorAll('.choice-rows-ctl').forEach(function (el) {
+        el.style.display = show ? '' : 'none';
+      });
+    }
+
+    function renderChoiceRowsSelect() {
+      var sel = $('choice-rows-select');
+      if (!sel) return;
+      sel.innerHTML = '';
+      sel.setAttribute('aria-label', t2('choices_label'));
+      [1, 2, 3].forEach(function (n) {
+        var o = document.createElement('option');
+        o.value = String(n);
+        o.textContent = n === 1 ? t2('choice_rows_1')
+                                : fmt(t2('choice_rows_n'), { n: n, c: n * 4 });
+        sel.appendChild(o);
+      });
+      sel.value = String(state.choiceRows);
+      syncChoiceRowsVisibility();
+    }
 
     window.toggleSet = function (set) {
       // Never allow zero sets selected
@@ -1222,8 +1384,22 @@
         var full = pool();
         var any = unseenIn(full, 'h').length || unseenIn(full, 'k').length;
         if (!any) { toast(t2('all_seen')); return; }
+        // The two filters describe disjoint sets, so only one can be on
+        state.weakOnly = false;
       }
       state.unseenOnly = !state.unseenOnly;
+      renderDynamicLabels();
+      newQuestion();
+    };
+
+    window.toggleWeakOnly = function () {
+      if (!state.weakOnly) {
+        var fullW = pool();
+        var anyW = weakIn(fullW, 'h').length || weakIn(fullW, 'k').length;
+        if (!anyW) { toast(t2('none_weak')); return; }
+        state.unseenOnly = false;
+      }
+      state.weakOnly = !state.weakOnly;
       renderDynamicLabels();
       newQuestion();
     };
@@ -1313,6 +1489,12 @@
         chip.classList.toggle('on', state.unseenOnly);
         chip.setAttribute('aria-pressed', state.unseenOnly ? 'true' : 'false');
       }
+      var wchip = $('weak-only-chip');
+      if (wchip) {
+        wchip.textContent = t2('weak_only');
+        wchip.classList.toggle('on', state.weakOnly);
+        wchip.setAttribute('aria-pressed', state.weakOnly ? 'true' : 'false');
+      }
       var orr = $('order-random');
       if (orr) {
         orr.textContent = t2('order_random');
@@ -1320,8 +1502,8 @@
       }
       var ors = $('order-seq');
       if (ors) {
-        var n = sequence().length;
-        var pos = state.order === 'seq' && n ? ' (' + Math.min(state.seqIdx, n) + '/' + n + ')' : '';
+        var sn = sequence().length;
+        var pos = state.order === 'seq' && sn ? ' (' + Math.min(state.seqIdx, sn) + '/' + sn + ')' : '';
         ors.textContent = t2('order_seq') + pos;
         ors.classList.toggle('on', state.order === 'seq');
       }
@@ -1769,6 +1951,7 @@
       renderScores();
       renderDynamicLabels();
       renderRowChips();
+      renderChoiceRowsSelect();
       newQuestion();
     }
 
