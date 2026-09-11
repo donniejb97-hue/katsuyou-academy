@@ -1234,7 +1234,7 @@
         var item = state.current.item;
         // track how many times each kana has been missed this session
         var prev = state.missed[item.h];
-        state.missed[item.h] = { item: item, count: prev ? prev.count + 1 : 1 };
+        state.missed[item.h] = { item: item, count: prev ? prev.count + 1 : 1, seq: ++missSeq };
         renderMissed();
       }
       renderScores();
@@ -1272,6 +1272,8 @@
       $('drill-best').textContent = state.best;
     }
 
+    var missSeq = 0;   // increments on every miss, so newest sorts first
+
     function renderMissed() {
       var keys = Object.keys(state.missed);
       var box = $('drill-missed');
@@ -1279,10 +1281,10 @@
       box.className = 'drill-missed show';
       var list = $('drill-missed-list');
       list.innerHTML = '';
-      // worst first, so the kana needing most practice sit at the top
+      // Most recently missed first, so the one you just got wrong is at the
+      // far left. The ×n badge and the hot highlight still mark repeat misses.
       keys.sort(function (a, b) {
-        var d = state.missed[b].count - state.missed[a].count;
-        return d !== 0 ? d : a.localeCompare(b);
+        return (state.missed[b].seq || 0) - (state.missed[a].seq || 0);
       });
       keys.forEach(function (h) {
         var rec = state.missed[h];
@@ -1901,6 +1903,7 @@
     window.resetDrill = function () {
       state.correct = 0; state.total = 0; state.streak = 0;
       state.missed = {};
+      missSeq = 0;
       // Reset Score also clears what you've encountered, per spec
       state.seen = {};
       resetSequence();
