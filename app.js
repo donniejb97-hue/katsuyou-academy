@@ -3452,7 +3452,7 @@ function updateAnswerPlaceholder() {
   if (typeof isTypeIdentificationQuiz !== 'undefined' && isTypeIdentificationQuiz) {
     el.placeholder = ct('answer_placeholder_type', 'godan / ichidan / suru / irregular');
   } else if (romajiInputEnabled()) {
-    el.placeholder = ct('answer_placeholder_romaji', 'Type romaji or kana — ikanai → いかない');
+    el.placeholder = ct('answer_placeholder_romaji', 'ikanai → いかない');
   } else {
     el.placeholder = ct('answer_placeholder_kana', 'ひらがなで入力...');
   }

@@ -141,7 +141,7 @@ var I18N = {
     sensei_proactive_label:'Let Katsu check in when I seem stuck', sensei_clear_history:'🗑 Clear chat', sensei_clear_mistakes:'🗑 Clear saved mistakes',
     // ---- Conjugator: input helper, streak, session, badges ----
     streak:'Streak', best_short:'best',
-    answer_placeholder_romaji:'Type romaji or kana — ikanai \u2192 \u3044\u304b\u306a\u3044',
+    answer_placeholder_romaji:'ikanai → いかない',
     answer_placeholder_kana:'\u3072\u3089\u304c\u306a\u3067\u5165\u529b...',
     romaji_on_title:'Romaji typing is on \u2014 type ikanai, get \u3044\u304b\u306a\u3044. Click to turn off.',
     romaji_off_title:'Romaji typing is off \u2014 type with your own Japanese keyboard. Click to turn on.',
@@ -314,7 +314,7 @@ var I18N = {
     sensei_proactive_label:'Katsu darf sich melden, wenn ich offenbar nicht weiterkomme', sensei_clear_history:'🗑 Chat löschen', sensei_clear_mistakes:'🗑 Gespeicherte Fehler löschen',
     // ---- Konjugator: Eingabehilfe, Serie, Runde, Kennzeichnung ----
     streak:'Serie', best_short:'Beste',
-    answer_placeholder_romaji:'Romaji oder Kana eingeben \u2014 ikanai \u2192 \u3044\u304b\u306a\u3044',
+    answer_placeholder_romaji:'ikanai → いかない',
     answer_placeholder_kana:'\u3072\u3089\u304c\u306a\u3067\u5165\u529b...',
     romaji_on_title:'Romaji-Eingabe ist an \u2014 tippen Sie ikanai, es wird \u3044\u304b\u306a\u3044. Zum Ausschalten klicken.',
     romaji_off_title:'Romaji-Eingabe ist aus \u2014 nutzen Sie Ihre eigene japanische Tastatur. Zum Einschalten klicken.',
@@ -487,7 +487,7 @@ var I18N = {
     sensei_proactive_label:'Laisser Katsu intervenir si je semble bloqué(e)', sensei_clear_history:'🗑 Effacer la discussion', sensei_clear_mistakes:'🗑 Effacer les erreurs enregistrées',
     // ---- Conjugateur : aide à la saisie, série, manche, badges ----
     streak:'Série', best_short:'record',
-    answer_placeholder_romaji:'Tapez en romaji ou en kana \u2014 ikanai \u2192 \u3044\u304b\u306a\u3044',
+    answer_placeholder_romaji:'ikanai → いかない',
     answer_placeholder_kana:'\u3072\u3089\u304c\u306a\u3067\u5165\u529b...',
     romaji_on_title:'Saisie en romaji activée \u2014 tapez ikanai, vous obtenez \u3044\u304b\u306a\u3044. Cliquez pour désactiver.',
     romaji_off_title:'Saisie en romaji désactivée \u2014 utilisez votre propre clavier japonais. Cliquez pour activer.',
@@ -660,7 +660,7 @@ var I18N = {
     sensei_proactive_label:'当我似乎卡住时，允许活先生主动出现', sensei_clear_history:'🗑 清空对话', sensei_clear_mistakes:'🗑 清除已保存的错误',
     // ---- 变位练习：输入辅助、连对、回合、标记 ----
     streak:'连对', best_short:'最高',
-    answer_placeholder_romaji:'可输入罗马字或假名 \u2014 ikanai \u2192 \u3044\u304b\u306a\u3044',
+    answer_placeholder_romaji:'ikanai → いかない',
     answer_placeholder_kana:'\u3072\u3089\u304c\u306a\u3067\u5165\u529b...',
     romaji_on_title:'罗马字输入已开启 \u2014 输入 ikanai 会变成 \u3044\u304b\u306a\u3044。点击可关闭。',
     romaji_off_title:'罗马字输入已关闭 \u2014 请使用自己的日语键盘。点击可开启。',
