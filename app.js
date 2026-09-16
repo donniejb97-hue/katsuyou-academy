@@ -2583,6 +2583,211 @@ function downloadPracticeReport() {
       return verb.hiragana;
     }
 
+    // ========================================================================
+    // ANSWER ACCEPTANCE
+    // ------------------------------------------------------------------------
+    // The Conjugator used to compare the typed answer against one generated
+    // string. Anything that was right but not *that exact string* came back
+    // "✗ Incorrect": kanji from a Japanese IME (行かない vs いかない), 食べれる,
+    // 行かされる, a trailing space, a stray 。
+    //
+    // These helpers build the full set of answers that are genuinely correct
+    // for a verb + form, each with an optional note so the app can say "yes,
+    // that's right — and here's the textbook form too" instead of just "no".
+    // ========================================================================
+
+    // Verbs the list stores in kana, but which a learner may well type in
+    // kanji because that's what their IME offers first.
+    const KANJI_SPELLINGS = {
+      'わかる': ['分かる', '解る', '判る'],
+      'できる': ['出来る'],
+      'ある':   ['有る', '在る'],
+      'いる':   ['居る'],
+      'なる':   ['成る'],
+      'あげる': ['上げる'],
+      'つける': ['付ける', '点ける'],
+      'やる':   ['遣る']
+    };
+
+    function foldKatakana(s) {
+      return String(s || '').replace(/[ァ-ヶ]/g, function (c) {
+        return String.fromCharCode(c.charCodeAt(0) - 0x60);
+      });
+    }
+
+    // Strip everything that isn't part of the answer: surrounding spaces,
+    // sentence punctuation, full-width Latin characters from an IME.
+    function normalizeAnswer(s) {
+      if (!s) return '';
+      return String(s)
+        .replace(/[！-～]/g, function (c) {
+          return String.fromCharCode(c.charCodeAt(0) - 0xfee0);
+        })
+        .replace(/　/g, ' ')
+        .replace(/[。．、，！？\s]/g, '')
+        .toLowerCase();
+    }
+
+    // Rebuild a conjugated kana string with the verb's kanji restored.
+    //   行く / いく → okurigana く, reading prefix い
+    //   いかない starts with い → 行かない
+    function kanjiVariants(verb, kana) {
+      const out = [];
+      if (!kana) return out;
+
+      // 来る is the odd one out: the kanji stays put and the reading under it
+      // changes (こ / き / く), so the prefix trick doesn't apply.
+      if (verb.hiragana === 'くる') {
+        if (kana.length > 1) out.push('来' + kana.slice(1));
+        return out;
+      }
+
+      function fromSpelling(spelling) {
+        if (!/[々一-龯]/.test(spelling)) return;
+        const okuri = (spelling.match(/[぀-ゟ]+$/) || [''])[0];
+        const kanjiStem = spelling.slice(0, spelling.length - okuri.length);
+        if (!kanjiStem || !okuri) return;
+        if (!verb.hiragana.endsWith(okuri)) return;
+        const readingPrefix = verb.hiragana.slice(0, verb.hiragana.length - okuri.length);
+        if (!readingPrefix) return;
+        if (kana.indexOf(readingPrefix) !== 0) return;   // reading changed — skip
+        out.push(kanjiStem + kana.slice(readingPrefix.length));
+      }
+
+      fromSpelling(verb.kanji || '');
+      (KANJI_SPELLINGS[verb.hiragana] || []).forEach(fromSpelling);
+      return out;
+    }
+
+    // Alternatives beyond the textbook answer that are not mistakes.
+    function alternateAnswers(verb, form) {
+      const key = form.key;
+      const type = verb.type;
+      const hira = verb.hiragana;
+      const stem = hira.slice(0, -1);
+      const last = hira.slice(-1);
+      const U = ['く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る', 'う'];
+      const A = ['か', 'が', 'さ', 'た', 'な', 'ば', 'ま', 'ら', 'わ'];
+      const idx = U.indexOf(last);
+      const alts = [];
+      function add(answer, note) {
+        if (answer) alts.push({ answer: answer, note: note || '' });
+      }
+      // Quote the reference form the way the question showed it — kanji if the
+      // verb has any, kana otherwise.
+      function disp(kana) { return kanjiVariants(verb, kana)[0] || kana; }
+
+      const RANUKI = 'That\'s the ら抜き (ra-nuki) form — everyday spoken Japanese, and understood everywhere. The textbook form is ';
+      const SHORT_CAUS = 'That\'s the short causative — correct, and common in speech. The full form is ';
+      const LITERARY_IMP = 'That\'s the literary/written imperative — also correct. The everyday form is ';
+
+      // ── ら抜き potential: 食べれる for 食べられる ───────────────────────
+      if (key === 'potential' && type === 'ichidan') {
+        add(stem + 'れる', RANUKI + disp(stem + 'られる') + '。');
+      }
+      if (key === 'potential' && hira === 'くる') {
+        add('これる', RANUKI + 'こられる。');
+      }
+
+      // ── short causative: 行かす / 食べさす / 勉強さす ──────────────────
+      if (key === 'causative') {
+        if (type === 'godan' && idx > -1) add(stem + A[idx] + 'す', SHORT_CAUS + disp(stem + A[idx] + 'せる') + '。');
+        if (type === 'ichidan') add(stem + 'さす', SHORT_CAUS + disp(stem + 'させる') + '。');
+        if (type === 'suru') add(hira.replace('する', 'さす'), SHORT_CAUS + disp(hira.replace('する', 'させる')) + '。');
+        if (hira === 'くる') add('こさす', SHORT_CAUS + 'こさせる。');
+      }
+
+      // ── contracted causative-passive: 行かされる ──────────────────────
+      // Not for す-ending godan verbs — ✕話さされる is not standard.
+      if (key === 'causative-passive' && type === 'godan' && idx > -1 && last !== 'す') {
+        add(stem + A[idx] + 'される',
+            'That\'s the contracted causative-passive — the form most people actually say. The full form is ' +
+            disp(stem + A[idx] + 'せられる') + '。');
+      }
+
+      // ── literary imperative: せよ / 食べよ / こよ ─────────────────────
+      if (key === 'imperative') {
+        if (type === 'suru') add(hira.replace('する', 'せよ'), LITERARY_IMP + disp(hira.replace('する', 'しろ')) + '。');
+        if (type === 'ichidan') add(stem + 'よ', LITERARY_IMP + disp(stem + 'ろ') + '。');
+        if (hira === 'くる') add('こよ', LITERARY_IMP + 'こい。');
+      }
+
+      // ── 〜ないです alongside 〜ません ──────────────────────────────────
+      if (key === 'masen') {
+        const plainNeg = conjugateVerb(verb, { key: 'negative' });
+        add(plainNeg + 'です',
+            '〜ないです is the colloquial polite negative and perfectly usable. 〜ません is the standard one.');
+      }
+
+      // ── 行く read as ゆく ─────────────────────────────────────────────
+      // Skipped for te / past / tara: ゆく takes the regular sound change
+      // (ゆいて), not 行く's irregular one, so those aren't simple swaps.
+      if (hira === 'いく' && ['te', 'past', 'tara'].indexOf(key) === -1) {
+        const canon = conjugateVerb(verb, form);
+        if (canon.indexOf('い') === 0) {
+          add('ゆ' + canon.slice(1), 'ゆく is an older reading of 行く — still correct, and common in announcements.');
+        }
+      }
+
+      // ── ある's potential is really ありえる / ありうる ─────────────────
+      if (hira === 'ある' && key === 'potential') {
+        add('ありえる', 'ありえる／ありうる is the natural potential of ある.');
+        add('ありうる', 'ありえる／ありうる is the natural potential of ある.');
+      }
+
+      return alts;
+    }
+
+    // Every answer that counts as correct, kana and kanji spellings alike.
+    function acceptedAnswers(verb, form) {
+      const list = [{ answer: conjugateVerb(verb, form), note: '' }];
+      alternateAnswers(verb, form).forEach(function (a) { list.push(a); });
+
+      const withKanji = [];
+      list.forEach(function (entry) {
+        kanjiVariants(verb, entry.answer).forEach(function (k) {
+          withKanji.push({ answer: k, note: entry.note });
+        });
+      });
+      return list.concat(withKanji);
+    }
+
+    // → { correct, canonical, note }
+    function checkConjugation(userAnswer, verb, form) {
+      const canonical = conjugateVerb(verb, form);
+      const typed = normalizeAnswer(userAnswer);
+      if (!typed) return { correct: false, canonical: canonical, note: '' };
+
+      const accepted = acceptedAnswers(verb, form);
+
+      for (let i = 0; i < accepted.length; i++) {
+        if (normalizeAnswer(accepted[i].answer) === typed) {
+          return { correct: true, canonical: canonical, note: accepted[i].note };
+        }
+      }
+
+      // Second pass: the right answer, but typed in katakana.
+      const folded = foldKatakana(typed);
+      for (let i = 0; i < accepted.length; i++) {
+        if (foldKatakana(normalizeAnswer(accepted[i].answer)) === folded) {
+          return {
+            correct: true,
+            canonical: canonical,
+            note: 'Right form — though verb endings are written in hiragana, not katakana.'
+          };
+        }
+      }
+
+      return { correct: false, canonical: canonical, note: '' };
+    }
+
+    // Exposed so the console (and any future test page) can check the set.
+    window.ConjugatorAnswers = {
+      check: checkConjugation,
+      accepted: acceptedAnswers,
+      normalize: normalizeAnswer
+    };
+
 
 // ============================================================================
 // AI-POWERED PROGRESSIVE HINT SYSTEM
@@ -3290,8 +3495,9 @@ function generateNewQuestion() {
         return; // Don't check the answer
       }
       
-      const correctAnswer = conjugateVerb(currentVerb, currentVerb.form);
-      const isCorrect = userAnswer.toLowerCase() === correctAnswer;
+      const answerCheck = checkConjugation(userAnswer, currentVerb, currentVerb.form);
+      const correctAnswer = answerCheck.canonical;
+      const isCorrect = answerCheck.correct;
       const failureKey = `${currentVerb.type}-${currentVerb.form.key}`;
       
       if (isCorrect) {
@@ -3315,8 +3521,17 @@ function generateNewQuestion() {
         const feedbackResult = document.getElementById('feedback-result');
         feedbackResult.classList.add('visible', 'correct');
         document.getElementById('feedback-title').textContent = '✓ Correct!';
-        document.getElementById('feedback-answer').textContent = correctAnswer;
-        
+        // A variant answer is still correct — show what they typed, and add a
+        // short note about how it relates to the textbook form.
+        if (answerCheck.note) {
+          document.getElementById('feedback-answer').innerHTML =
+            `<div>${userAnswer.trim()}</div>` +
+            `<div style="margin-top:8px;font-size:0.9rem;font-weight:400;color:#475569;line-height:1.55;">` +
+            `<strong style="color:#0f766e;">Also fine:</strong> ${answerCheck.note}</div>`;
+        } else {
+          document.getElementById('feedback-answer').textContent = correctAnswer;
+        }
+
         // Show loading state immediately
         const explanationEl = document.getElementById('feedback-explanation');
         explanationEl.innerHTML = `
