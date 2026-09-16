@@ -1,19 +1,163 @@
 // ============================================================================
 // SENSEI — floating Japanese assistant for Katsuyō Academy
 // Ask "how do I say X in Japanese?" or any grammar/vocab question.
-// Uses the same Vercel backend as the conjugator AI feedback.
+// Uses the same Vercel backend as the Talk practice tool (multi-turn).
+//
+// Features:
+//  - Chat history persists across page navigation (localStorage)
+//  - Aware of which page the student is currently on
+//  - Can pop in on its own when it notices repeated wrong answers on the
+//    page (drill/dojo feedback going "bad"/"incorrect") — toggleable
+//  - UI strings run through the site's i18n system
 // ============================================================================
 (function () {
   'use strict';
 
   var BACKEND_URL = 'https://katsuyou-backend.vercel.app/api/claude';
-  var MAX_HISTORY = 8;        // messages of context sent with each question
-  var MAX_TOKENS = 500;       // keep answers (and your API bill) small
-  var history = [];           // { role: 'student'|'sensei', text: '...' }
+  var MAX_CONTEXT_MESSAGES = 8;     // turns of context sent with each question
+  var MAX_STORED_MESSAGES = 24;     // turns kept in localStorage for display
+  var MAX_TOKENS = 500;             // keep answers (and your API bill) small
 
-  var SYSTEM_PROMPT =
-    'You are Katsu (カツ先生), the friendly Japanese tutor mascot of Katsuyō Academy. '
-    + 'Your name comes from 活 (katsu, "lively"), the first kanji of 活用 (katsuyō). ' +
+  var STORAGE_HISTORY = 'katsuHistory';
+  var STORAGE_OPEN = 'katsuPanelOpen';
+  var STORAGE_PROACTIVE = 'katsuProactive';
+  var STORAGE_MISTAKES = 'katsuMistakes';
+
+  var MAX_MISTAKES = 20;        // kept in storage
+  var MISTAKE_CONTEXT = 5;      // sent to Katsu with a question
+
+  var STRUGGLE_WINDOW_MS = 120000;   // count misses within this window
+  var STRUGGLE_THRESHOLD = 3;        // this many misses triggers a pop-in
+  var PROACTIVE_COOLDOWN_MS = 180000; // don't pop in again this soon
+  var MAX_PROACTIVE_PER_LOAD = 2;
+
+  var PAGE_NAV_KEY = {
+    home: 'nav_home', kana: 'nav_kana', learn: 'nav_learn', forms: 'nav_forms',
+    verblist: 'nav_verbs', conjugator: 'nav_conjugator', 'kana-drill': 'nav_kana_drill',
+    'kanji-drill': 'nav_kanji_drill', talk: 'nav_talk', datedojo: 'nav_dates',
+    vocabulary: 'nav_vocab', kanji: 'nav_kanji', about: 'nav_contact',
+    adjectives: 'nav_adjectives', reference: 'nav_reference', conjugation: 'nav_conjugation'
+  };
+
+  function tr(key, fallback) {
+    // i18n.js's t() falls back to English automatically, then to the raw key —
+    // guard for the (unlikely) case i18n.js hasn't loaded yet.
+    if (typeof t === 'function') return t(key);
+    return fallback || key;
+  }
+
+  // ---------- tiny markdown renderer ----------
+  // Katsu writes **bold**, *italic* and `code`, and may write kanji readings
+  // as 注文[ちゅうもん]. Rendering it beats showing raw asterisks. Everything
+  // is HTML-escaped first, so nothing in a reply can inject markup.
+  var READING_RE = /([々〆一-龯豈-﫿]+)\[([^\]]+)\]/g;
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function mdLite(s) {
+    var out = escapeHtml(s);
+    out = out.replace(READING_RE, '<ruby>$1<rt>$2</rt></ruby>');
+    out = out.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+    out = out.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+    out = out.replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1<em>$2</em>');
+    out = out.replace(/(^|[^_\w])_([^_\n]+)_(?![_\w])/g, '$1<em>$2</em>');
+    return out;
+  }
+
+  function currentPageName() {
+    var page = document.body.getAttribute('data-page');
+    var key = PAGE_NAV_KEY[page];
+    return key ? tr(key) : null;
+  }
+
+  // ---------- shared mistake log ----------
+  // Every practice page on the site writes wrong answers here, so Katsu can
+  // answer "what did I get wrong?" from any page. Exposed as
+  // window.KatsuMistakes so pages can report mistakes precisely.
+  function clip(s, n) {
+    s = (s == null ? '' : String(s)).replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n - 1) + '…' : s;
+  }
+
+  function loadMistakes() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORAGE_MISTAKES) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch (e) { return []; }
+  }
+
+  function saveMistakes(list) {
+    try { localStorage.setItem(STORAGE_MISTAKES, JSON.stringify(list.slice(-MAX_MISTAKES))); } catch (e) {}
+  }
+
+  function logMistake(entry) {
+    entry = entry || {};
+    var e = {
+      t: Date.now(),
+      page: clip(entry.page || currentPageName() || '', 40),
+      q: clip(entry.q, 140),
+      a: clip(entry.a, 80),
+      c: clip(entry.c, 80),
+      note: clip(entry.note, 260),
+      seen: false
+    };
+    if (!e.q && !e.a && !e.note) return;   // nothing useful to remember
+
+    var list = loadMistakes();
+    var last = list[list.length - 1];
+    // The same wrong answer can fire several DOM mutations — don't log it twice.
+    if (last && last.q === e.q && last.a === e.a && last.note === e.note && (e.t - last.t) < 8000) return;
+
+    list.push(e);
+    saveMistakes(list);
+    if (typeof updateMistakeBadge === 'function') updateMistakeBadge();
+  }
+
+  function unreviewedMistakes() {
+    return loadMistakes().filter(function (m) { return !m.seen; });
+  }
+
+  function markMistakesSeen() {
+    var list = loadMistakes().map(function (m) { m.seen = true; return m; });
+    saveMistakes(list);
+    if (typeof updateMistakeBadge === 'function') updateMistakeBadge();
+  }
+
+  function mistakeContext() {
+    var list = loadMistakes().slice(-MISTAKE_CONTEXT);
+    if (!list.length) return '';
+    var lines = list.map(function (m) {
+      var bits = [];
+      if (m.page) bits.push('on the ' + m.page + ' page');
+      if (m.q) bits.push('question: ' + m.q);
+      if (m.a) bits.push('they answered: ' + m.a);
+      if (m.c) bits.push('correct answer: ' + m.c);
+      if (m.note) bits.push('note: ' + m.note);
+      return '- ' + bits.join(' | ');
+    });
+    return '\n\nRecent mistakes this student has made on the site, oldest first:\n' + lines.join('\n') +
+      '\nIf they ask what they got wrong, what a mistake was about, or why an answer was wrong, explain from this list — ' +
+      'name the specific item, why it was wrong, and how to remember it. Do not recite the whole list unprompted, ' +
+      'and do not mention mistakes at all if they asked about something unrelated.';
+  }
+
+  window.KatsuMistakes = {
+    log: logMistake,
+    list: loadMistakes,
+    unreviewed: unreviewedMistakes,
+    markSeen: markMistakesSeen,
+    clear: function () { saveMistakes([]); if (typeof updateMistakeBadge === 'function') updateMistakeBadge(); }
+  };
+
+  var updateMistakeBadge = null;   // assigned once the widget is built
+
+  var SYSTEM_PROMPT_BASE =
+    'You are Katsu (カツ先生), the friendly Japanese tutor mascot of Katsuyō Academy. ' +
+    'Your name comes from 活 (katsu, "lively"), the first kanji of 活用 (katsuyō). ' +
     'a site for beginner Japanese learners (around JLPT N5-N4 level).\n\n' +
     'Rules:\n' +
     '- When asked how to say a word or phrase in Japanese, give: the word in ' +
@@ -23,11 +167,45 @@
     '- Prefer hiragana over kanji-heavy writing; always include romaji.\n' +
     '- You may answer grammar questions, cultural questions, and questions about ' +
     'how to use this website (it has Kana charts, a verb Learn section, a Forms ' +
-    'reference, a Verb list, the Conjugator practice tool, Date Dojo, Vocabulary ' +
-    'flashcards, and 2,300 KLC Kanji flashcards).\n' +
+    'reference, a Verb list, the Conjugator practice tool, Kana/Kanji Drill, a Talk ' +
+    'conversation-practice tool, Date Dojo, Vocabulary flashcards, and 2,300 KLC Kanji flashcards).\n' +
     '- Politely decline questions unrelated to Japanese language, Japan, or this ' +
     'website, and steer back to Japanese learning.\n' +
-    '- Be warm and encouraging, like a patient teacher.';
+    '- Be warm and encouraging, like a patient teacher.\n' +
+    '- If the student was proactively greeted because they seemed to be struggling ' +
+    'with something on the page, be extra gentle and offer concrete help, but don’t ' +
+    'assume you know exactly what they got wrong unless they tell you.';
+
+  function buildSystemPrompt() {
+    var page = currentPageName();
+    var prompt = SYSTEM_PROMPT_BASE;
+    if (page) prompt += '\n\nThe student is currently on the "' + page + '" page of the site.';
+    prompt += mistakeContext();
+    return prompt;
+  }
+
+  // ---------- settings & persisted state ----------
+  var settings = { proactive: true };
+  try {
+    var savedProactive = localStorage.getItem(STORAGE_PROACTIVE);
+    if (savedProactive !== null) settings.proactive = savedProactive === '1';
+  } catch (e) { /* storage unavailable */ }
+
+  var history = [];   // { role: 'student'|'sensei', text: '...' }
+  try {
+    var savedHistory = JSON.parse(localStorage.getItem(STORAGE_HISTORY) || '[]');
+    if (Array.isArray(savedHistory)) history = savedHistory.slice(-MAX_STORED_MESSAGES);
+  } catch (e) { /* storage unavailable or corrupt — start fresh */ }
+
+  function persistHistory() {
+    try { localStorage.setItem(STORAGE_HISTORY, JSON.stringify(history.slice(-MAX_STORED_MESSAGES))); } catch (e) {}
+  }
+  function persistOpen(isOpen) {
+    try { localStorage.setItem(STORAGE_OPEN, isOpen ? '1' : '0'); } catch (e) {}
+  }
+  function persistProactive() {
+    try { localStorage.setItem(STORAGE_PROACTIVE, settings.proactive ? '1' : '0'); } catch (e) {}
+  }
 
   // ---------- styles ----------
   var css = [
@@ -36,6 +214,18 @@
     '  border: 2px solid var(--accent, #c45c4a); font-size: 1.5rem; cursor: pointer; z-index: 1200;',
     '  box-shadow: 0 4px 14px rgba(0,0,0,0.25); transition: transform 0.15s; font-family: "Noto Serif JP", serif; }',
     '#sensei-fab:hover { transform: scale(1.08); }',
+    '#sensei-fab.nudge { animation: sensei-pulse 1.4s ease-in-out 2; }',
+    '#sensei-badge { position: absolute; top: -3px; right: -3px; min-width: 19px; height: 19px; padding: 0 4px;',
+    '  border-radius: 999px; background: var(--accent, #c45c4a); color: #fff; border: 2px solid var(--paper, #faf9f7);',
+    '  font-family: "Outfit", sans-serif; font-size: 0.68rem; font-weight: 700; line-height: 1;',
+    '  display: none; align-items: center; justify-content: center; }',
+    '#sensei-badge.show { display: flex; }',
+    '#sensei-review { display: none; padding: 0.5rem 0.6rem; border-top: 1px solid rgba(0,0,0,0.07); background: var(--paper-warm, #f5f3ef); }',
+    '#sensei-review.show { display: block; }',
+    '#sensei-review button { width: 100%; background: #fff; border: 1.5px solid var(--accent, #c45c4a); color: var(--accent, #c45c4a);',
+    '  border-radius: 8px; padding: 0.45rem 0.6rem; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; }',
+    '#sensei-review button:hover { background: var(--accent, #c45c4a); color: #fff; }',
+    '@keyframes sensei-pulse { 0%, 100% { box-shadow: 0 4px 14px rgba(0,0,0,0.25); } 50% { box-shadow: 0 4px 22px rgba(196,92,74,0.65); } }',
     '#sensei-panel { position: fixed; bottom: 10rem; right: 2rem; width: 340px; max-width: calc(100vw - 2rem);',
     '  height: 460px; max-height: calc(100vh - 13rem); background: var(--paper, #faf9f7);',
     '  border: 1px solid rgba(0,0,0,0.12); border-radius: 8px; box-shadow: 0 12px 40px rgba(0,0,0,0.25);',
@@ -43,14 +233,41 @@
     '  font-family: "Outfit", sans-serif; }',
     '#sensei-panel.open { display: flex; }',
     '#sensei-head { background: var(--ink, #1a1a2e); color: var(--paper, #faf9f7); padding: 0.75rem 1rem;',
-    '  display: flex; align-items: center; justify-content: space-between; }',
+    '  display: flex; align-items: center; justify-content: space-between; gap: 0.4rem; }',
     '#sensei-head .jp-name { font-family: "Noto Serif JP", serif; color: var(--accent-soft, #d4786a); margin-right: 0.4rem; }',
-    '#sensei-close { background: none; border: none; color: inherit; font-size: 1.2rem; cursor: pointer; }',
+    '#sensei-head-btns { display: flex; align-items: center; gap: 0.15rem; }',
+    '#sensei-gear, #sensei-close { background: none; border: none; color: inherit; cursor: pointer; opacity: 0.85; }',
+    '#sensei-gear:hover, #sensei-close:hover { opacity: 1; }',
+    '#sensei-gear { font-size: 1rem; }',
+    '#sensei-close { font-size: 1.2rem; }',
+    '#sensei-settings { display: none; padding: 0.85rem 1rem; border-bottom: 1px solid rgba(0,0,0,0.08);',
+    '  background: var(--paper-warm, #f5f3ef); font-size: 0.82rem; }',
+    '#sensei-settings.open { display: block; }',
+    '.sensei-setting-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.6rem; }',
+    '.sensei-setting-row:last-child { margin-bottom: 0; }',
+    '.sensei-switch { position: relative; display: inline-block; width: 34px; height: 19px; flex: 0 0 auto; }',
+    '.sensei-switch input { opacity: 0; width: 0; height: 0; }',
+    '.sensei-switch-track { position: absolute; inset: 0; background: rgba(0,0,0,0.2); border-radius: 999px; cursor: pointer; transition: background 0.15s; }',
+    '.sensei-switch-track::before { content: ""; position: absolute; width: 15px; height: 15px; left: 2px; top: 2px; background: white; border-radius: 50%; transition: transform 0.15s; }',
+    '.sensei-switch input:checked + .sensei-switch-track { background: var(--sage, #7a9e7e); }',
+    '.sensei-switch input:checked + .sensei-switch-track::before { transform: translateX(15px); }',
+    '#sensei-clear { background: none; border: 1px solid rgba(0,0,0,0.15); color: var(--text, #3d3d3d); border-radius: 6px;',
+    '  padding: 0.3rem 0.6rem; font-family: inherit; font-size: 0.78rem; cursor: pointer; }',
+    '#sensei-clear:hover { border-color: var(--accent-soft, #d4786a); }',
     '#sensei-msgs { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.6rem; }',
     '.sensei-msg { max-width: 85%; padding: 0.55rem 0.8rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.45; white-space: pre-wrap; word-wrap: break-word; }',
     '.sensei-msg.student { align-self: flex-end; background: var(--ink, #1a1a2e); color: var(--paper, #faf9f7); border-bottom-right-radius: 2px; }',
     '.sensei-msg.sensei { align-self: flex-start; background: var(--paper-warm, #f5f3ef); border: 1px solid rgba(0,0,0,0.08); border-bottom-left-radius: 2px; }',
     '.sensei-msg.thinking { opacity: 0.6; font-style: italic; }',
+    '.sensei-msg.error { border-color: var(--accent-soft, #d4786a); }',
+    '.sensei-msg strong { font-weight: 700; color: var(--ink, #1a1a2e); }',
+    '.sensei-msg em { font-style: italic; opacity: 0.85; }',
+    '.sensei-msg code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.86em;',
+    '  background: rgba(0,0,0,0.06); border-radius: 4px; padding: 0.05rem 0.3rem; }',
+    '.sensei-msg ruby rt { font-size: 0.55em; opacity: 0.75; }',
+    '.sensei-retry { display: inline-block; margin-top: 0.4rem; background: none; border: none; color: var(--accent, #c45c4a);',
+    '  font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; padding: 0; }',
+    '.sensei-retry:hover { text-decoration: underline; }',
     '#sensei-form { display: flex; gap: 0.4rem; padding: 0.6rem; border-top: 1px solid rgba(0,0,0,0.08); background: var(--paper, #faf9f7); }',
     '#sensei-input { flex: 1; padding: 0.55rem 0.7rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 6px;',
     '  font-family: inherit; font-size: 0.92rem; outline: none; }',
@@ -74,18 +291,34 @@
     fab.textContent = '活';
     fab.style.fontSize = '1.45rem';
 
+    var badge = document.createElement('span');
+    badge.id = 'sensei-badge';
+    fab.appendChild(badge);
+
     var panel = document.createElement('div');
     panel.id = 'sensei-panel';
     panel.innerHTML =
       '<div id="sensei-head">' +
         '<div><span class="jp-name">カツ</span><strong>Katsu</strong></div>' +
-        '<button id="sensei-close" aria-label="Close">×</button>' +
+        '<div id="sensei-head-btns">' +
+          '<button id="sensei-gear" aria-label="Settings" title="Settings">⚙️</button>' +
+          '<button id="sensei-close" aria-label="Close">×</button>' +
+        '</div>' +
+      '</div>' +
+      '<div id="sensei-settings">' +
+        '<div class="sensei-setting-row">' +
+          '<span id="sensei-proactive-label"></span>' +
+          '<label class="sensei-switch"><input type="checkbox" id="sensei-proactive-toggle"><span class="sensei-switch-track"></span></label>' +
+        '</div>' +
+        '<div class="sensei-setting-row">' +
+          '<button id="sensei-clear"></button>' +
+        '</div>' +
       '</div>' +
       '<div id="sensei-msgs"></div>' +
+      '<div id="sensei-review"><button type="button" id="sensei-review-btn"></button></div>' +
       '<div id="sensei-form">' +
-        '<input id="sensei-input" type="text" maxlength="300" ' +
-          'placeholder="How do I say… in Japanese?" autocomplete="off">' +
-        '<button id="sensei-send">Ask</button>' +
+        '<input id="sensei-input" type="text" maxlength="300" autocomplete="off">' +
+        '<button id="sensei-send"></button>' +
       '</div>';
 
     document.body.appendChild(fab);
@@ -93,73 +326,268 @@
 
     var input = panel.querySelector('#sensei-input');
     var send = panel.querySelector('#sensei-send');
+    var msgsEl = panel.querySelector('#sensei-msgs');
+    var gear = panel.querySelector('#sensei-gear');
+    var settingsPanel = panel.querySelector('#sensei-settings');
+    var proactiveToggle = panel.querySelector('#sensei-proactive-toggle');
+    var clearBtn = panel.querySelector('#sensei-clear');
+
+    var reviewRow = panel.querySelector('#sensei-review');
+    var reviewBtn = panel.querySelector('#sensei-review-btn');
+
+    function applyStrings() {
+      input.placeholder = tr('sensei_placeholder', 'How do I say… in Japanese?');
+      send.textContent = tr('sensei_send', 'Ask');
+      panel.querySelector('#sensei-proactive-label').textContent = tr('sensei_proactive_label', 'Let Katsu check in when I seem stuck');
+      clearBtn.textContent = tr('sensei_clear_history', '🗑 Clear chat');
+      refreshMistakeUI();
+    }
+
+    // Badge on the button, and a one-tap "go over them" row inside the panel.
+    function refreshMistakeUI() {
+      var n = unreviewedMistakes().length;
+      badge.textContent = n > 9 ? '9+' : String(n);
+      badge.classList.toggle('show', n > 0);
+      reviewRow.classList.toggle('show', n > 0);
+      reviewBtn.textContent = tr('sensei_review_btn', '📝 Go over my last mistakes') + (n > 1 ? ' (' + n + ')' : '');
+    }
+    updateMistakeBadge = refreshMistakeUI;
+
+    reviewBtn.addEventListener('click', function () {
+      ask(tr('sensei_review_q', 'What did I just get wrong, and why? Explain it simply.'));
+    });
+    applyStrings();
+    window.refreshSenseiI18n = applyStrings;
+
+    proactiveToggle.checked = settings.proactive;
+    proactiveToggle.addEventListener('change', function () {
+      settings.proactive = proactiveToggle.checked;
+      persistProactive();
+    });
+
+    gear.addEventListener('click', function () {
+      settingsPanel.classList.toggle('open');
+    });
+
+    clearBtn.addEventListener('click', function () {
+      history = [];
+      persistHistory();
+      window.KatsuMistakes.clear();
+      msgsEl.innerHTML = '';
+      addMsg('sensei', tr('sensei_greeting', greetingFallback()));
+    });
+
+    var lastManualCloseAt = 0;
+
+    function openPanel(fromProactive) {
+      panel.classList.add('open');
+      fab.classList.remove('nudge');
+      persistOpen(true);
+      if (history.length === 0 && !fromProactive) {
+        addMsg('sensei', tr('sensei_greeting', greetingFallback()));
+      }
+      if (!fromProactive) input.focus();
+    }
+
+    function closePanel(manual) {
+      panel.classList.remove('open');
+      persistOpen(false);
+      if (manual) lastManualCloseAt = Date.now();
+    }
 
     fab.addEventListener('click', function () {
-      panel.classList.toggle('open');
-      if (panel.classList.contains('open')) {
-        if (history.length === 0) {
-          addMsg('sensei', 'こんにちは！(Konnichiwa!) I\u2019m Katsu. Ask me how to say something in Japanese, or any grammar question. 何でも聞いてください！(Nandemo kiite kudasai! \u2014 Ask me anything!)');
-        }
-        input.focus();
-      }
+      if (panel.classList.contains('open')) closePanel(true);
+      else openPanel(false);
     });
     panel.querySelector('#sensei-close').addEventListener('click', function () {
-      panel.classList.remove('open');
+      closePanel(true);
     });
-    send.addEventListener('click', ask);
+    send.addEventListener('click', function () { ask(); });
     input.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') ask();
     });
 
-    function addMsg(role, text, thinking) {
+    function greetingFallback() {
+      return 'こんにちは！(Konnichiwa!) I’m Katsu. Ask me how to say something in Japanese, or any grammar question. 何でも聴いてください！(Nandemo kiite kudasai! — Ask me anything!)';
+    }
+
+    function addMsg(role, text, opts) {
+      opts = opts || {};
       var div = document.createElement('div');
-      div.className = 'sensei-msg ' + role + (thinking ? ' thinking' : '');
-      div.textContent = text;
-      panel.querySelector('#sensei-msgs').appendChild(div);
-      div.parentNode.scrollTop = div.parentNode.scrollHeight;
+      div.className = 'sensei-msg ' + role + (opts.thinking ? ' thinking' : '') + (opts.error ? ' error' : '');
+      // Katsu's replies get light markdown; the student's own text never does.
+      if (role === 'sensei' && !opts.thinking && !opts.error) div.innerHTML = mdLite(text);
+      else div.textContent = text;
+      if (opts.retry) {
+        var retryBtn = document.createElement('button');
+        retryBtn.className = 'sensei-retry';
+        retryBtn.textContent = tr('sensei_retry', '↻ Try again');
+        retryBtn.addEventListener('click', function () { div.remove(); opts.retry(); });
+        div.appendChild(document.createElement('br'));
+        div.appendChild(retryBtn);
+      }
+      msgsEl.appendChild(div);
+      msgsEl.scrollTop = msgsEl.scrollHeight;
       return div;
     }
 
-    function buildPrompt(question) {
-      var convo = history.slice(-MAX_HISTORY).map(function (m) {
-        return (m.role === 'student' ? 'Student: ' : 'Sensei: ') + m.text;
-      }).join('\n');
-      return SYSTEM_PROMPT +
-        (convo ? '\n\nConversation so far:\n' + convo : '') +
-        '\n\nStudent: ' + question + '\n\nSensei:';
+    // Replay persisted history into the DOM on load (without hitting the API).
+    history.forEach(function (m) {
+      addMsg(m.role === 'student' ? 'student' : 'sensei', m.text);
+    });
+
+    // Restore panel open state across navigation.
+    var wasOpen = false;
+    try { wasOpen = localStorage.getItem(STORAGE_OPEN) === '1'; } catch (e) {}
+    if (wasOpen) openPanel(true);
+
+    function callBackend(payload) {
+      return fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (!res.ok) {
+          return res.json().catch(function () { return {}; }).then(function (data) {
+            var err = new Error((data && data.error) || ('HTTP ' + res.status));
+            err.status = res.status;
+            throw err;
+          });
+        }
+        return res.json();
+      }).then(function (data) {
+        var answer = (data.feedback || '').trim();
+        if (!data.success || !answer) throw new Error(data.error || 'empty response');
+        return answer;
+      });
     }
 
-    async function ask() {
-      var q = input.value.trim();
+    function contextMessages() {
+      return history.slice(-MAX_CONTEXT_MESSAGES).map(function (m) {
+        return { role: m.role === 'student' ? 'user' : 'assistant', content: m.text };
+      });
+    }
+
+    function ask(prefill) {
+      var q = (prefill !== undefined ? prefill : input.value).trim();
       if (!q || send.disabled) return;
-      input.value = '';
+      if (prefill === undefined) input.value = '';
       send.disabled = true;
       addMsg('student', q);
-      var thinkingEl = addMsg('sensei', '考えています… (Thinking…)', true);
+      var thinkingEl = addMsg('sensei', '考えています… (Thinking…)', { thinking: true });
 
-      try {
-        var res = await fetch(BACKEND_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prompt: buildPrompt(q), maxTokens: MAX_TOKENS })
-        });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        var data = await res.json();
-        var answer = (data.feedback || data.text || data.response || data.completion || '').trim();
-        if (!answer) throw new Error('empty response');
+      var payload = {
+        system: buildSystemPrompt(),   // includes the recent-mistake context
+        messages: contextMessages().concat([{ role: 'user', content: q }]),
+        maxTokens: MAX_TOKENS
+      };
+      // They're in Katsu's hands now, so stop flagging them as unreviewed.
+      markMistakesSeen();
+
+      callBackend(payload).then(function (answer) {
         thinkingEl.classList.remove('thinking');
-        thinkingEl.textContent = answer;
+        thinkingEl.innerHTML = mdLite(answer);
         history.push({ role: 'student', text: q });
         history.push({ role: 'sensei', text: answer });
-      } catch (err) {
+        history = history.slice(-MAX_STORED_MESSAGES);
+        persistHistory();
+      }).catch(function (err) {
         console.error('Sensei error:', err);
-        thinkingEl.classList.remove('thinking');
-        thinkingEl.textContent = 'すみません (Sumimasen) \u2014 I couldn\u2019t reach the server. Please try again in a moment.';
-      } finally {
+        thinkingEl.remove();
+        addMsg('sensei', tr('sensei_error', 'すみません (Sumimasen) — I couldn’t reach the server.'), {
+          error: true,
+          retry: function () { ask(q); }
+        });
+      }).finally(function () {
         send.disabled = false;
         input.focus();
-      }
+      });
     }
+
+    // ---------- proactive "struggling" detector ----------
+    var recentMisses = [];
+    var lastProactiveAt = 0;
+    var proactiveCount = 0;
+    var STRUGGLE_PATTERN = /\bfeedback\b/;
+    var STRUGGLE_STATE = /\b(bad|wrong|incorrect|warn)\b/;
+
+    function noteMiss() {
+      if (!settings.proactive) return;
+      if (panel.classList.contains('open')) return; // already talking to Katsu
+      if (Date.now() - lastManualCloseAt < PROACTIVE_COOLDOWN_MS) return; // just dismissed — give space
+      if (proactiveCount >= MAX_PROACTIVE_PER_LOAD) return;
+
+      var now = Date.now();
+      recentMisses = recentMisses.filter(function (ts) { return now - ts < STRUGGLE_WINDOW_MS; });
+      recentMisses.push(now);
+      if (recentMisses.length < STRUGGLE_THRESHOLD) return;
+      if (now - lastProactiveAt < PROACTIVE_COOLDOWN_MS) return;
+
+      recentMisses = [];
+      lastProactiveAt = now;
+      proactiveCount++;
+
+      fab.classList.add('nudge');
+      openPanel(true);
+      var nudge = Math.random() < 0.5
+        ? tr('sensei_nudge_1', 'Looks like this one’s tricky — want a hint? 💡')
+        : tr('sensei_nudge_2', 'I noticed a few misses in a row — I’m here if you want to talk it through!');
+      addMsg('sensei', nudge);
+    }
+
+    // Where each practice page keeps its question, the student's answer, and
+    // the correct answer. Unknown pages still get the feedback text itself.
+    var CAPTURE = {
+      'kana-drill':  { q: ['#drill-question'], a: ['#drill-input'] },
+      'kanji-drill': { q: ['#drill-question'], a: ['#drill-input'] },
+      'datedojo':    { q: ['#dojo-question-text'], a: ['#dojo-answer-input'], c: ['#dojo-feedback-answer'] },
+      'conjugator':  { q: ['#verb-kanji', '#prompt-form'], a: ['#answer-input'], c: ['#feedback-answer'] }
+    };
+
+    function readAll(selectors) {
+      if (!selectors) return '';
+      var parts = [];
+      selectors.forEach(function (sel) {
+        var el = document.querySelector(sel);
+        if (!el) return;
+        var val = (el.value !== undefined && el.value !== null && el.value !== '') ? el.value : el.textContent;
+        val = (val || '').trim();
+        if (val) parts.push(val);
+      });
+      return parts.join(' → ');
+    }
+
+    function captureMistake(feedbackEl) {
+      // The page usually sets the class first and the text a tick later.
+      setTimeout(function () {
+        var map = CAPTURE[document.body.getAttribute('data-page')] || {};
+        var note = (feedbackEl.textContent || '').trim();
+        // Correct-answer element may sit inside the feedback box; don't double it.
+        var correct = readAll(map.c);
+        logMistake({
+          q: readAll(map.q),
+          a: readAll(map.a),
+          c: correct,
+          note: correct ? '' : note
+        });
+      }, 60);
+    }
+
+    var observer = new MutationObserver(function (mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        var el = mutations[i].target;
+        if (!el || el.nodeType !== 1) continue;
+        var cls = el.getAttribute ? el.getAttribute('class') : '';
+        if (cls && STRUGGLE_PATTERN.test(cls) && STRUGGLE_STATE.test(cls)) {
+          captureMistake(el);   // always logged, so Katsu can explain it later
+          noteMiss();           // pop-in only if the student left that on
+          break;
+        }
+      }
+    });
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: true });
+
+    refreshMistakeUI();
   }
 
   if (document.readyState === 'loading') {
