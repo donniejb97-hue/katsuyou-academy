@@ -321,6 +321,9 @@
         '<div class="sensei-setting-row">' +
           '<button id="sensei-clear"></button>' +
         '</div>' +
+        '<div class="sensei-setting-row">' +
+          '<button id="sensei-clear-mistakes"></button>' +
+        '</div>' +
       '</div>' +
       '<div id="sensei-msgs"></div>' +
       '<div id="sensei-review"><button type="button" id="sensei-review-btn"></button></div>' +
@@ -339,6 +342,7 @@
     var settingsPanel = panel.querySelector('#sensei-settings');
     var proactiveToggle = panel.querySelector('#sensei-proactive-toggle');
     var clearBtn = panel.querySelector('#sensei-clear');
+    var clearMistakesBtn = panel.querySelector('#sensei-clear-mistakes');
 
     var reviewRow = panel.querySelector('#sensei-review');
     var reviewBtn = panel.querySelector('#sensei-review-btn');
@@ -358,6 +362,13 @@
       badge.classList.toggle('show', n > 0);
       reviewRow.classList.toggle('show', n > 0);
       reviewBtn.textContent = tr('sensei_review_btn', '📝 Go over my last mistakes') + (n > 1 ? ' (' + n + ')' : '');
+
+      // Separate control, so clearing the chat never throws away the record
+      var total = loadMistakes().length;
+      clearMistakesBtn.textContent = tr('sensei_clear_mistakes', '🗑 Clear saved mistakes') +
+        (total ? ' (' + total + ')' : '');
+      clearMistakesBtn.disabled = !total;
+      clearMistakesBtn.style.opacity = total ? '' : '0.45';
     }
     updateMistakeBadge = refreshMistakeUI;
 
@@ -377,12 +388,19 @@
       settingsPanel.classList.toggle('open');
     });
 
+    // Clearing the conversation deliberately leaves the mistake log alone —
+    // it's a study record, not chat scrollback, and wiping it meant Katsu
+    // could no longer explain anything you'd got wrong before.
     clearBtn.addEventListener('click', function () {
       history = [];
       persistHistory();
-      window.KatsuMistakes.clear();
       msgsEl.innerHTML = '';
       addMsg('sensei', tr('sensei_greeting', greetingFallback()));
+    });
+
+    clearMistakesBtn.addEventListener('click', function () {
+      window.KatsuMistakes.clear();
+      refreshMistakeUI();
     });
 
     var lastManualCloseAt = 0;
@@ -391,7 +409,10 @@
       panel.classList.add('open');
       fab.classList.remove('nudge');
       persistOpen(true);
-      if (history.length === 0 && !fromProactive) {
+      // Gate on what's actually on screen, not on history — the greeting is
+      // deliberately never stored in history (no point sending it to the API),
+      // so checking history meant a fresh greeting on every single open.
+      if (!msgsEl.children.length && !fromProactive) {
         addMsg('sensei', tr('sensei_greeting', greetingFallback()));
       }
       if (!fromProactive) input.focus();
