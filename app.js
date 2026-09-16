@@ -304,8 +304,29 @@
     let failureTracking = {}; // Track consecutive failures by form type: { 'godan-negative': 2, ... }
     let isTypeIdentificationQuiz = false; // Are we in verb type ID mode?
     let typeIdentificationAnswer = null; // What type did they guess?
+    let questionSerial = 0;   // bumped per question, so a slow AI reply can't
+                             // land on a question the learner has moved past
     let recentlyUsedVerbs = []; // Track recently used verbs to avoid repetition
     const MAX_RECENT_VERBS = 12; // Keep last 12 verbs in memory
+
+    // ---- Session shape -----------------------------------------------------
+    // Open-ended drilling has no finish line, which makes it hard to stay in.
+    // A streak gives you something to protect; a session goal gives you a
+    // place to stop.
+    let streak = 0;
+    let bestStreak = 0;
+    let session = { answered: 0, correct: 0, skipped: 0, formMisses: {} };
+
+    // ---- Weak spots --------------------------------------------------------
+    // Verb + form combinations the learner has got wrong, so they come back
+    // instead of vanishing into a 233-verb pool.
+    let weakSpots = {};                  // "行く|negative" -> {misses,hits,kanji,type,form}
+    const WEAK_REVISIT_CHANCE = 0.35;    // how often a question is a repeat offender
+    const WEAK_RETIRE_HITS = 2;          // get it right twice and it's retired
+    const WEAK_KEY = 'katsuyo-weakspots';
+    const MISTAKES_KEY = 'katsuyo-mistakes';
+    const BEST_STREAK_KEY = 'katsuyo-best-streak';
+    const MAX_STORED_MISTAKES = 200;
 
     // ============ LOCALSTORAGE FUNCTIONS ============
     function loadStats() {
@@ -328,17 +349,89 @@
       }
     }
 
+    // Weak spots, the mistake log and the best streak survive a refresh —
+    // they're the parts that are worth anything tomorrow.
+    function loadProgress() {
+      try {
+        const w = localStorage.getItem(WEAK_KEY);
+        if (w) weakSpots = JSON.parse(w) || {};
+      } catch (e) { weakSpots = {}; }
+      try {
+        const m = localStorage.getItem(MISTAKES_KEY);
+        if (m) mistakeLog = JSON.parse(m) || [];
+      } catch (e) { mistakeLog = []; }
+      try {
+        bestStreak = parseInt(localStorage.getItem(BEST_STREAK_KEY), 10) || 0;
+      } catch (e) { bestStreak = 0; }
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(WEAK_KEY, JSON.stringify(weakSpots));
+        localStorage.setItem(MISTAKES_KEY, JSON.stringify(mistakeLog.slice(-MAX_STORED_MISTAKES)));
+        localStorage.setItem(BEST_STREAK_KEY, String(bestStreak));
+      } catch (e) {
+        console.log('Could not save progress to localStorage');
+      }
+    }
+
+    function weakKey(verb, formKey) { return verb.kanji + '|' + formKey; }
+
+    function recordMiss(verb, formKey) {
+      const k = weakKey(verb, formKey);
+      const entry = weakSpots[k] || { misses: 0, hits: 0, kanji: verb.kanji, type: verb.type, form: formKey };
+      entry.misses++;
+      entry.hits = 0;                 // a fresh miss resets progress toward retirement
+      entry.type = verb.type;
+      entry.form = formKey;
+      weakSpots[k] = entry;
+      session.formMisses[formKey] = (session.formMisses[formKey] || 0) + 1;
+      saveProgress();
+    }
+
+    function recordHit(verb, formKey) {
+      const k = weakKey(verb, formKey);
+      const entry = weakSpots[k];
+      if (!entry) return;
+      entry.hits++;
+      if (entry.hits >= WEAK_RETIRE_HITS) delete weakSpots[k];
+      saveProgress();
+    }
+
     function resetStats() {
       stats = { correct: 0, total: 0, skipped: 0 };
       mistakeLog = [];
+      weakSpots = {};
+      streak = 0;
+      bestStreak = 0;
+      session = { answered: 0, correct: 0, skipped: 0, formMisses: {} };
       saveStats();
+      saveProgress();
       updateScoreDisplay();
       updateReportButton();
     }
-    
+
     function updateScoreDisplay() {
       document.getElementById('score-correct').textContent = stats.correct;
       document.getElementById('score-total').textContent = stats.total;
+      const streakEl = document.getElementById('streak-value');
+      if (streakEl) streakEl.textContent = streak;
+      const bestEl = document.getElementById('streak-best');
+      if (bestEl) bestEl.textContent = bestStreak;
+      const flame = document.getElementById('streak-box');
+      if (flame) flame.classList.toggle('hot', streak >= 5);
+      const prog = document.getElementById('session-progress');
+      if (prog) {
+        const goal = sessionGoal();
+        prog.textContent = goal ? (session.answered + ' / ' + goal) : String(session.answered);
+      }
+    }
+
+    function sessionGoal() {
+      const el = document.getElementById('session-goal');
+      if (!el) return 0;
+      const n = parseInt(el.value, 10);
+      return isNaN(n) ? 0 : n;
     }
 
     function confirmResetStats() {
@@ -846,6 +939,133 @@
       }
       return matches / longer.length;
     }
+
+    // ========================================================================
+    // ROMAJI → KANA
+    // ------------------------------------------------------------------------
+    // So the Conjugator works without a Japanese IME installed. Typing
+    // "ikanai" turns into いかない as you go. Anything already in kana or kanji
+    // passes straight through, and an incomplete trailing syllable ("ik") is
+    // left alone so you can keep typing.
+    // ========================================================================
+
+    const ROMAJI_MAP = (function () {
+      const m = {
+        a:'あ', i:'い', u:'う', e:'え', o:'お',
+        ka:'か', ki:'き', ku:'く', ke:'け', ko:'こ',
+        ga:'が', gi:'ぎ', gu:'ぐ', ge:'げ', go:'ご',
+        sa:'さ', shi:'し', si:'し', su:'す', se:'せ', so:'そ',
+        za:'ざ', ji:'じ', zi:'じ', zu:'ず', ze:'ぜ', zo:'ぞ',
+        ta:'た', chi:'ち', ti:'ち', tsu:'つ', tu:'つ', te:'て', to:'と',
+        da:'だ', di:'ぢ', du:'づ', dzu:'づ', de:'で', "do":'ど',
+        na:'な', ni:'に', nu:'ぬ', ne:'ね', no:'の',
+        ha:'は', hi:'ひ', fu:'ふ', hu:'ふ', he:'へ', ho:'ほ',
+        ba:'ば', bi:'び', bu:'ぶ', be:'べ', bo:'ぼ',
+        pa:'ぱ', pi:'ぴ', pu:'ぷ', pe:'ぺ', po:'ぽ',
+        ma:'ま', mi:'み', mu:'む', me:'め', mo:'も',
+        ya:'や', yu:'ゆ', yo:'よ',
+        ra:'ら', ri:'り', ru:'る', re:'れ', ro:'ろ',
+        wa:'わ', wi:'ゐ', we:'ゑ', wo:'を',
+        // digraphs
+        kya:'きゃ', kyu:'きゅ', kyo:'きょ',
+        gya:'ぎゃ', gyu:'ぎゅ', gyo:'ぎょ',
+        sha:'しゃ', shu:'しゅ', sho:'しょ',
+        sya:'しゃ', syu:'しゅ', syo:'しょ',
+        ja:'じゃ', ju:'じゅ', jo:'じょ',
+        jya:'じゃ', jyu:'じゅ', jyo:'じょ',
+        zya:'じゃ', zyu:'じゅ', zyo:'じょ',
+        cha:'ちゃ', chu:'ちゅ', cho:'ちょ',
+        tya:'ちゃ', tyu:'ちゅ', tyo:'ちょ',
+        nya:'にゃ', nyu:'にゅ', nyo:'にょ',
+        hya:'ひゃ', hyu:'ひゅ', hyo:'ひょ',
+        bya:'びゃ', byu:'びゅ', byo:'びょ',
+        pya:'ぴゃ', pyu:'ぴゅ', pyo:'ぴょ',
+        mya:'みゃ', myu:'みゅ', myo:'みょ',
+        rya:'りゃ', ryu:'りゅ', ryo:'りょ',
+        // small kana, IME-style
+        xa:'ぁ', xi:'ぃ', xu:'ぅ', xe:'ぇ', xo:'ぉ',
+        xya:'ゃ', xyu:'ゅ', xyo:'ょ', xtsu:'っ', xtu:'っ',
+        // punctuation people actually type
+        '-':'ー', '.':'。', ',':'、'
+      };
+      // Learners often write l where they mean r. Treat them the same.
+      ['a','i','u','e','o','ya','yu','yo'].forEach(function (v) {
+        if (m['r' + v]) m['l' + v] = m['r' + v];
+      });
+      return m;
+    })();
+
+    const ROMAJI_MAX_LEN = 4;
+
+    // Consonants that double into a small っ when repeated (kk, tt, ssh…).
+    const GEMINATE = /^[bcdfgjkmpqrstvwxyz]$/;
+
+    // `final` = the learner has finished typing (they hit Check), so a
+    // dangling "n" is committed to ん. While they're still typing it stays a
+    // literal "n", because the next keystroke might make it な.
+    function romajiToKana(text, final) {
+      if (!text) return '';
+      let out = '';
+      let i = 0;
+      while (i < text.length) {
+        const ch = text[i];
+
+        // Anything that isn't a plain Latin letter or mapped punctuation is
+        // already kana/kanji — leave it exactly as it is.
+        if (!/[a-zA-Z\-.,]/.test(ch)) { out += ch; i++; continue; }
+
+        const lower = text.slice(i).toLowerCase();
+
+        // ん: "n" before a consonant, "n'", or "nn".
+        // "nn" + vowel is ん followed by a な-row syllable (konnichiwa →
+        // こんにちわ), so only one n is consumed in that case.
+        if (lower[0] === 'n') {
+          if (lower[1] === "'") { out += 'ん'; i += 2; continue; }
+          if (lower[1] === 'n') {
+            out += 'ん';
+            i += /[aiueoy]/.test(lower[2] || '') ? 1 : 2;
+            continue;
+          }
+          if (lower.length > 1 && !/[aiueoy]/.test(lower[1])) { out += 'ん'; i += 1; continue; }
+          if (lower.length === 1 && final) { out += 'ん'; i += 1; continue; }
+        }
+
+        // っ: doubled consonant, e.g. kk → っk
+        if (GEMINATE.test(lower[0]) && lower[1] === lower[0]) {
+          out += 'っ'; i += 1; continue;
+        }
+
+        // Longest match wins: tsu before tu, kyo before ky.
+        let matched = false;
+        for (let len = Math.min(ROMAJI_MAX_LEN, lower.length); len >= 1; len--) {
+          const chunk = lower.slice(0, len);
+          if (ROMAJI_MAP[chunk]) {
+            out += ROMAJI_MAP[chunk];
+            i += len;
+            matched = true;
+            break;
+          }
+        }
+        if (matched) continue;
+
+        // No match — an unfinished syllable. Keep the raw letters so the
+        // learner can carry on typing.
+        out += ch;
+        i++;
+      }
+      return out;
+    }
+
+    window.KA_toKana = romajiToKana;
+
+    // t() returns the key itself when a translation is missing. ct() falls
+    // back to readable English instead, so a missing key never ships as
+    // "romaji_title" on the page.
+    function ct(key, fallback) {
+      var v = (typeof t === 'function') ? t(key) : key;
+      return (v === key && fallback) ? fallback : v;
+    }
+    window.KA_ct = ct;
 
     function isRomaji(text) {
       // Check if text is primarily Latin alphabet (romaji)
@@ -2230,12 +2450,13 @@ function downloadPracticeReport() {
       // If completely empty, not in ballpark
       if (!user) return false;
       
-      // Check if it's all hiragana (basic validation)
-      const hiraganaRegex = /^[ぁ-ん]+$/;
-      if (!hiraganaRegex.test(user)) {
-        return false; // Contains non-hiragana, probably way off
+      // Kanji answers are accepted now, so a near-miss written in kanji has to
+      // be able to earn the second chance too.
+      const japaneseRegex = /^[ぁ-んァ-ヶ々一-龯ー]+$/;
+      if (!japaneseRegex.test(user)) {
+        return false; // Latin letters or symbols — probably way off
       }
-      
+
       // Check length similarity (within 3 characters)
       if (Math.abs(user.length - correct.length) > 3) {
         return false;
@@ -2255,14 +2476,14 @@ function downloadPracticeReport() {
     function getErrorExplanation(userAnswer, correctAnswer, verb, form) {
       const user = userAnswer.trim();
       
-      // Check for non-hiragana
-      const hiraganaRegex = /^[ぁ-ん]+$/;
-      if (!hiraganaRegex.test(user)) {
-        return "Your answer contains characters that aren't hiragana. Remember, we're conjugating the verb, not translating it. Write your answer in hiragana only.";
+      // Kanji is fine — only flag genuinely foreign characters.
+      const japaneseRegex = /^[ぁ-んァ-ヶ々一-龯ー]+$/;
+      if (!japaneseRegex.test(user)) {
+        return "Your answer contains characters that aren't Japanese. Remember, we're conjugating the verb, not translating it — write the conjugated verb in kana or kanji.";
       }
-      
+
       // Check if they forgot to conjugate
-      if (user === verb.hiragana) {
+      if (user === verb.hiragana || user === verb.kanji) {
         return `You entered the dictionary form (${verb.hiragana}), but we need the <strong>${form.name}</strong> form. You need to change the verb ending.`;
       }
       
@@ -2365,7 +2586,59 @@ function downloadPracticeReport() {
       return `Your answer doesn't match the correct conjugation pattern. Review how ${verb.type} verbs conjugate in the ${form.name} form.`;
     }
     
+    // Pull up a verb + form the learner has actually got wrong, if one fits
+    // the current filters. Without this, a verb you keep missing is no more
+    // likely to reappear than one you've never seen.
+    function pickWeakSpot() {
+      const keys = Object.keys(weakSpots);
+      if (!keys.length) return null;
+
+      const jlptFilter = document.getElementById('jlpt-filter').value;
+      const allowedLevels = jlptFilter === 'all' ? null
+        : (jlptFilter === 'N5-N4' ? ['N5', 'N4'] : [jlptFilter]);
+      const selectedForm = document.getElementById('form-select').value;
+
+      function formAllowed(key) {
+        if (selectedForm === 'random') return true;
+        if (selectedForm === 'random-basic') return formCategories.basic.includes(key);
+        if (selectedForm === 'random-intermediate') return formCategories.intermediate.includes(key);
+        if (selectedForm === 'random-advanced') return formCategories.advanced.includes(key);
+        return selectedForm === key;
+      }
+
+      const candidates = [];
+      keys.forEach(function (k) {
+        const w = weakSpots[k];
+        if (!w || !w.form || w.form === 'type-identification') return;
+        if (!formAllowed(w.form)) return;
+        const list = verbs[w.type];
+        if (!list) return;
+        const verb = list.find(function (v) { return v.kanji === w.kanji; });
+        if (!verb) return;
+        if (allowedLevels && !allowedLevels.includes(verb.jlpt)) return;
+        if (recentlyUsedVerbs.some(function (r) { return r.kanji === verb.kanji; })) return;
+        const form = forms.find(function (f) { return f.key === w.form; });
+        if (!form) return;
+        // The more often it's been missed, the more tickets it gets.
+        const tickets = Math.min(w.misses, 4);
+        for (let i = 0; i < tickets; i++) candidates.push({ verb: verb, type: w.type, form: form });
+      });
+
+      if (!candidates.length) return null;
+      const pick = candidates[Math.floor(Math.random() * candidates.length)];
+      const template = pick.form.templates[Math.floor(Math.random() * pick.form.templates.length)];
+      recentlyUsedVerbs.push(Object.assign({}, pick.verb, { type: pick.type }));
+      if (recentlyUsedVerbs.length > MAX_RECENT_VERBS) recentlyUsedVerbs.shift();
+      return Object.assign({}, pick.verb, { type: pick.type, form: pick.form, template: template, isReview: true });
+    }
+
     function getRandomVerb() {
+      // Roughly a third of questions revisit something you've missed.
+      if (Math.random() < WEAK_REVISIT_CHANCE) {
+        const weak = pickWeakSpot();
+        if (weak) return weak;
+      }
+
       const types = ['godan', 'ichidan', 'irregular', 'suru'];
       const weights = [5, 3, 1, 2]; // irregular gets weight of 1 (rare but possible)
       const weightedTypes = types.flatMap((type, i) => Array(weights[i]).fill(type));
@@ -3245,7 +3518,24 @@ function getDefaultInstruction(form) {
 }
 
 // Modified generateNewQuestion to use AI instructions
+function typeQuizEnabled() {
+  const el = document.getElementById('type-quiz-toggle');
+  if (el) return el.checked;
+  try { return localStorage.getItem('katsuyo-type-quiz') !== 'off'; } catch (e) { return true; }
+}
+
 function generateNewQuestionWithAI() {
+  // Reached the session goal? Stop and show what happened, rather than
+  // rolling on forever.
+  if (typeof sessionGoal === 'function') {
+    const goal = sessionGoal();
+    if (goal && session.answered >= goal) {
+      showSessionSummary();
+      return;
+    }
+  }
+
+  questionSerial++;
   currentVerb = getRandomVerb();
   currentPrompt = currentVerb.template;
   showAnswer = false;
@@ -3255,10 +3545,18 @@ function generateNewQuestionWithAI() {
   
   clearHintCache();
   
-  isTypeIdentificationQuiz = Math.random() < 0.25;
-  
+  // The verb-type quiz is a different kind of question, so it's opt-out and
+  // it announces itself instead of silently swapping the prompt.
+  isTypeIdentificationQuiz = typeQuizEnabled() && !currentVerb.isReview && Math.random() < 0.25;
+
+  const reviewBadge = document.getElementById('review-badge');
+  if (reviewBadge) reviewBadge.style.display = currentVerb.isReview ? 'inline-block' : 'none';
+
+  const quizBadge = document.getElementById('type-quiz-badge');
+  if (quizBadge) quizBadge.style.display = isTypeIdentificationQuiz ? 'inline-block' : 'none';
+
   const promptFormDiv = document.getElementById('prompt-form');
-  
+
   if (isTypeIdentificationQuiz) {
     document.getElementById('verb-type').style.display = 'none';
     promptFormDiv.innerHTML = 'What type of verb is this?<br><span style="font-size: 0.85rem; font-weight: 400; color: var(--text-light); margin-top: 0.5rem; display: block; line-height: 1.8;">Enter: <strong>godan</strong> / ごだん / 五段<br>or <strong>ichidan</strong> / いちだん / 一段<br>or <strong>suru</strong> / する<br>or <strong>irregular</strong> / ふきそく / 不規則</span>';
@@ -3310,6 +3608,12 @@ function generateNewQuestionWithAI() {
 
 // Re-render the current question's localized parts when the language changes.
 window.refreshConjugatorI18n = function () {
+  // applyI18n always writes the romaji placeholder; put back whichever one
+  // matches the learner's actual setting, and relabel the toggle.
+  if (typeof setRomajiInput === 'function') {
+    setRomajiInput(romajiInputEnabled());
+    paintRomajiToggle();
+  }
   if (typeof currentVerb === 'undefined' || !currentVerb) return;
   var mEl = document.getElementById('verb-meaning');
   if (mEl) mEl.textContent = (window.KA_meaning ? window.KA_meaning(currentVerb.meaning) : currentVerb.meaning);
@@ -3338,8 +3642,15 @@ function generateNewQuestion() {
 }
 
     function checkAnswer() {
-      const userAnswer = document.getElementById('answer-input').value.trim();
-      
+      const answerEl = document.getElementById('answer-input');
+      // Commit any half-finished romaji — a dangling "n" becomes ん — so the
+      // learner is judged on what they meant, not on where they stopped.
+      if (answerEl && !isTypeIdentificationQuiz && romajiInputEnabled()) {
+        const committed = romajiToKana(answerEl.value, true);
+        if (committed !== answerEl.value) answerEl.value = committed;
+      }
+      const userAnswer = answerEl.value.trim();
+
       // Don't process empty answers (unless in continue/next mode)
       if (userAnswer === '' && !showAnswer) {
         return;
@@ -3416,8 +3727,10 @@ function generateNewQuestion() {
         } else {
           // Wrong type identification - this counts as a mistake!
           stats.total++;
-          document.getElementById('score-total').textContent = stats.total;
+          streak = 0;
+          session.answered++;
           saveStats(); // Persist to localStorage
+          updateScoreDisplay();
           
           // Log this mistake for the report
           const typeNames = {
@@ -3480,15 +3793,18 @@ function generateNewQuestion() {
         const feedbackResult = document.getElementById('feedback-result');
         feedbackResult.classList.add('visible');
         feedbackResult.classList.remove('correct');
-        document.getElementById('feedback-title').textContent = '⚠️ Use Hiragana';
-        document.getElementById('feedback-answer').innerHTML = `Please type your answer in <strong>hiragana</strong> (ひらがな), not romaji.`;
-        
-        const explanation = `<strong>Tip:</strong> If you don't have a Japanese keyboard enabled, you can:<br>
-                             • <strong>Windows:</strong> Press Windows + Space to switch keyboards, or install Japanese IME from Settings<br>
-                             • <strong>Mac:</strong> Go to System Preferences → Keyboard → Input Sources → Add Japanese<br>
-                             • <strong>Mobile:</strong> Add Japanese keyboard in your device settings<br><br>
-                             Once enabled, you can type in romaji and it will convert to hiragana automatically!`;
-        
+        document.getElementById('feedback-title').textContent = ct('romaji_title', "⚠️ That didn't convert");
+        document.getElementById('feedback-answer').innerHTML = ct('romaji_msg',
+          'Your answer is still in Latin letters, so it can\'t be checked as Japanese.');
+
+        const explanation = romajiInputEnabled()
+          ? ct('romaji_tip_on',
+              'Romaji typing is switched on, so <strong>ikanai</strong> should turn into いかない as you type. ' +
+              'If some of it stayed as letters, check the spelling — every syllable needs its vowel.')
+          : ct('romaji_tip_off',
+              'Romaji typing is switched off. Turn it back on with the <strong>あ/A</strong> button next to the answer box, ' +
+              'or type with a Japanese keyboard.');
+
         document.getElementById('feedback-explanation').innerHTML = explanation;
         document.getElementById('feedback-explanation').style.display = 'block';
         
@@ -3504,9 +3820,14 @@ function generateNewQuestion() {
         // Correct answer!
         stats.total++;
         stats.correct++;
-        document.getElementById('score-correct').textContent = stats.correct;
-        document.getElementById('score-total').textContent = stats.total;
+        streak++;
+        if (streak > bestStreak) bestStreak = streak;
+        session.answered++;
+        session.correct++;
+        recordHit(currentVerb, currentVerb.form.key);
         saveStats(); // Persist to localStorage
+        saveProgress();
+        updateScoreDisplay();
         
         // Update report button availability
         updateReportButton();
@@ -3583,8 +3904,10 @@ function generateNewQuestion() {
         document.getElementById('skip-btn').style.display = 'none';
         document.getElementById('next-btn').style.display = 'block';
       } else {
-        // Wrong answer - check if it's in the ballpark
-        const inBallpark = isAnswerInBallpark(userAnswer, correctAnswer);
+        // Wrong answer - check if it's in the ballpark of ANY accepted answer,
+        // so a near-miss typed in kanji gets the same second chance as kana.
+        const inBallpark = acceptedAnswers(currentVerb, currentVerb.form)
+          .some(a => isAnswerInBallpark(userAnswer, a.answer));
         
         if (inBallpark && firstAttempt) {
           // Close enough - give them another try
@@ -3595,9 +3918,11 @@ function generateNewQuestion() {
         } else {
           // Either not in ballpark, or second attempt - mark as wrong
           stats.total++;
-          document.getElementById('score-correct').textContent = stats.correct;
-          document.getElementById('score-total').textContent = stats.total;
+          streak = 0;
+          session.answered++;
+          recordMiss(currentVerb, currentVerb.form.key);
           saveStats(); // Persist to localStorage
+          updateScoreDisplay();
           
           // Log this mistake for the report
           logMistake(currentVerb, currentVerb.form.key, userAnswer, correctAnswer);
@@ -3624,9 +3949,17 @@ function generateNewQuestion() {
           document.getElementById('ai-examples').style.display = 'none';
           document.getElementById('ai-examples').innerHTML = '';
           
-          // Show loading state while AI generates feedback
+          // Explain the mistake straight away from the rules, rather than
+          // making the learner watch a spinner while the API answers. The AI
+          // explanation replaces this in place when it arrives.
           const explanationEl = document.getElementById('feedback-explanation');
-          explanationEl.innerHTML = '<div style="color: #666; font-style: italic; padding: 10px; background: #f5f5f5; border-radius: 6px;">🤔 Generating detailed feedback with examples...</div>';
+          explanationEl.innerHTML =
+            `<div style="background:#fff7ed;border-left:4px solid #f59e0b;padding:16px 20px;border-radius:8px;margin:10px 0;line-height:1.7;color:#1e293b;">
+               ${getErrorExplanation(userAnswer, correctAnswer, currentVerb, currentVerb.form)}
+             </div>
+             <div id="ai-pending" style="color:#94a3b8;font-size:0.85rem;margin-top:6px;">
+               ${ct('ai_thinking', 'Conju is writing a fuller explanation…')}
+             </div>`;
           explanationEl.style.display = 'block';
           
           // Store context for "Show More Examples" button
@@ -3644,7 +3977,9 @@ function generateNewQuestion() {
           
           console.log('📝 Requesting AI feedback for:', verbInfo, formName);
           
+          const feedbackToken = questionSerial;
           getEnhancedAIFeedback(verbInfo, formName, userAnswer, correctAnswer, verbType, verbHiragana).then(aiFeedback => {
+            if (feedbackToken !== questionSerial) return;   // learner already moved on
             let explanation;
             
             if (aiFeedback) {
@@ -3658,30 +3993,36 @@ function generateNewQuestion() {
               // Show "More Examples" button
               document.getElementById('more-examples-btn').style.display = 'inline-block';
             } else {
-              // Fall back to original explanation
-              console.log('⚠️ AI not available, using fallback');
-              explanation = getErrorExplanation(userAnswer, correctAnswer, currentVerb, currentVerb.form);
-              
-              // Hide "More Examples" button
+              // The rule-based explanation is already on screen; keep it and
+              // just clear the "still writing" line.
+              console.log('⚠️ AI not available, keeping rule-based explanation');
               document.getElementById('more-examples-btn').style.display = 'none';
+              explanation = null;
             }
-            
+
+            const pending = document.getElementById('ai-pending');
+            if (pending) pending.remove();
+
             // After 2-3 failures, show a worked example
-            if (consecutiveFailures >= 2 && Math.random() < 0.7) {
-              explanation += generateWorkedExample(currentVerb, currentVerb.form);
+            const worked = (consecutiveFailures >= 2 && Math.random() < 0.7)
+              ? generateWorkedExample(currentVerb, currentVerb.form) : '';
+
+            if (explanation) {
+              explanationEl.innerHTML = explanation + worked;
+            } else if (worked) {
+              explanationEl.insertAdjacentHTML('beforeend', worked);
             }
-            
-            explanationEl.innerHTML = explanation;
           }).catch(error => {
-            // If AI fails completely, use original explanation
+            // If AI fails completely, the rule-based explanation is already
+            // on screen — just drop the "still writing" line.
             console.error('❌ AI feedback error:', error);
-            let explanation = getErrorExplanation(userAnswer, correctAnswer, currentVerb, currentVerb.form);
-            
+            if (feedbackToken !== questionSerial) return;
+            const pending = document.getElementById('ai-pending');
+            if (pending) pending.remove();
+
             if (consecutiveFailures >= 2 && Math.random() < 0.7) {
-              explanation += generateWorkedExample(currentVerb, currentVerb.form);
+              explanationEl.insertAdjacentHTML('beforeend', generateWorkedExample(currentVerb, currentVerb.form));
             }
-            
-            explanationEl.innerHTML = explanation;
             document.getElementById('more-examples-btn').style.display = 'none';
           });
         }
@@ -3695,10 +4036,107 @@ function generateNewQuestion() {
         checkAnswer();
       }
     }
+
+    // Once an answer has been checked the input is disabled, so Enter can't
+    // reach it any more — listen at the document instead. This is what lets
+    // you answer → Enter → answer → Enter without touching the mouse.
+    if (document.getElementById('page-conjugator')) {
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || !showAnswer) return;
+        // Don't hijack Enter while a dialog or the report modal is open.
+        const modal = document.getElementById('mistake-report-modal');
+        if (modal && modal.classList.contains('active')) return;
+        const summary = document.getElementById('session-summary');
+        if (summary && summary.style.display === 'block') return;
+        if (typeof conjInfoOpen === 'function' && conjInfoOpen()) return;
+        const nextBtn = document.getElementById('next-btn');
+        if (!nextBtn || nextBtn.style.display === 'none') return;
+        e.preventDefault();
+        generateNewQuestion();
+      });
+    }
     
+    // ---- Session summary ---------------------------------------------------
+    function formLabel(key) {
+      const f = forms.find(function (x) { return x.key === key; });
+      return f ? f.name : key;
+    }
+
+    function statTile(value, label) {
+      return '<div class="summary-tile"><div class="summary-value">' + value +
+             '</div><div class="summary-label">' + label + '</div></div>';
+    }
+
+    function setQuestionAreaVisible(visible) {
+      const area = document.getElementById('question-area');
+      if (area) area.style.display = visible ? 'block' : 'none';
+    }
+
+    function showSessionSummary() {
+      const panel = document.getElementById('session-summary');
+      if (!panel) return;
+
+      const answered = session.answered;
+      const skipped = session.skipped;
+      const scored = Math.max(answered - skipped, 0);
+      // With nothing scored (a round of pure "show me"), a 0% is misleading.
+      const pct = scored ? Math.round((session.correct / scored) * 100) : null;
+
+      // Which form cost the most this session?
+      let worstForm = null, worstCount = 0;
+      Object.keys(session.formMisses).forEach(function (k) {
+        if (session.formMisses[k] > worstCount) { worstCount = session.formMisses[k]; worstForm = k; }
+      });
+
+      const openWeak = Object.keys(weakSpots).length;
+
+      let html = '<div class="summary-head">' + ct('sess_done', 'Session complete') + '</div>';
+      html += '<div class="summary-grid">';
+      html += statTile(pct === null ? '—' : pct + '%', ct('sess_accuracy', 'Accuracy'));
+      html += statTile(session.correct + ' / ' + scored, ct('sess_correct', 'Correct'));
+      html += statTile(String(bestStreak), ct('sess_best_streak', 'Best streak'));
+      if (skipped) html += statTile(String(skipped), ct('sess_skipped', 'Answers shown'));
+      html += '</div>';
+
+      if (worstForm) {
+        html += '<div class="summary-note">' + ct('sess_weakest', 'Most missed this session:') +
+                ' <strong>' + formLabel(worstForm) + '</strong> (' + worstCount + ')</div>';
+      }
+      html += '<div class="summary-note">' +
+              (openWeak
+                ? ct('sess_queue', 'Queued to come back around:') + ' <strong>' + openWeak + '</strong>'
+                : ct('sess_queue_clear', 'Nothing outstanding — your review queue is clear.')) +
+              '</div>';
+      html += '<div class="summary-actions">' +
+              '<button class="check-btn primary" style="margin:0;" onclick="continueSession()">' +
+                ct('sess_again', 'Another round →') + '</button>' +
+              '<button class="skip-btn" style="margin:0;" onclick="showMistakeReport()">' +
+                ct('view_report', '📊 View Report') + '</button>' +
+              '</div>';
+
+      panel.innerHTML = html;
+      panel.style.display = 'block';
+      setQuestionAreaVisible(false);
+      showAnswer = true;   // keep Enter from jumping to a new question
+    }
+
+    function continueSession() {
+      session = { answered: 0, correct: 0, skipped: 0, formMisses: {} };
+      const panel = document.getElementById('session-summary');
+      if (panel) { panel.style.display = 'none'; panel.innerHTML = ''; }
+      setQuestionAreaVisible(true);
+      updateScoreDisplay();
+      generateNewQuestion();
+    }
+
     function skipQuestion() {
-      // Track skipped questions
+      // Track skipped questions. Skipping has never counted against your
+      // score — it just breaks the streak and shows you the answer.
       stats.skipped++;
+      session.skipped++;
+      session.answered++;
+      streak = 0;
+      updateScoreDisplay();
       
       // Get correct answer - check if this is a type identification quiz
       let correctAnswer;
@@ -3733,12 +4171,149 @@ function generateNewQuestion() {
       showAnswer = true;
     }
 
-    // Enable/disable check button based on input
+    // Enable/disable check button based on input, and convert romaji to kana
+    // as it's typed so the Conjugator works without a Japanese IME.
     var answerInputEl = document.getElementById('answer-input');
     if (answerInputEl) {
       answerInputEl.addEventListener('input', function() {
+        // The verb-type quiz wants Latin words ("godan"), so leave it alone.
+        // An IME composing text must also be left alone until it commits.
+        if (!isTypeIdentificationQuiz && !this.dataset.composing && romajiInputEnabled()) {
+          var atEnd = this.selectionStart === this.value.length;
+          // Only rewrite while typing at the end — never while editing the
+          // middle of the string, where moving the caret would be maddening.
+          if (atEnd) {
+            var converted = romajiToKana(this.value, false);
+            if (converted !== this.value) {
+              this.value = converted;
+              this.setSelectionRange(converted.length, converted.length);
+            }
+          }
+        }
         document.getElementById('check-btn').disabled = this.value.trim() === '';
       });
+      answerInputEl.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
+      answerInputEl.addEventListener('compositionend', function () { delete this.dataset.composing; });
+    }
+
+    function toggleRomajiInput() {
+      setRomajiInput(!romajiInputEnabled());
+      paintRomajiToggle();
+      const el = document.getElementById('answer-input');
+      if (el && !el.disabled) el.focus();
+    }
+
+    function paintRomajiToggle() {
+      const btn = document.getElementById('romaji-toggle');
+      if (!btn) return;
+      const on = romajiInputEnabled();
+      btn.textContent = on ? 'あ' : 'A';
+      btn.classList.toggle('off', !on);
+      btn.title = (on
+        ? ct('romaji_on_title', 'Romaji typing is on — type ikanai, get いかない. Click to turn off.')
+        : ct('romaji_off_title', 'Romaji typing is off — type with your own Japanese keyboard. Click to turn on.'))
+        + '  (Alt+R)';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+
+    function setTypeQuiz(on) {
+      try { localStorage.setItem('katsuyo-type-quiz', on ? 'on' : 'off'); } catch (e) {}
+    }
+
+    // ---- Shortcuts & options dialog ---------------------------------------
+    // Same ⓘ chip and overlay the Kana Drill uses, so the two pages explain
+    // themselves the same way.
+    function conjInfoRows() {
+      const rows = (typeof I18N !== 'undefined' && I18N[LANG] && I18N[LANG].conj_info_rows)
+        || (typeof I18N !== 'undefined' && I18N.en && I18N.en.conj_info_rows);
+      return Array.isArray(rows) ? rows : [];
+    }
+
+    function openConjInfo() {
+      const box = document.getElementById('conj-info-content');
+      if (!box) return;
+      document.getElementById('conj-info-title').textContent =
+        ct('conj_info_title', 'Shortcuts & options');
+      document.getElementById('conj-info-sub').textContent =
+        ct('conj_info_sub', 'Keyboard shortcuts and what the controls on this page do.');
+      box.innerHTML = '';
+      conjInfoRows().forEach(function (row) {
+        const r = document.createElement('div');
+        r.className = 'info-row';
+        const k = document.createElement('div');
+        k.className = 'info-keys';
+        k.textContent = row[0];
+        const d = document.createElement('div');
+        d.className = 'info-desc';
+        d.textContent = row[1];
+        r.appendChild(k); r.appendChild(d);
+        box.appendChild(r);
+      });
+      document.getElementById('conj-info-overlay').classList.add('show');
+    }
+
+    function closeConjInfo() {
+      const o = document.getElementById('conj-info-overlay');
+      if (o) o.classList.remove('show');
+    }
+
+    function conjInfoOpen() {
+      const o = document.getElementById('conj-info-overlay');
+      return !!(o && o.classList.contains('show'));
+    }
+
+    if (document.getElementById('page-conjugator')) {
+      // Close on click outside the card
+      const infoOverlay = document.getElementById('conj-info-overlay');
+      if (infoOverlay) {
+        infoOverlay.addEventListener('click', function (e) {
+          if (e.target === this) closeConjInfo();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && conjInfoOpen()) { closeConjInfo(); return; }
+        if (!e.altKey || e.ctrlKey || e.metaKey) return;
+
+        const key = (e.key || '').toLowerCase();
+        if (key === 'i') {
+          e.preventDefault();
+          conjInfoOpen() ? closeConjInfo() : openConjInfo();
+          return;
+        }
+        if (conjInfoOpen()) return;   // the rest are for the question, not the dialog
+
+        if (key === 'r') {
+          e.preventDefault();
+          toggleRomajiInput();
+          showToast(romajiInputEnabled()
+            ? ct('romaji_toast_on', 'Romaji typing on — ikanai → いかない')
+            : ct('romaji_toast_off', 'Romaji typing off — use your own Japanese keyboard'), 'success');
+        } else if (key === 'h') {
+          e.preventDefault();
+          if (typeof toggleHint === 'function' && !showAnswer) toggleHint();
+        } else if (key === 's') {
+          e.preventDefault();
+          const skipBtn = document.getElementById('skip-btn');
+          if (skipBtn && skipBtn.style.display !== 'none' && !showAnswer) skipQuestion();
+        }
+      });
+    }
+
+    // Learners with a real Japanese IME can switch the helper off.
+    function romajiInputEnabled() {
+      try { return localStorage.getItem('katsuyo-romaji-input') !== 'off'; }
+      catch (e) { return true; }
+    }
+
+    function setRomajiInput(on) {
+      try { localStorage.setItem('katsuyo-romaji-input', on ? 'on' : 'off'); } catch (e) {}
+      var el = document.getElementById('answer-input');
+      if (el) {
+        el.placeholder = on
+          ? ct('answer_placeholder_romaji', 'Type romaji or kana — ikanai → いかない')
+          : ct('answer_placeholder_kana', 'ひらがなで入力...');
+      }
     }
 
     // ============ VERB LIST FUNCTIONS ============
@@ -5478,9 +6053,33 @@ function generateNewQuestion() {
       populateVerbLists();
     }
     if (document.getElementById('page-conjugator')) {
-      updateScoreDisplay(); // Load saved stats
+      loadProgress();       // weak spots, mistake log and best streak
+      restoreConjugatorOptions();
+      updateScoreDisplay();
       updateReportButton();
       generateNewQuestion();
+    }
+
+    // Put the practice options back the way the learner left them.
+    function restoreConjugatorOptions() {
+      paintRomajiToggle();
+      setRomajiInput(romajiInputEnabled());   // also sets the right placeholder
+      const quiz = document.getElementById('type-quiz-toggle');
+      if (quiz) {
+        let saved = 'on';
+        try { saved = localStorage.getItem('katsuyo-type-quiz') || 'on'; } catch (e) {}
+        quiz.checked = saved !== 'off';
+      }
+      const goal = document.getElementById('session-goal');
+      if (goal) {
+        try {
+          const saved = localStorage.getItem('katsuyo-session-goal');
+          if (saved !== null) goal.value = saved;
+        } catch (e) {}
+        goal.addEventListener('change', function () {
+          try { localStorage.setItem('katsuyo-session-goal', this.value); } catch (e) {}
+        });
+      }
     }
     
     // Back to top button

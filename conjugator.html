@@ -72,6 +72,10 @@
           <button type="button" id="reset-stats-btn" class="reset-btn" title="Reset score" onclick="resetScoreNow()" style="padding: 0.75rem 1rem; font-size: 0.85rem;" data-i18n="reset_short">
             ↺ Reset
           </button>
+          <div id="streak-box" class="score-box streak-box" title="Answers right in a row">
+            <div class="score-label" data-i18n="streak">Streak</div>
+            <div class="score-value">🔥 <span id="streak-value">0</span> <span class="streak-best-wrap">(<span data-i18n="best_short">best</span> <span id="streak-best">0</span>)</span></div>
+          </div>
           <div class="score-box">
             <div class="score-label" data-i18n="score">Score</div>
             <div class="score-value"><span id="score-correct">0</span> / <span id="score-total">0</span></div>
@@ -121,14 +125,44 @@
           <option value="N3" data-i18n="jlpt_n3">N3 Only</option>
           <option value="N5-N4" data-i18n="jlpt_n54">N5 + N4</option>
         </select>
+
+        <!-- Session goal -->
+        <select id="session-goal" class="form-select" onchange="continueSession()" style="flex: 1; min-width: 155px; margin-bottom: 0;" title="How many questions in a round">
+          <option value="10" data-i18n="goal_10">Round of 10</option>
+          <option value="20" data-i18n="goal_20">Round of 20</option>
+          <option value="50" data-i18n="goal_50">Round of 50</option>
+          <option value="0" data-i18n="goal_none">No limit</option>
+        </select>
       </div>
 
+      <!-- Practice options -->
+      <div class="practice-options">
+        <label class="opt-toggle">
+          <input type="checkbox" id="type-quiz-toggle" checked onchange="setTypeQuiz(this.checked)">
+          <span data-i18n="opt_type_quiz">Include "what type is this verb?" questions</span>
+        </label>
+        <span class="options-right">
+          <span id="session-progress" class="session-progress">0 / 10</span>
+          <button type="button" class="drill-chip info-chip" id="conj-info-chip" onclick="openConjInfo()"
+                  aria-label="Shortcuts and options" title="Shortcuts and options (Alt+I)">i</button>
+        </span>
+      </div>
+
+      <!-- Session summary (shown when a round finishes) -->
+      <div id="session-summary" class="session-summary" style="display: none;"></div>
+
+      <div id="question-area">
       <div class="verb-display">
         <div id="verb-type" class="verb-type">Godan Verb</div>
         <div id="verb-kanji" class="verb-kanji jp">行く</div>
         <div class="verb-info">
           <span id="verb-hiragana" class="jp">いく</span> — <span id="verb-meaning">to go</span>
         </div>
+      </div>
+
+      <div class="question-badges">
+        <span id="review-badge" class="q-badge review" style="display: none;" data-i18n="badge_review">🔁 Review — you missed this one before</span>
+        <span id="type-quiz-badge" class="q-badge quiz" style="display: none;" data-i18n="badge_type_quiz">🧭 Verb-type question</span>
       </div>
 
       <div class="prompt-row">
@@ -145,13 +179,22 @@
         <div id="hint-content"></div>
       </div>
 
-      <input 
-        type="text"
-        id="answer-input"
-        class="answer-input jp"
-        placeholder="ひらがなで入力..."
-        onkeypress="handleKeyPress(event)"
-      >
+      <div class="answer-row">
+        <input
+          type="text"
+          id="answer-input"
+          class="answer-input jp"
+          placeholder="Type romaji or kana — ikanai → いかない"
+          data-i18n-placeholder="answer_placeholder_romaji"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+          onkeypress="handleKeyPress(event)"
+        >
+        <button type="button" id="romaji-toggle" class="romaji-toggle" onclick="toggleRomajiInput()"
+                title="Romaji typing: type ikanai, get いかない">あ</button>
+      </div>
 
       <div id="feedback-warning" class="feedback warning">
         <div class="feedback-title" data-i18n="warn_try_again">⚠️ Not quite — try again!</div>
@@ -168,8 +211,20 @@
       </div>
 
       <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled data-i18n="check">Check Answer</button>
-      <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="skip">Skip (show answer)</button>
+      <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="skip">Show me the answer (no penalty)</button>
       <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="next">Next Question →</button>
+      <div class="kbd-hint" data-i18n-html="kbd_hint">Press <kbd>Enter</kbd> to check, then <kbd>Enter</kbd> again for the next question.</div>
+      </div><!-- /#question-area -->
+    </div>
+  </div>
+
+  <!-- SHORTCUTS & OPTIONS MODAL -->
+  <div id="conj-info-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="conj-info-title">
+    <div class="cheat-box" style="max-width: 500px;">
+      <button class="cheat-close" onclick="closeConjInfo()" aria-label="Close">×</button>
+      <h2 class="cheat-title" id="conj-info-title"></h2>
+      <div class="cheat-hint" id="conj-info-sub"></div>
+      <div id="conj-info-content"></div>
     </div>
   </div>
 

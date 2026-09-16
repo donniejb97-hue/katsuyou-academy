@@ -1329,3 +1329,285 @@ a.nav-link {
 .nav-link[data-page="kanji-drill"] {
   display: none !important;
 }
+
+    /* ====================================================================
+       CONJUGATOR — practice options, streak, badges, session summary
+       ==================================================================== */
+
+    /* Streak counter, sits beside the score */
+    .streak-box .score-value {
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .streak-box.hot .score-value {
+      color: var(--accent);
+    }
+    .streak-best-wrap {
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: var(--text-light);
+    }
+
+    /* Row of practice toggles under the filters */
+    .practice-options {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: -0.5rem 0 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+    .opt-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .opt-toggle input {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--sage);
+      cursor: pointer;
+    }
+    .session-progress {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.05em;
+      color: var(--text-light);
+    }
+
+    /* Badges above the prompt */
+    .question-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+      min-height: 0;
+    }
+    .q-badge {
+      display: inline-block;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .q-badge.review {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
+    }
+    .q-badge.quiz {
+      background: #e0f2fe;
+      color: #075985;
+      border: 1px solid #7dd3fc;
+    }
+
+    /* Answer row with the romaji toggle */
+    .answer-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .answer-row .answer-input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+    .romaji-toggle {
+      flex: 0 0 auto;
+      width: 3.25rem;
+      border: 2px solid var(--sage);
+      background: var(--sage);
+      color: #fff;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .romaji-toggle:hover {
+      filter: brightness(1.08);
+    }
+    .romaji-toggle.off {
+      background: transparent;
+      color: var(--text-light);
+      border-color: rgba(0,0,0,0.15);
+    }
+
+    /* Keyboard hint under the buttons */
+    .kbd-hint {
+      margin-top: 0.85rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-light);
+    }
+    .kbd-hint kbd {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      padding: 0.1rem 0.4rem;
+      border: 1px solid rgba(0,0,0,0.18);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      background: var(--paper-warm);
+      color: var(--text);
+    }
+
+    /* End-of-round summary */
+    .session-summary {
+      background: var(--paper-warm);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-top: 3px solid var(--sage);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .summary-head {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    .summary-grid {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.25rem 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .summary-tile {
+      min-width: 5.5rem;
+    }
+    .summary-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--sage);
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+    .summary-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+    }
+    .summary-note {
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .summary-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .summary-actions .check-btn,
+    .summary-actions .skip-btn {
+      width: auto;
+      min-width: 12rem;
+    }
+
+    @media (max-width: 768px) {
+      .practice-options {
+        justify-content: flex-start;
+      }
+      /* No physical Enter key to talk about on a phone. */
+      .kbd-hint {
+        display: none;
+      }
+      .summary-grid {
+        gap: 1.25rem 1.75rem;
+      }
+      .summary-actions .check-btn,
+      .summary-actions .skip-btn {
+        width: 100%;
+      }
+    }
+
+    /* Shortcuts & options dialog — same pattern as the Kana Drill's ⓘ */
+    .cheat-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .cheat-overlay.show { display: flex; }
+    .cheat-box {
+      position: relative;
+      background: var(--paper);
+      border-radius: 10px;
+      padding: 1.6rem 1.75rem;
+      max-height: 85vh;
+      overflow-y: auto;
+      width: 100%;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+    .cheat-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.9rem;
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--text-light);
+      padding: 0.25rem;
+    }
+    .cheat-close:hover { color: var(--accent); }
+    .cheat-title { font-size: 1.3rem; color: var(--ink); margin-bottom: 0.25rem; }
+    .cheat-hint { font-size: 0.8rem; color: var(--text-light); margin-bottom: 1.25rem; }
+
+    .info-row {
+      display: flex;
+      gap: 0.9rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-keys {
+      flex: 0 0 116px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--ink);
+    }
+    .info-desc { font-size: 0.9rem; color: var(--text); line-height: 1.55; }
+
+    .drill-chip.info-chip {
+      width: 2.15rem;
+      height: 2.15rem;
+      padding: 0;
+      border: 1.5px solid rgba(0,0,0,0.14);
+      border-radius: 50%;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-style: italic;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .drill-chip.info-chip:hover { color: var(--accent); border-color: var(--accent-soft); }
+
+    .options-right {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .info-row { flex-direction: column; gap: 0.15rem; }
+      .info-keys { flex: none; }
+    }
