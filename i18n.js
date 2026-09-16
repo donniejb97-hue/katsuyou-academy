@@ -4,8 +4,8 @@
 // ============================================================
 var I18N = {
   en: {
-    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_forms:'Forms', nav_verbs:'Verbs',
-    nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill',
+    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
+    nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk',
     nav_dates:'Dates', nav_vocab:'Vocabulary', nav_kanji:'Kanji', nav_contact:'Contact',
     page_tag:'Interactive Practice', page_title:'Kana Drill',
     score:'Score', streak:'Streak', best:'Best',
@@ -107,11 +107,46 @@ var I18N = {
     f_caus_pass:'Causative-Passive (させられる)',
     jlpt_all:'All Levels', jlpt_n5:'N5 Only', jlpt_n4:'N4 Only', jlpt_n3:'N3 Only', jlpt_n54:'N5 + N4',
     show_hint:'💡 Show hint', hint_label:'💡 Hint',
-    warn_try_again:'⚠️ Not quite — try again!', more_examples:'📚 Show More Examples'
+    warn_try_again:'⚠️ Not quite — try again!', more_examples:'📚 Show More Examples',
+    talk_title:'Talk with Katsu',
+    talk_intro:'Have a real back-and-forth in Japanese. Pick how you want to practice, chat with Katsu for as long as you like, then stop any time to get an assessment of how you did.',
+    talk_step1:'1. Choose a practice mode', talk_step2:'2. Set the details',
+    talk_mode_scenario_t:'Scenario Roleplay', talk_mode_scenario_d:'Katsu plays a character — order food, ask directions, check into a hotel.',
+    talk_mode_freechat_t:'Free Chat', talk_mode_freechat_d:'Open conversation at your level, about whatever you like.',
+    talk_mode_grammar_t:'Grammar-Targeted', talk_mode_grammar_d:'Katsu steers the conversation to draw out one specific form.',
+    talk_scenario:'Scenario', talk_level:'Level', talk_form:'Form',
+    talk_pick_mode_hint:'Pick a mode above to see its options.',
+    talk_start:'Start Conversation', talk_stop:'Stop',
+    talk_placeholder:'Type your reply in Japanese (or ask Katsu for help)…', talk_send:'Send',
+    talk_correction_hint:'Katsu stays in character, and adds a short correction note when you make a mistake. Change how Japanese is shown any time — it re-renders instantly.',
+    talk_show:'Show', talk_english:'English', talk_correction:'Correction',
+    talk_scenario_custom:'✏️ Custom…', talk_custom:'Describe',
+    talk_custom_placeholder:"e.g. returning a shirt that doesn't fit, at a department store",
+    talk_ended:'That wraps up this situation. Would you like to keep the conversation going?',
+    talk_keep_going:'Keep going', talk_continuing:'— continuing —',
+    talk_script_furigana:'Furigana', talk_script_kanji:'Kanji', talk_script_kana:'Kana', talk_script_romaji:'Rōmaji',
+    talk_stop_title:'Stop this conversation?', talk_stop_body:'You can get an assessment of this session, or just pick a different practice mode.',
+    talk_get_assessment:'Get Assessment', talk_choose_different:'Choose Different Practice', talk_keep_talking:'Keep Talking',
+    talk_assessment_title:'📊 Session Assessment',
+    talk_download:'⬇ Download', talk_you:'You',
+    talk_assess_loading:'putting your report together…',
+    talk_assess_empty:'Not enough of a conversation yet to assess — say something first!',
+    talk_assess_failed:'Couldn\u2019t generate an assessment right now — please try again in a moment.',
+    talk_assess_summary:'Summary', talk_assess_well:'What you did well', talk_assess_improve:'What to work on',
+    talk_assess_words:'Words & phrases to remember', talk_assess_next:'Next step',
+    talk_assess_transcript:'Full conversation', talk_report_title:'Conversation Report',
+    sensei_placeholder:'How do I say… in Japanese?', sensei_send:'Ask',
+    sensei_greeting:'こんにちは！(Konnichiwa!) I’m Katsu. Ask me how to say something in Japanese, or any grammar question. 何でも聞いてください！(Nandemo kiite kudasai! — Ask me anything!)',
+    sensei_error:'すみません (Sumimasen) — I couldn’t reach the server.', sensei_retry:'↻ Try again',
+    sensei_proactive_label:'Let Katsu check in when I seem stuck', sensei_clear_history:'🗑 Clear chat',
+    sensei_review_btn:'📝 Go over my last mistakes',
+    sensei_review_q:'What did I just get wrong, and why? Explain it simply.',
+    sensei_nudge_1:'Looks like this one’s tricky — want a hint? 💡',
+    sensei_nudge_2:'I noticed a few misses in a row — I’m here if you want to talk it through!'
   },
   de: {
-    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_forms:'Formen', nav_verbs:'Verben',
-    nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill',
+    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
+    nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch',
     nav_dates:'Datum', nav_vocab:'Vokabeln', nav_kanji:'Kanji', nav_contact:'Kontakt',
     page_tag:'Interaktive Übung', page_title:'Kana-Drill',
     score:'Punkte', streak:'Serie', best:'Rekord',
@@ -204,11 +239,46 @@ var I18N = {
     f_caus_pass:'Kausativ-Passiv (させられる)',
     jlpt_all:'Alle Stufen', jlpt_n5:'Nur N5', jlpt_n4:'Nur N4', jlpt_n3:'Nur N3', jlpt_n54:'N5 + N4',
     show_hint:'💡 Hinweis zeigen', hint_label:'💡 Hinweis',
-    warn_try_again:'⚠️ Nicht ganz — versuchen Sie es noch einmal!', more_examples:'📚 Mehr Beispiele zeigen'
+    warn_try_again:'⚠️ Nicht ganz — versuchen Sie es noch einmal!', more_examples:'📚 Mehr Beispiele zeigen',
+    talk_title:'Gespräch mit Katsu',
+    talk_intro:'Führen Sie ein echtes Hin und Her auf Japanisch. Wählen Sie, wie Sie üben möchten, unterhalten Sie sich so lange Sie wollen mit Katsu und beenden Sie das Gespräch jederzeit, um eine Auswertung zu erhalten.',
+    talk_step1:'1. Übungsmodus wählen', talk_step2:'2. Details festlegen',
+    talk_mode_scenario_t:'Rollenspiel-Szenario', talk_mode_scenario_d:'Katsu spielt eine Rolle — bestellen Sie Essen, fragen Sie nach dem Weg, checken Sie in ein Hotel ein.',
+    talk_mode_freechat_t:'Freies Gespräch', talk_mode_freechat_d:'Offenes Gespräch auf Ihrem Niveau, über alles, was Sie möchten.',
+    talk_mode_grammar_t:'Grammatik-Fokus', talk_mode_grammar_d:'Katsu lenkt das Gespräch so, dass eine bestimmte Form gezielt geübt wird.',
+    talk_scenario:'Szenario', talk_level:'Niveau', talk_form:'Form',
+    talk_pick_mode_hint:'Klicken Sie oben einen Modus an, um die Optionen zu sehen.',
+    talk_start:'Gespräch starten', talk_stop:'Beenden',
+    talk_placeholder:'Antworten Sie auf Japanisch (oder bitten Sie Katsu um Hilfe)…', talk_send:'Senden',
+    talk_correction_hint:'Katsu bleibt in seiner Rolle und fügt bei Fehlern einen kurzen Korrekturhinweis hinzu. Sie können die Darstellung des Japanischen jederzeit ändern — sie wird sofort neu aufgebaut.',
+    talk_show:'Anzeige', talk_english:'Englisch', talk_correction:'Korrektur',
+    talk_scenario_custom:'✏️ Eigenes…', talk_custom:'Beschreiben',
+    talk_custom_placeholder:'z. B. ein Hemd im Kaufhaus umtauschen, das nicht passt',
+    talk_ended:'Damit ist diese Situation abgeschlossen. Möchten Sie das Gespräch fortsetzen?',
+    talk_keep_going:'Weitermachen', talk_continuing:'— es geht weiter —',
+    talk_script_furigana:'Furigana', talk_script_kanji:'Kanji', talk_script_kana:'Kana', talk_script_romaji:'Rōmaji',
+    talk_stop_title:'Dieses Gespräch beenden?', talk_stop_body:'Sie können eine Auswertung dieser Sitzung erhalten oder einfach einen anderen Übungsmodus wählen.',
+    talk_get_assessment:'Auswertung anzeigen', talk_choose_different:'Anderen Modus wählen', talk_keep_talking:'Weiter üben',
+    talk_assessment_title:'📊 Auswertung der Sitzung',
+    talk_download:'⬇ Herunterladen', talk_you:'Sie',
+    talk_assess_loading:'Ihr Bericht wird erstellt…',
+    talk_assess_empty:'Für eine Auswertung ist das Gespräch noch zu kurz — sagen Sie zuerst etwas!',
+    talk_assess_failed:'Die Auswertung konnte gerade nicht erstellt werden — bitte versuchen Sie es gleich noch einmal.',
+    talk_assess_summary:'Zusammenfassung', talk_assess_well:'Das haben Sie gut gemacht', talk_assess_improve:'Daran können Sie arbeiten',
+    talk_assess_words:'Wörter & Wendungen zum Merken', talk_assess_next:'Nächster Schritt',
+    talk_assess_transcript:'Das ganze Gespräch', talk_report_title:'Gesprächsbericht',
+    sensei_placeholder:'Wie sagt man … auf Japanisch?', sensei_send:'Fragen',
+    sensei_greeting:'こんにちは！(Konnichiwa!) Ich bin Katsu. Fragen Sie mich, wie man etwas auf Japanisch sagt, oder stellen Sie eine Grammatikfrage. 何でも聞いてください！(Nandemo kiite kudasai — fragen Sie mich einfach alles!)',
+    sensei_error:'すみません (Sumimasen) — Der Server war nicht erreichbar.', sensei_retry:'↻ Erneut versuchen',
+    sensei_proactive_label:'Katsu darf sich melden, wenn ich offenbar nicht weiterkomme', sensei_clear_history:'🗑 Chat löschen',
+    sensei_review_btn:'📝 Meine letzten Fehler durchgehen',
+    sensei_review_q:'Was habe ich gerade falsch gemacht, und warum? Bitte einfach erklären.',
+    sensei_nudge_1:'Das scheint kniffelig zu sein — möchten Sie einen Hinweis? 💡',
+    sensei_nudge_2:'Mir ist aufgefallen, dass es gerade ein paar Fehler gab — ich bin da, falls Sie reden möchten!'
   },
   fr: {
-    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_forms:'Formes', nav_verbs:'Verbes',
-    nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji',
+    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
+    nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Discussion',
     nav_dates:'Dates', nav_vocab:'Vocabulaire', nav_kanji:'Kanji', nav_contact:'Contact',
     page_tag:'Entraînement interactif', page_title:'Drill Kana',
     score:'Score', streak:'Série', best:'Record',
@@ -301,11 +371,46 @@ var I18N = {
     f_caus_pass:'Causatif-passif (させられる)',
     jlpt_all:'Tous les niveaux', jlpt_n5:'N5 seulement', jlpt_n4:'N4 seulement', jlpt_n3:'N3 seulement', jlpt_n54:'N5 + N4',
     show_hint:"💡 Afficher l'indice", hint_label:'💡 Indice',
-    warn_try_again:'⚠️ Pas tout à fait — réessayez !', more_examples:"📚 Plus d'exemples"
+    warn_try_again:'⚠️ Pas tout à fait — réessayez !', more_examples:"📚 Plus d'exemples",
+    talk_title:'Discuter avec Katsu',
+    talk_intro:"Ayez un véritable échange en japonais. Choisissez votre mode de pratique, discutez avec Katsu aussi longtemps que vous le souhaitez, puis arrêtez à tout moment pour obtenir une évaluation.",
+    talk_step1:'1. Choisissez un mode de pratique', talk_step2:'2. Précisez les détails',
+    talk_mode_scenario_t:'Jeu de rôle', talk_mode_scenario_d:"Katsu joue un personnage — commandez à manger, demandez votre chemin, enregistrez-vous à l'hôtel.",
+    talk_mode_freechat_t:'Discussion libre', talk_mode_freechat_d:'Conversation ouverte à votre niveau, sur le sujet de votre choix.',
+    talk_mode_grammar_t:'Grammaire ciblée', talk_mode_grammar_d:'Katsu oriente la conversation pour faire ressortir une forme grammaticale précise.',
+    talk_scenario:'Scénario', talk_level:'Niveau', talk_form:'Forme',
+    talk_pick_mode_hint:'Choisissez un mode ci-dessus pour voir ses options.',
+    talk_start:'Démarrer la conversation', talk_stop:'Arrêter',
+    talk_placeholder:"Répondez en japonais (ou demandez de l'aide à Katsu)…", talk_send:'Envoyer',
+    talk_correction_hint:"Katsu reste dans son rôle et ajoute une brève note de correction en cas d'erreur. Vous pouvez changer l'affichage du japonais à tout moment — le rendu est instantané.",
+    talk_show:'Afficher', talk_english:'Anglais', talk_correction:'Correction',
+    talk_scenario_custom:'✏️ Personnalisé…', talk_custom:'Décrivez',
+    talk_custom_placeholder:'ex. rapporter une chemise qui ne va pas, dans un grand magasin',
+    talk_ended:'Cette situation est terminée. Voulez-vous poursuivre la conversation ?',
+    talk_keep_going:'Continuer', talk_continuing:'— la suite —',
+    talk_script_furigana:'Furigana', talk_script_kanji:'Kanji', talk_script_kana:'Kana', talk_script_romaji:'Rōmaji',
+    talk_stop_title:'Arrêter cette conversation ?', talk_stop_body:'Vous pouvez obtenir une évaluation de cette session, ou simplement choisir un autre mode de pratique.',
+    talk_get_assessment:'Obtenir une évaluation', talk_choose_different:'Choisir un autre mode', talk_keep_talking:'Continuer à discuter',
+    talk_assessment_title:'📊 Évaluation de la session',
+    talk_download:'⬇ Télécharger', talk_you:'Vous',
+    talk_assess_loading:'préparation de votre rapport…',
+    talk_assess_empty:"La conversation est encore trop courte pour être évaluée — dites d'abord quelque chose !",
+    talk_assess_failed:"Impossible de générer l'évaluation pour le moment — réessayez dans un instant.",
+    talk_assess_summary:'Résumé', talk_assess_well:'Ce que vous avez bien fait', talk_assess_improve:'À travailler',
+    talk_assess_words:'Mots et expressions à retenir', talk_assess_next:'Prochaine étape',
+    talk_assess_transcript:'Conversation complète', talk_report_title:'Rapport de conversation',
+    sensei_placeholder:'Comment dit-on … en japonais ?', sensei_send:'Demander',
+    sensei_greeting:"こんにちは！(Konnichiwa !) Je suis Katsu. Demandez-moi comment dire quelque chose en japonais, ou posez une question de grammaire. 何でも聞いてください！(Nandemo kiite kudasai — n'hésitez pas à tout me demander !)",
+    sensei_error:'すみません (Sumimasen) — impossible de joindre le serveur.', sensei_retry:'↻ Réessayer',
+    sensei_proactive_label:'Laisser Katsu intervenir si je semble bloqué(e)', sensei_clear_history:'🗑 Effacer la discussion',
+    sensei_review_btn:'📝 Revoir mes dernières erreurs',
+    sensei_review_q:"Qu'est-ce que je viens de rater, et pourquoi ? Explique-le simplement.",
+    sensei_nudge_1:"Ça a l'air corsé — vous voulez un indice ? 💡",
+    sensei_nudge_2:"J'ai remarqué plusieurs erreurs d'affilée — je suis là si vous voulez en discuter !"
   },
   zh: {
-    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_forms:'形式', nav_verbs:'动词',
-    nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习',
+    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
+    nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话',
     nav_dates:'日期', nav_vocab:'词汇', nav_kanji:'汉字', nav_contact:'联系',
     page_tag:'互动练习', page_title:'假名练习',
     score:'得分', streak:'连击', best:'最高',
@@ -398,7 +503,42 @@ var I18N = {
     f_caus_pass:'使役被动形 (させられる)',
     jlpt_all:'所有级别', jlpt_n5:'仅 N5', jlpt_n4:'仅 N4', jlpt_n3:'仅 N3', jlpt_n54:'N5 + N4',
     show_hint:'💡 显示提示', hint_label:'💡 提示',
-    warn_try_again:'⚠️ 不对——再试一次！', more_examples:'📚 更多例句'
+    warn_try_again:'⚠️ 不对——再试一次！', more_examples:'📚 更多例句',
+    talk_title:'和活先生对话',
+    talk_intro:'用日语进行真正的双向对话。选择你想要的练习方式，与活先生尽情聊天，随时可以停止并获得本次表现的评估。',
+    talk_step1:'1. 选择练习模式', talk_step2:'2. 设置细节',
+    talk_mode_scenario_t:'情景角色扮演', talk_mode_scenario_d:'活先生扮演一个角色——点餐、问路、办理酒店入住。',
+    talk_mode_freechat_t:'自由聊天', talk_mode_freechat_d:'按照你的水平进行开放式对话，话题不限。',
+    talk_mode_grammar_t:'语法专项', talk_mode_grammar_d:'活先生会引导对话，让你专门练习某个语法形式。',
+    talk_scenario:'情景', talk_level:'级别', talk_form:'形式',
+    talk_pick_mode_hint:'在上方选择一个模式以查看选项。',
+    talk_start:'开始对话', talk_stop:'结束',
+    talk_placeholder:'用日语输入你的回复（也可以请活先生帮忙）…', talk_send:'发送',
+    talk_correction_hint:'活先生会保持角色扮演，并在你出错时附上简短的纠正说明。日语的显示方式可随时切换，即时生效。',
+    talk_show:'显示', talk_english:'英语', talk_correction:'纠正',
+    talk_scenario_custom:'✏️ 自定义…', talk_custom:'描述',
+    talk_custom_placeholder:'例如：在百货商店退换不合身的衬衫',
+    talk_ended:'这个情景到此结束。要继续对话吗？',
+    talk_keep_going:'继续', talk_continuing:'—— 继续 ——',
+    talk_script_furigana:'注音假名', talk_script_kanji:'汉字', talk_script_kana:'假名', talk_script_romaji:'罗马音',
+    talk_stop_title:'结束这次对话吗？', talk_stop_body:'你可以获取本次对话的评估，也可以直接选择其他练习模式。',
+    talk_get_assessment:'获取评估', talk_choose_different:'选择其他练习', talk_keep_talking:'继续对话',
+    talk_assessment_title:'📊 对话评估',
+    talk_download:'⬇ 下载', talk_you:'你',
+    talk_assess_loading:'正在生成你的报告…',
+    talk_assess_empty:'对话还太短，无法评估——先说点什么吧！',
+    talk_assess_failed:'目前无法生成评估——请稍后再试。',
+    talk_assess_summary:'总结', talk_assess_well:'你做得好的地方', talk_assess_improve:'需要改进的地方',
+    talk_assess_words:'值得记住的词与短语', talk_assess_next:'下一步',
+    talk_assess_transcript:'完整对话', talk_report_title:'对话报告',
+    sensei_placeholder:'用日语怎么说…？', sensei_send:'提问',
+    sensei_greeting:'こんにちは！(Konnichiwa!) 我是活先生。想知道某个词用日语怎么说，或者有语法问题，都可以问我。何でも聞いてください！（Nandemo kiite kudasai —— 尽管问我吧！）',
+    sensei_error:'すみません (Sumimasen) — 无法连接服务器。', sensei_retry:'↻ 重试',
+    sensei_proactive_label:'当我似乎卡住时，允许活先生主动出现', sensei_clear_history:'🗑 清空对话',
+    sensei_review_btn:'📝 复习我最近的错误',
+    sensei_review_q:'我刚才错在哪里？为什么？请简单解释一下。',
+    sensei_nudge_1:'这个看起来有点难——需要提示吗？💡',
+    sensei_nudge_2:'我注意到你连续错了几次——需要聊聊吗？'
   }
 };
 
@@ -471,7 +611,10 @@ function setLang(lang) {
   translateContent();
   if (window.refreshDrillI18n) window.refreshDrillI18n();
   if (window.refreshConjugatorI18n) window.refreshConjugatorI18n();
+  if (window.refreshSenseiI18n) window.refreshSenseiI18n();
+  if (window.refreshTalkI18n) window.refreshTalkI18n();
   if (window.refreshLangSwitch) window.refreshLangSwitch();
+  if (window.refreshNavGroups) window.refreshNavGroups();
 }
 
 // Selector styling — injected here so every page gets it without touching styles.css
@@ -491,7 +634,10 @@ function setLang(lang) {
     '.lang-btn .chev{font-size:0.62rem;opacity:0.85;transition:transform 0.18s ease;}',
     '.lang-switch.open .lang-btn{background:var(--accent,#c45c4a);border-color:var(--accent,#c45c4a);color:#fff;}',
     '.lang-switch.open .lang-btn .chev{transform:rotate(180deg);}',
-    '.lang-menu{position:absolute;top:calc(100% + 0.5rem);right:0;min-width:11rem;background:var(--paper,#faf9f7);',
+    /* fixed, not absolute: the nav bar is a horizontal scroller with
+       overflow-y:hidden, which would otherwise clip this menu away.
+       Coordinates are set in JS when the menu opens. */
+    '.lang-menu{position:fixed;min-width:11rem;background:var(--paper,#faf9f7);',
     '  border:1px solid rgba(0,0,0,0.1);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.22);',
     '  padding:0.3rem;margin:0;list-style:none;z-index:1300;opacity:0;visibility:hidden;transform:translateY(-6px);',
     '  transition:opacity 0.16s ease,transform 0.16s ease,visibility 0.16s;}',
@@ -505,7 +651,28 @@ function setLang(lang) {
     '.lang-menu button .code{font-size:0.72rem;letter-spacing:0.06em;opacity:0.5;text-transform:uppercase;}',
     '.lang-menu button[aria-current="true"]{background:rgba(196,92,74,0.1);color:var(--accent,#c45c4a);}',
     '.lang-menu button[aria-current="true"] .code{opacity:0.75;}',
-    '@media (max-width:640px){.lang-menu{right:auto;left:0;}}'
+
+    /* ---------- grouped nav dropdown ---------- */
+    '.nav-group{display:inline-flex;align-items:center;flex:0 0 auto;}',
+    /* no colour here on purpose — the button also carries .nav-link, so it
+       picks up the bar's paper colour, 0.7 opacity and hover/active states.
+       Setting color:inherit here made it inherit the dark body text instead. */
+    '.nav-group-btn{display:inline-flex;align-items:center;gap:0.35rem;background:none;border:none;',
+    '  font-family:inherit;font-size:inherit;cursor:pointer;white-space:nowrap;}',
+    '.nav-group-btn .chev{font-size:0.6em;opacity:0.75;transition:transform 0.18s;}',
+    '.nav-group.open .nav-group-btn .chev{transform:rotate(180deg);}',
+    '.nav-group-menu{position:fixed;min-width:12rem;background:var(--paper,#faf9f7);',
+    '  border:1px solid rgba(0,0,0,0.1);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.22);',
+    '  padding:0.3rem;z-index:1300;opacity:0;visibility:hidden;transform:translateY(-6px);',
+    '  transition:opacity 0.16s ease,transform 0.16s ease,visibility 0.16s;}',
+    '.nav-group-menu.open{opacity:1;visibility:visible;transform:translateY(0);}',
+    /* opacity:1 — .nav-link dims to 0.7 for the dark bar, which reads as
+       greyed-out against the menu's light background */
+    '.nav-group-menu a.nav-link{display:block;width:auto;padding:0.5rem 0.7rem;margin:0;border:none;',
+    '  border-radius:7px;color:var(--ink,#1a1a2e);opacity:1;text-decoration:none;font-size:0.9rem;white-space:nowrap;}',
+    '.nav-group-menu a.nav-link:hover{background:var(--paper-warm,#f1eee8);color:var(--ink,#1a1a2e);}',
+    '.nav-group-menu a.nav-link.active{background:rgba(196,92,74,0.1);color:var(--accent,#c45c4a);font-weight:600;}',
+    '.nav-group-menu a.nav-link::after{display:none;}'
   ].join('');
   var s = document.createElement('style');
   s.textContent = css;
@@ -522,18 +689,42 @@ function setLang(lang) {
     '.nav-links > span{padding:0 0.25rem !important;font-size:1.05rem !important;opacity:0.45 !important;}',
     /* push the language switch to the far right, away from Contact */
     '.nav-links .lang-switch{margin-left:auto;padding-left:1rem;flex:0 0 auto;}',
-    /* narrow screens: let the bar scroll sideways instead of stacking */
+    /* The bar always scrolls sideways rather than clipping. .nav-inner is capped
+       at 1200px, so with the full set of links the row cannot fit at any viewport
+       width — without this the last links (Kanji, Contact) run off the edge. */
+    '.nav-links{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
+    '.nav-links::-webkit-scrollbar{display:none;}',
+    /* the switch rides along on the right; it needs the bar colour behind it so
+       links don't show through as they scroll underneath */
+    '.nav-links .lang-switch{position:sticky;right:0;background:var(--ink,#1a1a2e);}',
     '@media (max-width:1400px){',
-    '  .nav-links{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
-    '  .nav-links::-webkit-scrollbar{display:none;}',
     '  .nav-links .nav-link{padding-left:0.45rem;padding-right:0.45rem;font-size:0.9rem;}',
-    '  .nav-links .lang-switch{position:sticky;right:0;margin-left:0.5rem;}',
-    '}'
+    '  .nav-links .lang-switch{margin-left:0.5rem;}',
+    '}',
+    /* Pages hidden from the nav while they're being reworked. One place for the
+       whole site — delete a selector here to put a page back in the bar. The
+       pages themselves stay live and reachable by URL. */
+    '.nav-links .nav-link[data-page="datedojo"],',
+    '.nav-links .nav-link[data-page="kanji-drill"]{display:none;}'
   ].join('');
   var navStyle = document.createElement('style');
   navStyle.textContent = navCss;
   document.head.appendChild(navStyle);
 
+
+  // Menus inside the nav have to be position:fixed — the bar is a horizontal
+  // scroller with overflow-y:hidden, which clips anything hanging below it.
+  // This puts a menu under its trigger and keeps it on screen.
+  function placeMenu(trigger, menu, alignRight) {
+    var r = trigger.getBoundingClientRect();
+    menu.style.right = 'auto';
+    menu.style.top = Math.round(r.bottom + 8) + 'px';
+    menu.style.left = '0px';                       // measure at a known origin
+    var w = menu.offsetWidth;
+    var left = alignRight ? r.right - w : r.left;
+    left = Math.min(left, window.innerWidth - w - 8);
+    menu.style.left = Math.round(Math.max(8, left)) + 'px';
+  }
 
   // ---------- replace the <select> with a nicer dropdown ----------
   var LANG_INFO = [
@@ -594,11 +785,20 @@ function setLang(lang) {
     function open() {
       wrap.classList.add('open');
       btn.setAttribute('aria-expanded', 'true');
+      placeMenu(btn, menu, true);   // right-aligned, as before
     }
     function close() {
       wrap.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
     }
+    // the bar can scroll under the menu, so follow the button while open
+    window.addEventListener('resize', function () {
+      if (wrap.classList.contains('open')) placeMenu(btn, menu, true);
+    });
+    var bar = document.querySelector('.nav-links');
+    if (bar) bar.addEventListener('scroll', function () {
+      if (wrap.classList.contains('open')) placeMenu(btn, menu, true);
+    });
 
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
@@ -621,10 +821,107 @@ function setLang(lang) {
     window.refreshLangSwitch = function () { paintButton(); paintMenu(); };
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', buildLangSwitch);
-  } else {
+  // ---------- fold related nav links into a dropdown ----------
+  // The bar carries more links than fit, so related pages collapse into one
+  // menu. Add a group here and it applies to every page — the links are moved
+  // out of the existing nav, so they keep their data-i18n and active state.
+  var NAV_GROUPS = [
+    { key: 'nav_group_learn', fallback: 'Learn',
+      pages: ['learn', 'adjectives', 'reference', 'conjugation', 'forms', 'verblist'] }
+  ];
+
+  function buildNavGroups() {
+    var bar = document.querySelector('.nav-links');
+    if (!bar || bar.querySelector('.nav-group')) return;
+    var painters = [];
+
+    NAV_GROUPS.forEach(function (group) {
+      var links = [];
+      group.pages.forEach(function (page) {
+        var a = bar.querySelector('.nav-link[data-page="' + page + '"]');
+        if (a) links.push(a);
+      });
+      if (links.length < 2) return;      // nothing worth collapsing
+
+      var wrap = document.createElement('div');
+      wrap.className = 'nav-group';
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'nav-group-btn nav-link';
+      btn.setAttribute('aria-haspopup', 'true');
+      btn.setAttribute('aria-expanded', 'false');
+
+      var menu = document.createElement('div');
+      menu.className = 'nav-group-menu';
+
+      bar.insertBefore(wrap, links[0]);
+      links.forEach(function (a) { menu.appendChild(a); });
+
+      // the trigger reads as current when the page you're on lives inside it
+      for (var i = 0; i < links.length; i++) {
+        if (links[i].classList.contains('active')) { btn.classList.add('active'); break; }
+      }
+
+      function paint() {
+        var label = (typeof t === 'function') ? t(group.key) : group.key;
+        if (!label || label === group.key) label = group.fallback;
+        btn.textContent = label;
+        var chev = document.createElement('span');
+        chev.className = 'chev';
+        chev.textContent = '▼';
+        btn.appendChild(chev);
+      }
+      painters.push(paint);
+      paint();
+
+      function open()  {
+        wrap.classList.add('open');
+        menu.classList.add('open');           // menu sits on <body>, so it toggles itself
+        btn.setAttribute('aria-expanded', 'true');
+        placeMenu(btn, menu);
+      }
+      function close() {
+        wrap.classList.remove('open');
+        menu.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        wrap.classList.contains('open') ? close() : open();
+      });
+      document.addEventListener('click', function (e) {
+        if (!wrap.contains(e.target) && !menu.contains(e.target)) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+      });
+      window.addEventListener('resize', function () {
+        if (wrap.classList.contains('open')) placeMenu(btn, menu);
+      });
+      bar.addEventListener('scroll', function () {
+        if (wrap.classList.contains('open')) placeMenu(btn, menu);
+      });
+
+      wrap.appendChild(btn);
+      document.body.appendChild(menu);   // outside the scroller, so nothing clips it
+    });
+
+    window.refreshNavGroups = function () {
+      painters.forEach(function (fn) { fn(); });
+    };
+  }
+
+  function initNav() {
     buildLangSwitch();
+    buildNavGroups();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
   }
 })();
 

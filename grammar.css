@@ -1,0 +1,621 @@
+/* ============================================================
+   GRAMMAR PAGES — adjectives / conjugation / reference
+   Depends on the tokens declared in styles.css :root
+   (--ink, --paper, --paper-warm, --accent, --sage, --gold,
+    --text, --text-light). Nothing here redefines them.
+   ============================================================ */
+
+:root {
+  --g-nav-h: 72px;
+  --g-rule: rgba(0, 0, 0, 0.1);
+  --g-rule-soft: rgba(0, 0, 0, 0.06);
+  --g-godan: #4a90a4;
+  --g-irregular: #7a5ba4;
+}
+
+/* ---------- page shell ---------- */
+
+.g-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem 5rem;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+
+.g-body {
+  min-width: 0;
+}
+
+.g-body > .page-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 3px solid var(--accent);
+}
+
+/* ---------- sidebar ---------- */
+
+.g-side {
+  position: sticky;
+  top: calc(var(--g-nav-h) + 2rem);
+  background: var(--paper-warm);
+  border: 1px solid var(--g-rule-soft);
+  border-radius: 4px;
+  padding: 1.25rem;
+  max-height: calc(100vh - var(--g-nav-h) - 4rem);
+  overflow-y: auto;
+}
+
+/* The sidebar is a <details>. On desktop it is always open and the
+   summary is redundant, so it is hidden; on mobile it comes back as a
+   real disclosure control (see the media query at the foot of the file). */
+.g-side > summary {
+  display: none;
+}
+
+.g-side-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-light);
+  margin-bottom: 0.75rem;
+}
+
+.g-toc {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.g-toc a {
+  display: block;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--text);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  border-radius: 0 3px 3px 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.g-toc a:hover {
+  background: rgba(196, 92, 74, 0.08);
+  color: var(--ink);
+}
+
+.g-toc a.is-active {
+  border-left-color: var(--accent);
+  background: rgba(196, 92, 74, 0.1);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.g-toc-part {
+  margin: 1rem 0 0.35rem;
+  padding-left: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  border-top: 1px solid var(--g-rule-soft);
+  padding-top: 0.9rem;
+}
+
+.g-toc-part:first-child {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.g-side-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--g-rule-soft);
+}
+
+.g-btn {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--g-rule);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.g-btn:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.g-btn[aria-pressed="false"] {
+  color: var(--text-light);
+  background: transparent;
+  border-style: dashed;
+}
+
+/* ---------- section filter (reference page) ---------- */
+
+.g-filter {
+  margin-bottom: 1.25rem;
+}
+
+.g-filter input {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--text);
+  background: var(--paper);
+  border: 1px solid var(--g-rule);
+  border-radius: 3px;
+}
+
+.g-filter input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.g-filter-count {
+  margin-top: 0.4rem;
+  min-height: 1.1em;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.g-body .g-no-matches {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-light);
+  background: var(--paper-warm);
+  border: 1px dashed var(--g-rule);
+  border-radius: 4px;
+}
+
+/* ---------- sections and prose ---------- */
+
+.g-sec {
+  margin-bottom: 3rem;
+}
+
+.g-sec > h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--g-rule-soft);
+}
+
+.g-sec h3 {
+  font-size: 1.12rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 2rem 0 0.75rem;
+}
+
+.g-sec h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 1.25rem 0 0.5rem;
+}
+
+.g-body p {
+  margin-bottom: 1rem;
+  max-width: 68ch;
+  line-height: 1.75;
+}
+
+.g-body ul,
+.g-body ol {
+  margin: 0 0 1.25rem 1.3rem;
+  max-width: 68ch;
+}
+
+.g-body li {
+  margin-bottom: 0.45rem;
+  line-height: 1.7;
+}
+
+.g-body a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.g-body a:hover {
+  color: var(--ink);
+}
+
+.g-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.g-body hr {
+  border: 0;
+  border-top: 1px solid var(--g-rule-soft);
+  margin: 2rem 0 0;
+}
+
+.g-body code {
+  font-size: 0.9em;
+  background: var(--paper-warm);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+.g-body pre {
+  background: var(--paper-warm);
+  border-left: 3px solid var(--gold);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* anchor targets must clear the fixed nav */
+.g-body [id],
+.g-side [id] {
+  scroll-margin-top: calc(var(--g-nav-h) + 1.5rem);
+}
+
+.g-body h2:focus-visible,
+.g-body summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ---------- tables ---------- */
+
+.g-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--g-rule-soft);
+  border-radius: 4px;
+}
+
+.g-table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.94rem;
+}
+
+.g-table-wrap th {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  white-space: nowrap;
+}
+
+.g-table-wrap td {
+  padding: 0.7rem 0.85rem;
+  border-top: 1px solid var(--g-rule-soft);
+  vertical-align: top;
+}
+
+.g-table-wrap tbody tr:nth-child(even) {
+  background: var(--paper-warm);
+}
+
+.g-table-wrap td:first-child {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* the い／な comparison tables: tint the two class columns */
+.g-table-inay th:nth-child(2),
+.g-table-inay td:nth-child(2) {
+  background: rgba(122, 158, 126, 0.1);
+}
+
+.g-table-inay th:nth-child(3),
+.g-table-inay td:nth-child(3) {
+  background: rgba(74, 144, 164, 0.1);
+}
+
+.g-table-inay th:nth-child(2),
+.g-table-inay th:nth-child(3) {
+  background: var(--ink);
+}
+
+/* vocabulary tables */
+.g-table-wrap table[data-deck] td:first-child {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.1rem;
+}
+
+/* ---------- trap blocks (✕ / ✓) ---------- */
+
+.g-trap {
+  margin: 1.25rem 0;
+  border: 1px solid var(--g-rule-soft);
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 68ch;
+}
+
+.g-body .g-trap p {
+  margin: 0;
+  padding: 0.65rem 1rem;
+  max-width: none;
+  line-height: 1.6;
+}
+
+.g-trap-bad {
+  background: rgba(196, 92, 74, 0.09);
+  border-left: 3px solid var(--accent);
+  color: var(--text);
+}
+
+.g-trap-good {
+  background: rgba(122, 158, 126, 0.12);
+  border-left: 3px solid var(--sage);
+  color: var(--text);
+}
+
+.g-trap-bad + .g-trap-good {
+  border-top: 1px solid var(--g-rule-soft);
+}
+
+.g-x {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ---------- split cards ---------- */
+
+.g-split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.g-split-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.g-split > div {
+  padding: 1.35rem;
+  border: 2px solid var(--g-rule);
+  border-radius: 4px;
+  background: var(--paper);
+}
+
+.g-split h4 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.g-body .g-split-sub {
+  margin: 0 0 0.75rem;
+  font-size: 0.88rem;
+  color: var(--text-light);
+  max-width: none;
+}
+
+.g-body .g-split-ex {
+  margin: 0;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.05rem;
+  color: var(--ink);
+  max-width: none;
+}
+
+.g-split-i {
+  border-color: var(--sage);
+  background: rgba(122, 158, 126, 0.07);
+}
+
+.g-split-i h4 {
+  color: var(--sage);
+}
+
+.g-split-na {
+  border-color: var(--g-godan);
+  background: rgba(74, 144, 164, 0.07);
+}
+
+.g-split-na h4 {
+  color: var(--g-godan);
+}
+
+.g-split-x {
+  border-color: var(--g-irregular);
+  background: rgba(122, 91, 164, 0.07);
+}
+
+.g-split-x h4 {
+  color: var(--g-irregular);
+}
+
+/* ---------- asides and notes ---------- */
+
+.g-aside {
+  margin: 1.5rem 0;
+  padding: 1.1rem 1.35rem;
+  background: var(--paper-warm);
+  border: 1px solid var(--g-rule-soft);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 4px 4px 0;
+}
+
+.g-aside > summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--ink);
+  list-style: none;
+}
+
+.g-aside > summary::-webkit-details-marker {
+  display: none;
+}
+
+.g-aside > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--gold);
+  transition: transform 0.15s;
+}
+
+.g-aside[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.g-aside[open] > summary {
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--g-rule-soft);
+}
+
+.g-body .g-aside > :last-child {
+  margin-bottom: 0;
+}
+
+.g-body .g-note {
+  margin: 1.25rem 0;
+  padding: 0.8rem 1.1rem;
+  max-width: 68ch;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-light);
+  background: rgba(201, 169, 98, 0.1);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 3px 3px 0;
+}
+
+.g-body .g-note strong {
+  color: var(--ink);
+}
+
+/* ---------- furigana ---------- */
+
+ruby rt {
+  font-size: 0.55em;
+  color: var(--text-light);
+  font-weight: 400;
+}
+
+.g-page[data-furigana="off"] rt {
+  display: none;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1000px) {
+  .g-page {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .g-side {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .g-side > summary {
+    display: block;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--ink);
+    list-style: none;
+  }
+
+  .g-side > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .g-side > summary::after {
+    content: '+';
+    float: right;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .g-side[open] > summary {
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--g-rule-soft);
+  }
+
+  .g-side[open] > summary::after {
+    content: '–';
+  }
+
+  .g-split,
+  .g-split-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .g-page {
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .g-sec > h2 {
+    font-size: 1.35rem;
+  }
+
+  .g-table-wrap table {
+    font-size: 0.88rem;
+  }
+
+  .g-body p,
+  .g-body ul,
+  .g-body ol,
+  .g-body .g-trap,
+  .g-body .g-note {
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .g-toc a,
+  .g-btn,
+  .g-aside > summary::before {
+    transition: none;
+  }
+}
+
+@media print {
+  .g-side,
+  .nav,
+  .back-to-top {
+    display: none;
+  }
+
+  .g-page {
+    display: block;
+    padding: 0;
+  }
+
+  .g-aside {
+    break-inside: avoid;
+  }
+}

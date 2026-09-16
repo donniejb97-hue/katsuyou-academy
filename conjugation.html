@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4XWJSE6WX0');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verb conjugation | Katsuyō Academy</title>
+  <meta name="description" content="How Japanese verbs and adjectives conjugate: the three verb classes, the five godan stems, the て-form sound changes, passive and causative, the four conditionals, and the full い／な adjective tables.">
+  <link rel="canonical" href="https://katsuyoacademy.com/conjugation">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="grammar.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"LearningResource","name":"Verb conjugation","description":"How Japanese verbs and adjectives conjugate: the three verb classes, the five godan stems, the て-form sound changes, passive and causative, the four conditionals, and the full い／な adjective tables.","inLanguage":"en","teaches":"Japanese verb conjugation","educationalLevel":"Beginner","learningResourceType":"Lesson","isPartOf":{"@type":"WebSite","name":"Katsuyō Academy","url":"https://katsuyoacademy.com/"}}</script>
+</head>
+<body data-page="conjugation">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="/" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="adjectives" href="/adjectives" data-i18n="nav_adjectives">Adjectives</a>
+        <a class="nav-link" data-page="reference" href="/reference" data-i18n="nav_reference">Reference</a>
+        <a class="nav-link active" data-page="conjugation" href="/conjugation" data-i18n="nav_conjugation">Conjugation</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-conjugation" class="page active">
+    <div class="g-page" data-furigana="on">
+
+      <details class="g-side" open>
+        <summary>Contents</summary>
+        <p class="g-side-label">On this page</p>
+        <nav class="g-toc" aria-label="On this page">
+<a href="#the-one-idea">The one idea</a>
+<a href="#which-class-is-a-verb-in">Which class is a verb in?</a>
+<a href="#the-five-stems">The five stems</a>
+<a href="#the-て-form">The て-form</a>
+<a href="#the-た-form-is-free">The た-form is free</a>
+<a href="#every-other-form">Every other form</a>
+<a href="#plain-and-polite">Plain and polite</a>
+<a href="#what-the-て-form-unlocks">What the て-form unlocks</a>
+<a href="#potential-volitional-imperative">Potential, volitional, imperative</a>
+<a href="#passive-and-causative">Passive and causative</a>
+<a href="#four-ways-to-say-if">Four ways to say "if"</a>
+<a href="#adjectives-conjugate-too">Adjectives conjugate too</a>
+<a href="#traps-checklist">Traps checklist</a>
+<a href="#why-the-て-form-changed">Why the て-form changed</a>
+<a href="#verbs-worth-knowing">Verbs worth knowing</a>
+        </nav>
+        <div class="g-side-tools">
+<button class="g-btn" type="button" data-furigana-toggle aria-pressed="true">Furigana on</button>
+<a class="g-btn" href="reference.html">Full reference</a>
+<a class="g-btn" href="conjugator.html">Practice conjugating</a>
+        </div>
+      </details>
+
+      <article class="g-body">
+        <div class="page-header">
+          <div class="page-tag">Verbs</div>
+          <h1 class="page-title">Verb conjugation</h1>
+          <p class="page-desc">Three classes, five stems, and one sound-change table you get to use twice — plus how adjectives carry tense of their own.</p>
+        </div>
+
+<div class="g-split g-split-3"><div class="g-split-i"><h4>Ichidan</h4><p class="g-split-sub">One stem — drop る</p><p class="g-split-ex">たべる → たべ + ない</p></div><div class="g-split-na"><h4>Godan</h4><p class="g-split-sub">Five stems — pick a vowel row</p><p class="g-split-ex">いく → いか + ない</p></div><div class="g-split-x"><h4>Irregular</h4><p class="g-split-sub">Only two in the language</p><p class="g-split-ex">する・くる</p></div></div><section class="g-sec"><h2 id="the-one-idea" tabindex="-1">The one idea</h2>
+
+<p>Every Japanese verb form is a <strong>stem</strong> plus an <strong>ending</strong>. Nothing is memorised whole — you build it.</p>
+<p>What separates the classes is only how many stems they have:</p>
+<ul>
+<li><strong>Ichidan</strong> verbs have <strong>one</strong> stem. Drop る, attach anything.</li>
+<li><strong>Godan</strong> verbs have <strong>five</strong>, one per vowel row. Pick the row the ending wants.</li>
+<li><strong>する</strong> and <strong>くる</strong> change their own vowel too, and are the only two that do.</li>
+</ul>
+<p>So learning verbs is really two jobs: work out which class a verb is in, then learn which stem each ending attaches to. There is no third job.</p>
+</section>
+<section class="g-sec"><h2 id="which-class-is-a-verb-in" tabindex="-1">Which class is a verb in?</h2>
+
+<p>Only verbs ending in <strong>る</strong> are ever ambiguous. Everything else is decided for you.</p>
+<ul>
+<li>Doesn't end in る → <strong>godan</strong>. No exceptions. (のむ, かく, はなす, まつ, あそぶ)</li>
+<li>Ends in る, and the sound before it is <strong>a, u, or o</strong> → <strong>godan</strong>. No exceptions. (つくる, ある, とる)</li>
+<li>Ends in る, and the sound before it is <strong>i or e</strong> → <strong>usually ichidan</strong>, and this is the only case worth memorising. (たべる, みる, おきる)</li>
+</ul>
+<h3>The -iru / -eru verbs that are godan anyway</h3>
+<p>Short list, and it's worth knowing cold — these are common verbs.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Verb</th><th>Reading</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>走る</td><td>はしる</td><td>to run</td></tr>
+<tr><td>知る</td><td>しる</td><td>to know</td></tr>
+<tr><td>入る</td><td>はいる</td><td>to enter</td></tr>
+<tr><td>帰る</td><td>かえる</td><td>to return home</td></tr>
+<tr><td>切る</td><td>きる</td><td>to cut</td></tr>
+<tr><td>要る</td><td>いる</td><td>to need</td></tr>
+<tr><td>減る</td><td>へる</td><td>to decrease</td></tr>
+<tr><td>しゃべる</td><td>しゃべる</td><td>to chat</td></tr>
+</tbody>
+</table></div>
+
+<p>A quick way to check one you're unsure of: put it in the negative. Ichidan drops る（たべる → たべない）; godan shifts to the a-row and keeps the consonant（はしる → はしらない）. If はしらない sounds right and はしない sounds wrong, it's godan.</p>
+<div class="g-trap"><p><strong>Two verbs read いる</strong></p>
+<p>いる（居る）— to be, for people and animals — is <strong>ichidan</strong>: いない, います.<br>
+いる（要る）— to need — is <strong>godan</strong>: いらない, いります.</p></div>
+</section>
+<section class="g-sec"><h2 id="the-five-stems" tabindex="-1">The five stems</h2>
+
+<p>A godan verb shifts its final syllable through the five vowel rows. That's the whole system, and the name <ruby>五<rt>ご</rt>段<rt>だん</rt></ruby> means "five levels."</p>
+<p>Take いく:</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Row</th><th>Stem</th><th>Ending it takes</th><th>Result</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>a</strong></td><td>いか</td><td>ない, れる, せる</td><td>いかない = don't go</td></tr>
+<tr><td><strong>i</strong></td><td>いき</td><td>ます, たい, ながら</td><td>いきます, いきたい</td></tr>
+<tr><td><strong>u</strong></td><td>いく</td><td>— (dictionary form)</td><td>いく = go</td></tr>
+<tr><td><strong>e</strong></td><td>いけ</td><td>ば, る, (command)</td><td>いけば = if I go, いける = can go</td></tr>
+<tr><td><strong>o</strong></td><td>いこ</td><td>う</td><td>いこう = let's go</td></tr>
+</tbody>
+</table></div>
+
+<p>のむ behaves identically: のまない, のみます, のむ, のめば, のもう.</p>
+<p>Ichidan verbs skip all of this. たべる drops る and every ending attaches to たべ: たべない, たべます, たべれば, たべよう.</p>
+<div class="g-trap"><p><strong>The one sound rule</strong></p>
+<p>Godan verbs ending in う use <strong>わ</strong> in the a-row, not あ — the plain あ sound was lost here centuries ago.</p>
+<p class="g-trap-bad">✕かあない</p>
+<p class="g-trap-good">✓かわない　(かう = to buy)</p>
+<p>Likewise うたう → うたわない, いう → いわない.</p></div>
+</section>
+<section class="g-sec"><h2 id="the-て-form" tabindex="-1">The て-form</h2>
+
+<p>The て-form is the one place godan verbs don't simply follow the vowel rows, because the sounds wore down over time. It's five groups, sorted by the last kana of the dictionary form.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Dictionary ends in</th><th>Becomes</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>う・つ・る</td><td><strong>って</strong></td><td>かう → かって<br>まつ → まって<br>とる → とって</td></tr>
+<tr><td>む・ぶ・ぬ</td><td><strong>んで</strong></td><td>のむ → のんで<br>あそぶ → あそんで<br>しぬ → しんで</td></tr>
+<tr><td>く</td><td><strong>いて</strong></td><td>かく → かいて</td></tr>
+<tr><td>ぐ</td><td><strong>いで</strong></td><td>およぐ → およいで</td></tr>
+<tr><td>す</td><td><strong>して</strong></td><td>はなす → はなして</td></tr>
+</tbody>
+</table></div>
+
+<p>Ichidan needs no rule at all — drop る, add て: たべる → たべて, みる → みて.</p>
+<p>And the two irregulars: する → して, くる → きて.</p>
+<div class="g-trap"><p><strong>いく is the one exception</strong></p>
+<p>By the く rule it should be いいて. It isn't.</p>
+<p class="g-trap-bad">✕いいて</p>
+<p class="g-trap-good">✓いって</p>
+<p>This is the only verb in the language that breaks the て-form rules.</p></div>
+</section>
+<section class="g-sec"><h2 id="the-た-form-is-free" tabindex="-1">The た-form is free</h2>
+
+<p>Here's the part worth knowing before you memorise anything else: <strong>the past tense uses exactly the same rule as the て-form.</strong> Swap て for た, で for だ. That's it.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Verb</th><th>て-form</th><th>た-form (past)</th></tr>
+</thead>
+<tbody>
+<tr><td>かう</td><td>かって</td><td>かっ<strong>た</strong></td></tr>
+<tr><td>のむ</td><td>のんで</td><td>のん<strong>だ</strong></td></tr>
+<tr><td>かく</td><td>かいて</td><td>かい<strong>た</strong></td></tr>
+<tr><td>およぐ</td><td>およいで</td><td>およい<strong>だ</strong></td></tr>
+<tr><td>はなす</td><td>はなして</td><td>はなし<strong>た</strong></td></tr>
+<tr><td>たべる</td><td>たべて</td><td>たべ<strong>た</strong></td></tr>
+<tr><td>いく</td><td>いって</td><td>いっ<strong>た</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>So the five groups above are not a て-form rule — they're a rule you use twice. Learn them once and the past tense costs you nothing.</p>
+<p>It pays a third time, too: たら conditionals are just the た-form plus ら（いったら = if I go）, and たり is the た-form plus り.</p>
+</section>
+<section class="g-sec"><h2 id="every-other-form" tabindex="-1">Every other form</h2>
+
+<p>Once the stems and the て-form are in place, the rest is assembly.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Form</th><th>Ichidan （たべる）</th><th>Godan （いく）</th><th>する</th><th>くる</th></tr>
+</thead>
+<tbody>
+<tr><td>Polite (ます)</td><td>たべます</td><td>いきます</td><td>します</td><td>きます</td></tr>
+<tr><td>Negative (ない)</td><td>たべない</td><td>いかない</td><td>しない</td><td>こない</td></tr>
+<tr><td>Past (た)</td><td>たべた</td><td>いった</td><td>した</td><td>きた</td></tr>
+<tr><td>て-form</td><td>たべて</td><td>いって</td><td>して</td><td>きて</td></tr>
+<tr><td>Want to (たい)</td><td>たべたい</td><td>いきたい</td><td>したい</td><td>きたい</td></tr>
+<tr><td>Potential (can)</td><td>たべられる／たべれる</td><td>いける</td><td>できる</td><td>こられる／これる</td></tr>
+<tr><td>Conditional (ば)</td><td>たべれば</td><td>いけば</td><td>すれば</td><td>くれば</td></tr>
+<tr><td>Conditional (たら)</td><td>たべたら</td><td>いったら</td><td>したら</td><td>きたら</td></tr>
+<tr><td>Volitional (let's)</td><td>たべよう</td><td>いこう</td><td>しよう</td><td>こよう</td></tr>
+<tr><td>Command</td><td>たべろ</td><td>いけ</td><td>しろ</td><td>こい</td></tr>
+<tr><td>Negative command</td><td>たべるな</td><td>いくな</td><td>するな</td><td>くるな</td></tr>
+</tbody>
+</table></div>
+
+<p>Read down the godan column and you'll see the stems doing the work: いき+ます, いか+ない, いけ+ば, いこ+う. Only the past and て-form need the sound-change table.</p>
+<div class="g-aside"><p><strong>On たべれる</strong></p>
+<p>たべられる is the textbook potential. たべれる — the ら-nuki or "ら-dropped" form — is what most people actually say. Both are understood; られる is the safer choice in writing or with someone senior to you.</p></div>
+</section>
+<section class="g-sec"><h2 id="plain-and-polite" tabindex="-1">Plain and polite</h2>
+
+<p>Every verb has four basic forms, and each exists twice — once plain, once polite. Eight cells, and you already have the pieces for all of them.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th></th><th>Plain</th><th>Polite</th></tr>
+</thead>
+<tbody>
+<tr><td>Present</td><td>いく</td><td>いき<strong>ます</strong></td></tr>
+<tr><td>Negative</td><td>いか<strong>ない</strong></td><td>いき<strong>ません</strong></td></tr>
+<tr><td>Past</td><td>いっ<strong>た</strong></td><td>いき<strong>ました</strong></td></tr>
+<tr><td>Negative past</td><td>いか<strong>なかった</strong></td><td>いき<strong>ませんでした</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>The polite column is entirely regular: it's the i-stem plus ます, ません, ました, ませんでした. No sound changes, ever. Even いく — the verb that breaks the て-form — is perfectly regular here: いきます.</p>
+<div class="g-aside"><p><strong>Where いかなかった comes from</strong></p>
+<p>Look at the plain negative past. It isn't a new ending — <strong>ない is itself an い-adjective</strong>, so it conjugates like one: ない → なかった, exactly as さむい → さむかった.</p>
+<p>That means the negative of a verb behaves like an adjective for the rest of its life:</p>
+<ul>
+<li>いかない → いか<strong>なかった</strong>　(didn't go)</li>
+<li>いかない → いか<strong>なくて</strong>　(て-form)</li>
+<li>いかない → いか<strong>なければ</strong>　(ば-conditional)</li>
+</ul>
+<p>たい works the same way — いきたい is an い-adjective too: いきたかった, いきたくない, いきたくなかった.</p></div>
+</section>
+<section class="g-sec"><h2 id="what-the-て-form-unlocks" tabindex="-1">What the て-form unlocks</h2>
+
+<p>The て-form isn't a tense. It's a connector — it hands the verb to something else, which is why it's worth the effort of learning the sound changes.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Pattern</th><th>Means</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>て + いる</td><td>ongoing, or a resulting state</td><td>たべ<strong>ている</strong> = is eating<br>しっ<strong>ている</strong> = knows</td></tr>
+<tr><td>て + ください</td><td>please do</td><td>まっ<strong>てください</strong> = please wait</td></tr>
+<tr><td>て + もいい</td><td>may, is allowed to</td><td>いっ<strong>てもいい</strong> = may go</td></tr>
+<tr><td>て + はいけない</td><td>must not</td><td>いっ<strong>てはいけない</strong> = must not go</td></tr>
+<tr><td>て + から</td><td>after doing</td><td>たべ<strong>てから</strong> = after eating</td></tr>
+<tr><td>て + みる</td><td>try doing</td><td>たべ<strong>てみる</strong> = try eating</td></tr>
+<tr><td>て + しまう</td><td>do completely, or regrettably</td><td>たべ<strong>てしまった</strong> = ate it all / ate it, oops</td></tr>
+<tr><td>て + おく</td><td>do in advance</td><td>かっ<strong>ておく</strong> = buy it ahead of time</td></tr>
+<tr><td>て, て, て…</td><td>and then — joins clauses</td><td>おきて、たべて、いった</td></tr>
+</tbody>
+</table></div>
+
+<p>ている is the one to get right early. With action verbs it's a progressive（たべている = is eating）, but with verbs describing a change it's a resulting state, not an action in progress.</p>
+<div class="g-trap"><p class="g-trap-bad">✕しっています meaning "am knowing"</p><p class="g-trap-good">✓しっています = know　(the knowing already happened; you are in the state of knowing)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕けっこんしています meaning "am getting married"</p><p class="g-trap-good">✓けっこんしています = am married　(the state, not the ceremony)</p></div>
+
+<p>This also explains a form that surprises everyone: <strong>"I don't know" is しりません／しらない, never ✕しっていません.</strong> The positive しっている is a state, but Japanese drops back to the plain negative of しる to say you are not in it. しりません is the polite default; しらないです exists and is fine in casual-polite speech, just less polished.</p>
+</section>
+<section class="g-sec"><h2 id="potential-volitional-imperative" tabindex="-1">Potential, volitional, imperative</h2>
+
+<p>Three forms that come straight off the stems, with no sound changes to learn.</p>
+<h3>Potential — can do</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Class</th><th>Rule</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>Godan</td><td>e-stem + <strong>る</strong></td><td>いく → いけ<strong>る</strong></td></tr>
+<tr><td>Ichidan</td><td>drop る + <strong>られる</strong></td><td>たべる → たべ<strong>られる</strong></td></tr>
+<tr><td>する</td><td>irregular</td><td>できる</td></tr>
+<tr><td>くる</td><td>irregular</td><td>こ<strong>られる</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>Potential verbs are themselves ichidan, so they keep conjugating: いける → いけない, いけた, いけて.</p>
+<p>And the object usually takes が rather を: にほんご<strong>が</strong>はなせる.</p>
+<h3>Volitional — let's, shall we</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Class</th><th>Rule</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>Godan</td><td>o-stem + <strong>う</strong></td><td>いく → いこ<strong>う</strong></td></tr>
+<tr><td>Ichidan</td><td>drop る + <strong>よう</strong></td><td>たべる → たべ<strong>よう</strong></td></tr>
+<tr><td>する</td><td>irregular</td><td>しよう</td></tr>
+<tr><td>くる</td><td>irregular</td><td>こよう</td></tr>
+</tbody>
+</table></div>
+
+<p>The polite version is simply ましょう off the i-stem: いきましょう. And + とおもう makes it an intention rather than an invitation: いこうとおもう = I think I'll go.</p>
+<h3>Imperative — do it</h3>
+<p>Blunt. Real, but it carries weight — you'll hear it in orders, signs, sports and anger more than in conversation.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Class</th><th>Command</th><th>Negative command</th></tr>
+</thead>
+<tbody>
+<tr><td>Godan</td><td>いけ　(e-stem)</td><td>いく<strong>な</strong></td></tr>
+<tr><td>Ichidan</td><td>たべ<strong>ろ</strong></td><td>たべる<strong>な</strong></td></tr>
+<tr><td>する</td><td>しろ</td><td>するな</td></tr>
+<tr><td>くる</td><td>こい</td><td>くるな</td></tr>
+</tbody>
+</table></div>
+
+<p>For everyday requests, use てください or the softer なさい（i-stem + なさい: たべなさい）, which is what a parent or teacher says.</p>
+</section>
+<section class="g-sec"><h2 id="passive-and-causative" tabindex="-1">Passive and causative</h2>
+
+<p>Both attach to the <strong>a-stem</strong> for godan verbs, and both produce new ichidan verbs — so everything you already know keeps applying to the result.</p>
+<h3>Passive — was done to me</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Class</th><th>Rule</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>Godan</td><td>a-stem + <strong>れる</strong></td><td>いう → いわ<strong>れる</strong> = be told</td></tr>
+<tr><td>Ichidan</td><td>drop る + <strong>られる</strong></td><td>たべる → たべ<strong>られる</strong> = be eaten</td></tr>
+<tr><td>する</td><td>irregular</td><td>される</td></tr>
+<tr><td>くる</td><td>irregular</td><td>こられる</td></tr>
+</tbody>
+</table></div>
+
+<p>Japanese also uses the passive where English wouldn't — to say something happened <em>to your detriment</em>: あめにふられた, literally "I was rained on."</p>
+<h3>Causative — make or let someone do</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Class</th><th>Rule</th><th>Example</th></tr>
+</thead>
+<tbody>
+<tr><td>Godan</td><td>a-stem + <strong>せる</strong></td><td>いく → いか<strong>せる</strong> = make/let go</td></tr>
+<tr><td>Ichidan</td><td>drop る + <strong>させる</strong></td><td>たべる → たべ<strong>させる</strong></td></tr>
+<tr><td>する</td><td>irregular</td><td>させる</td></tr>
+<tr><td>くる</td><td>irregular</td><td>こさせる</td></tr>
+</tbody>
+</table></div>
+
+<p>Whether it means <em>make</em> or <em>let</em> comes from context and particle: を tends toward making someone, に toward letting them.</p>
+<h3>Causative-passive — was made to do</h3>
+<p>Stack them: causative, then passive. いかせる → いかせ<strong>られる</strong> = was made to go.</p>
+<p>Godan verbs usually contract this to される: いか<strong>される</strong>.</p>
+<div class="g-trap"><p class="g-trap-bad">✕はなさされる</p><p class="g-trap-good">✓はなさせられる　(す-verbs never contract — it would collide with the passive)</p></div>
+
+<div class="g-trap"><p><strong>られる is doing three jobs</strong></p>
+<p>For ichidan verbs, たべられる can mean <em>can eat</em>, <em>is eaten</em>, or an honorific <em>eats</em>. Only context separates them.</p>
+<p>This is a large part of why the ら-nuki potential — たべ<strong>れる</strong> — spread in speech: it frees られる up for the other two.</p></div>
+</section>
+<section class="g-sec"><h2 id="four-ways-to-say-if" tabindex="-1">Four ways to say "if"</h2>
+
+<p>All four translate as "if" or "when," and they are not interchangeable.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Form</th><th>Built from</th><th>Use it for</th></tr>
+</thead>
+<tbody>
+<tr><td><strong>と</strong></td><td>plain form + と</td><td>automatic results. Always true, no exceptions, no intention.<br>はるになる<strong>と</strong>さくらがさく</td></tr>
+<tr><td><strong>ば</strong></td><td>e-stem + ば　(ichidan: drop る + れば)</td><td>general or hypothetical conditions.<br>やすけれ<strong>ば</strong>かう</td></tr>
+<tr><td><strong>たら</strong></td><td>た-form + ら</td><td>a specific case, or "once X happens."<br>うちにかえっ<strong>たら</strong>でんわします</td></tr>
+<tr><td><strong>なら</strong></td><td>plain form + なら</td><td>given what you just told me.<br>いく<strong>なら</strong>、かさをもっていって</td></tr>
+</tbody>
+</table></div>
+
+<p>たら is the safest default when you're unsure — it accepts the widest range of situations.</p>
+<p class="g-note">Adjective and noun conditionals（さむければ, しずかなら, がくせいなら）are on the <a href="/reference#conditionals-four-ways-to-say-if">reference page</a>.</p>
+<p>と is the one that gets misused. It can't be followed by a request, a command, or an intention, because it describes something automatic.</p>
+<div class="g-trap"><p class="g-trap-bad">✕ひまだと、えいがをみましょう</p><p class="g-trap-good">✓ひまだったら、えいがをみましょう　(an invitation needs たら, not と)</p></div>
+
+<p>なら is the only one that can attach to something the other person just said — which is why it so often opens a reply.</p>
+</section>
+<section class="g-sec"><h2 id="adjectives-conjugate-too" tabindex="-1">Adjectives conjugate too</h2>
+
+<p>Japanese adjectives carry tense, which English ones don't. さむかった is a single word meaning "was cold" — no verb involved.</p>
+<p>Which pattern a word follows depends on its class: <strong>い-adjectives conjugate like verbs, な-adjectives conjugate like nouns</strong> — they borrow だ／です to do it.</p>
+<h3>い-adjectives — さむい</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th></th><th>Plain</th><th>Polite</th></tr>
+</thead>
+<tbody>
+<tr><td>Present</td><td>さむい</td><td>さむい<strong>です</strong></td></tr>
+<tr><td>Negative</td><td>さむ<strong>くない</strong></td><td>さむくない<strong>です</strong>　/　さむ<strong>くありません</strong></td></tr>
+<tr><td>Past</td><td>さむ<strong>かった</strong></td><td>さむかった<strong>です</strong></td></tr>
+<tr><td>Negative past</td><td>さむ<strong>くなかった</strong></td><td>さむくなかった<strong>です</strong>　/　さむ<strong>くありませんでした</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>Notice the polite column never changes the word — です is bolted on afterwards, because さむい already carries the tense itself.</p>
+<div class="g-trap"><p class="g-trap-bad">✕さむいでした</p><p class="g-trap-good">✓さむかったです　(the adjective takes the past tense, not です)</p></div>
+
+<h3>な-adjectives — しずか</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th></th><th>Plain</th><th>Polite</th></tr>
+</thead>
+<tbody>
+<tr><td>Present</td><td>しずか<strong>だ</strong></td><td>しずか<strong>です</strong></td></tr>
+<tr><td>Negative</td><td>しずか<strong>じゃない</strong></td><td>しずかじゃない<strong>です</strong>　/　しずか<strong>じゃありません</strong></td></tr>
+<tr><td>Past</td><td>しずか<strong>だった</strong></td><td>しずか<strong>でした</strong></td></tr>
+<tr><td>Negative past</td><td>しずか<strong>じゃなかった</strong></td><td>しずかじゃなかった<strong>です</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>Identical to how a noun behaves: がくせいだ, がくせいじゃない, がくせいだった. That's the whole point of the class.</p>
+<h3>The other forms, side by side</h3>
+<div class="g-table-wrap"><table class="g-table-inay">
+<thead>
+<tr><th>Job</th><th>い-adjective</th><th>な-adjective</th></tr>
+</thead>
+<tbody>
+<tr><td>Before a noun</td><td>さむい ひ</td><td>しずか<strong>な</strong> へや</td></tr>
+<tr><td>As an adverb</td><td>はや<strong>く</strong> はしる</td><td>しずか<strong>に</strong> はなす</td></tr>
+<tr><td>Joining (て-form)</td><td>さむ<strong>くて</strong> くらい</td><td>しずか<strong>で</strong> きれい</td></tr>
+<tr><td>Becoming</td><td>さむ<strong>く</strong>なる</td><td>しずか<strong>に</strong>なる</td></tr>
+<tr><td>Too much</td><td>さむ<strong>すぎる</strong></td><td>しずか<strong>すぎる</strong></td></tr>
+<tr><td>Looks/seems</td><td>さむ<strong>そう</strong></td><td>しずか<strong>そう</strong></td></tr>
+</tbody>
+</table></div>
+
+<p>One pattern runs through that entire table: <strong>い-adjectives drop the い, な-adjectives use the bare stem.</strong> さむい loses its い to become さむく, さむくて, さむすぎる, さむそう. しずか simply takes に, で, すぎる, そう as it is.</p>
+<h3>いい is the one irregular</h3>
+<p>いい reverts to its older form よい the moment it conjugates.</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Form</th><th>Result</th></tr>
+</thead>
+<tbody>
+<tr><td>Negative</td><td>よくない　<em>(not ✕いくない)</em></td></tr>
+<tr><td>Past</td><td>よかった　<em>(not ✕いかった)</em></td></tr>
+<tr><td>Negative past</td><td>よくなかった</td></tr>
+<tr><td>て-form</td><td>よくて</td></tr>
+<tr><td>Adverb</td><td>よく</td></tr>
+</tbody>
+</table></div>
+
+<p>Anything built on いい inherits this: かっこいい → かっこよかった, きもちいい → きもちよかった.</p>
+<div class="g-aside"><p>The adjectives page covers the classes, the です trap and the four jobs in much more detail — this section is the conjugation half only.</p></div>
+</section>
+<section class="g-sec"><h2 id="traps-checklist" tabindex="-1">Traps checklist</h2>
+<div class="g-trap"><p class="g-trap-bad">✕いいて</p><p class="g-trap-good">✓いって　(いく is the one て-form exception)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕かあない</p><p class="g-trap-good">✓かわない　(う-verbs take わ in the a-row)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕はしない</p><p class="g-trap-good">✓はしらない　(はしる is godan, not ichidan)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕あらない</p><p class="g-trap-good">✓ない　(ある has no ない-form — the negative is just ない)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕しるません</p><p class="g-trap-good">✓しりません　(しる is godan: しり + ます)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕のんて</p><p class="g-trap-good">✓のんで　(む・ぶ・ぬ take the voiced で／だ)</p></div>
+<div class="g-trap"><p class="g-trap-bad">✕たべるた</p><p class="g-trap-good">✓たべた　(drop る before た)</p></div>
+<p>The ある one catches everyone. ある is godan and conjugates normally everywhere else — あります, あって, あった — but its negative is suppletive: it's simply ない.</p></section>
+<section class="g-sec"><h2 id="why-the-て-form-changed" tabindex="-1">Why the て-form changed</h2>
+
+<p>Optional, but it turns an arbitrary table into three sound changes you can hear.</p>
+<p>Originally every godan verb formed て off the <strong>i-stem</strong>, exactly like ます does — かき + て, のみ + て, かい + て. Then fast speech wore the middle down. Japanese calls this <ruby>音<rt>おん</rt>便<rt>びん</rt></ruby>, "sound convenience."</p>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Change</th><th>What happened</th><th>Result</th></tr>
+</thead>
+<tbody>
+<tr><td><ruby>促<rt>そく</rt>音<rt>おん</rt>便<rt>びん</rt></ruby></td><td>the syllable collapsed into a glottal stop っ</td><td>まち + て → まって</td></tr>
+<tr><td><ruby>撥<rt>はつ</rt>音<rt>おん</rt>便<rt>びん</rt></ruby></td><td>the syllable nasalised into ん, voicing the て to で</td><td>のみ + て → のんで</td></tr>
+<tr><td>イ<ruby>音<rt>おん</rt>便<rt>びん</rt></ruby></td><td>the consonant dropped, leaving the い behind</td><td>かき + て → かいて</td></tr>
+</tbody>
+</table></div>
+
+<p>う-verbs did the same thing by a longer road: かう was once かふ, so かひ + て → かうて → かって. That is why かう and まつ and とる all land on って.</p>
+<p>す verbs never changed because し + て was already easy to say — which is why はなして looks so regular next to the others.</p>
+<p>It also explains the voicing. で and だ appear exactly where ん appears, because a nasal voices the consonant after it. のんで, あそんで, しんで — and およいで, where the ぐ left its voicing behind as it dropped.</p>
+<p>The same wearing-down produced さむかった from さむく + あった, which is why adjectives and verbs both have a past tense full of small っ.</p>
+</section>
+<section class="g-sec"><h2 id="verbs-worth-knowing" tabindex="-1">Verbs worth knowing</h2>
+
+<h3>Ichidan</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Verb</th><th>Reading</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>食べる</td><td>たべる</td><td>to eat</td></tr>
+<tr><td>見る</td><td>みる</td><td>to see, to watch</td></tr>
+<tr><td>寝る</td><td>ねる</td><td>to sleep</td></tr>
+<tr><td>起きる</td><td>おきる</td><td>to get up</td></tr>
+<tr><td>出る</td><td>でる</td><td>to leave, to exit</td></tr>
+<tr><td>開ける</td><td>あける</td><td>to open</td></tr>
+<tr><td>覚える</td><td>おぼえる</td><td>to memorise</td></tr>
+<tr><td>教える</td><td>おしえる</td><td>to teach</td></tr>
+<tr><td>借りる</td><td>かりる</td><td>to borrow</td></tr>
+<tr><td>居る</td><td>いる</td><td>to be (animate)</td></tr>
+</tbody>
+</table></div>
+
+<h3>Godan</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Verb</th><th>Reading</th><th>Meaning</th><th>て-form</th></tr>
+</thead>
+<tbody>
+<tr><td>行く</td><td>いく</td><td>to go</td><td>いって <em>(exception)</em></td></tr>
+<tr><td>飲む</td><td>のむ</td><td>to drink</td><td>のんで</td></tr>
+<tr><td>話す</td><td>はなす</td><td>to speak</td><td>はなして</td></tr>
+<tr><td>買う</td><td>かう</td><td>to buy</td><td>かって</td></tr>
+<tr><td>書く</td><td>かく</td><td>to write</td><td>かいて</td></tr>
+<tr><td>泳ぐ</td><td>およぐ</td><td>to swim</td><td>およいで</td></tr>
+<tr><td>待つ</td><td>まつ</td><td>to wait</td><td>まって</td></tr>
+<tr><td>遊ぶ</td><td>あそぶ</td><td>to play</td><td>あそんで</td></tr>
+<tr><td>作る</td><td>つくる</td><td>to make</td><td>つくって</td></tr>
+<tr><td>走る</td><td>はしる</td><td>to run</td><td>はしって</td></tr>
+</tbody>
+</table></div>
+
+<h3>Irregular</h3>
+<div class="g-table-wrap"><table>
+<thead>
+<tr><th>Verb</th><th>Reading</th><th>Meaning</th></tr>
+</thead>
+<tbody>
+<tr><td>する</td><td>する</td><td>to do</td></tr>
+<tr><td>来る</td><td>くる</td><td>to come</td></tr>
+</tbody>
+</table></div>
+
+<p>する is also how Japanese turns nouns into verbs: べんきょう（study）→ べんきょうする, そうじ（cleaning）→ そうじする. Anything in that shape conjugates exactly like する.</p>
+</section>
+      </article>
+
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+  <script src="sensei.js"></script>
+  <script src="grammar.js"></script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>
