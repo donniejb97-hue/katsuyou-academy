@@ -162,7 +162,7 @@
     'Rules:\n' +
     '- When asked how to say a word or phrase in Japanese, give: the word in ' +
     'hiragana (or katakana for loanwords), the romaji in parentheses, the kanji ' +
-    'if common, and one short example sentence with English translation.\n' +
+    'if common, and one short example sentence with a translation.\n' +
     '- Keep answers short and beginner-friendly: a few sentences, not essays.\n' +
     '- Prefer hiragana over kanji-heavy writing; always include romaji.\n' +
     '- You may answer grammar questions, cultural questions, and questions about ' +
@@ -178,7 +178,15 @@
 
   function buildSystemPrompt() {
     var page = currentPageName();
+    var lang = (typeof explainLanguage === 'function') ? explainLanguage() : 'English';
     var prompt = SYSTEM_PROMPT_BASE;
+
+    // Japanese is what they're learning; this is the language you explain in.
+    prompt += '\n\nWrite everything except the Japanese itself in ' + lang +
+      ' — explanations, translations, grammar notes, encouragement. Japanese examples stay in Japanese, ' +
+      'with rōmaji as usual. If the student writes to you in another language, answer in ' + lang + ' anyway, ' +
+      'unless they explicitly ask you to switch.';
+
     if (page) prompt += '\n\nThe student is currently on the "' + page + '" page of the site.';
     prompt += mistakeContext();
     return prompt;

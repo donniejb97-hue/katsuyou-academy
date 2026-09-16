@@ -550,6 +550,19 @@ function t(key) {
   return (I18N[LANG] && I18N[LANG][key]) || I18N.en[key] || key;
 }
 
+// The language Katsu explains in. The language being *learned* is always
+// Japanese; this is the one explanations, translations and corrections come
+// back in, and it follows whatever the visitor picked in the nav.
+var EXPLAIN_LANGUAGE = {
+  en: 'English',
+  de: 'German',
+  fr: 'French',
+  zh: 'Simplified Chinese'
+};
+function explainLanguage() {
+  return EXPLAIN_LANGUAGE[LANG] || 'English';
+}
+
 function applyI18n() {
   document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : LANG;
   document.querySelectorAll('[data-i18n]').forEach(function (el) {

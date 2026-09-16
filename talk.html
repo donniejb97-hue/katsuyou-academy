@@ -486,6 +486,11 @@
 
     function $(id) { return document.getElementById(id); }
 
+    // Katsu explains in whatever language the site is set to.
+    function explainLang() {
+      return (typeof explainLanguage === 'function') ? explainLanguage() : 'English';
+    }
+
     function tt(key, fallback) {
       if (typeof t === 'function') {
         var v = t(key);
@@ -591,12 +596,15 @@
     // ---------- system prompt ----------
     function buildSystemPrompt() {
       var levelDesc = LEVELS[state.level].desc;
+      var lang = explainLang();
       var base = 'You are Katsu (カツ先生), the Japanese tutor mascot of Katsuyō Academy, running a live conversation-practice ' +
         'exercise with a student (' + levelDesc + ').\n\n' +
+        'The student reads ' + lang + '. Japanese is what they are practising, so the JP and RO lines are always Japanese, ' +
+        'but the EN and FIX lines below must be written in ' + lang + '.\n\n' +
         'REPLY FORMAT — follow this exactly, one field per line, nothing else before or after:\n' +
         'JP: <your reply in Japanese>\n' +
         'RO: <the same sentence in rōmaji>\n' +
-        'EN: <short English translation>\n' +
+        'EN: <short translation, written in ' + lang + ' — the field is called EN regardless of which language that is>\n' +
         'FIX: <one short correction — include this line ONLY if the student made a mistake, otherwise leave the line out entirely>\n' +
         'END: yes  <- include this line ONLY when the situation has genuinely run its course (the order is complete and you have said you will bring it, ' +
         'the directions have been given, the goodbyes have been said). Otherwise leave it out. Do not end things early just to be tidy — ' +
@@ -614,7 +622,7 @@
         'the kind that setting would actually have.\n' +
         '- Invent plausible specifics freely — prices, times, seat numbers — the point is a realistic conversation to practise on.\n\n' +
         'Rules for the FIX line:\n' +
-        '- Write it in English, keep it to one or two short sentences, and be kind: name what was wrong and give the right version.\n' +
+        '- Write it in ' + lang + ', keep it to one or two short sentences, and be kind: name what was wrong and give the right version.\n' +
         '- Omit it entirely when the student made no mistake — do not praise every single turn.\n' +
         '- This is the only place you step outside the roleplay; never break character elsewhere.\n\n';
 
@@ -635,7 +643,7 @@
           'You are roleplaying as ' + persona + '.\n' +
           'Situation: ' + situation + '\n' +
           'Stay in character the entire time. Keep the exchange moving naturally toward a believable resolution of the situation. ' +
-          'If the student writes in English, gently encourage them (in the FIX line) to try it in Japanese, but still respond in character.';
+          'If the student answers in their own language rather than Japanese, gently encourage them (in the FIX line) to try it in Japanese, but still respond in character.';
       }
       if (state.mode === 'grammar') {
         var gf = GRAMMAR_FORMS[state.grammarForm];
@@ -1047,12 +1055,13 @@
 
       var instructions =
         'Review the Japanese conversation-practice transcript below (mode: ' + sessionLabel() + '). ' +
-        'Write an encouraging, specific assessment in ENGLISH for a ' + LEVELS[state.level].desc + '.\n\n' +
+        'Write an encouraging, specific assessment for a ' + LEVELS[state.level].desc + '. ' +
+        'Write it in ' + explainLang() + ' — every field below except the Japanese being quoted.\n\n' +
         'Reply using EXACTLY these line types and nothing else. Fields on a line are separated by a vertical bar.\n' +
         'SUMMARY: <two sentences on how the conversation went overall>\n' +
         'DID_WELL: <what they did well> | <the exact Japanese THEY wrote that shows it>\n' +
         'TO_IMPROVE: <what to work on> | <the exact Japanese they wrote> | <the better version>\n' +
-        'WORD: <Japanese word or phrase> | <rōmaji> | <English meaning> | <why it is worth remembering>\n' +
+        'WORD: <Japanese word or phrase> | <rōmaji> | <meaning> | <why it is worth remembering>\n' +
         'NEXT_STEP: <one concrete thing to practise next>\n\n' +
         'Rules:\n' +
         '- Give 2 to 4 DID_WELL lines and 1 to 4 TO_IMPROVE lines. Always quote what the student actually wrote — ' +
