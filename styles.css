@@ -1674,10 +1674,15 @@ a.nav-link {
     }
 
     /* ====================================================================
-       HOME — one card system instead of nine sets of inline styles.
-       The split is meaningful: dark cards are things you DO (practice that
-       tracks you), light cards are things you READ (reference you return to).
-       Each card sets --card-accent; everything else follows from it.
+       HOME — the toolkit cards
+       Three colours, not nine, and each one means something:
+         terracotta = reference you read        (light card)
+         sage       = practice that tracks you  (dark card)
+         gold       = conversation              (dark card, the one that
+                                                 differs in kind from the rest)
+       Every card carries its colour in the same three places — the category
+       label, the glyph chip and the call to action — so the grid reads as one
+       system rather than nine decisions.
        ==================================================================== */
 
     .tool-grid {
@@ -1690,30 +1695,23 @@ a.nav-link {
     }
 
     .tool-card {
-      --card-accent: var(--accent);
+      --card-accent: #c45c4a;
+      --card-tint: rgba(196,92,74,0.10);
       position: relative;
       display: flex;
       flex-direction: column;
-      padding: 2rem 1.75rem 1.75rem;
-      border: 1px solid rgba(0,0,0,0.08);
+      padding: 1.75rem 1.6rem 1.6rem;
+      border: 1px solid rgba(0,0,0,0.09);
+      border-radius: 6px;
       background: var(--paper);
       cursor: pointer;
       overflow: hidden;
       transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
     }
 
-    /* the accent reads as a rule along the top edge, not as nine background colours */
-    .tool-card::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto 0;
-      height: 3px;
-      background: var(--card-accent);
-    }
-
     .tool-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 18px 38px rgba(0,0,0,0.10);
+      box-shadow: 0 16px 34px rgba(0,0,0,0.10);
       border-color: var(--card-accent);
     }
 
@@ -1722,62 +1720,132 @@ a.nav-link {
       outline-offset: 3px;
     }
 
-    /* Practice tools: the ones that track you and keep score */
-    .tool-card.is-practice {
-      background: linear-gradient(160deg, #1f1f33 0%, #14141f 100%);
-      border-color: rgba(255,255,255,0.10);
+    /* ---- the three variants ------------------------------------------- */
+    .tool-card.is-reference {
+      --card-accent: #c45c4a;
+      --card-tint: rgba(196,92,74,0.10);
     }
 
-    .tool-card__icon {
-      font-size: 2.25rem;
-      line-height: 1;
-      margin-bottom: 0.9rem;
+    .tool-card.is-practice {
+      /* lifted off the true sage so it stays legible on the dark card */
+      --card-accent: #9dc4a1;
+      --card-tint: rgba(157,196,161,0.14);
+      background: linear-gradient(165deg, #232338 0%, #16161f 100%);
+      border-color: rgba(255,255,255,0.09);
+    }
+
+    .tool-card.is-feature {
+      --card-accent: #dcc07f;
+      --card-tint: rgba(220,192,127,0.15);
+      background: linear-gradient(165deg, #232338 0%, #16161f 100%);
+      border-color: rgba(255,255,255,0.09);
+    }
+
+    /* ---- card interior -------------------------------------------------- */
+    .tool-card__cat {
+      display: block;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
       color: var(--card-accent);
+      margin-bottom: 1rem;
+    }
+
+    /* One glyph treatment for all nine — a single kanji in a tinted chip,
+       instead of a mix of emoji at whatever size the font feels like. */
+    .tool-card__glyph {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 10px;
+      background: var(--card-tint);
+      color: var(--card-accent);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.55rem;
+      line-height: 1;
+      margin-bottom: 1rem;
+      flex: 0 0 auto;
     }
 
     .tool-card__title {
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 600;
       color: var(--ink);
-      margin-bottom: 0.6rem;
-      line-height: 1.3;
+      margin-bottom: 0.55rem;
+      line-height: 1.35;
     }
-    .tool-card.is-practice .tool-card__title { color: var(--card-accent); }
+    .tool-card.is-practice .tool-card__title,
+    .tool-card.is-feature .tool-card__title { color: var(--paper); }
     .tool-card__title .jp { color: var(--card-accent); }
 
     .tool-card__desc {
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       line-height: 1.7;
       color: var(--text);
       margin-bottom: 1.25rem;
       flex: 1;
     }
-    .tool-card.is-practice .tool-card__desc { color: rgba(255,255,255,0.78); }
+    .tool-card.is-practice .tool-card__desc,
+    .tool-card.is-feature .tool-card__desc { color: rgba(255,255,255,0.72); }
     .tool-card__desc strong { color: var(--ink); font-weight: 600; }
-    .tool-card.is-practice .tool-card__desc strong { color: #fff; }
+    .tool-card.is-practice .tool-card__desc strong,
+    .tool-card.is-feature .tool-card__desc strong { color: rgba(255,255,255,0.95); }
+    .tool-card__desc em { font-style: italic; }
 
     .tool-card__cta {
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       font-weight: 600;
+      letter-spacing: 0.01em;
       color: var(--card-accent);
       margin-top: auto;
+      padding-top: 0.9rem;
+      border-top: 1px solid rgba(0,0,0,0.07);
     }
+    .tool-card.is-practice .tool-card__cta,
+    .tool-card.is-feature .tool-card__cta { border-top-color: rgba(255,255,255,0.10); }
 
-    /* A quiet marker for things that are actually new */
     .tool-card__new {
       position: absolute;
-      top: 0.9rem;
-      right: 0.9rem;
-      font-size: 0.62rem;
+      top: 1.1rem;
+      right: 1.1rem;
+      font-size: 0.6rem;
       font-weight: 700;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
-      padding: 0.25rem 0.5rem;
+      padding: 0.25rem 0.55rem;
       border-radius: 999px;
       background: var(--card-accent);
-      color: var(--paper);
+      color: #16161f;
     }
-    .tool-card.is-practice .tool-card__new { color: #14141f; }
+
+    /* ---- a legend, so the colour rule is stated rather than implied ----- */
+    .tool-legend {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.4rem 1.75rem;
+      margin: 0 0 2.5rem;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+    .tool-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .tool-legend i {
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+      background: currentColor;
+      font-style: normal;
+    }
+    .tool-legend .lg-ref { color: #c45c4a; }
+    .tool-legend .lg-prac { color: #7a9e7e; }
+    .tool-legend .lg-conv { color: #bfa25f; }
 
     /* ---- Get started: two tiers, not nine competing colours ------------ */
     .start-actions {
@@ -1785,35 +1853,35 @@ a.nav-link {
       flex-wrap: wrap;
       justify-content: center;
       gap: 0.75rem;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
+    .start-actions + .start-actions { margin-bottom: 2rem; }
 
     .start-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.95rem 1.6rem;
-      font-size: 0.98rem;
+      padding: 0.9rem 1.5rem;
+      font-size: 0.96rem;
       font-weight: 600;
       font-family: inherit;
-      border-radius: 4px;
+      border-radius: 5px;
       border: 1.5px solid transparent;
       cursor: pointer;
       transition: all 0.2s;
     }
+    .start-btn .jp { font-family: 'Noto Serif JP', serif; }
 
     .start-btn.is-primary {
       background: var(--ink);
       color: var(--paper);
     }
-    .start-btn.is-primary:hover {
-      background: var(--accent);
-    }
+    .start-btn.is-primary:hover { background: var(--accent); }
 
     .start-btn.is-secondary {
       background: transparent;
       color: var(--ink);
-      border-color: rgba(0,0,0,0.18);
+      border-color: rgba(0,0,0,0.16);
     }
     .start-btn.is-secondary:hover {
       border-color: var(--ink);
@@ -1822,12 +1890,11 @@ a.nav-link {
 
     /* ---- Shared home section furniture --------------------------------- */
     .home-section { max-width: 1000px; margin: 0 auto; padding: 3.5rem 2rem; }
-    .home-section.is-wide { max-width: 1200px; }
 
     .home-panel {
       background: var(--paper);
       border: 1px solid rgba(0,0,0,0.08);
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 3rem;
     }
     .home-panel.is-dark {
@@ -1836,14 +1903,39 @@ a.nav-link {
       border-color: transparent;
     }
 
+    /* Section headings get a kanji mark and a short rule, so every section
+       opens the same way instead of each one inventing its own heading. */
     .home-h2 {
-      font-size: 2rem;
+      font-size: 1.9rem;
       font-weight: 700;
       color: var(--ink);
       margin-bottom: 1.5rem;
       text-align: center;
     }
     .home-panel.is-dark .home-h2 { color: var(--paper); }
+
+    .section-mark {
+      display: block;
+      text-align: center;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.5rem;
+      color: var(--accent);
+      opacity: 0.55;
+      margin-bottom: 0.35rem;
+      line-height: 1;
+    }
+    .home-panel.is-dark .section-mark { color: var(--gold); opacity: 0.8; }
+
+    .home-h2::after {
+      content: '';
+      display: block;
+      width: 2.5rem;
+      height: 2px;
+      background: var(--accent);
+      margin: 0.9rem auto 0;
+      opacity: 0.5;
+    }
+    .home-panel.is-dark .home-h2::after { background: var(--gold); }
 
     .stat-row {
       display: grid;
@@ -1855,49 +1947,66 @@ a.nav-link {
       text-align: center;
       padding: 1.4rem 1rem;
       background: var(--paper-warm);
-      border-radius: 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(0,0,0,0.05);
     }
-    .stat-cell__glyph { font-size: 2.2rem; margin-bottom: 0.4rem; line-height: 1; }
+    .stat-cell__glyph {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 2rem;
+      color: var(--accent);
+      opacity: 0.85;
+      margin-bottom: 0.45rem;
+      line-height: 1;
+    }
     .stat-cell__value { font-weight: 700; color: var(--ink); }
-    .stat-cell__note { font-size: 0.88rem; color: var(--text-light); }
+    .stat-cell__note { font-size: 0.86rem; color: var(--text-light); }
 
     .why-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 2.25rem;
+      gap: 2rem 2.25rem;
     }
     .why-item h3 {
-      font-size: 1.15rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.55rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      margin-bottom: 0.6rem;
-      color: var(--accent);
+      margin-bottom: 0.55rem;
+      color: var(--gold);
+    }
+    .why-item h3 .why-mark {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.95rem;
+      opacity: 0.65;
     }
     .why-item p {
       line-height: 1.7;
-      color: rgba(255,255,255,0.85);
-      font-size: 0.94rem;
+      color: rgba(255,255,255,0.82);
+      font-size: 0.93rem;
     }
 
     .creator-note {
       background: var(--paper-warm);
       padding: 1.75rem;
-      border-radius: 4px;
-      border-left: 4px solid var(--accent);
-      margin-top: 1rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+      margin-top: 1.5rem;
       text-align: left;
     }
     .creator-note p {
-      font-size: 0.95rem;
+      font-size: 0.94rem;
       color: var(--text);
-      line-height: 1.7;
+      line-height: 1.75;
       margin: 0;
     }
 
     @media (max-width: 768px) {
       .home-section { padding: 2.5rem 1.25rem; }
       .home-panel { padding: 1.75rem 1.4rem; }
-      .home-h2 { font-size: 1.6rem; }
+      .home-h2 { font-size: 1.55rem; }
       .tool-grid { grid-template-columns: 1fr; }
+      .tool-legend { gap: 0.35rem 1.1rem; font-size: 0.75rem; }
       .start-actions .start-btn { width: 100%; justify-content: center; }
       .why-grid { gap: 1.75rem; }
     }
