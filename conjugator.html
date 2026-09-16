@@ -139,7 +139,7 @@
       <div class="practice-options">
         <label class="opt-toggle">
           <input type="checkbox" id="type-quiz-toggle" checked onchange="setTypeQuiz(this.checked)">
-          <span data-i18n="opt_type_quiz">Include "what type is this verb?" questions</span>
+          <span data-i18n="opt_type_quiz">Also ask me to name the verb type</span>
         </label>
         <span class="options-right">
           <span id="session-progress" class="session-progress">0 / 10</span>
@@ -162,7 +162,7 @@
 
       <div class="question-badges">
         <span id="review-badge" class="q-badge review" style="display: none;" data-i18n="badge_review">🔁 Review — you missed this one before</span>
-        <span id="type-quiz-badge" class="q-badge quiz" style="display: none;" data-i18n="badge_type_quiz">🧭 Verb-type question</span>
+        <span id="type-quiz-badge" class="q-badge quiz" style="display: none;" data-i18n="badge_type_quiz">First: which type of verb is this?</span>
       </div>
 
       <div class="prompt-row">
@@ -185,7 +185,6 @@
           id="answer-input"
           class="answer-input jp"
           placeholder="Type romaji or kana — ikanai → いかない"
-          data-i18n-placeholder="answer_placeholder_romaji"
           autocomplete="off"
           autocorrect="off"
           autocapitalize="off"
@@ -210,10 +209,9 @@
         </button>
       </div>
 
-      <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled data-i18n="check">Check Answer</button>
+      <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled>Check Answer</button>
       <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="skip">Show me the answer (no penalty)</button>
       <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="next">Next Question →</button>
-      <div class="kbd-hint" data-i18n-html="kbd_hint">Press <kbd>Enter</kbd> to check, then <kbd>Enter</kbd> again for the next question.</div>
       </div><!-- /#question-area -->
     </div>
   </div>

@@ -3382,26 +3382,80 @@ function generateSmartExamples(formKey, verbType) {
   console.log('📝 Final example list:', exampleList);
   // For irregular (来る), show all three examples since it's unique
 
-  const formNames = {
-    negative: 'Negative Form (ない)',
-    masu: 'Polite Form (ます)',
-    past: 'Past Form (た)',
-    tai: 'Want To (たい)',
-    potential: 'Potential Form',
-    volitional: 'Volitional Form',
-    te: 'Te-form (て)',
-    masen: 'Polite Negative (ません)',
-    mashita: 'Polite Past (ました)',
-    nakatta: 'Negative Past (なかった)',
-    ba: 'Conditional (ば)',
-    tara: 'Conditional (たら)',
-    passive: 'Passive Form',
-    causative: 'Causative Form',
-    'causative-passive': 'Causative-Passive',
-    imperative: 'Imperative (Command)'
-  };
+  // Just the worked examples — the form name and the question phrase are added
+  // by buildPromptHtml(), which decides the order they're read in.
+  return exampleList
+    .map(function (e) { return '<span class="ex-item">' + e + '</span>'; })
+    .join('<span class="ex-sep">\u00b7</span>');
+}
 
-  return `<strong>${formNames[formKey] || formKey}</strong><br><span style="font-size: 0.9rem; color: var(--text-light);">${exampleList.join(' | ')}</span>`;
+// The form's name, in the same words the form dropdown uses — which means it
+// follows the site language instead of always being English.
+const FORM_I18N_KEY = {
+  negative: 'f_negative', masu: 'f_masu', past: 'f_past', te: 'f_te',
+  masen: 'f_masen', mashita: 'f_mashita', nakatta: 'f_nakatta', tai: 'f_tai',
+  potential: 'f_potential', volitional: 'f_volitional', ba: 'f_ba', tara: 'f_tara',
+  imperative: 'f_imperative', passive: 'f_passive', causative: 'f_causative',
+  'causative-passive': 'f_caus_pass'
+};
+
+function formDisplayName(formKey) {
+  const key = FORM_I18N_KEY[formKey];
+  return key ? ct(key, formKey) : formKey;
+}
+
+// The question, in three clearly separated parts:
+//   what form to make  →  the actual thing to translate  →  worked examples
+// Examples come last because they're reference, not the question.
+function buildPromptHtml(verb, opts) {
+  const formKey = verb.form.key;
+  const showExamples = !opts || opts.examples !== false;
+
+  const tpl = verb.form.templates.find(function (t) { return t.type === 'phrase'; });
+  const phrase = (window.KA_phrase && window.KA_phrase(formKey, verb.meaning))
+    || (tpl ? tpl.text.replace('{meaning}', verb.meaning.replace('to ', '')) : '');
+
+  let html = '<span class="prompt-task">' + formDisplayName(formKey) + '</span>';
+  if (phrase) html += '<span class="prompt-phrase">' + phrase + '</span>';
+  if (showExamples) {
+    const examples = generateSmartExamples(formKey, verb.type);
+    if (examples) {
+      html += '<span class="prompt-examples"><span class="ex-label">' +
+              ct('ex_label', 'e.g.') + '</span>' + examples + '</span>';
+    }
+  }
+  return html;
+}
+
+// The check button's label can't come from data-i18n: the i18n
+// MutationObserver re-applies that attribute a moment after any DOM change,
+// which would wipe out a "Continue (7)" countdown. Painting it here is also
+// what keeps it translated.
+function paintCheckButton(secondsLeft) {
+  const btn = document.getElementById('check-btn');
+  if (!btn) return;
+  const waitingToContinue = typeof typeIdentificationAnswer !== 'undefined' &&
+    typeIdentificationAnswer && !isTypeIdentificationQuiz && showAnswer;
+  if (waitingToContinue) {
+    btn.textContent = (secondsLeft === undefined || secondsLeft === null)
+      ? ct('continue_now', 'Continue \u2192')
+      : ct('continue_in', 'Continue ({n}) \u2192').replace('{n}', secondsLeft);
+  } else {
+    btn.textContent = ct('check', 'Check Answer');
+  }
+}
+
+// What the answer box should say it wants, for whichever mode is actually on.
+function updateAnswerPlaceholder() {
+  const el = document.getElementById('answer-input');
+  if (!el) return;
+  if (typeof isTypeIdentificationQuiz !== 'undefined' && isTypeIdentificationQuiz) {
+    el.placeholder = ct('answer_placeholder_type', 'godan / ichidan / suru / irregular');
+  } else if (romajiInputEnabled()) {
+    el.placeholder = ct('answer_placeholder_romaji', 'Type romaji or kana — ikanai → いかない');
+  } else {
+    el.placeholder = ct('answer_placeholder_kana', 'ひらがなで入力...');
+  }
 }
 
 function clearHintCache() {
@@ -3525,6 +3579,8 @@ function typeQuizEnabled() {
 }
 
 function generateNewQuestionWithAI() {
+  if (typeof stopTypeQuizCountdown === 'function') stopTypeQuizCountdown();
+
   // Reached the session goal? Stop and show what happened, rather than
   // rolling on forever.
   if (typeof sessionGoal === 'function') {
@@ -3567,18 +3623,13 @@ function generateNewQuestionWithAI() {
       currentVerb.type === 'ichidan' ? 'Ichidan Verb' : 
       currentVerb.type === 'irregular' ? 'Irregular Verb' : 'Suru Verb';
     
-    // Generate smart examples (hide matching verb type)
-    console.log('🎯 Current verb:', currentVerb.kanji, 'Type:', currentVerb.type);
-    const smartExamples = generateSmartExamples(currentVerb.form.key, currentVerb.type);
-    
-    // Get phrase prompt
-    const phraseTemplate = currentVerb.form.templates.find(t => t.type === 'phrase');
-    const phraseText = (window.KA_phrase && window.KA_phrase(currentVerb.form.key, currentVerb.meaning))
-      || (phraseTemplate ? phraseTemplate.text.replace('{meaning}', currentVerb.meaning.replace('to ', '')) : '');
-    
-    // Display both examples AND phrase
-    promptFormDiv.innerHTML = smartExamples + (phraseText ? '<br><span style="font-size: 1rem; color: var(--accent); margin-top: 0.5rem; display: block;">' + phraseText + '</span>' : '');
+    promptFormDiv.innerHTML = buildPromptHtml(currentVerb);
   }
+  // Tag the question with its form, so tests and any future feature don't have
+  // to reverse-engineer it from a translated label.
+  promptFormDiv.dataset.formKey = isTypeIdentificationQuiz ? 'type-identification' : currentVerb.form.key;
+  updateAnswerPlaceholder();
+  paintCheckButton();
   
   document.getElementById('verb-kanji').textContent = currentVerb.kanji;
   document.getElementById('verb-hiragana').textContent = currentVerb.hiragana;
@@ -3628,12 +3679,11 @@ window.refreshConjugatorI18n = function () {
   }
   var promptDiv = document.getElementById('prompt-form');
   if (promptDiv && currentVerb.form && !inTypeQuiz) {
-    var examples = generateSmartExamples(currentVerb.form.key, currentVerb.type);
-    var tpl = currentVerb.form.templates.find(function (t) { return t.type === 'phrase'; });
-    var phrase = (window.KA_phrase && window.KA_phrase(currentVerb.form.key, currentVerb.meaning))
-      || (tpl ? tpl.text.replace('{meaning}', currentVerb.meaning.replace('to ', '')) : '');
-    promptDiv.innerHTML = examples + (phrase ? '<br><span style="font-size: 1rem; color: var(--accent); margin-top: 0.5rem; display: block;">' + phrase + '</span>' : '');
+    // Past the type question, the examples have already served their purpose.
+    promptDiv.innerHTML = buildPromptHtml(currentVerb, { examples: !typeIdentificationAnswer });
   }
+  if (typeof updateAnswerPlaceholder === 'function') updateAnswerPlaceholder();
+  if (typeof paintCheckButton === 'function') paintCheckButton();
 };
 
 // Wrapper function with standard name
@@ -3665,15 +3715,24 @@ function generateNewQuestion() {
           currentVerb.type === 'ichidan' ? 'Ichidan Verb' : 
           currentVerb.type === 'irregular' ? 'Irregular Verb' : 'Suru Verb';
         
-        let promptText = (window.KA_phrase && window.KA_phrase(currentVerb.form.key, currentVerb.meaning))
-          || currentPrompt.text.replace('{meaning}', currentVerb.meaning.replace('to ', ''));
-        document.getElementById('prompt-form').innerHTML = promptText;
+        // Rebuild the whole prompt, not just the phrase — otherwise the form
+        // being asked for disappears. Examples are dropped here: they were
+        // already on screen during the type question.
+        const promptEl = document.getElementById('prompt-form');
+        promptEl.innerHTML = buildPromptHtml(currentVerb, { examples: false });
+        promptEl.dataset.formKey = currentVerb.form.key;
+
+        // The verb-type badge belongs to the question we've just left.
+        const leavingBadge = document.getElementById('type-quiz-badge');
+        if (leavingBadge) leavingBadge.style.display = 'none';
+        stopTypeQuizCountdown();
+        updateAnswerPlaceholder();
         
         // Reset UI for conjugation
         document.getElementById('answer-input').value = '';
         document.getElementById('answer-input').disabled = false;
         document.getElementById('feedback-result').classList.remove('visible');
-        document.getElementById('check-btn').textContent = 'Check Answer';
+        paintCheckButton();
         document.getElementById('check-btn').classList.remove('continue');
         document.getElementById('check-btn').classList.add('primary');
         document.getElementById('check-btn').disabled = true;
@@ -3711,12 +3770,13 @@ function generateNewQuestion() {
             typeExplanation = 'Suru verbs are formed by adding する to a noun and have irregular conjugations.';
           }
           
-          document.getElementById('feedback-explanation').innerHTML = typeExplanation + '<br><br><strong>Click "Continue" when ready to conjugate this verb.</strong>';
+          document.getElementById('feedback-explanation').innerHTML =
+            typeExplanation +
+            '<div id="type-quiz-continue-note" style="margin-top:0.9rem;font-weight:600;color:var(--ink);"></div>';
           document.getElementById('feedback-explanation').style.display = 'block';
           
           // Disable input and change button to "Continue"
           document.getElementById('answer-input').disabled = true;
-          document.getElementById('check-btn').textContent = 'Continue →';
           document.getElementById('check-btn').classList.remove('primary');
           document.getElementById('check-btn').classList.add('continue');
           document.getElementById('check-btn').disabled = false;
@@ -3724,6 +3784,9 @@ function generateNewQuestion() {
           // Mark that we're waiting for continuation
           isTypeIdentificationQuiz = false;
           showAnswer = true; // Reuse this flag to indicate we're in "continue" state
+          // Start the countdown last: its first paint reads showAnswer to
+          // decide whether the button says "Check" or "Continue".
+          startTypeQuizCountdown();
         } else {
           // Wrong type identification - this counts as a mistake!
           stats.total++;
@@ -4049,6 +4112,14 @@ function generateNewQuestion() {
         const summary = document.getElementById('session-summary');
         if (summary && summary.style.display === 'block') return;
         if (typeof conjInfoOpen === 'function' && conjInfoOpen()) return;
+        // Sitting on the verb-type checkpoint: Enter goes straight on to the
+        // conjugation instead of waiting out the countdown.
+        if (typeIdentificationAnswer && !isTypeIdentificationQuiz) {
+          e.preventDefault();
+          stopTypeQuizCountdown();
+          checkAnswer();
+          return;
+        }
         const nextBtn = document.getElementById('next-btn');
         if (!nextBtn || nextBtn.style.display === 'none') return;
         e.preventDefault();
@@ -4056,6 +4127,49 @@ function generateNewQuestion() {
       });
     }
     
+    // ---- Verb-type question: carry on by itself ----------------------------
+    // Getting the type right is a checkpoint, not a result worth sitting on.
+    // It moves to the conjugation on its own after ten seconds; Enter or the
+    // button gets there sooner.
+    let typeQuizTimer = null;
+    let typeQuizTick = null;
+    const TYPE_QUIZ_SECONDS = 10;
+
+    function stopTypeQuizCountdown() {
+      if (typeQuizTimer) { clearTimeout(typeQuizTimer); typeQuizTimer = null; }
+      if (typeQuizTick) { clearInterval(typeQuizTick); typeQuizTick = null; }
+    }
+
+    function startTypeQuizCountdown() {
+      stopTypeQuizCountdown();
+      let left = TYPE_QUIZ_SECONDS;
+
+      function paint() {
+        const note = document.getElementById('type-quiz-continue-note');
+        if (note) {
+          note.textContent = ct('type_quiz_continue', 'Now conjugate it — continuing in {n}s.')
+            .replace('{n}', left);
+        }
+        paintCheckButton(left);
+      }
+      paint();
+
+      typeQuizTick = setInterval(function () {
+        left--;
+        // Only stop counting — the advance itself is the timeout below.
+        if (left <= 0) { clearInterval(typeQuizTick); typeQuizTick = null; return; }
+        paint();
+      }, 1000);
+
+      typeQuizTimer = setTimeout(function () {
+        stopTypeQuizCountdown();
+        // Only advance if we're still sitting on the same checkpoint.
+        if (showAnswer && typeIdentificationAnswer && !isTypeIdentificationQuiz) {
+          checkAnswer();
+        }
+      }, TYPE_QUIZ_SECONDS * 1000);
+    }
+
     // ---- Session summary ---------------------------------------------------
     function formLabel(key) {
       const f = forms.find(function (x) { return x.key === key; });
@@ -4130,6 +4244,7 @@ function generateNewQuestion() {
     }
 
     function skipQuestion() {
+      stopTypeQuizCountdown();
       // Track skipped questions. Skipping has never counted against your
       // score — it just breaks the streak and shows you the answer.
       stats.skipped++;
@@ -4229,9 +4344,14 @@ function generateNewQuestion() {
       return Array.isArray(rows) ? rows : [];
     }
 
-    function openConjInfo() {
+    // `peeking` = opened by holding Alt+I, so it closes again on release.
+    // Opened from the chip instead, it stays until it's dismissed.
+    let conjInfoPeeking = false;
+
+    function openConjInfo(peeking) {
       const box = document.getElementById('conj-info-content');
       if (!box) return;
+      conjInfoPeeking = !!peeking;
       document.getElementById('conj-info-title').textContent =
         ct('conj_info_title', 'Shortcuts & options');
       document.getElementById('conj-info-sub').textContent =
@@ -4255,6 +4375,7 @@ function generateNewQuestion() {
     function closeConjInfo() {
       const o = document.getElementById('conj-info-overlay');
       if (o) o.classList.remove('show');
+      conjInfoPeeking = false;
     }
 
     function conjInfoOpen() {
@@ -4271,14 +4392,26 @@ function generateNewQuestion() {
         });
       }
 
+      // Release either Alt or I and the peek ends. Window blur counts as a
+      // release too — Alt-tabbing away must not leave the dialog stuck open.
+      function endPeek() { if (conjInfoPeeking) closeConjInfo(); }
+      document.addEventListener('keyup', function (e) {
+        const k = (e.key || '').toLowerCase();
+        if (k === 'i' || k === 'alt' || !e.altKey) endPeek();
+      });
+      window.addEventListener('blur', endPeek);
+
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && conjInfoOpen()) { closeConjInfo(); return; }
         if (!e.altKey || e.ctrlKey || e.metaKey) return;
 
         const key = (e.key || '').toLowerCase();
+        // Alt+I is hold-to-peek, like the Kana Drill's chart keys: hold to
+        // read it, let go and it's gone. e.repeat guards the key-repeat storm
+        // that holding a key produces.
         if (key === 'i') {
           e.preventDefault();
-          conjInfoOpen() ? closeConjInfo() : openConjInfo();
+          if (!e.repeat && !conjInfoOpen()) openConjInfo(true);
           return;
         }
         if (conjInfoOpen()) return;   // the rest are for the question, not the dialog
@@ -4308,12 +4441,9 @@ function generateNewQuestion() {
 
     function setRomajiInput(on) {
       try { localStorage.setItem('katsuyo-romaji-input', on ? 'on' : 'off'); } catch (e) {}
-      var el = document.getElementById('answer-input');
-      if (el) {
-        el.placeholder = on
-          ? ct('answer_placeholder_romaji', 'Type romaji or kana — ikanai → いかない')
-          : ct('answer_placeholder_kana', 'ひらがなで入力...');
-      }
+      // One place decides what the box says it wants — it has three modes,
+      // and romaji on/off is only two of them.
+      updateAnswerPlaceholder();
     }
 
     // ============ VERB LIST FUNCTIONS ============
