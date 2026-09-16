@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-4XWJSE6WX0');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversation Practice — Talk with Katsu | Katsuyō Academy</title>
+  <meta name="description" content="Practice real Japanese conversation with Katsu, your AI tutor. Roleplay everyday scenarios, chat freely, or drill a specific grammar form — then get an assessment of how you did.">
+  <link rel="canonical" href="https://katsuyoacademy.com/talk">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .talk-page { max-width: 760px; margin: 0 auto; padding: 2rem; }
+
+    .talk-intro { color: var(--text-light); margin: 0.5rem 0 1.75rem; max-width: 60ch; }
+
+    /* ---------- setup view ---------- */
+    .talk-step { margin-bottom: 1.75rem; }
+    .talk-step-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); margin-bottom: 0.75rem; }
+
+    .mode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+    .mode-card { background: white; border: 2px solid rgba(0,0,0,0.1); border-radius: 12px; padding: 1.1rem 1rem; text-align: left; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .mode-card:hover { border-color: var(--accent-soft); transform: translateY(-1px); }
+    .mode-card.on { border-color: var(--accent); background: rgba(196,92,74,0.06); }
+    .mode-card-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+    .mode-card-title { font-weight: 700; color: var(--ink); font-size: 0.98rem; margin-bottom: 0.3rem; }
+    .mode-card-desc { font-size: 0.82rem; color: var(--text-light); line-height: 1.4; }
+
+    .talk-options { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); padding: 1.25rem 1.5rem; display: none; }
+    .talk-options.show { display: block; }
+    .talk-opt-row { display: flex; gap: 0.6rem; align-items: flex-start; flex-wrap: wrap; margin-bottom: 1rem; }
+    .talk-opt-row:last-child { margin-bottom: 0; }
+    .talk-opt-label { flex: 0 0 auto; min-width: 8ch; padding-top: 0.5rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); }
+    .talk-chip-group { display: flex; flex-wrap: wrap; gap: 0.5rem; flex: 1 1 auto; min-width: 0; }
+    .talk-chip { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 0.9rem; border-radius: 999px; font-family: inherit; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .talk-chip:hover { border-color: var(--accent-soft); }
+    .talk-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .talk-custom-input { flex: 1 1 auto; min-width: 0; padding: 0.5rem 0.75rem; border: 1.5px solid rgba(0,0,0,0.15);
+      border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; }
+    .talk-custom-input:focus { border-color: var(--accent); }
+
+    .talk-start-row { display: flex; justify-content: center; margin-top: 1.75rem; }
+    .talk-btn { padding: 0.9rem 2.2rem; font-family: inherit; font-size: 1rem; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; transition: all 0.15s; }
+    .talk-btn.primary { background: var(--accent); color: white; }
+    .talk-btn.primary:hover:not(:disabled) { background: var(--accent-soft); }
+    .talk-btn.primary:disabled { opacity: 0.4; cursor: default; }
+    .talk-btn.ghost { background: white; border: 1.5px solid rgba(0,0,0,0.15); color: var(--text); }
+    .talk-btn.ghost:hover { border-color: var(--accent-soft); }
+
+    /* ---------- session view ---------- */
+    #talk-session { display: none; }
+    #talk-session.show { display: block; }
+    .talk-session-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .talk-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: var(--ink); color: var(--paper); padding: 0.45rem 0.9rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+    .talk-badge .jp { color: var(--accent-soft); }
+    .talk-stop-btn { background: white; border: 1.5px solid var(--accent); color: var(--accent); padding: 0.5rem 1.1rem; border-radius: 8px; font-family: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
+    .talk-stop-btn:hover { background: var(--accent); color: white; }
+
+    .talk-chat { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); display: flex; flex-direction: column; height: 520px; overflow: hidden; }
+
+    /* display controls — change how Japanese is shown, without refetching */
+    .talk-display-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.7rem; padding: 0.7rem 0.9rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07); background: var(--paper); }
+    .talk-display-label { font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); }
+    .talk-display-sep { width: 1px; height: 18px; background: rgba(0,0,0,0.12); }
+    .talk-mini-chip { border: 1.5px solid rgba(0,0,0,0.13); background: white; color: var(--text); padding: 0.28rem 0.68rem; border-radius: 999px;
+      font-family: inherit; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .talk-mini-chip:hover:not(:disabled) { border-color: var(--accent-soft); }
+    .talk-mini-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .talk-mini-chip:disabled { opacity: 0.4; cursor: default; }
+
+    .talk-msgs { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.1rem; }
+
+    .talk-msg { display: flex; gap: 0.6rem; max-width: 88%; }
+    .talk-msg.katsu { align-self: flex-start; }
+    .talk-msg.student { align-self: flex-end; flex-direction: row-reverse; max-width: 78%; }
+
+    .talk-avatar { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: var(--paper);
+      display: flex; align-items: center; justify-content: center; font-family: 'Noto Serif JP', serif; font-size: 0.95rem;
+      border: 1.5px solid var(--accent); margin-top: 0.2rem; }
+
+    .talk-bubble { padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.95rem; line-height: 1.55; word-wrap: break-word; min-width: 0; }
+    .talk-msg.katsu .talk-bubble { background: var(--paper-warm); border: 1px solid rgba(0,0,0,0.07); border-top-left-radius: 3px; }
+    .talk-msg.student .talk-bubble { background: var(--ink); color: var(--paper); border-top-right-radius: 3px; white-space: pre-wrap; }
+
+    .talk-jp { font-family: 'Noto Serif JP', serif; font-size: 1.12rem; line-height: 2; color: var(--ink); }
+    .talk-jp ruby rt { font-size: 0.48em; opacity: 0.7; font-weight: 500; }
+    .talk-ro { margin-top: 0.4rem; font-size: 0.86rem; font-style: italic; color: var(--text-light); }
+    .talk-ro.main { margin-top: 0; font-style: normal; font-size: 1.02rem; color: var(--ink); line-height: 1.7; }
+    .talk-en { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed rgba(0,0,0,0.1); font-size: 0.88rem; color: var(--text); }
+    .talk-fix { margin-top: 0.75rem; background: rgba(196,92,74,0.09); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;
+      padding: 0.5rem 0.7rem; font-size: 0.84rem; color: #8a3d2f; line-height: 1.45; }
+    .talk-fix-label { display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; opacity: 0.85; margin-bottom: 0.15rem; }
+
+    .talk-msg.thinking .talk-bubble { opacity: 0.55; font-style: italic; }
+    .talk-msg.system-note { display: block; align-self: center; max-width: 100%; color: var(--text-light); font-size: 0.78rem; font-style: italic; text-align: center; }
+
+    /* shown when Katsu signals the situation has reached a natural close */
+    .talk-continue { align-self: center; max-width: 100%; background: rgba(201,169,98,0.12); border: 1px solid rgba(201,169,98,0.55);
+      border-radius: 10px; padding: 0.9rem 1rem; text-align: center; }
+    .talk-continue p { font-size: 0.87rem; color: var(--text); margin-bottom: 0.7rem; }
+    .talk-continue-actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
+    .talk-continue-btn { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.4rem 0.95rem;
+      border-radius: 999px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .talk-continue-btn:hover { border-color: var(--accent-soft); }
+    .talk-continue-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    .talk-continue-btn.primary:hover { background: var(--accent-soft); border-color: var(--accent-soft); }
+
+    .talk-form { display: flex; gap: 0.5rem; padding: 0.75rem; border-top: 1px solid rgba(0,0,0,0.08); }
+    .talk-input { flex: 1; padding: 0.7rem 0.9rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none; }
+    .talk-input:focus { border-color: var(--accent); }
+    .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
+    .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
+    .talk-send:disabled { opacity: 0.5; cursor: default; }
+
+    .talk-hint { text-align: center; color: var(--text-light); font-size: 0.8rem; margin-top: 0.75rem; }
+
+    /* ---------- stop confirm (small modal) ---------- */
+    .talk-confirm-content { max-width: 420px; text-align: center; padding: 2rem; }
+    .talk-confirm-content h3 { color: var(--ink); margin-bottom: 0.6rem; }
+    .talk-confirm-content p { color: var(--text-light); font-size: 0.92rem; margin-bottom: 1.5rem; }
+    .talk-confirm-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    /* ---------- assessment sections ---------- */
+    .talk-assess-loading { text-align: center; padding: 3rem 2rem; color: var(--text-light); }
+
+    .assess-item { border-left: 3px solid var(--sage); background: rgba(122,158,126,0.09); border-radius: 0 6px 6px 0;
+      padding: 0.7rem 0.9rem; margin-bottom: 0.8rem; }
+    .assess-item.bad { border-left-color: var(--accent); background: rgba(196,92,74,0.08); }
+    .assess-point { font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+    .assess-quote { margin-top: 0.4rem; font-size: 1.06rem; line-height: 1.8; color: var(--ink); }
+    .assess-fix { margin-top: 0.45rem; font-size: 1.04rem; line-height: 1.8; }
+    .assess-wrote { text-decoration: line-through; opacity: 0.6; }
+    .assess-arrow { margin: 0 0.5rem; color: var(--accent); font-weight: 700; }
+    .assess-better { color: #3f5c42; font-weight: 600; }
+    .assess-quote ruby rt, .assess-fix ruby rt { font-size: 0.48em; opacity: 0.7; }
+
+    .vocab-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.8rem; }
+    .vocab-card { border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 0.8rem; background: var(--paper-warm); }
+    .vocab-jp { font-size: 1.22rem; color: var(--ink); line-height: 1.9; }
+    .vocab-jp ruby rt { font-size: 0.46em; opacity: 0.7; }
+    .vocab-ro { font-size: 0.8rem; font-style: italic; color: var(--text-light); margin-top: 0.1rem; }
+    .vocab-en { font-size: 0.9rem; margin-top: 0.3rem; }
+    .vocab-why { font-size: 0.79rem; color: var(--text-light); margin-top: 0.35rem; padding-top: 0.35rem;
+      border-top: 1px dashed rgba(0,0,0,0.12); line-height: 1.45; }
+
+    .transcript-details > summary { cursor: pointer; font-size: 1.05rem; font-weight: 700; color: var(--ink); padding: 0.3rem 0; }
+    .transcript-details > summary:hover { color: var(--accent); }
+    .transcript { margin-top: 1rem; }
+    .transcript-turn { padding: 0.65rem 0.85rem; border-radius: 8px; margin-bottom: 0.7rem; background: var(--paper-warm); }
+    .transcript-turn.student { background: var(--ink); color: var(--paper); }
+    .transcript-who { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.09em; opacity: 0.6; margin-bottom: 0.2rem; }
+    .transcript-jp { font-size: 1.05rem; line-height: 1.9; }
+    .transcript-jp ruby rt { font-size: 0.46em; opacity: 0.7; }
+    .transcript-ro { font-size: 0.82rem; font-style: italic; opacity: 0.7; margin-top: 0.25rem; }
+    .transcript-en { font-size: 0.84rem; margin-top: 0.25rem; opacity: 0.85; }
+    .transcript-fix { margin-top: 0.5rem; font-size: 0.81rem; color: #8a3d2f; background: rgba(196,92,74,0.12);
+      border-left: 3px solid var(--accent); padding: 0.4rem 0.6rem; border-radius: 0 4px 4px 0; }
+
+    @media (max-width: 640px) {
+      .talk-page { padding: 1.25rem; }
+      .mode-grid { grid-template-columns: 1fr; }
+      .talk-chat { height: 60vh; }
+    }
+  </style>
+</head>
+<body data-page="talk">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="/" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="adjectives" href="/adjectives" data-i18n="nav_adjectives">Adjectives</a>
+        <a class="nav-link" data-page="reference" href="/reference" data-i18n="nav_reference">Reference</a>
+        <a class="nav-link" data-page="conjugation" href="/conjugation" data-i18n="nav_conjugation">Conjugation</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link active" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-talk" class="page active">
+    <div class="talk-page">
+
+      <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
+      <h1 class="page-title" style="font-size: 2rem;" data-i18n="talk_title">Talk with Katsu</h1>
+      <p class="talk-intro" data-i18n="talk_intro">Have a real back-and-forth in Japanese. Pick how you want to practice, chat with Katsu for as long as you like, then stop any time to get an assessment of how you did.</p>
+
+      <!-- ============ SETUP VIEW ============ -->
+      <div id="talk-setup">
+
+        <div class="talk-step">
+          <div class="talk-step-label" data-i18n="talk_step1">1. Choose a practice mode</div>
+          <div class="mode-grid">
+            <button type="button" class="mode-card" data-mode="scenario" onclick="TalkPractice.selectMode('scenario')">
+              <div class="mode-card-icon">🎭</div>
+              <div class="mode-card-title" data-i18n="talk_mode_scenario_t">Scenario Roleplay</div>
+              <div class="mode-card-desc" data-i18n="talk_mode_scenario_d">Katsu plays a character — order food, ask directions, check into a hotel.</div>
+            </button>
+            <button type="button" class="mode-card" data-mode="freechat" onclick="TalkPractice.selectMode('freechat')">
+              <div class="mode-card-icon">💬</div>
+              <div class="mode-card-title" data-i18n="talk_mode_freechat_t">Free Chat</div>
+              <div class="mode-card-desc" data-i18n="talk_mode_freechat_d">Open conversation at your level, about whatever you like.</div>
+            </button>
+            <button type="button" class="mode-card" data-mode="grammar" onclick="TalkPractice.selectMode('grammar')">
+              <div class="mode-card-icon">🎯</div>
+              <div class="mode-card-title" data-i18n="talk_mode_grammar_t">Grammar-Targeted</div>
+              <div class="mode-card-desc" data-i18n="talk_mode_grammar_d">Katsu steers the conversation to draw out one specific form.</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="talk-step">
+          <div class="talk-step-label" data-i18n="talk_step2">2. Set the details</div>
+
+          <div class="talk-options" id="opt-scenario">
+            <div class="talk-opt-row">
+              <span class="talk-opt-label" data-i18n="talk_scenario">Scenario</span>
+              <div class="talk-chip-group" id="scenario-chips"></div>
+            </div>
+            <div class="talk-opt-row" id="custom-scenario-row" style="display: none;">
+              <span class="talk-opt-label" data-i18n="talk_custom">Describe</span>
+              <input type="text" id="talk-custom-input" class="talk-custom-input" maxlength="200" autocomplete="off"
+                     data-i18n-placeholder="talk_custom_placeholder"
+                     placeholder="e.g. returning a shirt that doesn't fit, at a department store">
+            </div>
+            <div class="talk-opt-row">
+              <span class="talk-opt-label" data-i18n="talk_level">Level</span>
+              <div class="talk-chip-group" id="level-chips-scenario"></div>
+            </div>
+          </div>
+
+          <div class="talk-options" id="opt-freechat">
+            <div class="talk-opt-row">
+              <span class="talk-opt-label" data-i18n="talk_level">Level</span>
+              <div class="talk-chip-group" id="level-chips-freechat"></div>
+            </div>
+          </div>
+
+          <div class="talk-options" id="opt-grammar">
+            <div class="talk-opt-row">
+              <span class="talk-opt-label" data-i18n="talk_form">Form</span>
+              <div class="talk-chip-group" id="grammar-chips"></div>
+            </div>
+            <div class="talk-opt-row">
+              <span class="talk-opt-label" data-i18n="talk_level">Level</span>
+              <div class="talk-chip-group" id="level-chips-grammar"></div>
+            </div>
+          </div>
+
+          <p class="talk-hint" id="talk-setup-hint" data-i18n="talk_pick_mode_hint">Pick a mode above to see its options.</p>
+        </div>
+
+        <div class="talk-start-row">
+          <button type="button" class="talk-btn primary" id="talk-start-btn" onclick="TalkPractice.start()" disabled data-i18n="talk_start">Start Conversation</button>
+        </div>
+      </div>
+
+      <!-- ============ SESSION VIEW ============ -->
+      <div id="talk-session">
+        <div class="talk-session-bar">
+          <span class="talk-badge"><span class="jp">活</span><span id="talk-session-label">—</span></span>
+          <button type="button" class="talk-stop-btn" onclick="TalkPractice.requestStop()" data-i18n="talk_stop">Stop</button>
+        </div>
+        <div class="talk-chat">
+          <div class="talk-display-bar">
+            <span class="talk-display-label" data-i18n="talk_show">Show</span>
+            <div class="talk-chip-group" id="talk-script-chips" style="gap: 0.4rem; flex: 0 1 auto;"></div>
+            <span class="talk-display-sep"></span>
+            <button type="button" class="talk-mini-chip" id="talk-toggle-romaji">+ Rōmaji</button>
+            <button type="button" class="talk-mini-chip" id="talk-toggle-english">+ English</button>
+          </div>
+          <div class="talk-msgs" id="talk-msgs"></div>
+          <form class="talk-form" id="talk-form">
+            <input type="text" id="talk-input" class="talk-input" maxlength="400" data-i18n-placeholder="talk_placeholder" placeholder="Type your reply in Japanese (or ask Katsu for help)…" autocomplete="off">
+            <button type="submit" class="talk-send" id="talk-send" data-i18n="talk_send">Send</button>
+          </form>
+        </div>
+        <p class="talk-hint" data-i18n="talk_correction_hint">Katsu stays in character, and adds a short correction note when you make a mistake. Change how Japanese is shown any time — it re-renders instantly.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Stop confirm modal -->
+  <div id="talk-stop-modal" class="report-modal">
+    <div class="report-content talk-confirm-content">
+      <h3 data-i18n="talk_stop_title">Stop this conversation?</h3>
+      <p data-i18n="talk_stop_body">You can get an assessment of this session, or just pick a different practice mode.</p>
+      <div class="talk-confirm-actions">
+        <button type="button" class="talk-btn primary" onclick="TalkPractice.getAssessment()" data-i18n="talk_get_assessment">Get Assessment</button>
+        <button type="button" class="talk-btn ghost" onclick="TalkPractice.backToSetup()" data-i18n="talk_choose_different">Choose Different Practice</button>
+        <button type="button" class="talk-btn ghost" onclick="TalkPractice.cancelStop()" data-i18n="talk_keep_talking">Keep Talking</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assessment modal -->
+  <div id="talk-assessment-modal" class="report-modal">
+    <div class="report-content" style="max-width: 640px;">
+      <div class="report-header">
+        <h2 style="font-size: 1.3rem;" data-i18n="talk_assessment_title">📊 Session Assessment</h2>
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <button class="report-download" onclick="TalkPractice.download()" data-i18n="talk_download">⬇ Download</button>
+          <button class="report-close" onclick="TalkPractice.closeAssessment()" aria-label="Close">×</button>
+        </div>
+      </div>
+      <div class="report-body" id="talk-assessment-body"></div>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+  <script src="sensei.js"></script>
+
+  <script>
+  // ==========================================================================
+  // TALK — conversation practice with Katsu (scenario / free chat / grammar)
+  // ==========================================================================
+  var TalkPractice = (function () {
+    'use strict';
+
+    var BACKEND_URL = 'https://katsuyou-backend.vercel.app/api/claude';
+    var MAX_TOKENS_TURN = 350;
+    var MAX_TOKENS_ASSESSMENT = 1400;   // examples + vocabulary need the room
+    var SOFT_TURN_LIMIT = 16; // nudge the student toward wrapping up
+
+    var SCENARIOS = {
+      restaurant: { label: 'Restaurant', jp: 'レストラン',
+        persona: 'a friendly waiter or waitress at a casual Japanese restaurant',
+        situation: 'The student has just sat down and is ready to look at the menu and order.' },
+      directions: { label: 'Asking Directions', jp: '道案内',
+        persona: 'a helpful local stopped on the street',
+        situation: 'The student is lost and needs directions to somewhere nearby, like a station or convenience store.' },
+      shopping: { label: 'Shopping', jp: '買い物',
+        persona: 'a shop clerk in a clothing store',
+        situation: 'The student is browsing and looking for a specific item, size, or color.' },
+      selfintro: { label: 'Self-Introduction', jp: '自己紹介',
+        persona: 'a new classmate meeting the student for the first time',
+        situation: 'They are meeting for the first time at school and getting to know each other.' },
+      hotel: { label: 'Hotel Check-in', jp: 'ホテル',
+        persona: 'a hotel front-desk clerk',
+        situation: 'The student has just arrived to check into their reserved room.' },
+      phone: { label: 'Phone Call', jp: '電話',
+        persona: 'a receptionist answering a phone call',
+        situation: 'The student is calling to ask about hours, availability, or to make a reservation.' },
+      friend: { label: 'Meeting a Friend', jp: '友達',
+        persona: 'a casual friend of the student, using informal speech',
+        situation: 'They are catching up casually about everyday life — informal speech is fine and encouraged.' },
+      custom: { label: '✏️ Custom…', jp: '自由', i18n: 'talk_scenario_custom', custom: true }
+    };
+
+    var GRAMMAR_FORMS = {
+      masu: { label: 'ます form', desc: 'the ます (polite present/future) form' },
+      te: { label: 'て form', desc: 'the て form, especially for requests (〜てください) and connecting actions' },
+      ta: { label: 'た form', desc: 'the た (plain past) form' },
+      negative: { label: 'ない form', desc: 'the ない (negative) form' },
+      tai: { label: 'たい form', desc: 'the たい ("want to") form' },
+      potential: { label: 'Potential', desc: 'the potential form (〜られる/〜える, "can do")' },
+      volitional: { label: 'Volitional', desc: 'the volitional form (〜よう/〜おう, "let\'s.../I will...")' },
+      conditional: { label: 'Conditional', desc: 'conditional forms (ば or たら)' },
+      passive: { label: 'Passive', desc: 'the passive form (〜られる/〜れる)' },
+      causative: { label: 'Causative', desc: 'the causative form (〜させる/〜せる)' },
+      imperative: { label: 'Command', desc: 'plain command / imperative forms' }
+    };
+
+    // Props Katsu can reach for when a scenario needs concrete, nameable
+    // things. Keyed by words that might appear in a custom scenario.
+    var PROPS = [
+      {
+        match: /\b(movie|movies|cinema|film|films|theater|theatre|showing)\b|映画|シネマ/i,
+        text: 'Films you can offer as "now showing", with their Japanese titles — pick three or four, ' +
+              'and be ready to give a start time (上映時間[じょうえいじかん]) and a price:\n' +
+              '千[せん]と千尋[ちひろ]の神隠[かみかく]し (Spirited Away) / となりのトトロ (My Neighbour Totoro) / ' +
+              'もののけ姫[ひめ] (Princess Mononoke) / ハウルの動[うご]く城[しろ] (Howl\'s Moving Castle) / ' +
+              '崖[がけ]の上[うえ]のポニョ (Ponyo) / 君[きみ]の名[な]は。(Your Name) / 天気[てんき]の子[こ] (Weathering With You) / ' +
+              'すずめの戸締[とじ]まり (Suzume) / 君[きみ]たちはどう生[い]きるか (The Boy and the Heron) / ' +
+              'ゴジラ-1.0[マイナスワン] (Godzilla Minus One) / 鬼滅[きめつ]の刃[やいば] (Demon Slayer) / ' +
+              '名探偵[めいたんてい]コナン (Detective Conan) / ドラえもん (Doraemon).\n' +
+              'Useful words for this setting: 上映中[じょうえいちゅう] (now showing), チケット, 座席[ざせき] (seat), ' +
+              '字幕[じまく] (subtitles), 吹[ふ]き替[か]え (dubbed), ポップコーン, 何時[なんじ]から (what time does it start).\n' +
+              'If the student asks what is playing, name actual titles from this list rather than answering vaguely.'
+      },
+      {
+        match: /\b(train|station|subway|metro|platform|ticket gate)\b|電車|駅|地下鉄/i,
+        text: 'Useful for a station setting: 東京[とうきょう]駅[えき], 新宿[しんじゅく], 渋谷[しぶや], 京都[きょうと], 大阪[おおさか]; ' +
+              '山手線[やまのてせん], 特急[とっきゅう] (limited express), 各駅停車[かくえきていしゃ] (local), ' +
+              '片道[かたみち] (one way), 往復[おうふく] (round trip), 何番線[なんばんせん] (which platform).'
+      },
+      {
+        match: /\b(doctor|clinic|hospital|pharmacy|sick|ill)\b|病院|医者|薬局/i,
+        text: 'Useful for a medical setting: 熱[ねつ] (fever), 頭[あたま]が痛[いた]い (headache), 喉[のど] (throat), ' +
+              '風邪[かぜ] (cold), 薬[くすり] (medicine), 保険証[ほけんしょう] (insurance card), ' +
+              '予約[よやく] (appointment), どうしましたか (what seems to be the problem).'
+      }
+    ];
+
+    function propsFor(description) {
+      var out = [];
+      PROPS.forEach(function (p) { if (p.match.test(description)) out.push(p.text); });
+      return out.join('\n\n');
+    }
+
+    var LEVELS = {
+      n5: { label: 'N5', desc: 'JLPT N5 (absolute beginner) — keep vocabulary and grammar very simple' },
+      n4: { label: 'N4', desc: 'JLPT N4 (beginner) — everyday vocabulary, basic connected grammar is fine' },
+      n3: { label: 'N3', desc: 'JLPT N3 (lower intermediate) — natural pace, wider vocabulary, some idioms okay' }
+    };
+
+    var state = {
+      mode: null,
+      scenario: null,
+      grammarForm: null,
+      level: 'n5',
+      messages: [],   // {role:'user'|'assistant', content:string}
+      active: false,
+      busy: false
+    };
+
+    // How Japanese is displayed. Katsu always sends the same thing; these
+    // settings only change how it's rendered, so toggling costs no API calls.
+    var SCRIPT_LABELS = {
+      furigana: ['talk_script_furigana', 'Furigana'],
+      kanji:    ['talk_script_kanji',    'Kanji'],
+      kana:     ['talk_script_kana',     'Kana'],
+      romaji:   ['talk_script_romaji',   'Rōmaji']
+    };
+
+    var display = { script: 'furigana', romaji: true, english: true };
+    var hasSavedDisplay = false;
+    try {
+      var savedDisplay = JSON.parse(localStorage.getItem('talkDisplay') || 'null');
+      if (savedDisplay && SCRIPT_LABELS[savedDisplay.script]) {
+        display = savedDisplay;
+        hasSavedDisplay = true;
+      }
+    } catch (e) { /* storage unavailable — defaults are fine */ }
+
+    function persistDisplay() {
+      hasSavedDisplay = true;
+      try { localStorage.setItem('talkDisplay', JSON.stringify(display)); } catch (e) {}
+    }
+
+    function $(id) { return document.getElementById(id); }
+
+    function tt(key, fallback) {
+      if (typeof t === 'function') {
+        var v = t(key);
+        if (v && v !== key) return v;
+      }
+      return fallback;
+    }
+
+    function buildChips(container, items, keyProp, selectedKey, onPick) {
+      var el = $(container);
+      el.innerHTML = '';
+      Object.keys(items).forEach(function (key) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'talk-chip' + (key === selectedKey ? ' on' : '');
+        btn.textContent = items[key].i18n
+          ? tt(items[key].i18n, items[key].label)
+          : (items[key].label || items[key]);
+        btn.setAttribute('data-key', key);
+        btn.addEventListener('click', function () { onPick(key); });
+        el.appendChild(btn);
+      });
+    }
+
+    function refreshLevelChips(containerId, onPick) {
+      buildChips(containerId, LEVELS, 'label', state.level, onPick);
+    }
+
+    function selectMode(mode) {
+      state.mode = mode;
+      state.scenario = null;
+      state.grammarForm = null;
+
+      document.querySelectorAll('.mode-card').forEach(function (c) {
+        c.classList.toggle('on', c.getAttribute('data-mode') === mode);
+      });
+      document.querySelectorAll('.talk-options').forEach(function (o) { o.classList.remove('show'); });
+      $('talk-setup-hint').style.display = 'none';
+
+      if (mode === 'scenario') {
+        $('opt-scenario').classList.add('show');
+        $('custom-scenario-row').style.display = 'none';   // no scenario picked yet
+        buildChips('scenario-chips', SCENARIOS, 'label', state.scenario, selectScenarioChip);
+        refreshLevelChips('level-chips-scenario', function (key) { selectLevel(key, 'level-chips-scenario'); });
+      } else if (mode === 'freechat') {
+        $('opt-freechat').classList.add('show');
+        refreshLevelChips('level-chips-freechat', function (key) { selectLevel(key, 'level-chips-freechat'); });
+      } else if (mode === 'grammar') {
+        $('opt-grammar').classList.add('show');
+        buildChips('grammar-chips', GRAMMAR_FORMS, 'label', state.grammarForm, selectGrammarChip);
+        refreshLevelChips('level-chips-grammar', function (key) { selectLevel(key, 'level-chips-grammar'); });
+      }
+      validateStart();
+    }
+
+    function selectScenarioChip(key) {
+      state.scenario = key;
+      buildChips('scenario-chips', SCENARIOS, 'label', state.scenario, selectScenarioChip);
+      var row = $('custom-scenario-row');
+      var isCustom = key === 'custom';
+      row.style.display = isCustom ? '' : 'none';
+      if (isCustom) $('talk-custom-input').focus();
+      validateStart();
+    }
+
+    function customText() {
+      var el = $('talk-custom-input');
+      return el ? el.value.trim() : '';
+    }
+
+    function selectGrammarChip(key) {
+      state.grammarForm = key;
+      buildChips('grammar-chips', GRAMMAR_FORMS, 'label', state.grammarForm, selectGrammarChip);
+      validateStart();
+    }
+
+    function selectLevel(key, containerId) {
+      state.level = key;
+      ['level-chips-scenario', 'level-chips-freechat', 'level-chips-grammar'].forEach(function (id) {
+        if ($(id)) refreshLevelChipsSilent(id);
+      });
+      validateStart();
+    }
+
+    function refreshLevelChipsSilent(containerId) {
+      var el = $(containerId);
+      if (!el) return;
+      el.querySelectorAll('.talk-chip').forEach(function (btn) {
+        btn.classList.toggle('on', btn.getAttribute('data-key') === state.level);
+      });
+    }
+
+    function validateStart() {
+      var ok = false;
+      if (state.mode === 'scenario') {
+        ok = state.scenario === 'custom' ? customText().length > 2 : !!state.scenario;
+      }
+      else if (state.mode === 'freechat') ok = true;
+      else if (state.mode === 'grammar') ok = !!state.grammarForm;
+      $('talk-start-btn').disabled = !ok;
+    }
+
+    // ---------- system prompt ----------
+    function buildSystemPrompt() {
+      var levelDesc = LEVELS[state.level].desc;
+      var base = 'You are Katsu (カツ先生), the Japanese tutor mascot of Katsuyō Academy, running a live conversation-practice ' +
+        'exercise with a student (' + levelDesc + ').\n\n' +
+        'REPLY FORMAT — follow this exactly, one field per line, nothing else before or after:\n' +
+        'JP: <your reply in Japanese>\n' +
+        'RO: <the same sentence in rōmaji>\n' +
+        'EN: <short English translation>\n' +
+        'FIX: <one short correction — include this line ONLY if the student made a mistake, otherwise leave the line out entirely>\n' +
+        'END: yes  <- include this line ONLY when the situation has genuinely run its course (the order is complete and you have said you will bring it, ' +
+        'the directions have been given, the goodbyes have been said). Otherwise leave it out. Do not end things early just to be tidy — ' +
+        'keep a conversation going as long as there is something natural left to say.\n\n' +
+        'Rules for the JP line:\n' +
+        '- 1-3 short natural sentences, like a real spoken turn, not an essay.\n' +
+        '- Write kanji naturally, and immediately after each kanji word put its reading in square brackets, e.g. ' +
+        '注文[ちゅうもん]、お茶[ちゃ]、飲[の]みます。Attach the reading to the kanji characters ONLY, never to kana — write 飲[の]みます, not 飲みます[のみます]. ' +
+        'This bracket notation is required on every kanji: the site uses it to render furigana and to show kana-only versions for beginners.\n' +
+        '- Do not use underscores, asterisks, or any other markdown emphasis anywhere.\n\n' +
+        'Being a good conversation partner:\n' +
+        '- When the student asks what is available — what is showing, what is on the menu, what sizes you have, ' +
+        'which platform the train leaves from — always answer with two to four specific, named options they can choose between. ' +
+        'Never deflect with a vague "we have many things" or invent a placeholder like "Movie A". Real, recognisable names, ' +
+        'the kind that setting would actually have.\n' +
+        '- Invent plausible specifics freely — prices, times, seat numbers — the point is a realistic conversation to practise on.\n\n' +
+        'Rules for the FIX line:\n' +
+        '- Write it in English, keep it to one or two short sentences, and be kind: name what was wrong and give the right version.\n' +
+        '- Omit it entirely when the student made no mistake — do not praise every single turn.\n' +
+        '- This is the only place you step outside the roleplay; never break character elsewhere.\n\n';
+
+      if (state.mode === 'scenario') {
+        var sc = SCENARIOS[state.scenario];
+        var persona = sc.persona, situation = sc.situation;
+        if (sc.custom) {
+          persona = 'whichever character best fits the situation the student described — a shop assistant, a friend, ' +
+                    'a receptionist, a neighbour, whoever it calls for';
+          situation = 'The student described the situation they want to practise, in their own words: "' +
+                      state.customScenario + '". Pick a fitting character, set the scene, and open the conversation. ' +
+                      'If the description is vague, make a reasonable interpretation and just begin — do not ask them to clarify first. ' +
+                      'If it is not something that can reasonably be role-played in Japanese, pick the nearest sensible everyday situation instead.';
+          var props = propsFor(state.customScenario);
+          if (props) situation += '\n\n' + props;
+        }
+        return base +
+          'You are roleplaying as ' + persona + '.\n' +
+          'Situation: ' + situation + '\n' +
+          'Stay in character the entire time. Keep the exchange moving naturally toward a believable resolution of the situation. ' +
+          'If the student writes in English, gently encourage them (in the FIX line) to try it in Japanese, but still respond in character.';
+      }
+      if (state.mode === 'grammar') {
+        var gf = GRAMMAR_FORMS[state.grammarForm];
+        return base +
+          'This session specifically targets ' + gf.desc + '. Ask questions and set up small situations that naturally invite the student ' +
+          'to respond using this form. You do not need to roleplay a specific character — just be Katsu, warm and conversational, ' +
+          'steering every turn or two back toward opportunities to practice this form.';
+      }
+      // freechat
+      return base +
+        'This is an open, free-form conversation — no fixed scenario. Ask friendly follow-up questions, introduce new small topics ' +
+        '(hobbies, food, weather, daily life) when the conversation stalls, and generally keep it light and encouraging.';
+    }
+
+    function shortCustom(max) {
+      var s = state.customScenario || '';
+      return s.length > max ? s.slice(0, max - 1).trim() + '…' : s;
+    }
+
+    function sessionLabel() {
+      if (state.mode === 'scenario') {
+        if (state.scenario === 'custom') return shortCustom(28) + ' · ' + LEVELS[state.level].label;
+        return SCENARIOS[state.scenario].label + ' · ' + LEVELS[state.level].label;
+      }
+      if (state.mode === 'grammar') return GRAMMAR_FORMS[state.grammarForm].label + ' · ' + LEVELS[state.level].label;
+      return 'Free Chat · ' + LEVELS[state.level].label;
+    }
+
+    // ---------- backend call ----------
+    function callBackend(payload) {
+      return fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      }).then(function (data) {
+        var text = (data.feedback || '').trim();
+        if (!data.success || !text) throw new Error(data.error || 'empty response');
+        return text;
+      });
+    }
+
+    // ---------- session lifecycle ----------
+    function start() {
+      state.customScenario = customText();
+      state.messages = [];
+      state.active = true;
+      $('talk-setup').style.display = 'none';
+      $('talk-session').classList.add('show');
+      $('talk-session-label').textContent = sessionLabel();
+      $('talk-msgs').innerHTML = '';
+      applyLevelDefaults();
+      buildDisplayControls();
+      addSystemNote(introNote());
+      addMsg('katsu', '…', { thinking: true });
+      requestTurn(null);
+      $('talk-input').focus();
+    }
+
+    function introNote() {
+      if (state.mode === 'scenario') {
+        if (state.scenario === 'custom') return tt('talk_scenario', 'Scenario') + ': ' + shortCustom(90);
+        return 'Scenario: ' + SCENARIOS[state.scenario].label + ' (' + SCENARIOS[state.scenario].jp + ')';
+      }
+      if (state.mode === 'grammar') return 'Focus: ' + GRAMMAR_FORMS[state.grammarForm].label;
+      return 'Free conversation';
+    }
+
+    // ---------- reply parsing & rendering ----------
+    // Katsu writes kanji as 注文[ちゅうもん] — readings attach to the kanji run
+    // only, so ご注文[ちゅうもん] keeps ご outside the ruby base.
+    var READING_RE = /([々〆一-龯豈-﫿]+)\[([^\]]+)\]/g;
+
+    function toRuby(s)        { return s.replace(READING_RE, '<ruby>$1<rt>$2</rt></ruby>'); }
+    function toKana(s)        { return s.replace(READING_RE, '$2'); }
+    function stripReadings(s) { return s.replace(READING_RE, '$1'); }
+
+    function parseReply(text) {
+      var out = { jp: '', ro: '', en: '', fix: '', end: '', raw: text, ok: false };
+      text.split('\n').forEach(function (line) {
+        var m = /^\s*(JP|RO|END|EN|FIX)\s*[:：]\s*(.*)$/.exec(line);
+        if (!m) return;
+        var key = m[1].toLowerCase();
+        out[key] = (out[key] ? out[key] + ' ' : '') + m[2].trim();
+      });
+      out.ok = !!(out.jp || out.ro);
+      out.ended = /^(yes|true|1|はい)$/i.test(out.end.trim());
+      return out;
+    }
+
+    // Render Japanese into an element using the student's chosen script.
+    // Used for the JP line and for any Japanese quoted inside a correction.
+    function applyScript(el, text) {
+      if (display.script === 'furigana') el.innerHTML = toRuby(escapeHtml(text));
+      else if (display.script === 'kanji') el.textContent = stripReadings(text);
+      else el.textContent = toKana(text);   // kana, and rōmaji mode too
+    }
+
+    function renderKatsuBubble(bubble, parts) {
+      bubble.innerHTML = '';
+
+      // Model ignored the format — show what it said rather than nothing.
+      if (!parts.ok) {
+        bubble.textContent = stripReadings(parts.raw).replace(/[_*]/g, '');
+        return;
+      }
+
+      if (parts.jp && display.script !== 'romaji') {
+        var jp = document.createElement('div');
+        jp.className = 'talk-jp jp';
+        applyScript(jp, parts.jp);
+        bubble.appendChild(jp);
+      }
+
+      var romajiIsMain = display.script === 'romaji';
+      if (parts.ro && (romajiIsMain || display.romaji)) {
+        var ro = document.createElement('div');
+        ro.className = 'talk-ro' + (romajiIsMain ? ' main' : '');
+        ro.textContent = parts.ro;
+        bubble.appendChild(ro);
+      }
+
+      if (parts.en && display.english) {
+        var en = document.createElement('div');
+        en.className = 'talk-en';
+        en.textContent = parts.en;
+        bubble.appendChild(en);
+      }
+
+      if (parts.fix) {
+        var fix = document.createElement('div');
+        fix.className = 'talk-fix';
+        var lbl = document.createElement('span');
+        lbl.className = 'talk-fix-label';
+        lbl.textContent = tt('talk_correction', 'Correction');
+        fix.appendChild(lbl);
+        // Corrections quote Japanese too, so they get the same treatment.
+        var fixBody = document.createElement('span');
+        applyScript(fixBody, parts.fix);
+        fix.appendChild(fixBody);
+        bubble.appendChild(fix);
+      }
+    }
+
+    function rerenderAll() {
+      var nodes = $('talk-msgs').querySelectorAll('.talk-msg.katsu');
+      Array.prototype.forEach.call(nodes, function (el) {
+        if (el.katsuParts) renderKatsuBubble(el.querySelector('.talk-bubble'), el.katsuParts);
+      });
+    }
+
+    function buildDisplayControls() {
+      var el = $('talk-script-chips');
+      el.innerHTML = '';
+      Object.keys(SCRIPT_LABELS).forEach(function (key) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'talk-mini-chip' + (display.script === key ? ' on' : '');
+        btn.textContent = tt(SCRIPT_LABELS[key][0], SCRIPT_LABELS[key][1]);
+        btn.addEventListener('click', function () {
+          display.script = key;
+          persistDisplay();
+          buildDisplayControls();
+          rerenderAll();
+        });
+        el.appendChild(btn);
+      });
+
+      // "+" marks these as extra lines added under the Japanese, so they read
+      // differently from the script choices above.
+      var ro = $('talk-toggle-romaji');
+      var en = $('talk-toggle-english');
+      ro.textContent = '+ ' + tt('talk_script_romaji', 'Rōmaji');
+      en.textContent = '+ ' + tt('talk_english', 'English');
+      // In rōmaji mode the rōmaji line IS the message, so the toggle is moot.
+      ro.classList.toggle('on', display.script === 'romaji' || display.romaji);
+      ro.disabled = display.script === 'romaji';
+      en.classList.toggle('on', display.english);
+    }
+
+    // Sensible starting point for the chosen level, until the student picks
+    // their own — beginners get kana + rōmaji, N3 gets kanji without rōmaji.
+    function applyLevelDefaults() {
+      if (hasSavedDisplay) return;
+      if (state.level === 'n5')      display = { script: 'kana',     romaji: true,  english: true };
+      else if (state.level === 'n4') display = { script: 'furigana', romaji: true,  english: true };
+      else                           display = { script: 'furigana', romaji: false, english: true };
+    }
+
+    function addMsg(role, text, opts) {
+      opts = opts || {};
+      var wrap = document.createElement('div');
+      wrap.className = 'talk-msg ' + role + (opts.thinking ? ' thinking' : '');
+
+      if (role === 'katsu') {
+        var av = document.createElement('div');
+        av.className = 'talk-avatar';
+        av.textContent = '活';
+        wrap.appendChild(av);
+      }
+
+      var bubble = document.createElement('div');
+      bubble.className = 'talk-bubble';
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+
+      var msgs = $('talk-msgs');
+      msgs.appendChild(wrap);
+      msgs.scrollTop = msgs.scrollHeight;
+      return wrap;
+    }
+
+    function setKatsuReply(wrap, answer) {
+      var parts = parseReply(answer);
+      wrap.katsuParts = parts;
+      wrap.classList.remove('thinking');
+      renderKatsuBubble(wrap.querySelector('.talk-bubble'), parts);
+
+      // Share corrections with the Katsu widget, so "what did I get wrong in
+      // that sentence?" works from anywhere on the site afterwards.
+      if (parts.fix && window.KatsuMistakes) {
+        var lastStudent = '';
+        for (var i = state.messages.length - 1; i >= 0; i--) {
+          if (state.messages[i].role === 'user' && !state.messages[i].hidden) {
+            lastStudent = state.messages[i].content;
+            break;
+          }
+        }
+        // No student sentence yet means there is nothing to review later.
+        if (lastStudent) window.KatsuMistakes.log({ page: 'Talk', q: lastStudent, note: parts.fix });
+      }
+
+      if (parts.ended) showContinueCard();
+      $('talk-msgs').scrollTop = $('talk-msgs').scrollHeight;
+    }
+
+    // ---------- "this scenario is over — keep going?" ----------
+    function removeContinueCard() {
+      var card = $('talk-msgs').querySelector('.talk-continue');
+      if (card) card.remove();
+    }
+
+    function showContinueCard() {
+      removeContinueCard();
+      var card = document.createElement('div');
+      card.className = 'talk-continue';
+
+      var p = document.createElement('p');
+      p.textContent = tt('talk_ended', 'That wraps up this situation. Would you like to keep the conversation going?');
+      card.appendChild(p);
+
+      var actions = document.createElement('div');
+      actions.className = 'talk-continue-actions';
+
+      function btn(label, cls, fn) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'talk-continue-btn' + (cls ? ' ' + cls : '');
+        b.textContent = label;
+        b.addEventListener('click', fn);
+        actions.appendChild(b);
+      }
+
+      btn(tt('talk_keep_going', 'Keep going'), 'primary', continueConversation);
+      btn(tt('talk_get_assessment', 'Get Assessment'), '', function () { removeContinueCard(); getAssessment(); });
+      btn(tt('talk_choose_different', 'Choose Different Practice'), '', function () { removeContinueCard(); backToSetup(); });
+
+      card.appendChild(actions);
+      $('talk-msgs').appendChild(card);
+      $('talk-msgs').scrollTop = $('talk-msgs').scrollHeight;
+    }
+
+    function continueConversation() {
+      removeContinueCard();
+      addSystemNote(tt('talk_continuing', '— continuing —'));
+      // A nudge Katsu can see but the student doesn't, so the scene moves on
+      // instead of politely ending again on the very next turn.
+      state.messages.push({
+        role: 'user',
+        hidden: true,
+        content: '(The student wants to keep practising. Open a natural next beat in this same setting — ' +
+                 'a follow-up question, the next stage of the situation, or a small new request — and do not end the conversation again straight away.)'
+      });
+      addMsg('katsu', '…', { thinking: true });
+      requestTurn(null);
+    }
+
+    function addSystemNote(text) {
+      var div = document.createElement('div');
+      div.className = 'talk-msg system-note';
+      div.textContent = text;
+      $('talk-msgs').appendChild(div);
+    }
+
+    // requestTurn(userText): userText is null for Katsu's opening line
+    function requestTurn(userText) {
+      if (state.busy) return;
+      state.busy = true;
+      $('talk-send').disabled = true;
+
+      if (userText !== null) {
+        state.messages.push({ role: 'user', content: userText });
+      }
+
+      var thinkingEl = document.querySelector('.talk-msg.katsu.thinking') || addMsg('katsu', '…', { thinking: true });
+      thinkingEl.classList.add('thinking');
+      thinkingEl.querySelector('.talk-bubble').textContent = '考えています… (Thinking…)';
+
+      var payload = {
+        system: buildSystemPrompt(),
+        messages: state.messages.length ? state.messages : [{ role: 'user', content: '(Please start the conversation.)' }],
+        maxTokens: MAX_TOKENS_TURN
+      };
+
+      callBackend(payload).then(function (answer) {
+        setKatsuReply(thinkingEl, answer);
+        state.messages.push({ role: 'assistant', content: answer });
+        maybeNudgeWrapUp();
+      }).catch(function (err) {
+        console.error('Talk error:', err);
+        thinkingEl.classList.remove('thinking');
+        thinkingEl.querySelector('.talk-bubble').textContent = 'すみません (Sumimasen) — I couldn’t reach the server. Try sending that again.';
+        // Drop the failed turn from history so a retry doesn't duplicate it.
+        if (userText !== null) state.messages.pop();
+      }).finally(function () {
+        state.busy = false;
+        $('talk-send').disabled = false;
+      });
+    }
+
+    function maybeNudgeWrapUp() {
+      var studentTurns = state.messages.filter(function (m) { return m.role === 'user'; }).length;
+      if (studentTurns === SOFT_TURN_LIMIT) {
+        addSystemNote('You’ve been at this a while — hit Stop any time for an assessment, or keep going!');
+      }
+    }
+
+    function submitInput(e) {
+      if (e) e.preventDefault();
+      var input = $('talk-input');
+      var text = input.value.trim();
+      if (!text || state.busy) return;
+      input.value = '';
+      removeContinueCard();   // they answered it by just carrying on
+      addMsg('student', text);
+      requestTurn(text);
+    }
+
+    // ---------- stop / assessment ----------
+    function requestStop() {
+      $('talk-stop-modal').classList.add('active');
+    }
+    function cancelStop() {
+      $('talk-stop-modal').classList.remove('active');
+    }
+    function backToSetup() {
+      $('talk-stop-modal').classList.remove('active');
+      state.active = false;
+      state.messages = [];
+      $('talk-session').classList.remove('show');
+      $('talk-setup').style.display = '';
+      document.querySelectorAll('.mode-card').forEach(function (c) { c.classList.remove('on'); });
+      document.querySelectorAll('.talk-options').forEach(function (o) { o.classList.remove('show'); });
+      $('talk-setup-hint').style.display = '';
+      state.mode = null; state.scenario = null; state.grammarForm = null;
+      $('talk-start-btn').disabled = true;
+    }
+
+    // ---------- transcript ----------
+    // turns: [{who:'student'|'katsu', jp, ro, en, fix}]
+    function transcriptTurns() {
+      return state.messages.filter(function (m) {
+        return !m.hidden;     // internal nudges aren't part of the student's work
+      }).map(function (m) {
+        if (m.role === 'user') return { who: 'student', jp: m.content, ro: '', en: '', fix: '' };
+        var p = parseReply(m.content);
+        if (!p.ok) return { who: 'katsu', jp: m.content, ro: '', en: '', fix: '' };
+        return { who: 'katsu', jp: p.jp, ro: p.ro, en: p.en, fix: p.fix };
+      });
+    }
+
+    function transcriptForModel(turns) {
+      return turns.map(function (t) {
+        if (t.who === 'student') return 'Student: ' + t.jp;
+        var line = 'Katsu: ' + stripReadings(t.jp);
+        if (t.fix) line += '\n  [correction given: ' + t.fix + ']';
+        return line;
+      }).join('\n');
+    }
+
+    function getAssessment() {
+      $('talk-stop-modal').classList.remove('active');
+      $('talk-assessment-modal').classList.add('active');
+      var body = $('talk-assessment-body');
+      body.innerHTML = '<div class="talk-assess-loading">考えています… ' +
+        tt('talk_assess_loading', 'putting your report together…') + '</div>';
+
+      var turns = transcriptTurns();
+      state.lastTurns = turns;
+      var transcript = transcriptForModel(turns);
+
+      if (!transcript.trim()) {
+        body.innerHTML = '<div class="talk-assess-loading">' +
+          tt('talk_assess_empty', 'Not enough of a conversation yet to assess — say something first!') + '</div>';
+        return;
+      }
+
+      var instructions =
+        'Review the Japanese conversation-practice transcript below (mode: ' + sessionLabel() + '). ' +
+        'Write an encouraging, specific assessment in ENGLISH for a ' + LEVELS[state.level].desc + '.\n\n' +
+        'Reply using EXACTLY these line types and nothing else. Fields on a line are separated by a vertical bar.\n' +
+        'SUMMARY: <two sentences on how the conversation went overall>\n' +
+        'DID_WELL: <what they did well> | <the exact Japanese THEY wrote that shows it>\n' +
+        'TO_IMPROVE: <what to work on> | <the exact Japanese they wrote> | <the better version>\n' +
+        'WORD: <Japanese word or phrase> | <rōmaji> | <English meaning> | <why it is worth remembering>\n' +
+        'NEXT_STEP: <one concrete thing to practise next>\n\n' +
+        'Rules:\n' +
+        '- Give 2 to 4 DID_WELL lines and 1 to 4 TO_IMPROVE lines. Always quote what the student actually wrote — ' +
+        'never invent sentences they did not write. If they wrote very little, say so honestly in SUMMARY and give fewer lines.\n' +
+        '- If a TO_IMPROVE point has no specific sentence behind it, put a dash in the second field.\n' +
+        '- Give 4 to 8 WORD lines: useful words and phrases from this conversation, drawn from what either of you said. ' +
+        'Write kanji with readings in square brackets, e.g. 注文[ちゅうもん]. Favour things worth keeping, not throwaway particles.\n' +
+        '- Be honest. If something was wrong, say so plainly and kindly; do not praise work that was not good.\n\n' +
+        'Transcript:\n' + transcript;
+
+      callBackend({ messages: [{ role: 'user', content: instructions }], maxTokens: MAX_TOKENS_ASSESSMENT })
+        .then(function (text) {
+          state.lastAssessment = parseAssessment(text);
+          renderAssessment(state.lastAssessment, turns);
+        })
+        .catch(function (err) {
+          console.error('Assessment error:', err);
+          body.innerHTML = '<div class="talk-assess-loading">' +
+            tt('talk_assess_failed', 'Couldn’t generate an assessment right now — please try again in a moment.') + '</div>';
+        });
+    }
+
+    function parseAssessment(text) {
+      var out = { summary: '', next: '', well: [], improve: [], words: [], raw: text, ok: false };
+      text.split('\n').forEach(function (line) {
+        var m = /^\s*(SUMMARY|DID_WELL|TO_IMPROVE|WORD|NEXT_STEP)\s*[:：]\s*(.*)$/.exec(line);
+        if (!m) return;
+        var val = m[2].trim();
+        if (!val) return;
+        var f = val.split('|').map(function (s) { return s.trim(); });
+        var blank = function (s) { return !s || s === '-' || s === '—'; };
+
+        if (m[1] === 'SUMMARY')         out.summary = val;
+        else if (m[1] === 'NEXT_STEP')  out.next = val;
+        else if (m[1] === 'DID_WELL')   out.well.push({ point: f[0], example: blank(f[1]) ? '' : f[1] });
+        else if (m[1] === 'TO_IMPROVE') out.improve.push({ point: f[0], wrote: blank(f[1]) ? '' : f[1], better: blank(f[2]) ? '' : f[2] });
+        else if (m[1] === 'WORD')       out.words.push({ jp: f[0], ro: f[1] || '', en: f[2] || '', why: f[3] || '' });
+      });
+      out.ok = !!(out.summary || out.well.length || out.improve.length || out.words.length);
+      return out;
+    }
+
+    // Japanese for the report: ruby where there are readings, plain otherwise.
+    function jpHtml(s) { return toRuby(escapeHtml(s || '')); }
+
+    function renderAssessment(a, turns) {
+      if (!a.ok) {
+        $('talk-assessment-body').innerHTML =
+          '<div class="report-section"><p>' + escapeHtml(a.raw) + '</p></div>';
+        return;
+      }
+
+      var h = '';
+
+      if (a.summary) {
+        h += '<div class="report-section"><h3 class="report-section-title">📝 ' +
+             tt('talk_assess_summary', 'Summary') + '</h3><p>' + escapeHtml(a.summary) + '</p></div>';
+      }
+
+      if (a.well.length) {
+        h += '<div class="report-section"><h3 class="report-section-title">✅ ' +
+             tt('talk_assess_well', 'What you did well') + '</h3>';
+        a.well.forEach(function (w) {
+          h += '<div class="assess-item good"><div class="assess-point">' + escapeHtml(w.point) + '</div>';
+          if (w.example) h += '<div class="assess-quote jp">' + jpHtml(w.example) + '</div>';
+          h += '</div>';
+        });
+        h += '</div>';
+      }
+
+      if (a.improve.length) {
+        h += '<div class="report-section"><h3 class="report-section-title">📌 ' +
+             tt('talk_assess_improve', 'What to work on') + '</h3>';
+        a.improve.forEach(function (w) {
+          h += '<div class="assess-item bad"><div class="assess-point">' + escapeHtml(w.point) + '</div>';
+          if (w.wrote || w.better) {
+            h += '<div class="assess-fix">';
+            if (w.wrote)  h += '<span class="assess-wrote jp">' + jpHtml(w.wrote) + '</span>';
+            if (w.better) h += '<span class="assess-arrow">→</span><span class="assess-better jp">' + jpHtml(w.better) + '</span>';
+            h += '</div>';
+          }
+          h += '</div>';
+        });
+        h += '</div>';
+      }
+
+      if (a.words.length) {
+        h += '<div class="report-section"><h3 class="report-section-title">📚 ' +
+             escapeHtml(tt('talk_assess_words', 'Words & phrases to remember')) + '</h3><div class="vocab-grid">';
+        a.words.forEach(function (w) {
+          h += '<div class="vocab-card"><div class="vocab-jp jp">' + jpHtml(w.jp) + '</div>';
+          if (w.ro) h += '<div class="vocab-ro">' + escapeHtml(w.ro) + '</div>';
+          if (w.en) h += '<div class="vocab-en">' + escapeHtml(w.en) + '</div>';
+          if (w.why) h += '<div class="vocab-why">' + escapeHtml(w.why) + '</div>';
+          h += '</div>';
+        });
+        h += '</div></div>';
+      }
+
+      if (a.next) {
+        h += '<div class="report-section"><h3 class="report-section-title">➡️ ' +
+             tt('talk_assess_next', 'Next step') + '</h3><p>' + escapeHtml(a.next) + '</p></div>';
+      }
+
+      if (turns && turns.length) {
+        h += '<div class="report-section"><details class="transcript-details"><summary>💬 ' +
+             tt('talk_assess_transcript', 'Full conversation') + ' (' + turns.length + ')</summary>' +
+             transcriptHtml(turns) + '</details></div>';
+      }
+
+      $('talk-assessment-body').innerHTML = h;
+    }
+
+    function transcriptHtml(turns) {
+      var h = '<div class="transcript">';
+      turns.forEach(function (t) {
+        h += '<div class="transcript-turn ' + t.who + '">';
+        h += '<div class="transcript-who">' + (t.who === 'student'
+              ? tt('talk_you', 'You') : 'Katsu') + '</div>';
+        h += '<div class="transcript-jp jp">' + jpHtml(t.jp) + '</div>';
+        if (t.ro) h += '<div class="transcript-ro">' + escapeHtml(t.ro) + '</div>';
+        if (t.en) h += '<div class="transcript-en">' + escapeHtml(t.en) + '</div>';
+        if (t.fix) h += '<div class="transcript-fix">' + jpHtml(t.fix) + '</div>';
+        h += '</div>';
+      });
+      return h + '</div>';
+    }
+
+    function escapeHtml(s) {
+      var div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    // ---------- downloadable report ----------
+    // A standalone HTML file, styled like the site, same approach as the
+    // Conjugator's Practice Report so both downloads feel like one thing.
+    function buildReportHtml(a, turns) {
+      var today = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+      var css = [
+        'body{font-family:"Outfit",-apple-system,Segoe UI,sans-serif;background:#faf9f7;color:#3d3d3d;line-height:1.6;margin:0;padding:2rem 1rem;}',
+        '.wrap{max-width:780px;margin:0 auto;}',
+        'header{background:#1a1a2e;color:#faf9f7;padding:2rem;border-radius:8px 8px 0 0;}',
+        'header h1{margin:0 0 .3rem;font-size:1.5rem;}',
+        'header .meta{opacity:.75;font-size:.9rem;}',
+        '.card{background:#fff;padding:2rem;border-radius:0 0 8px 8px;box-shadow:0 2px 12px rgba(0,0,0,.08);}',
+        'h2{font-size:1.2rem;color:#1a1a2e;margin:2rem 0 .8rem;padding-bottom:.4rem;border-bottom:2px solid rgba(0,0,0,.07);}',
+        'h2:first-of-type{margin-top:0;}',
+        '.jp{font-family:"Noto Serif JP",serif;}',
+        'ruby rt{font-size:.5em;opacity:.7;}',
+        '.item{border-left:3px solid #7a9e7e;background:rgba(122,158,126,.08);padding:.7rem .9rem;border-radius:0 6px 6px 0;margin-bottom:.8rem;}',
+        '.item.bad{border-left-color:#c45c4a;background:rgba(196,92,74,.08);}',
+        '.point{font-weight:600;color:#1a1a2e;}',
+        '.quote{font-size:1.05rem;margin-top:.4rem;}',
+        '.fix{margin-top:.45rem;font-size:1.02rem;}',
+        '.wrote{text-decoration:line-through;opacity:.65;}',
+        '.arrow{margin:0 .5rem;color:#c45c4a;font-weight:700;}',
+        '.better{color:#3f5c42;font-weight:600;}',
+        '.vocab{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.8rem;}',
+        '.v{border:1px solid rgba(0,0,0,.1);border-radius:8px;padding:.8rem;background:#f5f3ef;}',
+        '.v .w{font-size:1.25rem;color:#1a1a2e;}',
+        '.v .r{font-size:.82rem;font-style:italic;color:#6b6b6b;margin-top:.15rem;}',
+        '.v .e{font-size:.9rem;margin-top:.3rem;}',
+        '.v .y{font-size:.8rem;color:#6b6b6b;margin-top:.35rem;padding-top:.35rem;border-top:1px dashed rgba(0,0,0,.12);}',
+        '.turn{padding:.7rem .9rem;border-radius:8px;margin-bottom:.7rem;background:#f5f3ef;}',
+        '.turn.student{background:#1a1a2e;color:#faf9f7;}',
+        '.who{font-size:.66rem;text-transform:uppercase;letter-spacing:.09em;opacity:.6;margin-bottom:.2rem;}',
+        '.t-jp{font-size:1.1rem;line-height:1.9;}',
+        '.t-ro{font-size:.85rem;font-style:italic;opacity:.7;margin-top:.25rem;}',
+        '.t-en{font-size:.85rem;margin-top:.25rem;opacity:.85;}',
+        '.t-fix{margin-top:.5rem;font-size:.82rem;color:#8a3d2f;background:rgba(196,92,74,.1);border-left:3px solid #c45c4a;padding:.4rem .6rem;border-radius:0 4px 4px 0;}',
+        'footer{text-align:center;color:#6b6b6b;font-size:.8rem;margin-top:1.5rem;}',
+        'footer a{color:#c45c4a;}'
+      ].join('');
+
+      var h = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1.0">' +
+        '<title>Conversation Report — ' + escapeHtml(sessionLabel()) + '</title>' +
+        '<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">' +
+        '<style>' + css + '</style></head><body><div class="wrap">' +
+        '<header><h1>💬 ' + tt('talk_report_title', 'Conversation Report') + '</h1>' +
+        '<div class="meta">' + escapeHtml(sessionLabel()) + ' · ' + escapeHtml(today) + ' · Katsuyō Academy</div></header>' +
+        '<div class="card">';
+
+      if (a.summary) h += '<h2>📝 ' + tt('talk_assess_summary', 'Summary') + '</h2><p>' + escapeHtml(a.summary) + '</p>';
+
+      if (a.well.length) {
+        h += '<h2>✅ ' + tt('talk_assess_well', 'What you did well') + '</h2>';
+        a.well.forEach(function (w) {
+          h += '<div class="item"><div class="point">' + escapeHtml(w.point) + '</div>';
+          if (w.example) h += '<div class="quote jp">' + jpHtml(w.example) + '</div>';
+          h += '</div>';
+        });
+      }
+
+      if (a.improve.length) {
+        h += '<h2>📌 ' + tt('talk_assess_improve', 'What to work on') + '</h2>';
+        a.improve.forEach(function (w) {
+          h += '<div class="item bad"><div class="point">' + escapeHtml(w.point) + '</div>';
+          if (w.wrote || w.better) {
+            h += '<div class="fix jp">';
+            if (w.wrote)  h += '<span class="wrote">' + jpHtml(w.wrote) + '</span>';
+            if (w.better) h += '<span class="arrow">→</span><span class="better">' + jpHtml(w.better) + '</span>';
+            h += '</div>';
+          }
+          h += '</div>';
+        });
+      }
+
+      if (a.words.length) {
+        h += '<h2>📚 ' + escapeHtml(tt('talk_assess_words', 'Words & phrases to remember')) + '</h2><div class="vocab">';
+        a.words.forEach(function (w) {
+          h += '<div class="v"><div class="w jp">' + jpHtml(w.jp) + '</div>';
+          if (w.ro) h += '<div class="r">' + escapeHtml(w.ro) + '</div>';
+          if (w.en) h += '<div class="e">' + escapeHtml(w.en) + '</div>';
+          if (w.why) h += '<div class="y">' + escapeHtml(w.why) + '</div>';
+          h += '</div>';
+        });
+        h += '</div>';
+      }
+
+      if (a.next) h += '<h2>➡️ ' + tt('talk_assess_next', 'Next step') + '</h2><p>' + escapeHtml(a.next) + '</p>';
+
+      if (turns && turns.length) {
+        h += '<h2>💬 ' + tt('talk_assess_transcript', 'Full conversation') + '</h2>';
+        turns.forEach(function (t) {
+          h += '<div class="turn ' + t.who + '"><div class="who">' +
+               (t.who === 'student' ? tt('talk_you', 'You') : 'Katsu') + '</div>' +
+               '<div class="t-jp jp">' + jpHtml(t.jp) + '</div>';
+          if (t.ro) h += '<div class="t-ro">' + escapeHtml(t.ro) + '</div>';
+          if (t.en) h += '<div class="t-en">' + escapeHtml(t.en) + '</div>';
+          if (t.fix) h += '<div class="t-fix">' + jpHtml(t.fix) + '</div>';
+          h += '</div>';
+        });
+      }
+
+      return h + '</div><footer>Generated by <a href="https://katsuyoacademy.com/talk">Katsuyō Academy</a></footer></div></body></html>';
+    }
+
+    function downloadAssessment() {
+      if (!state.lastAssessment) return;
+      var html = buildReportHtml(state.lastAssessment, state.lastTurns || []);
+      var today = new Date().toISOString().split('T')[0];
+      var blob = new Blob([html], { type: 'text/html' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'Conversation-Report-' + today + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function closeAssessment() {
+      $('talk-assessment-modal').classList.remove('active');
+      backToSetup();
+    }
+
+    function init() {
+      $('talk-form').addEventListener('submit', submitInput);
+
+      var customInput = $('talk-custom-input');
+      customInput.addEventListener('input', validateStart);
+      customInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !$('talk-start-btn').disabled) start();
+      });
+
+      $('talk-toggle-romaji').addEventListener('click', function () {
+        if (display.script === 'romaji') return;   // implied in rōmaji mode
+        display.romaji = !display.romaji;
+        persistDisplay();
+        buildDisplayControls();
+        rerenderAll();
+      });
+      $('talk-toggle-english').addEventListener('click', function () {
+        display.english = !display.english;
+        persistDisplay();
+        buildDisplayControls();
+        rerenderAll();
+      });
+
+      buildDisplayControls();
+      // Keep the script chips in sync when the site language changes.
+      window.refreshTalkI18n = buildDisplayControls;
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    return {
+      selectMode: selectMode,
+      start: start,
+      requestStop: requestStop,
+      cancelStop: cancelStop,
+      backToSetup: backToSetup,
+      getAssessment: getAssessment,
+      download: downloadAssessment,
+      closeAssessment: closeAssessment
+    };
+  })();
+  </script>
+
+</body>
+</html>
