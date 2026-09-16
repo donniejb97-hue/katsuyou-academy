@@ -1672,3 +1672,232 @@ a.nav-link {
       .prompt-examples .ex-label { align-self: flex-start; }
       .prompt-examples .ex-item { white-space: normal; }
     }
+
+    /* ====================================================================
+       HOME — one card system instead of nine sets of inline styles.
+       The split is meaningful: dark cards are things you DO (practice that
+       tracks you), light cards are things you READ (reference you return to).
+       Each card sets --card-accent; everything else follows from it.
+       ==================================================================== */
+
+    .tool-grid {
+      display: grid;
+      /* 320px caps this at three columns in the 1200px container, so nine
+         cards land as a clean 3x3 instead of 4+4+1 */
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+      align-items: stretch;
+    }
+
+    .tool-card {
+      --card-accent: var(--accent);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.75rem 1.75rem;
+      border: 1px solid rgba(0,0,0,0.08);
+      background: var(--paper);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    /* the accent reads as a rule along the top edge, not as nine background colours */
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 3px;
+      background: var(--card-accent);
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 38px rgba(0,0,0,0.10);
+      border-color: var(--card-accent);
+    }
+
+    .tool-card:focus-visible {
+      outline: 2px solid var(--card-accent);
+      outline-offset: 3px;
+    }
+
+    /* Practice tools: the ones that track you and keep score */
+    .tool-card.is-practice {
+      background: linear-gradient(160deg, #1f1f33 0%, #14141f 100%);
+      border-color: rgba(255,255,255,0.10);
+    }
+
+    .tool-card__icon {
+      font-size: 2.25rem;
+      line-height: 1;
+      margin-bottom: 0.9rem;
+      color: var(--card-accent);
+    }
+
+    .tool-card__title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.6rem;
+      line-height: 1.3;
+    }
+    .tool-card.is-practice .tool-card__title { color: var(--card-accent); }
+    .tool-card__title .jp { color: var(--card-accent); }
+
+    .tool-card__desc {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+      flex: 1;
+    }
+    .tool-card.is-practice .tool-card__desc { color: rgba(255,255,255,0.78); }
+    .tool-card__desc strong { color: var(--ink); font-weight: 600; }
+    .tool-card.is-practice .tool-card__desc strong { color: #fff; }
+
+    .tool-card__cta {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--card-accent);
+      margin-top: auto;
+    }
+
+    /* A quiet marker for things that are actually new */
+    .tool-card__new {
+      position: absolute;
+      top: 0.9rem;
+      right: 0.9rem;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.5rem;
+      border-radius: 999px;
+      background: var(--card-accent);
+      color: var(--paper);
+    }
+    .tool-card.is-practice .tool-card__new { color: #14141f; }
+
+    /* ---- Get started: two tiers, not nine competing colours ------------ */
+    .start-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .start-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.95rem 1.6rem;
+      font-size: 0.98rem;
+      font-weight: 600;
+      font-family: inherit;
+      border-radius: 4px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .start-btn.is-primary {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    .start-btn.is-primary:hover {
+      background: var(--accent);
+    }
+
+    .start-btn.is-secondary {
+      background: transparent;
+      color: var(--ink);
+      border-color: rgba(0,0,0,0.18);
+    }
+    .start-btn.is-secondary:hover {
+      border-color: var(--ink);
+      background: var(--paper-warm);
+    }
+
+    /* ---- Shared home section furniture --------------------------------- */
+    .home-section { max-width: 1000px; margin: 0 auto; padding: 3.5rem 2rem; }
+    .home-section.is-wide { max-width: 1200px; }
+
+    .home-panel {
+      background: var(--paper);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 4px;
+      padding: 3rem;
+    }
+    .home-panel.is-dark {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: transparent;
+    }
+
+    .home-h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .home-panel.is-dark .home-h2 { color: var(--paper); }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .stat-cell {
+      text-align: center;
+      padding: 1.4rem 1rem;
+      background: var(--paper-warm);
+      border-radius: 4px;
+    }
+    .stat-cell__glyph { font-size: 2.2rem; margin-bottom: 0.4rem; line-height: 1; }
+    .stat-cell__value { font-weight: 700; color: var(--ink); }
+    .stat-cell__note { font-size: 0.88rem; color: var(--text-light); }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 2.25rem;
+    }
+    .why-item h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+      color: var(--accent);
+    }
+    .why-item p {
+      line-height: 1.7;
+      color: rgba(255,255,255,0.85);
+      font-size: 0.94rem;
+    }
+
+    .creator-note {
+      background: var(--paper-warm);
+      padding: 1.75rem;
+      border-radius: 4px;
+      border-left: 4px solid var(--accent);
+      margin-top: 1rem;
+      text-align: left;
+    }
+    .creator-note p {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .home-section { padding: 2.5rem 1.25rem; }
+      .home-panel { padding: 1.75rem 1.4rem; }
+      .home-h2 { font-size: 1.6rem; }
+      .tool-grid { grid-template-columns: 1fr; }
+      .start-actions .start-btn { width: 100%; justify-content: center; }
+      .why-grid { gap: 1.75rem; }
+    }
