@@ -851,13 +851,33 @@
       btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically');
     }
 
+    // Which speaking style suits the situation. Azure only honours these for
+    // voices that advertise them (Nanami today), and the backend drops any it
+    // can't verify — so picking another voice simply means no style.
+    var SCENARIO_STYLE = {
+      restaurant: 'customerservice',   // waiter
+      shopping:   'customerservice',   // shop clerk
+      hotel:      'customerservice',   // front desk
+      phone:      'customerservice',   // receptionist
+      directions: 'chat',              // a local stopped on the street
+      selfintro:  'chat',              // new classmate
+      friend:     'chat'               // catching up
+      // custom: deliberately absent — we don't know what they've described
+    };
+
+    function currentStyle() {
+      if (state.mode === 'scenario') return SCENARIO_STYLE[state.scenario] || '';
+      if (state.mode === 'freechat') return 'chat';
+      return '';   // grammar drilling reads better neutral
+    }
+
     function canSpeak() {
       return !!(window.KA_Voice && window.KA_Voice.available());
     }
 
     var speakingBtn = null;
 
-    function speakJapanese(text, btn) {
+    function speakJapanese(text, btn, opts) {
       if (!canSpeak() || !text) return;
       // A second click stops it, rather than queueing another clip.
       if (speakingBtn) {
@@ -870,6 +890,7 @@
       speakingBtn = btn || null;
       if (btn) btn.classList.add('playing');
       window.KA_Voice.speak(text, {
+        style: opts && opts.style !== undefined ? opts.style : currentStyle(),
         onstart: function () { if (btn) btn.classList.add('playing'); },
         onend:   function () { if (btn) btn.classList.remove('playing'); speakingBtn = null; }
       }).then(function (how) {
@@ -897,7 +918,7 @@
         if (!sel.value && list[0]) sel.value = list[0].name;
         sel.onchange = function () { window.KA_Azure.setVoice(this.value); };
         $('talk-voice-preview').onclick = function () {
-          speakJapanese(tt('voice_sample', '\u3053\u3093\u306b\u3061\u306f\u3002\u4eca\u65e5\u306f\u3044\u3044\u5929\u6c17\u3067\u3059\u306d\u3002'), null);
+          speakJapanese(tt('voice_sample', '\u3053\u3093\u306b\u3061\u306f\u3002\u4eca\u65e5\u306f\u3044\u3044\u5929\u6c17\u3067\u3059\u306d\u3002'), null, { style: '' });
         };
         $('talk-voice-label').textContent = tt('talk_voice', 'Voice');
       });

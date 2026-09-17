@@ -1200,7 +1200,9 @@
         if (disabled || !text) return Promise.resolve(false);
 
         var voice = currentVoice();
-        var key = voice + '|' + text;
+        var style = (typeof opts.style === 'string') ? opts.style : '';
+        // Style changes the audio, so it has to be part of the cache key.
+        var key = voice + '|' + style + '|' + text;
         stop();
 
         function play(url) {
@@ -1221,7 +1223,7 @@
         return fetch(ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: text, voice: voice })
+          body: JSON.stringify({ text: text, voice: voice, style: style })
         })
           .then(function (r) {
             if (r.status === 503) { disabled = true; return null; }
