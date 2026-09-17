@@ -1153,9 +1153,15 @@
     // slow, the free browser voice takes over — audio never just stops.
     // ------------------------------------------------------------------------
     var KA_Azure = (function () {
-      var ENDPOINT = (typeof VERCEL_BACKEND_URL === 'string')
-        ? VERCEL_BACKEND_URL.replace(/\/api\/claude$/, '/api/tts')
-        : '/api/tts';
+      // Resolved lazily, NOT at load time: app.js is loaded before ai.js, where
+      // VERCEL_BACKEND_URL is defined. Reading it here at parse time gives
+      // undefined, and the relative '/api/tts' that falls out of that points at
+      // the website rather than the backend — a 404 that looks exactly like
+      // "Azure is down" and silently drops everyone to the browser voice.
+      function endpoint() {
+        var base = (typeof VERCEL_BACKEND_URL === 'string' && VERCEL_BACKEND_URL) ? VERCEL_BACKEND_URL : '';
+        return base ? base.replace(/\/api\/claude$/, '/api/tts') : '/api/tts';
+      }
 
       var VOICE_KEY = 'katsuyo-ja-voice';
       var audio = null;
@@ -1176,7 +1182,7 @@
       function listVoices() {
         if (voices) return Promise.resolve(voices);
         if (disabled) return Promise.resolve([]);
-        return fetch(ENDPOINT + '?voices=1')
+        return fetch(endpoint() + '?voices=1')
           .then(function (r) {
             if (r.status === 503) { disabled = true; return { voices: [] }; }
             if (!r.ok) throw new Error('HTTP ' + r.status);
@@ -1220,7 +1226,7 @@
 
         if (cache[key]) return play(cache[key]);
 
-        return fetch(ENDPOINT, {
+        return fetch(endpoint(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: text, voice: voice, style: style })
@@ -1240,7 +1246,7 @@
       }
 
       return {
-        endpoint: ENDPOINT,
+        endpoint: endpoint,
         listVoices: listVoices,
         currentVoice: currentVoice,
         setVoice: setVoice,
