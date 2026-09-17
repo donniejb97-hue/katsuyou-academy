@@ -243,6 +243,11 @@ var I18N = {
     legend_ref:"Reference — read and look up",
     legend_prac:"Practice — tracks what you get wrong",
     legend_conv:"Conversation — use it for real",
+    // ---- talk: speech + romaji input ----
+    talk_placeholder_romaji:"Reply in Japanese — type romaji, get kana",
+    talk_read_aloud:"Read aloud",
+    talk_read_aloud_hint:"Speak each of Katsu’s replies automatically",
+    talk_listen:"Listen",
   },
   de: {
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
@@ -475,6 +480,11 @@ var I18N = {
     legend_ref:"Nachschlagen — lesen und nachsehen",
     legend_prac:"Üben — merkt sich, was danebengeht",
     legend_conv:"Gespräch — im Ernstfall anwenden",
+    // ---- talk: speech + romaji input ----
+    talk_placeholder_romaji:"Auf Japanisch antworten — Romaji tippen, Kana erhalten",
+    talk_read_aloud:"Vorlesen",
+    talk_read_aloud_hint:"Jede Antwort von Katsu automatisch vorlesen",
+    talk_listen:"Anhören",
   },
   fr: {
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
@@ -707,6 +717,11 @@ var I18N = {
     legend_ref:"Référence — lire et consulter",
     legend_prac:"Entraînement — retient vos erreurs",
     legend_conv:"Conversation — passer à la pratique",
+    // ---- talk: speech + romaji input ----
+    talk_placeholder_romaji:"Répondez en japonais — tapez en romaji, obtenez des kana",
+    talk_read_aloud:"Lecture à voix haute",
+    talk_read_aloud_hint:"Lire automatiquement chaque réponse de Katsu",
+    talk_listen:"Écouter",
   },
   zh: {
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
@@ -939,6 +954,11 @@ var I18N = {
     legend_ref:"参考——阅读与查阅",
     legend_prac:"练习——会记住你答错的地方",
     legend_conv:"会话——真正用起来",
+    // ---- talk: speech + romaji input ----
+    talk_placeholder_romaji:"用日语回复——输入罗马字，得到假名",
+    talk_read_aloud:"朗读",
+    talk_read_aloud_hint:"自动朗读活先生的每一句回复",
+    talk_listen:"听",
   }
 };
 

@@ -118,6 +118,15 @@
     .talk-form { display: flex; gap: 0.5rem; padding: 0.75rem; border-top: 1px solid rgba(0,0,0,0.08); }
     .talk-input { flex: 1; padding: 0.7rem 0.9rem; border: 1px solid rgba(0,0,0,0.15); border-radius: 8px; font-family: inherit; font-size: 0.95rem; outline: none; }
     .talk-input:focus { border-color: var(--accent); }
+    .talk-romaji-toggle { flex: 0 0 auto; width: 2.7rem; border: 1.5px solid var(--sage); background: var(--sage);
+      color: #fff; border-radius: 8px; font-family: 'Noto Serif JP', serif; font-size: 1.05rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; }
+    .talk-romaji-toggle:hover { filter: brightness(1.08); }
+    .talk-romaji-toggle.off { background: transparent; color: var(--text-light); border-color: rgba(0,0,0,0.15); }
+    .talk-speak { margin-top: 0.45rem; background: none; border: none; padding: 0.15rem 0; cursor: pointer;
+      font-size: 0.8rem; color: var(--text-light); font-family: inherit; opacity: 0.75; transition: all 0.15s; }
+    .talk-speak:hover { opacity: 1; color: var(--accent); }
+    .talk-speak.playing { color: var(--accent); opacity: 1; }
     .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
     .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
     .talk-send:disabled { opacity: 0.5; cursor: default; }
@@ -302,10 +311,12 @@
             <span class="talk-display-sep"></span>
             <button type="button" class="talk-mini-chip" id="talk-toggle-romaji">+ Rōmaji</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-english">+ English</button>
+            <button type="button" class="talk-mini-chip" id="talk-toggle-speak" style="display: none;">🔊 Read aloud</button>
           </div>
           <div class="talk-msgs" id="talk-msgs"></div>
           <form class="talk-form" id="talk-form">
-            <input type="text" id="talk-input" class="talk-input" maxlength="400" data-i18n-placeholder="talk_placeholder" placeholder="Type your reply in Japanese (or ask Katsu for help)…" autocomplete="off">
+            <input type="text" id="talk-input" class="talk-input" maxlength="400" placeholder="Type your reply in Japanese (or ask Katsu for help)…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button type="button" id="talk-romaji-toggle" class="talk-romaji-toggle" onclick="TalkPractice.toggleRomaji()">あ</button>
             <button type="submit" class="talk-send" id="talk-send" data-i18n="talk_send">Send</button>
           </form>
         </div>
@@ -775,6 +786,19 @@
         bubble.appendChild(en);
       }
 
+      // Hear it: only for the Japanese, and only if a Japanese voice exists.
+      if (parts.jp && window.KA_Speech && window.KA_Speech.available()) {
+        var say = document.createElement('button');
+        say.type = 'button';
+        say.className = 'talk-speak';
+        say.textContent = '🔊 ' + tt('talk_listen', 'Listen');
+        say.addEventListener('click', function (e) {
+          e.stopPropagation();
+          speakJapanese(stripReadings(parts.jp), say);
+        });
+        bubble.appendChild(say);
+      }
+
       if (parts.fix) {
         var fix = document.createElement('div');
         fix.className = 'talk-fix';
@@ -788,6 +812,42 @@
         fix.appendChild(fixBody);
         bubble.appendChild(fix);
       }
+    }
+
+    // ---------- reading the Japanese aloud ----------
+    // The browser's own voice, so it costs nothing and needs no key. What gets
+    // spoken is always the plain Japanese — never the furigana brackets and
+    // never the rōmaji line, which a Japanese voice would mangle.
+    function speechOn() {
+      try { return localStorage.getItem('katsuyo-talk-speak') === 'on'; } catch (e) { return false; }
+    }
+
+    function setSpeechOn(on) {
+      try { localStorage.setItem('katsuyo-talk-speak', on ? 'on' : 'off'); } catch (e) {}
+      paintSpeechToggle();
+      if (!on && window.KA_Speech) window.KA_Speech.stop();
+    }
+
+    function paintSpeechToggle() {
+      var btn = $('talk-toggle-speak');
+      if (!btn) return;
+      var sp = window.KA_Speech;
+      if (!sp || !sp.available()) { btn.style.display = 'none'; return; }
+      btn.style.display = '';
+      btn.textContent = '🔊 ' + tt('talk_read_aloud', 'Read aloud');
+      btn.classList.toggle('on', speechOn());
+      btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically')
+                  + ' — ' + (sp.voiceName() || '');
+    }
+
+    function speakJapanese(text, btn) {
+      var sp = window.KA_Speech;
+      if (!sp || !sp.available() || !text) return;
+      if (sp.speaking()) { sp.stop(); if (btn) btn.classList.remove('playing'); return; }
+      sp.speak(text, {
+        onstart: function () { if (btn) btn.classList.add('playing'); },
+        onend:   function () { if (btn) btn.classList.remove('playing'); }
+      });
     }
 
     function rerenderAll() {
@@ -824,6 +884,7 @@
       ro.classList.toggle('on', display.script === 'romaji' || display.romaji);
       ro.disabled = display.script === 'romaji';
       en.classList.toggle('on', display.english);
+      paintSpeechToggle();
     }
 
     // Sensible starting point for the chosen level, until the student picks
@@ -863,6 +924,8 @@
       wrap.katsuParts = parts;
       wrap.classList.remove('thinking');
       renderKatsuBubble(wrap.querySelector('.talk-bubble'), parts);
+
+      if (parts.jp && speechOn()) speakJapanese(stripReadings(parts.jp));
 
       // Share corrections with the Katsu widget, so "what did I get wrong in
       // that sentence?" works from anywhere on the site afterwards.
@@ -983,9 +1046,64 @@
       }
     }
 
+    // ---------- rōmaji input ----------
+    // Same helper and same saved setting as the Conjugator, so turning it off
+    // in one place turns it off in both.
+    function romajiOn() {
+      try { return localStorage.getItem('katsuyo-romaji-input') !== 'off'; } catch (e) { return true; }
+    }
+
+    function paintRomajiToggle() {
+      var btn = $('talk-romaji-toggle');
+      if (!btn) return;
+      var on = romajiOn();
+      btn.textContent = on ? 'あ' : 'A';
+      btn.classList.toggle('off', !on);
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.title = on
+        ? tt('romaji_on_title', 'Romaji typing is on — type ikanai, get いかない. Click to turn off.')
+        : tt('romaji_off_title', 'Romaji typing is off — type with your own Japanese keyboard. Click to turn on.');
+      var input = $('talk-input');
+      if (input) {
+        input.placeholder = on
+          ? tt('talk_placeholder_romaji', 'Reply in Japanese — type romaji, get kana')
+          : tt('talk_placeholder', 'Type your reply in Japanese (or ask Katsu for help)…');
+      }
+    }
+
+    function toggleRomajiInput() {
+      try { localStorage.setItem('katsuyo-romaji-input', romajiOn() ? 'off' : 'on'); } catch (e) {}
+      paintRomajiToggle();
+      var input = $('talk-input');
+      if (input && !input.disabled) input.focus();
+    }
+
+    function wireRomajiInput() {
+      var input = $('talk-input');
+      if (!input || !window.KA_toKana) return;
+      input.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
+      input.addEventListener('compositionend', function () { delete this.dataset.composing; });
+      input.addEventListener('input', function () {
+        if (!romajiOn() || this.dataset.composing) return;
+        // Only rewrite while typing at the end, never mid-edit.
+        if (this.selectionStart !== this.value.length) return;
+        var converted = window.KA_toKana(this.value, false);
+        if (converted !== this.value) {
+          this.value = converted;
+          this.setSelectionRange(converted.length, converted.length);
+        }
+      });
+      paintRomajiToggle();
+    }
+
     function submitInput(e) {
       if (e) e.preventDefault();
       var input = $('talk-input');
+      // Commit a half-finished syllable (a trailing "n" becomes ん) before sending.
+      if (romajiOn() && window.KA_toKana) {
+        var committed = window.KA_toKana(input.value, true);
+        if (committed !== input.value) input.value = committed;
+      }
       var text = input.value.trim();
       if (!text || state.busy) return;
       input.value = '';
@@ -1343,10 +1461,32 @@
         buildDisplayControls();
         rerenderAll();
       });
+      $('talk-toggle-speak').addEventListener('click', function () {
+        setSpeechOn(!speechOn());
+      });
 
+      wireRomajiInput();
       buildDisplayControls();
-      // Keep the script chips in sync when the site language changes.
-      window.refreshTalkI18n = buildDisplayControls;
+
+      // Voices load asynchronously in Chrome, so the button may only become
+      // available a moment after the page settles.
+      if (window.KA_Speech) {
+        window.KA_Speech.onReady(function () {
+          paintSpeechToggle();
+          rerenderAll();
+        });
+      }
+
+      // Never leave a voice talking to an empty room.
+      window.addEventListener('pagehide', function () {
+        if (window.KA_Speech) window.KA_Speech.stop();
+      });
+
+      // Keep the chips and the input helper in sync when the language changes.
+      window.refreshTalkI18n = function () {
+        buildDisplayControls();
+        paintRomajiToggle();
+      };
     }
 
     if (document.readyState === 'loading') {
@@ -1363,7 +1503,9 @@
       backToSetup: backToSetup,
       getAssessment: getAssessment,
       download: downloadAssessment,
-      closeAssessment: closeAssessment
+      closeAssessment: closeAssessment,
+      toggleRomaji: toggleRomajiInput,
+      speak: speakJapanese
     };
   })();
   </script>

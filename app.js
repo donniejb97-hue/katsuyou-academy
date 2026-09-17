@@ -1058,6 +1058,96 @@
 
     window.KA_toKana = romajiToKana;
 
+    // ========================================================================
+    // JAPANESE SPEECH
+    // ------------------------------------------------------------------------
+    // Uses the browser's own speech synthesis — no server, no API key, no
+    // per-character cost, and nothing leaves the machine. The catch is that it
+    // needs a Japanese voice installed: macOS and iOS have Kyoko, Windows has
+    // Haruka/Nanami, Android has Google 日本語. Where there's no ja voice we say
+    // so rather than reading Japanese aloud in an English one, which is
+    // unlistenable and teaches the wrong pronunciation.
+    // ========================================================================
+
+    var KA_Speech = (function () {
+      var synth = window.speechSynthesis;
+      var jaVoice = null;
+      var ready = false;
+      var listeners = [];
+
+      function pickVoice() {
+        if (!synth) return null;
+        var voices = synth.getVoices() || [];
+        var ja = voices.filter(function (v) { return /^ja(-|_|$)/i.test(v.lang || ''); });
+        if (!ja.length) return null;
+        // Prefer a local voice — network voices stall on a bad connection.
+        var local = ja.filter(function (v) { return v.localService; });
+        return (local[0] || ja[0]);
+      }
+
+      function refresh() {
+        jaVoice = pickVoice();
+        ready = true;
+        listeners.splice(0).forEach(function (fn) { try { fn(); } catch (e) {} });
+      }
+
+      if (synth) {
+        refresh();
+        // Chrome populates the list asynchronously, so the first call is empty.
+        if (typeof synth.addEventListener === 'function') {
+          synth.addEventListener('voiceschanged', refresh);
+        } else {
+          synth.onvoiceschanged = refresh;
+        }
+      }
+
+      // Chrome cuts an utterance off after roughly 15 seconds, so anything
+      // long is split on sentence boundaries and queued piece by piece.
+      function chunk(text) {
+        var parts = String(text).split(/(?<=[。．！？!?\n])/);
+        var out = [], buf = '';
+        parts.forEach(function (p) {
+          if ((buf + p).length > 120) { if (buf) out.push(buf); buf = p; }
+          else buf += p;
+        });
+        if (buf.trim()) out.push(buf);
+        return out.length ? out : [String(text)];
+      }
+
+      return {
+        supported: function () { return !!synth; },
+        available: function () { return !!synth && !!jaVoice; },
+        voiceName: function () { return jaVoice ? jaVoice.name : null; },
+        // Voices may not have loaded yet when a page first paints.
+        onReady: function (fn) { ready ? fn() : listeners.push(fn); },
+
+        speak: function (text, opts) {
+          if (!synth || !jaVoice || !text) return false;
+          opts = opts || {};
+          synth.cancel();
+          chunk(text).forEach(function (piece, i) {
+            var u = new SpeechSynthesisUtterance(piece);
+            u.voice = jaVoice;
+            u.lang = jaVoice.lang || 'ja-JP';
+            u.rate = opts.rate || 0.9;   // a touch under natural, for learners
+            u.pitch = opts.pitch || 1;
+            if (i === 0 && opts.onstart) u.onstart = opts.onstart;
+            if (opts.onend) u.onend = function () {
+              // only when the whole queue has drained
+              if (!synth.pending && !synth.speaking) opts.onend();
+            };
+            synth.speak(u);
+          });
+          return true;
+        },
+
+        stop: function () { if (synth) synth.cancel(); },
+        speaking: function () { return !!synth && (synth.speaking || synth.pending); }
+      };
+    })();
+
+    window.KA_Speech = KA_Speech;
+
     // t() returns the key itself when a translation is missing. ct() falls
     // back to readable English instead, so a missing key never ships as
     // "romaji_title" on the page.
