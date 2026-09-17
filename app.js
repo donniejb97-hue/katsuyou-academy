@@ -1343,7 +1343,7 @@
           if (e.key === 'Escape') setOpen(false);
         });
 
-        if (prev) {
+        if (prev && ids.preview) {
           prev.addEventListener('click', function (e) {
             e.stopPropagation();
             // Neutral line on purpose: this is about comparing voices.
@@ -1352,6 +1352,9 @@
           });
         }
 
+        // A caller that fills its own picker (Talk does, to keep two selects in
+        // step) passes no select id — then this is open/close only.
+        if (!ids.select) return;
         // Only Azure exposes a choice of voices. With just a browser voice
         // there is nothing to pick, so the caret would open an empty box.
         if (!select || !window.KA_Azure) { caret.style.display = 'none'; return; }

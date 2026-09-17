@@ -306,11 +306,14 @@
       flex-wrap: wrap;
     }
 
-    /* ---- hero: one loud action, one quiet one ------------------------- */
+    /* ---- hero: one loud action ---------------------------------------- */
     .hero-actions {
       display: flex; align-items: center; justify-content: center;
       gap: 1.2rem; flex-wrap: wrap;
     }
+    /* A real <a>, not a button with an onclick — it works without JS, opens in
+       a new tab on middle-click, and search engines can follow it. */
+    .hero-actions .btn { text-decoration: none; display: inline-block; }
     .hero-jump {
       color: rgba(255,255,255,0.65); font-size: 0.94rem; text-decoration: none;
       border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px;
@@ -491,6 +494,18 @@
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.11);
     }
     .ka-audio-panel.open { display: flex; }
+    /* Talk's controls sit on a white card, so the panel needs the light set. */
+    .ka-audio-panel.on-light {
+      background: var(--paper-warm); border-color: rgba(0,0,0,0.09);
+      max-width: none; margin: 0.6rem 0.9rem 0.2rem;
+    }
+    .ka-audio-panel.on-light .ka-audio-panel__label { color: var(--text-light); }
+    .ka-audio-panel.on-light select,
+    .ka-audio-panel.on-light button {
+      background: #fff; border-color: rgba(0,0,0,0.14); color: var(--ink);
+    }
+    .ka-audio-panel.on-light button:hover,
+    .ka-audio-panel.on-light select:hover { border-color: var(--accent-soft); }
     .ka-audio-panel__label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em;
       text-transform: uppercase; color: rgba(255,255,255,0.55); }
     .ka-audio-panel select {

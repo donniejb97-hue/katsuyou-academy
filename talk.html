@@ -151,6 +151,20 @@
     .talk-speak.playing { color: var(--accent); opacity: 1; }
     /* Second row of the same bar — same padding as .talk-display-bar, so VOICE
        lines up under SHOW instead of sitting flush against the edge. */
+    /* Read aloud, with the voice options folded behind a caret — the same
+       split as Listen on the Vocabulary page. */
+    .talk-speak-split { display: inline-flex; align-items: stretch; border-radius: 999px; overflow: hidden; }
+    .talk-speak-split .talk-mini-chip { border-radius: 0; }
+    .talk-speak-split #talk-toggle-speak { border-right: none; border-radius: 999px 0 0 999px; }
+    .talk-speak-caret { border-left: 1px solid rgba(0,0,0,0.13) !important;
+      border-radius: 0 999px 999px 0; padding: 0.28rem 0.6rem; font-size: 0.62rem; }
+    .talk-speak-split #talk-toggle-speak.on + .talk-speak-caret {
+      background: var(--ink); color: var(--paper); border-color: var(--ink);
+      border-left-color: rgba(255,255,255,0.25) !important;
+    }
+    .talk-speak-caret[aria-expanded="true"] { background: var(--paper-warm); }
+    @media (max-width: 640px) { .talk-speak-caret { padding: 0.28rem 0.9rem; } }
+
     .talk-voice-row { display: flex; align-items: center; flex-wrap: wrap;
       gap: 0.45rem 0.7rem; padding: 0.6rem 0.9rem;
       border-bottom: 1px solid rgba(0,0,0,0.07); background: var(--paper); }
@@ -368,14 +382,18 @@
             <button type="button" class="talk-mini-chip" id="talk-toggle-romaji">+ Rōmaji</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-english">+ English</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-fix">+ Corrections</button>
-            <button type="button" class="talk-mini-chip" id="talk-toggle-speak" style="display: none;">🔊 Read aloud</button>
-          </div>
-          <div class="talk-voice-row" id="talk-voice-row" style="display: none;">
-            <span class="talk-voice-label" id="talk-voice-label" data-i18n="talk_voice">Voice</span>
-            <select id="talk-voice-select" class="talk-voice-select"></select>
-            <button type="button" class="talk-mini-chip" id="talk-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
+            <span class="talk-speak-split" id="talk-speak-split" style="display: none;">
+              <button type="button" class="talk-mini-chip" id="talk-toggle-speak">🔊 Read aloud</button>
+              <button type="button" class="talk-mini-chip talk-speak-caret" id="talk-audio-caret"
+                      aria-expanded="false" aria-label="Audio options" title="Audio options">▾</button>
+            </span>
             <button type="button" class="drill-chip info-chip" id="talk-info-chip" onclick="TalkPractice.openInfo()"
                     aria-label="Shortcuts and options" title="Shortcuts and options (hold Alt+I)">i</button>
+          </div>
+          <div class="ka-audio-panel on-light" id="talk-audio-panel" aria-hidden="true">
+            <span class="ka-audio-panel__label" id="talk-voice-label" data-i18n="talk_voice">Voice</span>
+            <select id="talk-voice-select"></select>
+            <button type="button" id="talk-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
           </div>
           <div class="talk-msgs" id="talk-msgs"></div>
           <form class="talk-form" id="talk-form">
@@ -949,7 +967,11 @@
       ['talk-toggle-speak', 'talk-setup-speak'].forEach(function (id) {
         var btn = $(id);
         if (!btn) return;
-        if (!canSpeak()) { btn.style.display = 'none'; return; }
+        // In the session bar the button lives inside a split, so the wrapper is
+        // what has to appear or disappear.
+        var host = (id === 'talk-toggle-speak' && $('talk-speak-split')) || btn;
+        if (!canSpeak()) { host.style.display = 'none'; return; }
+        host.style.display = '';
         btn.style.display = '';
         btn.textContent = '🔊 ' + tt('talk_read_aloud', 'Read aloud');
         btn.classList.toggle('on', speechOn());
@@ -1075,8 +1097,9 @@
       if (!window.KA_Azure) return;
       window.KA_Azure.listVoices().then(function (list) {
         var have = !!(list && list.length);
-        var row = $('talk-voice-row');
-        if (row) row.style.display = have ? '' : 'none';
+        // Nothing to choose between means no caret — it would open an empty box.
+        var caret = $('talk-audio-caret');
+        if (caret) caret.style.display = have ? '' : 'none';
         paintAudioControls();
         if (!have) return;
 
@@ -1927,6 +1950,16 @@
         });
       }
       // Azure's voice list decides whether the picker appears at all.
+      // Same collapsed panel as the Vocabulary page: the voice is a set-once
+      // choice, so it stays out of the way until the caret is pressed.
+      if (window.KA_Listen && window.KA_Listen.wirePanel) {
+        // Open/close only — buildVoicePicker below fills the select and wires
+        // Preview, because it also keeps the setup screen's copy in step.
+        window.KA_Listen.wirePanel({
+          caret: 'talk-audio-caret',
+          panel: 'talk-audio-panel'
+        });
+      }
       buildVoicePicker();
       if (window.KA_Azure) {
         window.KA_Azure.listVoices().then(function () {
