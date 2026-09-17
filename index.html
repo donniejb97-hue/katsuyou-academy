@@ -81,9 +81,12 @@
             <button class="btn btn-secondary" style="min-width: 220px;" onclick="location.href='/kanji-drill'" data-i18n="btn_practice_kanji">Practice Kanji</button>
           </div>
           <div class="hero-cta" style="margin-top: 1rem;">
-            <button class="btn" style="min-width: 220px; background: var(--sage); color: var(--paper);" onclick="showPage('learn')" data-i18n="btn_learn_basics">Learn the Basics</button>
+            <button class="btn btn-sage" style="min-width: 220px;" onclick="showPage('learn')" data-i18n="btn_learn_basics">Learn the Basics</button>
             <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('conjugator')" data-i18n="btn_practice_conj">Practice Conjugation</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="location.href='/talk'" data-i18n="btn_practice_talk">Practice Speaking</button>
+          </div>
+          <div class="hero-cta" style="margin-top: 1rem;">
+            <button class="btn btn-gold" style="min-width: 220px;" onclick="location.href='/talk'" data-i18n="btn_practice_talk">Practice Speaking</button>
+            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('vocabulary')" data-i18n="start_vocab">Vocabulary</button>
           </div>
         </div>
       </section>
@@ -136,6 +139,104 @@
                 conjugation and conversation practice, with drills that track what you've learned, in one cohesive, beautifully designed package."
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WHERE TO START — the arc, in order -->
+      <section class="home-section">
+        <div class="home-panel">
+          <div style="text-align: center;">
+            <span class="section-mark" aria-hidden="true">道</span>
+            <h2 class="home-h2" data-i18n="tour_title">Where to Start</h2>
+            <p class="tour-sub" data-i18n="tour_sub">New to Japanese? This is the order that works. About an hour a day gets you through it.</p>
+          </div>
+          <ol class="tour-path">
+            <li class="tour-step cat-ref" onclick="showPage('kana')" role="link" tabindex="0">
+              <span class="tour-num">1</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_1_t">Learn the kana</strong>
+                <span data-i18n="tour_1_d">Both alphabets, 104 characters. A week or two, and everything after this gets easier.</span>
+              </span>
+            </li>
+            <li class="tour-step cat-ref" onclick="showPage('learn')" role="link" tabindex="0">
+              <span class="tour-num">2</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_2_t">Get the grammar basics</strong>
+                <span data-i18n="tour_2_d">Particles, word order, the polite form — enough to build a sentence on purpose.</span>
+              </span>
+            </li>
+            <li class="tour-step cat-prac" onclick="showPage('conjugator')" role="link" tabindex="0">
+              <span class="tour-num">3</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_3_t">Drill the conjugations</strong>
+                <span data-i18n="tour_3_d">Every form, on every verb type, until you stop having to think about them.</span>
+              </span>
+            </li>
+            <li class="tour-step cat-conv" onclick="location.href='/talk'" role="link" tabindex="0">
+              <span class="tour-num">4</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_4_t">Hold a conversation</strong>
+                <span data-i18n="tour_4_d">Order food, ask directions, get corrected as you go. This is what the rest was for.</span>
+              </span>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- SEE IT WORKING — real widgets, not screenshots -->
+      <section class="home-section">
+        <div class="home-panel">
+          <div style="text-align: center;">
+            <span class="section-mark" aria-hidden="true">試</span>
+            <h2 class="home-h2" data-i18n="demo_title">See It Working</h2>
+            <p class="tour-sub" data-i18n="demo_sub">Three of the tools, running right here. Nothing to install, no account.</p>
+          </div>
+
+          <div class="demo-tabs" role="tablist">
+            <button class="demo-tab cat-ref on" role="tab" data-demo="kana" data-i18n="demo_tab_kana">Kana Drill</button>
+            <button class="demo-tab cat-prac" role="tab" data-demo="conj" data-i18n="demo_tab_conj">Conjugator</button>
+            <button class="demo-tab cat-conv" role="tab" data-demo="talk" data-i18n="demo_tab_talk">Talk</button>
+          </div>
+
+          <!-- Kana -->
+          <div class="demo-pane show" id="demo-kana">
+            <div class="demo-stage">
+              <button type="button" class="demo-kana-card" id="demo-kana-card">
+                <span class="demo-kana-face jp" id="demo-kana-face">あ</span>
+                <span class="demo-kana-read" id="demo-kana-read">a</span>
+              </button>
+              <p class="demo-hint" id="demo-kana-hint" data-i18n="demo_kana_hint">Click the card to reveal the reading.</p>
+              <div class="demo-actions">
+                <button type="button" class="start-btn is-secondary cat-ref" id="demo-kana-next" data-i18n="demo_next">Next character</button>
+                <button type="button" class="ka-listen" id="demo-kana-listen" style="display:none;">🔊 <span data-i18n="talk_listen">Listen</span></button>
+              </div>
+            </div>
+            <a class="demo-cta cat-ref" href="/kana-drill" data-i18n="demo_cta_kana">Open the full Kana Drill →</a>
+          </div>
+
+          <!-- Conjugator -->
+          <div class="demo-pane" id="demo-conj">
+            <div class="demo-stage">
+              <div class="demo-verb jp" id="demo-conj-verb">食べる</div>
+              <div class="demo-verb-sub" id="demo-conj-gloss">たべる — to eat</div>
+              <div class="demo-form" id="demo-conj-form">NEGATIVE (ない)</div>
+              <div class="demo-row">
+                <input type="text" class="demo-input" id="demo-conj-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <button type="button" class="start-btn is-primary cat-prac" id="demo-conj-check" data-i18n="demo_check">Check</button>
+              </div>
+              <p class="demo-verdict" id="demo-conj-verdict"></p>
+            </div>
+            <a class="demo-cta cat-prac" href="#" onclick="showPage('conjugator');return false;" data-i18n="demo_cta_conj">Open the full Conjugator →</a>
+          </div>
+
+          <!-- Talk -->
+          <div class="demo-pane" id="demo-talk">
+            <div class="demo-stage">
+              <div class="demo-chat" id="demo-chat"></div>
+              <p class="demo-hint" data-i18n="demo_talk_note">A recorded exchange. The real thing answers live, stays in character, and speaks out loud.</p>
+            </div>
+            <a class="demo-cta cat-conv" href="/talk" data-i18n="demo_cta_talk">Open Talk →</a>
           </div>
         </div>
       </section>
@@ -401,21 +502,21 @@
           </p>
 
           <div class="start-actions">
-            <button class="start-btn is-primary" onclick="showPage('kana')"><span class="jp">あ</span> <span data-i18n="start_kana">Learn Kana</span></button>
-            <button class="start-btn is-primary" onclick="showPage('learn')"><span data-i18n="start_learn">Learn the Basics</span></button>
-            <button class="start-btn is-primary" onclick="showPage('conjugator')"><span data-i18n="start_conj">Start Practicing</span></button>
-            <button class="start-btn is-primary" onclick="location.href='/talk'"><span data-i18n="start_talk">Start Talking</span></button>
+            <button class="start-btn is-primary cat-ref" onclick="showPage('kana')"><span class="jp">あ</span> <span data-i18n="start_kana">Learn Kana</span></button>
+            <button class="start-btn is-primary cat-ref" onclick="showPage('learn')"><span data-i18n="start_learn">Learn the Basics</span></button>
+            <button class="start-btn is-primary cat-prac" onclick="showPage('conjugator')"><span data-i18n="start_conj">Start Practicing</span></button>
+            <button class="start-btn is-primary cat-conv" onclick="location.href='/talk'"><span data-i18n="start_talk">Start Talking</span></button>
           </div>
 
           <div class="start-actions">
-            <button class="start-btn is-secondary" onclick="location.href='/kana-drill'"><span data-i18n="start_kana_drill">Practice Kana</span></button>
-            <button class="start-btn is-secondary" onclick="showPage('forms')"><span data-i18n="start_forms">View Form Charts</span></button>
-            <button class="start-btn is-secondary" onclick="showPage('verblist')"><span data-i18n="start_verbs">Browse Verbs</span></button>
-            <button class="start-btn is-secondary" onclick="showPage('vocabulary')"><span data-i18n="start_vocab">Vocabulary</span></button>
-            <button class="start-btn is-secondary" onclick="showPage('kanji')"><span class="jp">字</span> <span data-i18n="start_kanji">Learn Kanji</span></button>
+            <button class="start-btn is-secondary cat-prac" onclick="location.href='/kana-drill'"><span data-i18n="start_kana_drill">Practice Kana</span></button>
+            <button class="start-btn is-secondary cat-ref" onclick="showPage('forms')"><span data-i18n="start_forms">View Form Charts</span></button>
+            <button class="start-btn is-secondary cat-ref" onclick="showPage('verblist')"><span data-i18n="start_verbs">Browse Verbs</span></button>
+            <button class="start-btn is-secondary cat-prac" onclick="showPage('vocabulary')"><span data-i18n="start_vocab">Vocabulary</span></button>
+            <button class="start-btn is-secondary cat-prac" onclick="showPage('kanji')"><span class="jp">字</span> <span data-i18n="start_kanji">Learn Kanji</span></button>
             <!-- HIDDEN — delete the "display: none;" below to bring these back -->
-            <button class="start-btn is-secondary" style="display: none;" onclick="showPage('datedojo')"><span data-i18n="start_dates">Dates &amp; Numbers</span></button>
-            <button class="start-btn is-secondary" style="display: none;" onclick="location.href='/kanji-drill'"><span data-i18n="start_kanji_drill">Practice Kanji</span></button>
+            <button class="start-btn is-secondary cat-prac" style="display: none;" onclick="showPage('datedojo')"><span data-i18n="start_dates">Dates &amp; Numbers</span></button>
+            <button class="start-btn is-secondary cat-prac" style="display: none;" onclick="location.href='/kanji-drill'"><span data-i18n="start_kanji_drill">Practice Kanji</span></button>
           </div>
 
           <div class="creator-note">
@@ -445,6 +546,188 @@
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
+
+  <!-- ===== Homepage demo strip =====================================
+       Three real widgets rather than screenshots. Self-contained: the
+       kana and verb sets live here, and the conversation is a recorded
+       exchange, so nothing on the homepage calls the backend. -->
+  <script>
+  (function () {
+    function $(id) { return document.getElementById(id); }
+    function tt(key, fallback) {
+      var v = (typeof t === 'function') ? t(key) : key;
+      return (v === key || v == null) ? fallback : v;
+    }
+
+    /* ---- tabs ---- */
+    var tabs = document.querySelectorAll('.demo-tab');
+    Array.prototype.forEach.call(tabs, function (tab) {
+      tab.addEventListener('click', function () {
+        Array.prototype.forEach.call(tabs, function (o) { o.classList.toggle('on', o === tab); });
+        ['kana', 'conj', 'talk'].forEach(function (k) {
+          var pane = $('demo-' + k);
+          if (pane) pane.classList.toggle('show', k === tab.getAttribute('data-demo'));
+        });
+        if (window.KA_Listen) window.KA_Listen.stop();
+        if (tab.getAttribute('data-demo') === 'talk') playChat();
+      });
+    });
+
+    /* ---- kana ---- */
+    var KANA = [
+      ['あ', 'a'], ['き', 'ki'], ['つ', 'tsu'], ['ね', 'ne'], ['ほ', 'ho'],
+      ['ミ', 'mi'], ['ラ', 'ra'], ['ヲ', 'wo'], ['しゃ', 'sha'], ['びょ', 'byo']
+    ];
+    var kIdx = 0;
+    var kCard = $('demo-kana-card'), kFace = $('demo-kana-face'), kRead = $('demo-kana-read');
+
+    function paintKana() {
+      if (!kFace) return;
+      kFace.textContent = KANA[kIdx][0];
+      kRead.textContent = KANA[kIdx][1];
+      kCard.classList.remove('revealed');
+    }
+    if (kCard) {
+      kCard.addEventListener('click', function () { kCard.classList.add('revealed'); });
+      $('demo-kana-next').addEventListener('click', function () {
+        kIdx = (kIdx + 1) % KANA.length;
+        paintKana();
+        if (window.KA_Listen) window.KA_Listen.stop();
+      });
+      paintKana();
+    }
+
+    // The Listen button is live — it uses the same voice the rest of the
+    // site does, and hides itself when nothing can speak.
+    var kListen = $('demo-kana-listen');
+    if (kListen && window.KA_Listen) {
+      window.KA_Listen.attach(kListen, function () { return KANA[kIdx][0]; });
+      var paintListen = function () { window.KA_Listen.paint(kListen); };
+      paintListen();
+      if (window.KA_Speech) window.KA_Speech.onReady(paintListen);
+      if (window.KA_Azure) window.KA_Azure.listVoices().then(paintListen).catch(paintListen);
+    }
+
+    /* ---- conjugator ----
+       Three verbs, one per type, each with a kanji spelling in the accepted
+       set — the whole point being that the real drill takes them all. */
+    var VERBS = [
+      { jp: '食べる', gloss: 'たべる — to eat',   formKey: 'form_negative',  form: 'NEGATIVE (ない)',
+        ok: ['たべない', '食べない'], show: '食べない' },
+      { jp: '書く',   gloss: 'かく — to write',  formKey: 'form_past',      form: 'PAST (た)',
+        ok: ['かいた', '書いた'], show: '書いた' },
+      { jp: '飲む',   gloss: 'のむ — to drink',  formKey: 'form_potential', form: 'POTENTIAL (できる)',
+        ok: ['のめる', '飲める'], show: '飲める' }
+    ];
+    var vIdx = 0;
+    var vInput = $('demo-conj-input'), vVerdict = $('demo-conj-verdict');
+
+    function paintVerb() {
+      if (!vInput) return;
+      var v = VERBS[vIdx];
+      $('demo-conj-verb').textContent = v.jp;
+      $('demo-conj-gloss').textContent = v.gloss;
+      $('demo-conj-form').textContent = tt(v.formKey, v.form);
+      vInput.value = '';
+      vInput.placeholder = tt('demo_conj_ph', 'your answer');
+      vVerdict.textContent = '';
+      vVerdict.className = 'demo-verdict';
+      $('demo-conj-check').textContent = tt('demo_check', 'Check');
+    }
+
+    function norm(s) {
+      return String(s || '').trim()
+        .replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); });
+    }
+
+    function checkVerb() {
+      var v = VERBS[vIdx];
+      var given = norm(vInput.value);
+      if (!given) return;
+      var hit = v.ok.filter(function (a) { return norm(a) === given; })[0];
+      if (hit) {
+        // Praising the kanji answer specifically is the demo: it is the
+        // thing people assume a drill like this gets wrong.
+        var kanji = /[一-龯]/.test(hit);
+        vVerdict.textContent = kanji
+          ? tt('demo_conj_kanji', 'Correct — and note it took the kanji. The real drill accepts every valid spelling and variant form, not just one.')
+          : tt('demo_conj_right', 'Correct. Kanji spellings are accepted too — try 食べない.').replace('食べない', v.show);
+        vVerdict.className = 'demo-verdict good';
+        setTimeout(function () { vIdx = (vIdx + 1) % VERBS.length; paintVerb(); vInput.focus(); }, 1900);
+      } else {
+        vVerdict.textContent = tt('demo_conj_wrong', 'Not quite.') + ' ' +
+          tt('demo_conj_answer', 'Answer:') + ' ' + v.show;
+        vVerdict.className = 'demo-verdict bad';
+      }
+    }
+
+    if (vInput) {
+      $('demo-conj-check').addEventListener('click', checkVerb);
+      vInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') checkVerb(); });
+      paintVerb();
+    }
+
+    /* ---- talk ----
+       A recorded exchange. A live one would mean the homepage calling the
+       backend on every visit, which is neither free nor fast. */
+    var CHAT = [
+      { who: 'katsu', jp: 'いらっしゃいませ！ご注文はお決まりですか。', enKey: 'demo_chat_1',
+        en: 'Welcome! Have you decided what to order?' },
+      { who: 'me',    jp: 'おちゃをおねがいします。' },
+      { who: 'katsu', jp: 'かしこまりました。少々お待ちください。', enKey: 'demo_chat_2',
+        en: 'Certainly. One moment please.',
+        fixKey: 'demo_chat_fix', fix: 'お茶 works, but one more word makes it natural: お茶をひとつお願いします。' }
+    ];
+
+    var chatTimers = [];
+    function playChat() {
+      var box = $('demo-chat');
+      if (!box) return;
+      chatTimers.forEach(clearTimeout);
+      chatTimers = [];
+      box.innerHTML = '';
+      CHAT.forEach(function (m, i) {
+        chatTimers.push(setTimeout(function () {
+          var el = document.createElement('div');
+          el.className = 'demo-b ' + m.who;
+          var jp = document.createElement('span');
+          jp.className = 'jp';
+          jp.textContent = m.jp;
+          el.appendChild(jp);
+          if (m.en) {
+            var en = document.createElement('span');
+            en.className = 'demo-b-en';
+            en.textContent = tt(m.enKey, m.en);
+            el.appendChild(en);
+          }
+          if (m.fix) {
+            var fx = document.createElement('div');
+            fx.className = 'demo-b-fix';
+            var lb = document.createElement('b');
+            lb.textContent = tt('talk_correction', 'Correction');
+            fx.appendChild(lb);
+            fx.appendChild(document.createTextNode(tt(m.fixKey, m.fix)));
+            el.appendChild(fx);
+          }
+          box.appendChild(el);
+        }, i * 650));
+      });
+    }
+    playChat();
+
+    // Re-label everything when the language changes, since these strings are
+    // painted from JS and the i18n observer never sees them.
+    document.addEventListener('katsuyo:lang', function () { paintVerb(); playChat(); });
+    var origSetLang = window.setLang;
+    if (typeof origSetLang === 'function') {
+      window.setLang = function (l) {
+        var r = origSetLang.apply(this, arguments);
+        setTimeout(function () { paintVerb(); playChat(); }, 60);
+        return r;
+      };
+    }
+  })();
+  </script>
 
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
 <script>

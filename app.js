@@ -1282,6 +1282,61 @@
 
     window.KA_Speech = KA_Speech;
 
+    // ---------- shared "Listen" button ----------
+    // One implementation for the flashcards, so a card anywhere on the site
+    // speaks the same way and disappears the same way when nothing can speak.
+    (function () {
+      // 日[ひ]にち → ひにち. The kanji vocabulary carries its readings in
+      // brackets, and a voice must be given the reading, never the bracket.
+      var READING_RE = /([々〆一-龯豈-﫿]+)\[([^\]]+)\]/g;
+      function toReading(s) { return String(s || '').replace(READING_RE, '$2'); }
+
+      var playing = null;
+
+      function stop() {
+        if (window.KA_Voice) window.KA_Voice.stop();
+        if (playing) { playing.classList.remove('playing'); playing = null; }
+      }
+
+      function speak(text, btn) {
+        var say = toReading(text).trim();
+        if (!say || !window.KA_Voice) return;
+        // A second click stops it rather than queueing another clip.
+        var wasSame = playing === btn;
+        stop();
+        if (wasSame) return;
+        playing = btn || null;
+        if (btn) btn.classList.add('playing');
+        window.KA_Voice.speak(say).then(function (how) {
+          if (how === 'none' && btn) { btn.classList.remove('playing'); playing = null; }
+        }).catch(function () {
+          if (btn) { btn.classList.remove('playing'); playing = null; }
+        });
+      }
+
+      window.KA_Listen = {
+        available: function () { return !!(window.KA_Voice && window.KA_Voice.available()); },
+        reading: toReading,
+        speak: speak,
+        stop: stop,
+        // getText is read at click time, so the button keeps working as the
+        // card behind it changes.
+        attach: function (btn, getText) {
+          if (!btn) return;
+          btn.addEventListener('click', function (e) {
+            e.stopPropagation();   // never flip the card
+            e.preventDefault();
+            speak(typeof getText === 'function' ? getText() : getText, btn);
+          });
+        },
+        // Hidden entirely when nothing can speak — a Listen button that does
+        // nothing is worse than no button.
+        paint: function (el) {
+          if (el) el.style.display = window.KA_Listen.available() ? '' : 'none';
+        }
+      };
+    })();
+
     // t() returns the key itself when a translation is missing. ct() falls
     // back to readable English instead, so a missing key never ships as
     // "romaji_title" on the page.
@@ -6172,12 +6227,34 @@ function generateNewQuestion() {
       filteredCardsVocab = shuffleArrayVocab(vocabDataList);
       loadCardVocab();
       updateProgressVocab();
+      wireVocabListen();
+    }
+
+    // Always speak the hiragana reading: it is the one field that is never
+    // ambiguous. 海 alone could be かい or うみ; card.japanese never is.
+    function currentVocabReading() {
+      var card = filteredCardsVocab[currentIndexVocab];
+      return card ? (card.japanese || card.katakana || card.kanji || '') : '';
+    }
+
+    function wireVocabListen() {
+      if (!window.KA_Listen) return;
+      var btn = document.getElementById('vocab-listen');
+      var row = document.getElementById('vocab-listen-row');
+      if (!btn || !row) return;
+      window.KA_Listen.attach(btn, currentVocabReading);
+      var paint = function () { row.style.display = window.KA_Listen.available() ? '' : 'none'; };
+      paint();
+      // Browser voices arrive late in Chrome, and Azure's list is a fetch.
+      if (window.KA_Speech) window.KA_Speech.onReady(paint);
+      if (window.KA_Azure) window.KA_Azure.listVoices().then(paint).catch(paint);
     }
 
     // Load current card (updated for reverse mode, kanji, katakana, and improved display)
     function loadCardVocab() {
       if (filteredCardsVocab.length === 0) return;
-      
+      if (window.KA_Listen) window.KA_Listen.stop();   // never talk over the next card
+
       const card = filteredCardsVocab[currentIndexVocab];
       
       // Get elements
@@ -6640,6 +6717,18 @@ function generateNewQuestion() {
         return;
       }
       filterKanjiLevel('all');
+
+      // Voices arrive after the first render — browser ones late in Chrome,
+      // Azure's as a fetch — so redraw the card once we know if it can speak.
+      if (window.KA_Listen) {
+        var redraw = function () {
+          if (kanjiIsFlipped) return;   // redrawing would flip it back
+          var had = !!document.querySelector('#kanji-vocab-list .ka-listen');
+          if (had !== window.KA_Listen.available()) showKanjiCard();
+        };
+        if (window.KA_Speech) window.KA_Speech.onReady(redraw);
+        if (window.KA_Azure) window.KA_Azure.listVoices().then(redraw).catch(redraw);
+      }
     }
     
     function filterKanjiLevel(level) {
@@ -6678,7 +6767,8 @@ function generateNewQuestion() {
     
     function showKanjiCard() {
       if (filteredKanjiCards.length === 0) return;
-      
+      if (window.KA_Listen) window.KA_Listen.stop();   // never talk over the next card
+
       const card = filteredKanjiCards[currentKanjiIndex];
       
       // Unflip the card
@@ -6700,12 +6790,22 @@ function generateNewQuestion() {
       // Update vocabulary
       const vocabList = document.getElementById('kanji-vocab-list');
       if (vocabList && card.vocabulary && card.vocabulary.length > 0) {
-        vocabList.innerHTML = card.vocabulary.slice(0, 4).map(v => `
+        // A bare kanji has no single pronunciation — 日 is にち, じつ, ひ and か.
+        // The example words do, so the speaker goes on each of those.
+        const canHear = !!(window.KA_Listen && window.KA_Listen.available());
+        vocabList.innerHTML = card.vocabulary.slice(0, 4).map((v, i) => `
           <div class="kanji-vocab-item">
+            ${canHear ? `<button type="button" class="ka-listen on-dark is-mini" data-say="${i}" aria-label="Listen">🔊</button> ` : ''}
             <span class="kanji-vocab-word jp">${v.word}</span>
             <span class="kanji-vocab-meaning"> — ${v.meaning}</span>
           </div>
         `).join('');
+        if (canHear) {
+          vocabList.querySelectorAll('.ka-listen').forEach(function (b) {
+            const v = card.vocabulary[Number(b.getAttribute('data-say'))];
+            window.KA_Listen.attach(b, function () { return v ? v.word : ''; });
+          });
+        }
       } else if (vocabList) {
         vocabList.innerHTML = '<div class="kanji-vocab-item" style="text-align: center; color: #8892b0;">No vocabulary examples</div>';
       }
