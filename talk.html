@@ -127,15 +127,28 @@
       font-size: 0.8rem; color: var(--text-light); font-family: inherit; opacity: 0.75; transition: all 0.15s; }
     .talk-speak:hover { opacity: 1; color: var(--accent); }
     .talk-speak.playing { color: var(--accent); opacity: 1; }
-    .talk-voice-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
-      padding: 0.5rem 0 0.1rem; font-size: 0.85rem; }
+    /* Second row of the same bar — same padding as .talk-display-bar, so VOICE
+       lines up under SHOW instead of sitting flush against the edge. */
+    .talk-voice-row { display: flex; align-items: center; flex-wrap: wrap;
+      gap: 0.45rem 0.7rem; padding: 0.6rem 0.9rem;
+      border-bottom: 1px solid rgba(0,0,0,0.07); background: var(--paper); }
     .talk-audio-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-    .talk-voice-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+    .talk-voice-label { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em;
       text-transform: uppercase; color: var(--text-light); }
-    .talk-voice-select { padding: 0.3rem 0.5rem; border: 1px solid rgba(0,0,0,0.15);
-      border-radius: 6px; background: var(--paper); font-family: inherit; font-size: 0.85rem;
-      color: var(--text); max-width: 15rem; }
-    .talk-voice-select:focus { outline: none; border-color: var(--accent); }
+
+    /* Shaped like .talk-mini-chip, so the row reads as one set of controls
+       rather than a browser dropdown parked next to some pills. */
+    .talk-voice-select {
+      border: 1.5px solid rgba(0,0,0,0.13); background-color: white; color: var(--text);
+      padding: 0.28rem 1.8rem 0.28rem 0.68rem; border-radius: 999px;
+      font-family: inherit; font-size: 0.78rem; font-weight: 500; cursor: pointer;
+      max-width: 14rem; transition: all 0.15s;
+      -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%236b6b6b' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.65rem center;
+    }
+    .talk-voice-select:hover { border-color: var(--accent-soft); }
+    .talk-voice-select:focus { outline: none; border-color: var(--ink); }
     .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
     .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
     .talk-send:disabled { opacity: 0.5; cursor: default; }
@@ -459,7 +472,11 @@
               '名探偵[めいたんてい]コナン (Detective Conan) / ドラえもん (Doraemon).\n' +
               'Useful words for this setting: 上映中[じょうえいちゅう] (now showing), チケット, 座席[ざせき] (seat), ' +
               '字幕[じまく] (subtitles), 吹[ふ]き替[か]え (dubbed), ポップコーン, 何時[なんじ]から (what time does it start).\n' +
-              'If the student asks what is playing, name actual titles from this list rather than answering vaguely.'
+              'If the student asks what is playing, name actual titles from this list rather than answering vaguely.\n' +
+              'Mix the eras: mostly well-known films like these, and where a recent release fits, use it — a real ' +
+              'cinema listing is a couple of new titles alongside things that have been around. Never invent a film ' +
+              'title, and never claim to know today\'s actual showtimes; this is a roleplay cinema, so the times and ' +
+              'prices are yours to make up, but the films themselves are real ones.'
       },
       {
         match: /\b(train|station|subway|metro|platform|ticket gate)\b|電車|駅|地下鉄/i,
@@ -566,6 +583,7 @@
       });
       document.querySelectorAll('.talk-options').forEach(function (o) { o.classList.remove('show'); });
       $('talk-setup-hint').style.display = 'none';
+      moveAudioRowIntoPanel(mode);
       paintAudioControls();
 
       if (mode === 'scenario') {
@@ -658,7 +676,13 @@
         'which platform the train leaves from — always answer with two to four specific, named options they can choose between. ' +
         'Never deflect with a vague "we have many things" or invent a placeholder like "Movie A". Real, recognisable names, ' +
         'the kind that setting would actually have.\n' +
-        '- Invent plausible specifics freely — prices, times, seat numbers — the point is a realistic conversation to practise on.\n\n' +
+        '- Invent plausible specifics freely — prices, times, seat numbers — the point is a realistic conversation to practise on.\n' +
+        '- Let the situation take the time it would really take, one step per turn. A waiter takes the order, ' +
+        'repeats it back to check, and says they will bring it — the tea does not arrive in the same breath as the ' +
+        'order. A clerk goes to look in the stock room. A receptionist checks the diary. Do not jump ahead to the ' +
+        'finished outcome: every step you skip is a turn the student came here to practise.\n' +
+        '- Ask something back most turns, so the student always has an opening. A scene where you simply announce ' +
+        'things is not a conversation.\n\n' +
         'Rules for the FIX line:\n' +
         '- Write it in ' + lang + ', keep it to one or two short sentences, and be kind: name what was wrong and give the right version.\n' +
         '- Omit it entirely when the student made no mistake — do not praise every single turn.\n' +
@@ -866,6 +890,16 @@
         btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically');
       });
       paintAudioControls();
+    }
+
+    // One audio row, relocated into whichever options panel is on screen —
+    // otherwise it floats outside the white card looking like an afterthought.
+    var PANEL_FOR_MODE = { scenario: 'opt-scenario', freechat: 'opt-freechat', grammar: 'opt-grammar' };
+
+    function moveAudioRowIntoPanel(mode) {
+      var row = $('talk-setup-audio');
+      var panel = $(PANEL_FOR_MODE[mode]);
+      if (row && panel && row.parentNode !== panel) panel.appendChild(row);
     }
 
     // The setup row only earns its space once a mode is picked and there is
