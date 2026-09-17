@@ -132,6 +132,19 @@
     /* Katakana gets its own colour, so the mode is readable at a glance
        rather than only by squinting at あ vs ア. */
     .talk-romaji-toggle.katakana { background: var(--gold, #c9a962); border-color: var(--gold, #c9a962); color: #1a1a2e; }
+
+    /* Let time pass. Dim until Katsu's turn leaves nothing to answer, then it
+       lights up and counts down — so "少々お待ちください" isn't a dead end. */
+    .talk-wait { flex: 0 0 auto; width: 2.7rem; border: 1.5px solid rgba(0,0,0,0.15);
+      background: transparent; color: var(--text-light); border-radius: 8px;
+      font-family: inherit; font-size: 1rem; font-weight: 600; font-variant-numeric: tabular-nums;
+      cursor: pointer; opacity: 0.55; transition: all 0.2s; }
+    .talk-wait:hover { opacity: 1; border-color: var(--accent-soft); color: var(--accent); }
+    .talk-wait.armed { opacity: 1; background: var(--accent); border-color: var(--accent);
+      color: #fff; font-size: 0.88rem; animation: talk-wait-in 0.25s ease-out; }
+    .talk-wait.armed:hover { background: var(--accent-soft); border-color: var(--accent-soft); color: #fff; }
+    @keyframes talk-wait-in { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .talk-wait.armed { animation: none; } }
     .talk-speak { margin-top: 0.45rem; background: none; border: none; padding: 0.15rem 0; cursor: pointer;
       font-size: 0.8rem; color: var(--text-light); font-family: inherit; opacity: 0.75; transition: all 0.15s; }
     .talk-speak:hover { opacity: 1; color: var(--accent); }
@@ -361,10 +374,13 @@
             <span class="talk-voice-label" id="talk-voice-label" data-i18n="talk_voice">Voice</span>
             <select id="talk-voice-select" class="talk-voice-select"></select>
             <button type="button" class="talk-mini-chip" id="talk-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
+            <button type="button" class="drill-chip info-chip" id="talk-info-chip" onclick="TalkPractice.openInfo()"
+                    aria-label="Shortcuts and options" title="Shortcuts and options (hold Alt+I)">i</button>
           </div>
           <div class="talk-msgs" id="talk-msgs"></div>
           <form class="talk-form" id="talk-form">
             <input type="text" id="talk-input" class="talk-input" maxlength="400" placeholder="Type your reply in Japanese (or ask Katsu for help)…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <button type="button" id="talk-wait" class="talk-wait" onclick="TalkPractice.skipAhead()">⏳</button>
             <button type="button" id="talk-romaji-toggle" class="talk-romaji-toggle" onclick="TalkPractice.toggleRomaji()">あ</button>
             <button type="submit" class="talk-send" id="talk-send" data-i18n="talk_send">Send</button>
           </form>
@@ -376,6 +392,16 @@
   </div>
 
   <!-- Stop confirm modal -->
+  <!-- SHORTCUTS & OPTIONS -->
+  <div id="talk-info-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="talk-info-title">
+    <div class="cheat-box" style="max-width: 520px;">
+      <button class="cheat-close" onclick="TalkPractice.closeInfo()" aria-label="Close">×</button>
+      <h2 class="cheat-title" id="talk-info-title"></h2>
+      <div class="cheat-hint" id="talk-info-sub"></div>
+      <div id="talk-info-content"></div>
+    </div>
+  </div>
+
   <div id="talk-stop-modal" class="report-modal">
     <div class="report-content talk-confirm-content">
       <h3 data-i18n="talk_stop_title">Stop this conversation?</h3>
@@ -674,7 +700,11 @@
         'FIX: <one short correction — include this line ONLY if the student made a mistake, otherwise leave the line out entirely>\n' +
         'END: yes  <- include this line ONLY when the situation has genuinely run its course (the order is complete and you have said you will bring it, ' +
         'the directions have been given, the goodbyes have been said). Otherwise leave it out. Do not end things early just to be tidy — ' +
-        'keep a conversation going as long as there is something natural left to say.\n\n' +
+        'keep a conversation going as long as there is something natural left to say.\n' +
+        'WAIT: yes  <- include this line ONLY when your turn leaves the student nothing to answer, because you have stepped away: ' +
+        'you said you would bring their order, you went to check the stock room or the diary, you are looking something up, ' +
+        'you put them on hold. Leave it out whenever there is anything natural for them to say back — including when you have ' +
+        'asked them a question, which is most turns. Never put both WAIT and END on the same reply.\n\n' +
         'Rules for the JP line:\n' +
         '- 1-3 short natural sentences, like a real spoken turn, not an essay.\n' +
         '- Write kanji naturally, and immediately after each kanji word put its reading in square brackets, e.g. ' +
@@ -801,15 +831,17 @@
     function stripReadings(s) { return s.replace(READING_RE, '$1'); }
 
     function parseReply(text) {
-      var out = { jp: '', ro: '', en: '', fix: '', end: '', raw: text, ok: false };
+      var out = { jp: '', ro: '', en: '', fix: '', end: '', wait: '', raw: text, ok: false };
       text.split('\n').forEach(function (line) {
-        var m = /^\s*(JP|RO|END|EN|FIX)\s*[:：]\s*(.*)$/.exec(line);
+        var m = /^\s*(JP|RO|END|EN|FIX|WAIT)\s*[:：]\s*(.*)$/.exec(line);
         if (!m) return;
         var key = m[1].toLowerCase();
         out[key] = (out[key] ? out[key] + ' ' : '') + m[2].trim();
       });
       out.ok = !!(out.jp || out.ro);
       out.ended = /^(yes|true|1|はい)$/i.test(out.end.trim());
+      // END wins: a finished scene gets the "keep going?" card, not a time skip.
+      out.waiting = !out.ended && /^(yes|true|1|はい)$/i.test(out.wait.trim());
       return out;
     }
 
@@ -982,13 +1014,55 @@
       }
       speakingBtn = btn || null;
       if (btn) btn.classList.add('playing');
+      // Fired once, whether the clip ended, failed, or never started — the
+      // time-skip countdown hangs off this, so it must not be possible to miss.
+      var after = opts && opts.after, done = false;
+      function finish() { if (done) return; done = true; if (after) after(); }
       window.KA_Voice.speak(text, {
         style: opts && opts.style !== undefined ? opts.style : currentStyle(),
         onstart: function () { if (btn) btn.classList.add('playing'); },
-        onend:   function () { if (btn) btn.classList.remove('playing'); speakingBtn = null; }
+        onend:   function () { if (btn) btn.classList.remove('playing'); speakingBtn = null; finish(); }
       }).then(function (how) {
-        if (how === 'none' && btn) { btn.classList.remove('playing'); speakingBtn = null; }
+        if (how === 'none') { if (btn) { btn.classList.remove('playing'); speakingBtn = null; } finish(); }
+      }).catch(finish);
+    }
+
+    // ---------- shortcuts & options ----------
+    // Same chip and overlay as the Conjugator and the Kana Drill, so the three
+    // pages explain themselves the same way.
+    var talkInfoPeeking = false;
+
+    function talkInfoRows() {
+      var rows = (typeof I18N !== 'undefined' && I18N[LANG] && I18N[LANG].talk_info_rows)
+        || (typeof I18N !== 'undefined' && I18N.en && I18N.en.talk_info_rows);
+      return Array.isArray(rows) ? rows : [];
+    }
+
+    function openInfo(peeking) {
+      var box = $('talk-info-content');
+      if (!box) return;
+      talkInfoPeeking = !!peeking;
+      $('talk-info-title').textContent = tt('talk_info_title', 'Shortcuts & options');
+      $('talk-info-sub').textContent = tt('talk_info_sub', 'Keyboard shortcuts and what the controls on this page do.');
+      box.innerHTML = '';
+      talkInfoRows().forEach(function (row) {
+        var r = document.createElement('div'); r.className = 'info-row';
+        var k = document.createElement('div'); k.className = 'info-keys'; k.textContent = row[0];
+        var d = document.createElement('div'); d.className = 'info-desc'; d.textContent = row[1];
+        r.appendChild(k); r.appendChild(d); box.appendChild(r);
       });
+      $('talk-info-overlay').classList.add('show');
+    }
+
+    function closeInfo() {
+      var o = $('talk-info-overlay');
+      if (o) o.classList.remove('show');
+      talkInfoPeeking = false;
+    }
+
+    function infoOpen() {
+      var o = $('talk-info-overlay');
+      return !!(o && o.classList.contains('show'));
     }
 
     // ---------- voice picker ----------
@@ -1122,7 +1196,11 @@
       wrap.classList.remove('thinking');
       renderKatsuBubble(wrap.querySelector('.talk-bubble'), parts);
 
-      if (parts.jp && speechOn()) speakJapanese(stripReadings(parts.jp));
+      var spoken = false;
+      if (parts.jp && speechOn()) {
+        spoken = canSpeak();
+        speakJapanese(stripReadings(parts.jp), null, { after: speechFinished });
+      }
 
       // Share corrections with the Katsu widget, so "what did I get wrong in
       // that sentence?" works from anywhere on the site afterwards.
@@ -1139,6 +1217,7 @@
       }
 
       if (parts.ended) showContinueCard();
+      if (parts.waiting) armWaitAfterSpeech(spoken);
       $('talk-msgs').scrollTop = $('talk-msgs').scrollHeight;
     }
 
@@ -1188,6 +1267,74 @@
         hidden: true,
         content: '(The student wants to keep practising. Open a natural next beat in this same setting — ' +
                  'a follow-up question, the next stage of the situation, or a small new request — and do not end the conversation again straight away.)'
+      });
+      addMsg('katsu', '…', { thinking: true });
+      requestTurn(null);
+    }
+
+    // ---------- "少々お待ちください" — letting time pass ----------
+    // Some turns leave nothing to answer: the waiter has gone to fetch the tea,
+    // the clerk is checking the stock room. Without this the scene just stops,
+    // because there is no sentence the student could reasonably type.
+    var WAIT_SECONDS = 15;
+    var waitTimer = null, waitSpeechTimer = null, waitLeft = 0;
+
+    function paintWait() {
+      var btn = $('talk-wait');
+      if (!btn) return;
+      var armed = waitTimer !== null;
+      btn.classList.toggle('armed', armed);
+      btn.textContent = armed ? waitLeft + 's' : '⏳';
+      btn.title = armed
+        ? tt('talk_wait_armed', 'Nothing to answer — time skips ahead on its own. Start typing to stay here.')
+        : tt('talk_wait_idle', 'Let time pass — skip ahead when there is nothing to say (Alt+W)');
+    }
+
+    function disarmWait() {
+      if (waitTimer !== null) { clearInterval(waitTimer); waitTimer = null; }
+      if (waitSpeechTimer !== null) { clearTimeout(waitSpeechTimer); waitSpeechTimer = null; }
+      paintWait();
+    }
+
+    function armWait() {
+      disarmWait();
+      waitLeft = WAIT_SECONDS;
+      waitTimer = setInterval(function () {
+        waitLeft--;
+        if (waitLeft <= 0) { disarmWait(); skipAhead(); return; }
+        paintWait();
+      }, 1000);
+      paintWait();
+    }
+
+    // Don't start counting over the top of the reply being read aloud — the
+    // student hasn't even heard it yet. The cap is there because a clip that is
+    // stopped mid-way never reports back.
+    function armWaitAfterSpeech(spoken) {
+      if (!spoken) { armWait(); return; }
+      waitSpeechTimer = setTimeout(function () { waitSpeechTimer = null; armWait(); }, 12000);
+    }
+
+    function speechFinished() {
+      if (waitSpeechTimer === null) return;
+      clearTimeout(waitSpeechTimer);
+      waitSpeechTimer = null;
+      armWait();
+    }
+
+    function skipAhead() {
+      if (state.busy || !state.active) return;
+      disarmWait();
+      removeContinueCard();
+      addSystemNote(tt('talk_time_passes', '— a few minutes later —'));
+      // Katsu sees this; the student doesn't. It is deliberately not a student
+      // turn, so it is never corrected and never counted in the assessment.
+      state.messages.push({
+        role: 'user',
+        hidden: true,
+        content: '(No reply was needed, and time has passed. Carry straight on in character from where you left off — ' +
+                 'bring what you went to fetch, come back with what you went to check, or move to the next step of the ' +
+                 'situation. Do not narrate the gap, do not apologise for it, and give the student something to respond to.)'
       });
       addMsg('katsu', '…', { thinking: true });
       requestTurn(null);
@@ -1347,6 +1494,7 @@
       var text = input.value.trim();
       if (!text || state.busy) return;
       input.value = '';
+      disarmWait();
       removeContinueCard();   // they answered it by just carrying on
       addMsg('student', text);
       requestTurn(text);
@@ -1354,6 +1502,7 @@
 
     // ---------- stop / assessment ----------
     function requestStop() {
+      disarmWait();   // don't let the scene move on behind an open dialog
       $('talk-stop-modal').classList.add('active');
     }
     function cancelStop() {
@@ -1361,6 +1510,7 @@
     }
     function backToSetup() {
       $('talk-stop-modal').classList.remove('active');
+      disarmWait();
       state.active = false;
       state.messages = [];
       $('talk-session').classList.remove('show');
@@ -1396,6 +1546,7 @@
 
     function getAssessment() {
       $('talk-stop-modal').classList.remove('active');
+      disarmWait();
       $('talk-assessment-modal').classList.add('active');
       var body = $('talk-assessment-body');
       body.innerHTML = '<div class="talk-assess-loading">考えています… ' +
@@ -1682,6 +1833,12 @@
     function init() {
       $('talk-form').addEventListener('submit', submitInput);
 
+      // The moment they start composing a reply, the scene stops moving without
+      // them — even if they end up deleting it again.
+      $('talk-input').addEventListener('input', disarmWait);
+      $('talk-input').addEventListener('paste', disarmWait);
+      paintWait();
+
       var customInput = $('talk-custom-input');
       customInput.addEventListener('input', validateStart);
       customInput.addEventListener('keydown', function (e) {
@@ -1718,9 +1875,34 @@
 
       // Same letters the Kana Drill uses for its two charts, so H and K mean
       // hiragana and katakana everywhere on the site.
-      document.addEventListener('keydown', function (e) {
-        if (!e.altKey || e.ctrlKey || e.metaKey) return;
+      var infoOverlay = $('talk-info-overlay');
+      if (infoOverlay) {
+        infoOverlay.addEventListener('click', function (e) { if (e.target === this) closeInfo(); });
+      }
+      // Release either key — or leave the window — and the peek ends.
+      function endPeek() { if (talkInfoPeeking) closeInfo(); }
+      document.addEventListener('keyup', function (e) {
         var k = (e.key || '').toLowerCase();
+        if (k === 'i' || k === 'alt' || !e.altKey) endPeek();
+      });
+      window.addEventListener('blur', endPeek);
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && infoOpen()) { closeInfo(); return; }
+        if (!e.altKey || e.ctrlKey || e.metaKey) return;
+        var key = (e.key || '').toLowerCase();
+        if (key === 'i') {
+          e.preventDefault();
+          if (!e.repeat && !infoOpen()) openInfo(true);
+          return;
+        }
+        if (infoOpen()) return;   // the rest belong to the conversation
+        if (key === 'w') {
+          e.preventDefault();
+          skipAhead();
+          return;
+        }
+        var k = key;
         if (k !== 'h' && k !== 'k' && k !== 'l') return;
         e.preventDefault();
         setInputMode(k === 'h' ? 'kana' : (k === 'k' ? 'katakana' : 'off'));
@@ -1782,7 +1964,10 @@
       download: downloadAssessment,
       closeAssessment: closeAssessment,
       toggleRomaji: toggleRomajiInput,
-      speak: speakJapanese
+      skipAhead: skipAhead,
+      speak: speakJapanese,
+      openInfo: openInfo,
+      closeInfo: closeInfo
     };
   })();
   </script>
