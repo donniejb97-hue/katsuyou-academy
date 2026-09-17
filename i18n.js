@@ -256,6 +256,16 @@ var I18N = {
     voice_neutral:"Neutral",
     voice_sample:"こんにちは。今日はいい天気ですね。",
     talk_audio:"Audio",
+    // ---- talk: input modes + folded corrections ----
+    talk_corrections:"Corrections",
+    talk_corrections_hint:"Open every correction by default, instead of folding them away",
+    talk_placeholder_katakana:"Katakana — juusu → ジュース",
+    input_mode_kana:"Hiragana — type ikanai, get いかない. Alt+K for katakana.",
+    input_mode_katakana:"Katakana — type ju-su for ジュース. Use - for the ー mark. Alt+H for hiragana.",
+    input_mode_off:"Off — use your own Japanese keyboard.",
+    input_mode_toast_kana:"ひらがな — hiragana input",
+    input_mode_toast_katakana:"カタカナ — katakana input",
+    input_mode_toast_off:"Romaji input off",
   },
   de: {
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
@@ -501,6 +511,16 @@ var I18N = {
     voice_neutral:"neutral",
     voice_sample:"こんにちは。今日はいい天気ですね。",
     talk_audio:"Audio",
+    // ---- talk: input modes + folded corrections ----
+    talk_corrections:"Korrekturen",
+    talk_corrections_hint:"Alle Korrekturen standardmäßig aufklappen, statt sie einzuklappen",
+    talk_placeholder_katakana:"Katakana — juusu → ジュース",
+    input_mode_kana:"Hiragana — ikanai tippen, いかない erhalten. Alt+K für Katakana.",
+    input_mode_katakana:"Katakana — ju-su tippen ergibt ジュース. Mit - entsteht das Zeichen ー. Alt+H für Hiragana.",
+    input_mode_off:"Aus — nutzen Sie Ihre eigene japanische Tastatur.",
+    input_mode_toast_kana:"ひらがな — Hiragana-Eingabe",
+    input_mode_toast_katakana:"カタカナ — Katakana-Eingabe",
+    input_mode_toast_off:"Romaji-Eingabe aus",
   },
   fr: {
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
@@ -746,6 +766,16 @@ var I18N = {
     voice_neutral:"neutre",
     voice_sample:"こんにちは。今日はいい天気ですね。",
     talk_audio:"Audio",
+    // ---- talk: input modes + folded corrections ----
+    talk_corrections:"Corrections",
+    talk_corrections_hint:"Ouvrir toutes les corrections par défaut, au lieu de les replier",
+    talk_placeholder_katakana:"Katakana — juusu → ジュース",
+    input_mode_kana:"Hiragana — tapez ikanai, obtenez いかない. Alt+K pour les katakana.",
+    input_mode_katakana:"Katakana — tapez ju-su pour ジュース. Le tiret - donne le signe ー. Alt+H pour les hiragana.",
+    input_mode_off:"Désactivé — utilisez votre propre clavier japonais.",
+    input_mode_toast_kana:"ひらがな — saisie en hiragana",
+    input_mode_toast_katakana:"カタカナ — saisie en katakana",
+    input_mode_toast_off:"Saisie romaji désactivée",
   },
   zh: {
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
@@ -991,6 +1021,16 @@ var I18N = {
     voice_neutral:"中性",
     voice_sample:"こんにちは。今日はいい天気ですね。",
     talk_audio:"语音",
+    // ---- talk: input modes + folded corrections ----
+    talk_corrections:"订正",
+    talk_corrections_hint:"默认展开所有订正，而不是折叠起来",
+    talk_placeholder_katakana:"片假名 — juusu → ジュース",
+    input_mode_kana:"平假名——输入 ikanai 得到 いかない。按 Alt+K 切换片假名。",
+    input_mode_katakana:"片假名——输入 ju-su 得到 ジュース。用 - 输入长音符 ー。按 Alt+H 切换平假名。",
+    input_mode_off:"已关闭——请使用自己的日语键盘。",
+    input_mode_toast_kana:"ひらがな — 平假名输入",
+    input_mode_toast_katakana:"カタカナ — 片假名输入",
+    input_mode_toast_off:"罗马字输入已关闭",
   }
 };
 

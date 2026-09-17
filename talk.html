@@ -99,7 +99,13 @@
     .talk-en { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed rgba(0,0,0,0.1); font-size: 0.88rem; color: var(--text); }
     .talk-fix { margin-top: 0.75rem; background: rgba(196,92,74,0.09); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0;
       padding: 0.5rem 0.7rem; font-size: 0.84rem; color: #8a3d2f; line-height: 1.45; }
-    .talk-fix-label { display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; opacity: 0.85; margin-bottom: 0.15rem; }
+    .talk-fix-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.09em; opacity: 0.85; }
+    .talk-fix-head { display: flex; align-items: center; gap: 0.35rem; width: 100%; background: none; border: none;
+      padding: 0; margin: 0; cursor: pointer; font-family: inherit; color: inherit; text-align: left; }
+    .talk-fix-caret { font-size: 0.6rem; line-height: 1; transition: transform 0.15s; opacity: 0.7; }
+    .talk-fix.open .talk-fix-caret { transform: rotate(90deg); }
+    .talk-fix-body { display: none; margin-top: 0.3rem; }
+    .talk-fix.open .talk-fix-body { display: block; }
 
     .talk-msg.thinking .talk-bubble { opacity: 0.55; font-style: italic; }
     .talk-msg.system-note { display: block; align-self: center; max-width: 100%; color: var(--text-light); font-size: 0.78rem; font-style: italic; text-align: center; }
@@ -123,6 +129,9 @@
       cursor: pointer; transition: all 0.2s; }
     .talk-romaji-toggle:hover { filter: brightness(1.08); }
     .talk-romaji-toggle.off { background: transparent; color: var(--text-light); border-color: rgba(0,0,0,0.15); }
+    /* Katakana gets its own colour, so the mode is readable at a glance
+       rather than only by squinting at あ vs ア. */
+    .talk-romaji-toggle.katakana { background: var(--gold, #c9a962); border-color: var(--gold, #c9a962); color: #1a1a2e; }
     .talk-speak { margin-top: 0.45rem; background: none; border: none; padding: 0.15rem 0; cursor: pointer;
       font-size: 0.8rem; color: var(--text-light); font-family: inherit; opacity: 0.75; transition: all 0.15s; }
     .talk-speak:hover { opacity: 1; color: var(--accent); }
@@ -345,6 +354,7 @@
             <span class="talk-display-sep"></span>
             <button type="button" class="talk-mini-chip" id="talk-toggle-romaji">+ Rōmaji</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-english">+ English</button>
+            <button type="button" class="talk-mini-chip" id="talk-toggle-fix">+ Corrections</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-speak" style="display: none;">🔊 Read aloud</button>
           </div>
           <div class="talk-voice-row" id="talk-voice-row" style="display: none;">
@@ -523,7 +533,7 @@
       romaji:   ['talk_script_romaji',   'Rōmaji']
     };
 
-    var display = { script: 'furigana', romaji: true, english: true };
+    var display = { script: 'furigana', romaji: true, english: true, fix: false };
     var hasSavedDisplay = false;
     try {
       var savedDisplay = JSON.parse(localStorage.getItem('talkDisplay') || 'null');
@@ -682,7 +692,12 @@
         'order. A clerk goes to look in the stock room. A receptionist checks the diary. Do not jump ahead to the ' +
         'finished outcome: every step you skip is a turn the student came here to practise.\n' +
         '- Ask something back most turns, so the student always has an opening. A scene where you simply announce ' +
-        'things is not a conversation.\n\n' +
+        'things is not a conversation.\n' +
+        '- Establish what kind of place this actually is within your first turn or two — a clothing shop, a ramen ' +
+        'counter, a small station office — rather than staying vague.\n' +
+        '- Then hold to it. If the student asks for something this place does not have, say so in character and ' +
+        'point them somewhere that does, or offer what you do have. Do not quietly produce whatever they ask for: ' +
+        'a real shop has limits, and talking your way around one is exactly the language worth practising.\n\n' +
         'Rules for the FIX line:\n' +
         '- Write it in ' + lang + ', keep it to one or two short sentences, and be kind: name what was wrong and give the right version.\n' +
         '- Omit it entirely when the student made no mistake — do not praise every single turn.\n' +
@@ -851,16 +866,35 @@
       }
 
       if (parts.fix) {
+        // Folded away by default. A correction after every turn buries the
+        // conversation you came for — especially on a bad day.
         var fix = document.createElement('div');
         fix.className = 'talk-fix';
-        var lbl = document.createElement('span');
-        lbl.className = 'talk-fix-label';
-        lbl.textContent = tt('talk_correction', 'Correction');
-        fix.appendChild(lbl);
+
+        var head = document.createElement('button');
+        head.type = 'button';
+        head.className = 'talk-fix-head';
+        head.setAttribute('aria-expanded', display.fix ? 'true' : 'false');
+        head.innerHTML = '<span class="talk-fix-caret" aria-hidden="true">\u25B8</span>' +
+                         '<span class="talk-fix-label">' + escapeHtml(tt('talk_correction', 'Correction')) + '</span>';
+
+        var body = document.createElement('div');
+        body.className = 'talk-fix-body';
         // Corrections quote Japanese too, so they get the same treatment.
-        var fixBody = document.createElement('span');
-        applyScript(fixBody, parts.fix);
-        fix.appendChild(fixBody);
+        applyScript(body, parts.fix);
+
+        function setOpen(open) {
+          fix.classList.toggle('open', open);
+          head.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        setOpen(!!display.fix);
+        head.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setOpen(!fix.classList.contains('open'));
+        });
+
+        fix.appendChild(head);
+        fix.appendChild(body);
         bubble.appendChild(fix);
       }
     }
@@ -1041,6 +1075,12 @@
       ro.classList.toggle('on', display.script === 'romaji' || display.romaji);
       ro.disabled = display.script === 'romaji';
       en.classList.toggle('on', display.english);
+      var fx = $('talk-toggle-fix');
+      if (fx) {
+        fx.textContent = '+ ' + tt('talk_corrections', 'Corrections');
+        fx.classList.toggle('on', display.fix);
+        fx.title = tt('talk_corrections_hint', 'Open every correction by default, instead of folding them away');
+      }
       paintSpeechToggle();
     }
 
@@ -1206,31 +1246,74 @@
     // ---------- rōmaji input ----------
     // Same helper and same saved setting as the Conjugator, so turning it off
     // in one place turns it off in both.
-    function romajiOn() {
-      try { return localStorage.getItem('katsuyo-romaji-input') !== 'off'; } catch (e) { return true; }
+    // Three input modes, the way a real IME has them: hiragana, katakana, off.
+    // Loanwords are the reason — ジュース has to be katakana, and the converter
+    // only ever produced hiragana.
+    function inputMode() {
+      try {
+        var m = localStorage.getItem('katsuyo-input-mode');
+        if (m === 'kana' || m === 'katakana' || m === 'off') return m;
+        // carry over the old two-state setting
+        return localStorage.getItem('katsuyo-romaji-input') === 'off' ? 'off' : 'kana';
+      } catch (e) { return 'kana'; }
     }
+
+    function setInputMode(mode) {
+      try {
+        localStorage.setItem('katsuyo-input-mode', mode);
+        // keep the Conjugator's setting in step: it only knows on/off
+        localStorage.setItem('katsuyo-romaji-input', mode === 'off' ? 'off' : 'on');
+      } catch (e) {}
+      paintRomajiToggle();
+    }
+
+    function romajiOn() { return inputMode() !== 'off'; }
+
+    var KATAKANA_SHIFT = 0x60;
+    function toKatakana(s) {
+      return String(s).replace(/[\u3041-\u3096]/g, function (c) {
+        return String.fromCharCode(c.charCodeAt(0) + KATAKANA_SHIFT);
+      });
+    }
+
+    function convertForMode(text, final) {
+      if (inputMode() !== 'katakana') return window.KA_toKana(text, final);
+
+      // Only the trailing run of Latin letters becomes katakana. Converting the
+      // whole box would rewrite kana already sitting there — so りんご + juusu
+      // came out リンゴジュウス instead of りんごジュース.
+      var m = /[A-Za-z'\-]+$/.exec(text);
+      if (!m) return text;
+      return text.slice(0, m.index) + toKatakana(window.KA_toKana(m[0], final));
+    }
+
+    var MODE_FACE = { kana: 'あ', katakana: 'ア', off: 'A' };
+    var MODE_NEXT = { kana: 'katakana', katakana: 'off', off: 'kana' };
 
     function paintRomajiToggle() {
       var btn = $('talk-romaji-toggle');
       if (!btn) return;
-      var on = romajiOn();
-      btn.textContent = on ? 'あ' : 'A';
-      btn.classList.toggle('off', !on);
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      btn.title = on
-        ? tt('romaji_on_title', 'Romaji typing is on — type ikanai, get いかない. Click to turn off.')
-        : tt('romaji_off_title', 'Romaji typing is off — type with your own Japanese keyboard. Click to turn on.');
+      var mode = inputMode();
+      btn.textContent = MODE_FACE[mode];
+      btn.classList.toggle('off', mode === 'off');
+      btn.classList.toggle('katakana', mode === 'katakana');
+      btn.title = tt('input_mode_' + mode, {
+        kana: 'Hiragana — type ikanai, get いかない. Alt+K for katakana.',
+        katakana: 'Katakana — type ju-su for ジュース. Use - for the ー mark. Alt+H for hiragana.',
+        off: 'Off — use your own Japanese keyboard.'
+      }[mode]);
       var input = $('talk-input');
       if (input) {
-        input.placeholder = on
-          ? tt('talk_placeholder_romaji', 'Reply in Japanese — type romaji, get kana')
-          : tt('talk_placeholder', 'Type your reply in Japanese (or ask Katsu for help)…');
+        input.placeholder = mode === 'off'
+          ? tt('talk_placeholder', 'Type your reply in Japanese (or ask Katsu for help)…')
+          : (mode === 'katakana'
+              ? tt('talk_placeholder_katakana', 'Katakana — juusu → ジュース')
+              : tt('talk_placeholder_romaji', 'Reply in Japanese — type romaji, get kana'));
       }
     }
 
     function toggleRomajiInput() {
-      try { localStorage.setItem('katsuyo-romaji-input', romajiOn() ? 'off' : 'on'); } catch (e) {}
-      paintRomajiToggle();
+      setInputMode(MODE_NEXT[inputMode()]);
       var input = $('talk-input');
       if (input && !input.disabled) input.focus();
     }
@@ -1244,7 +1327,7 @@
         if (!romajiOn() || this.dataset.composing) return;
         // Only rewrite while typing at the end, never mid-edit.
         if (this.selectionStart !== this.value.length) return;
-        var converted = window.KA_toKana(this.value, false);
+        var converted = convertForMode(this.value, false);
         if (converted !== this.value) {
           this.value = converted;
           this.setSelectionRange(converted.length, converted.length);
@@ -1258,7 +1341,7 @@
       var input = $('talk-input');
       // Commit a half-finished syllable (a trailing "n" becomes ん) before sending.
       if (romajiOn() && window.KA_toKana) {
-        var committed = window.KA_toKana(input.value, true);
+        var committed = convertForMode(input.value, true);
         if (committed !== input.value) input.value = committed;
       }
       var text = input.value.trim();
@@ -1618,6 +1701,12 @@
         buildDisplayControls();
         rerenderAll();
       });
+      $('talk-toggle-fix').addEventListener('click', function () {
+        display.fix = !display.fix;
+        persistDisplay();
+        buildDisplayControls();
+        rerenderAll();
+      });
       $('talk-toggle-speak').addEventListener('click', function () {
         setSpeechOn(!speechOn());
       });
@@ -1626,6 +1715,25 @@
       });
 
       wireRomajiInput();
+
+      // Same letters the Kana Drill uses for its two charts, so H and K mean
+      // hiragana and katakana everywhere on the site.
+      document.addEventListener('keydown', function (e) {
+        if (!e.altKey || e.ctrlKey || e.metaKey) return;
+        var k = (e.key || '').toLowerCase();
+        if (k !== 'h' && k !== 'k' && k !== 'l') return;
+        e.preventDefault();
+        setInputMode(k === 'h' ? 'kana' : (k === 'k' ? 'katakana' : 'off'));
+        var input = $('talk-input');
+        if (input && !input.disabled) input.focus();
+        if (typeof showToast === 'function') {
+          showToast(tt('input_mode_toast_' + inputMode(), {
+            kana: 'ひらがな — hiragana input',
+            katakana: 'カタカナ — katakana input',
+            off: 'Romaji input off'
+          }[inputMode()]), 'success');
+        }
+      });
       buildDisplayControls();
 
       // Voices load asynchronously in Chrome, so the button may only become
