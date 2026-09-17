@@ -39,6 +39,33 @@
     adjectives: 'nav_adjectives', reference: 'nav_reference', conjugation: 'nav_conjugation'
   };
 
+  // Pages Katsu stays out of. The kana drill is rapid recall — a question is
+  // over in a couple of seconds, so a tutor logging every miss and offering to
+  // explain it turns a drill into a lecture. Nothing from here is recorded and
+  // nothing here triggers a pop-in.
+  var KATSU_HANDS_OFF = { 'kana-drill': true };
+
+  function handsOffPage() {
+    return !!KATSU_HANDS_OFF[document.body.getAttribute('data-page')];
+  }
+
+  // The stored page name is translated, so a drill logged in German reads
+  // "Kana-Übung". Match the label in every language to clear old entries.
+  function handsOffLabels() {
+    var labels = {};
+    try {
+      Object.keys(KATSU_HANDS_OFF).forEach(function (page) {
+        var key = PAGE_NAV_KEY[page];
+        if (!key) return;
+        Object.keys(window.I18N || {}).forEach(function (lang) {
+          var v = window.I18N[lang] && window.I18N[lang][key];
+          if (v) labels[v] = true;
+        });
+      });
+    } catch (e) {}
+    return labels;
+  }
+
   function tr(key, fallback) {
     // i18n.js's t() falls back to English automatically, then to the raw key —
     // guard for the (unlikely) case i18n.js hasn't loaded yet.
@@ -86,7 +113,14 @@
   function loadMistakes() {
     try {
       var raw = JSON.parse(localStorage.getItem(STORAGE_MISTAKES) || '[]');
-      return Array.isArray(raw) ? raw : [];
+      if (!Array.isArray(raw)) return [];
+      var drop = handsOffLabels();
+      var kept = raw.filter(function (m) { return !(m && drop[m.page]); });
+      // Clear out anything recorded before a page became hands-off.
+      if (kept.length !== raw.length) {
+        try { localStorage.setItem(STORAGE_MISTAKES, JSON.stringify(kept)); } catch (e) {}
+      }
+      return kept;
     } catch (e) { return []; }
   }
 
@@ -95,6 +129,7 @@
   }
 
   function logMistake(entry) {
+    if (handsOffPage()) return;   // whether the page asked directly or not
     entry = entry || {};
     var e = {
       t: Date.now(),
@@ -567,7 +602,7 @@
     // Where each practice page keeps its question, the student's answer, and
     // the correct answer. Unknown pages still get the feedback text itself.
     var CAPTURE = {
-      'kana-drill':  { q: ['#drill-question'], a: ['#drill-input'] },
+      // 'kana-drill' is deliberately absent — see KATSU_HANDS_OFF above.
       'kanji-drill': { q: ['#drill-question'], a: ['#drill-input'] },
       'datedojo':    { q: ['#dojo-question-text'], a: ['#dojo-answer-input'], c: ['#dojo-feedback-answer'] },
       'conjugator':  { q: ['#verb-kanji', '#prompt-form'], a: ['#answer-input'], c: ['#feedback-answer'] }
@@ -608,13 +643,16 @@
         if (!el || el.nodeType !== 1) continue;
         var cls = el.getAttribute ? el.getAttribute('class') : '';
         if (cls && STRUGGLE_PATTERN.test(cls) && STRUGGLE_STATE.test(cls)) {
-          captureMistake(el);   // always logged, so Katsu can explain it later
+          if (handsOffPage()) break;   // this page is none of Katsu's business
+          captureMistake(el);   // logged, so Katsu can explain it later
           noteMiss();           // pop-in only if the student left that on
           break;
         }
       }
     });
-    observer.observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: true });
+    if (!handsOffPage()) {
+      observer.observe(document.body, { attributes: true, attributeFilter: ['class'], subtree: true });
+    }
 
     refreshMistakeUI();
   }
