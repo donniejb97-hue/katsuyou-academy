@@ -333,6 +333,55 @@
     .ka-listen.is-mini { border: none; padding: 0 0.3rem; font-size: 0.95rem; opacity: 0.55; }
     .ka-listen.is-mini:hover, .ka-listen.is-mini.playing { opacity: 1; background: none; }
 
+    /* ---- split Listen + the Audio popover ------------------------------ */
+    /* Listen plays; the caret opens the voice options. Two actions, one
+       control, so the row does not gain a fifth button. */
+    /* align-self: stretch so it matches whatever height the row's own buttons
+       have, rather than sitting short next to them. */
+    .ka-split { display: inline-flex; align-items: stretch; align-self: stretch;
+      border-radius: 6px; overflow: hidden; }
+    .ka-split__main, .ka-split__caret {
+      background: #4a5a7a; color: #fff; border: none; cursor: pointer;
+      font-family: inherit; font-weight: 600; transition: filter 0.15s;
+    }
+    .ka-split__main { font-size: 0.8rem; padding: 0.55rem 0.9rem; white-space: nowrap;
+      display: inline-flex; align-items: center; gap: 0.35rem; }
+    .ka-split__caret { font-size: 0.6rem; padding: 0 0.6rem; background: #3e4c68;
+      border-left: 1px solid rgba(255,255,255,0.2); }
+    .ka-split__main:hover, .ka-split__caret:hover { filter: brightness(1.15); }
+    .ka-split__main.playing { filter: brightness(1.25); }
+    .ka-split__caret[aria-expanded="true"] { background: #2f3a50; }
+
+    .ka-audio-panel {
+      display: none; align-items: center; justify-content: center;
+      gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem auto 0; max-width: 26rem;
+      padding: 0.6rem 0.8rem; border-radius: 7px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.11);
+    }
+    .ka-audio-panel.open { display: flex; }
+    .ka-audio-panel__label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em;
+      text-transform: uppercase; color: rgba(255,255,255,0.55); }
+    .ka-audio-panel select {
+      background: rgba(0,0,0,0.35); border: 1.5px solid rgba(255,255,255,0.18);
+      color: inherit; border-radius: 999px; padding: 0.26rem 0.7rem;
+      font-family: inherit; font-size: 0.76rem; cursor: pointer; max-width: 12rem;
+    }
+    .ka-audio-panel button {
+      background: none; border: 1.5px solid rgba(255,255,255,0.18); color: inherit;
+      border-radius: 999px; padding: 0.26rem 0.7rem;
+      font-family: inherit; font-size: 0.76rem; cursor: pointer; transition: all 0.15s;
+    }
+    .ka-audio-panel button:hover { border-color: rgba(255,255,255,0.55); }
+
+    /* On a phone the caret must grow, not shrink — a 16px tap target next to
+       a button you actually want is how you open the wrong thing. */
+    @media (max-width: 640px) {
+      .ka-split { width: 100%; min-height: 44px; }
+      .ka-split__main { flex: 1 1 auto; justify-content: center; padding: 0.7rem 0.9rem; }
+      .ka-split__caret { flex: 0 0 3rem; font-size: 0.75rem; }
+      .ka-audio-panel select { max-width: 100%; }
+    }
+
     /* One colour per stage, and the same three all the way down the page:
        red for kana, sage for grammar, gold for speaking. Each row pairs the
        filled "learn it" button with the outlined "practise it" one. */

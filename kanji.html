@@ -722,6 +722,19 @@
       <div class="kanji-nav">
         <button class="kanji-btn kanji-shuffle-btn" onclick="shuffleKanjiCards()" data-i18n="shuffle">🔀 Shuffle</button>
         <button class="kanji-btn kanji-goto-btn" onclick="showKanjiGotoModal()" data-i18n="goto_klc">📍 Go To KLC #</button>
+        <!-- No card-level Listen here: 日 alone is にち, じつ, ひ and か, so the
+             speakers live on the example words. This is only the voice choice. -->
+        <span class="ka-split" id="kanji-audio-split" style="display: none;">
+          <button type="button" class="ka-split__main" id="kanji-audio-open" aria-expanded="false">🔊 <span data-i18n="talk_voice">Voice</span></button>
+          <button type="button" class="ka-split__caret" id="kanji-audio-caret"
+                  aria-expanded="false" aria-label="Audio options" title="Audio options">▾</button>
+        </span>
+      </div>
+
+      <div class="ka-audio-panel" id="kanji-audio-panel" aria-hidden="true">
+        <span class="ka-audio-panel__label" data-i18n="talk_voice">Voice</span>
+        <select id="kanji-voice-select"></select>
+        <button type="button" id="kanji-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
       </div>
       
       <!-- Stats -->

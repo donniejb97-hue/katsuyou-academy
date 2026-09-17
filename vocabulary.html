@@ -741,15 +741,22 @@
         </div>
       </div>
 
-      <div class="vocab-nav" id="vocab-listen-row" style="display: none;">
-        <button type="button" class="ka-listen on-dark" id="vocab-listen">🔊 <span data-i18n="talk_listen">Listen</span></button>
-      </div>
-
       <div class="vocab-nav">
         <button class="vocab-btn" id="prev-btn-vocab" onclick="previousCardVocab()" data-i18n="prev_card">← Previous</button>
         <div class="vocab-progress" id="progress-vocab">1 / 496</div>
         <button class="vocab-btn" id="next-btn-vocab" onclick="nextCardVocab()" data-i18n="next_card">Next →</button>
+        <span class="ka-split" id="vocab-listen-split" style="display: none;">
+          <button type="button" class="ka-split__main" id="vocab-listen">🔊 <span data-i18n="talk_listen">Listen</span></button>
+          <button type="button" class="ka-split__caret" id="vocab-audio-caret"
+                  aria-expanded="false" aria-label="Audio options" title="Audio options">▾</button>
+        </span>
         <button class="vocab-btn shuffle-btn" onclick="shuffleCardsVocab()" data-i18n="shuffle">🔀 Shuffle</button>
+      </div>
+
+      <div class="ka-audio-panel" id="vocab-audio-panel" aria-hidden="true">
+        <span class="ka-audio-panel__label" data-i18n="talk_voice">Voice</span>
+        <select id="vocab-voice-select"></select>
+        <button type="button" id="vocab-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
       </div>
 
       <div class="vocab-stats">

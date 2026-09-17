@@ -1314,11 +1314,71 @@
         });
       }
 
+      // ---------- the Audio popover ----------
+      // Voice, preview, and room for more later. Hidden until the ▾ beside
+      // Listen is pressed, because which voice reads your flashcards is a
+      // once-a-month decision sitting next to a button you press all session.
+      function wirePanel(ids) {
+        var caret  = document.getElementById(ids.caret);
+        var panel  = document.getElementById(ids.panel);
+        var select = document.getElementById(ids.select);
+        var prev   = document.getElementById(ids.preview);
+        if (!caret || !panel) return;
+
+        function setOpen(open) {
+          panel.classList.toggle('open', open);
+          panel.setAttribute('aria-hidden', open ? 'false' : 'true');
+          caret.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+        setOpen(false);
+
+        caret.addEventListener('click', function (e) {
+          e.stopPropagation();
+          setOpen(!panel.classList.contains('open'));
+        });
+        // Clicking away closes it; clicking inside it does not.
+        panel.addEventListener('click', function (e) { e.stopPropagation(); });
+        document.addEventListener('click', function () { setOpen(false); });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') setOpen(false);
+        });
+
+        if (prev) {
+          prev.addEventListener('click', function (e) {
+            e.stopPropagation();
+            // Neutral line on purpose: this is about comparing voices.
+            speak((typeof t === 'function' ? t('voice_sample') : '') ||
+                  'こんにちは。今日はいい天気ですね。', prev);
+          });
+        }
+
+        // Only Azure exposes a choice of voices. With just a browser voice
+        // there is nothing to pick, so the caret would open an empty box.
+        if (!select || !window.KA_Azure) { caret.style.display = 'none'; return; }
+        window.KA_Azure.listVoices().then(function (list) {
+          if (!list || !list.length) { caret.style.display = 'none'; return; }
+          caret.style.display = '';
+          select.innerHTML = '';
+          list.forEach(function (v) {
+            var o = document.createElement('option');
+            o.value = v.name;
+            var g = v.gender ? (typeof t === 'function' ? t('voice_' + v.gender.toLowerCase()) : v.gender) : '';
+            o.textContent = v.display + (g && g.indexOf('voice_') !== 0 ? ' — ' + g : '');
+            select.appendChild(o);
+          });
+          select.value = window.KA_Azure.currentVoice() || list[0].name;
+          // The same setting Talk writes, so a voice chosen anywhere is the
+          // voice everywhere.
+          select.onchange = function () { window.KA_Azure.setVoice(this.value); };
+        }).catch(function () { caret.style.display = 'none'; });
+      }
+
       window.KA_Listen = {
         available: function () { return !!(window.KA_Voice && window.KA_Voice.available()); },
         reading: toReading,
         speak: speak,
         stop: stop,
+        wirePanel: wirePanel,
         // getText is read at click time, so the button keeps working as the
         // card behind it changes.
         attach: function (btn, getText) {
@@ -6240,10 +6300,18 @@ function generateNewQuestion() {
     function wireVocabListen() {
       if (!window.KA_Listen) return;
       var btn = document.getElementById('vocab-listen');
-      var row = document.getElementById('vocab-listen-row');
-      if (!btn || !row) return;
+      var split = document.getElementById('vocab-listen-split');
+      if (!btn || !split) return;
       window.KA_Listen.attach(btn, currentVocabReading);
-      var paint = function () { row.style.display = window.KA_Listen.available() ? '' : 'none'; };
+      window.KA_Listen.wirePanel({
+        caret: 'vocab-audio-caret',
+        panel: 'vocab-audio-panel',
+        select: 'vocab-voice-select',
+        preview: 'vocab-voice-preview'
+      });
+      var paint = function () {
+        split.style.display = window.KA_Listen.available() ? '' : 'none';
+      };
       paint();
       // Browser voices arrive late in Chrome, and Azure's list is a fetch.
       if (window.KA_Speech) window.KA_Speech.onReady(paint);
@@ -6721,13 +6789,36 @@ function generateNewQuestion() {
       // Voices arrive after the first render — browser ones late in Chrome,
       // Azure's as a fetch — so redraw the card once we know if it can speak.
       if (window.KA_Listen) {
-        var redraw = function () {
+        window.KA_Listen.wirePanel({
+          caret: 'kanji-audio-caret',
+          panel: 'kanji-audio-panel',
+          select: 'kanji-voice-select',
+          preview: 'kanji-voice-preview'
+        });
+        // Both halves open the panel here — there is no single reading to play.
+        var open = document.getElementById('kanji-audio-open');
+        var caret = document.getElementById('kanji-audio-caret');
+        if (open && caret) open.addEventListener('click', function (e) { e.stopPropagation(); caret.click(); });
+
+        // settled: the voice list has come back, so we can finally say whether
+        // there is a choice to offer. Before that the control stays hidden
+        // rather than appearing and then vanishing.
+        var redraw = function (settled) {
+          var split = document.getElementById('kanji-audio-split');
+          if (split && settled) {
+            var canPick = caret && caret.style.display !== 'none';
+            split.style.display = (window.KA_Listen.available() && canPick) ? '' : 'none';
+          }
           if (kanjiIsFlipped) return;   // redrawing would flip it back
           var had = !!document.querySelector('#kanji-vocab-list .ka-listen');
           if (had !== window.KA_Listen.available()) showKanjiCard();
         };
-        if (window.KA_Speech) window.KA_Speech.onReady(redraw);
-        if (window.KA_Azure) window.KA_Azure.listVoices().then(redraw).catch(redraw);
+        if (window.KA_Speech) window.KA_Speech.onReady(function () { redraw(false); });
+        if (window.KA_Azure) {
+          window.KA_Azure.listVoices()
+            .then(function () { redraw(true); })
+            .catch(function () { redraw(true); });
+        }
       }
     }
     
