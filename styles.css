@@ -2017,9 +2017,9 @@ a.nav-link {
       display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
     }
     .demo-kana-tag {
-      display: inline-block; padding: 0.22rem 0.7rem; border-radius: 999px;
+      display: inline-block; padding: 0.22rem 0.75rem; border-radius: 999px;
       background: rgba(196,92,74,0.12); color: #a8422f;
-      font-size: 0.64rem; font-weight: 700; letter-spacing: 0.09em;
+      font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; line-height: 1.35;
     }
     .demo-kana-face { font-family: 'Noto Serif JP', serif; font-size: 4.4rem;
       line-height: 1; color: var(--ink); }
@@ -2062,11 +2062,16 @@ a.nav-link {
       background: rgba(196,92,74,0.07); border-radius: 0 4px 4px 0; color: var(--text); }
     .demo-fix-head {
       display: flex; align-items: center; gap: 0.35rem; width: 100%;
-      background: none; border: none; padding: 0.4rem 0.6rem; cursor: pointer;
-      font-family: inherit; text-align: left;
+      background: none; border: none; padding: 0.45rem 0.6rem; cursor: pointer;
+      font-family: inherit; text-align: left; border-radius: 0 4px 4px 0;
+      transition: background 0.15s;
     }
+    .demo-fix-head:hover { background: rgba(196,92,74,0.08); }
     .demo-fix-head b { font-size: 0.66rem; letter-spacing: 0.09em;
       text-transform: uppercase; color: var(--accent); }
+    /* Says out loud that it opens — a caret alone reads as decoration. */
+    .demo-fix-more { margin-left: auto; font-size: 0.7rem; color: var(--text-light);
+      text-decoration: underline; text-underline-offset: 2px; }
     .demo-fix-caret { color: var(--accent); font-size: 0.7rem; transition: transform 0.2s; }
     .demo-b-fix.open .demo-fix-caret { transform: rotate(90deg); }
     .demo-fix-body {

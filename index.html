@@ -208,7 +208,7 @@
               </div>
               <div class="demo-row">
                 <input type="text" class="demo-input" id="demo-kana-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                <button type="button" class="start-btn is-primary cat-ref" id="demo-kana-check" data-i18n="demo_check">Check</button>
+                <button type="button" class="start-btn is-primary cat-ref" id="demo-kana-check">Check</button>
               </div>
               <p class="demo-verdict" id="demo-kana-verdict"></p>
               <div class="demo-actions">
@@ -227,7 +227,7 @@
               <div class="demo-row">
                 <input type="text" class="demo-input" id="demo-conj-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                 <span class="demo-ime" id="demo-conj-ime" aria-hidden="true">あ</span>
-                <button type="button" class="start-btn is-primary cat-prac" id="demo-conj-check" data-i18n="demo_check">Check</button>
+                <button type="button" class="start-btn is-primary cat-prac" id="demo-conj-check">Check</button>
               </div>
               <p class="demo-hint" id="demo-conj-ime-hint" data-i18n="demo_conj_ime">Type rōmaji — it becomes kana as you go, exactly as it does in the drill.</p>
               <p class="demo-verdict" id="demo-conj-verdict"></p>
@@ -616,8 +616,10 @@
       if (window.KA_Listen) window.KA_Listen.stop();
     }
 
+    // Check, then Next — the same button, relabelled. An automatic jump took
+    // the verdict away before you had finished reading it.
     function checkKana() {
-      if (kLocked) return;
+      if (kLocked) { nextKana(); kInput.focus(); return; }
       var given = String(kInput.value || '').trim().toLowerCase();
       if (!given) return;
       var entry = KANA[kIdx];
@@ -630,7 +632,7 @@
         kVerdict.className = 'demo-verdict bad';
       }
       kLocked = true;
-      setTimeout(function () { nextKana(); kInput.focus(); }, 1500);
+      $('demo-kana-check').textContent = tt('demo_next', 'Next →');
     }
 
     if (kInput) {
@@ -662,7 +664,7 @@
       { jp: '飲む',   gloss: 'のむ — to drink',  formKey: 'form_potential', form: 'POTENTIAL (できる)',
         ok: ['のめる', '飲める'], show: '飲める' }
     ];
-    var vIdx = 0;
+    var vIdx = 0, vLocked = false;
     var vInput = $('demo-conj-input'), vVerdict = $('demo-conj-verdict');
 
     function paintVerb() {
@@ -676,6 +678,7 @@
       vVerdict.textContent = '';
       vVerdict.className = 'demo-verdict';
       $('demo-conj-check').textContent = tt('demo_check', 'Check');
+      vLocked = false;
     }
 
     function norm(s) {
@@ -683,7 +686,14 @@
         .replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); });
     }
 
+    function nextVerb() {
+      vIdx = (vIdx + 1) % VERBS.length;
+      paintVerb();
+      vInput.focus();
+    }
+
     function checkVerb() {
+      if (vLocked) { nextVerb(); return; }
       var v = VERBS[vIdx];
       // Commit a half-finished syllable first — a trailing "n" becomes ん.
       if (window.KA_toKana) {
@@ -701,12 +711,13 @@
           ? tt('demo_conj_kanji', 'Correct — and note it took the kanji. The real drill accepts every valid spelling and variant form, not just one.')
           : tt('demo_conj_right', 'Correct. Kanji spellings are accepted too — try 食べない.').replace('食べない', v.show);
         vVerdict.className = 'demo-verdict good';
-        setTimeout(function () { vIdx = (vIdx + 1) % VERBS.length; paintVerb(); vInput.focus(); }, 1900);
       } else {
         vVerdict.textContent = tt('demo_conj_wrong', 'Not quite.') + ' ' +
           tt('demo_conj_answer', 'Answer:') + ' ' + v.show;
         vVerdict.className = 'demo-verdict bad';
       }
+      vLocked = true;
+      $('demo-conj-check').textContent = tt('demo_next', 'Next →');
     }
 
     if (vInput) {
@@ -769,29 +780,33 @@
             el.appendChild(en);
           }
           if (m.fix) {
-            // Folded, exactly as it arrives in the real thing — then opened a
-            // beat later, so the demo shows the behaviour rather than
-            // describing it. Clickable too, in case they get there first.
+            // Folded, exactly as it arrives in the real thing, and it stays
+            // folded — opening it for them made the fold look like a glitch
+            // rather than a control.
             var fx = document.createElement('div');
             fx.className = 'demo-b-fix';
 
             var head = document.createElement('button');
             head.type = 'button';
             head.className = 'demo-fix-head';
+            head.setAttribute('aria-expanded', 'false');
             head.innerHTML = '<span class="demo-fix-caret" aria-hidden="true">▸</span>' +
-                             '<b>' + tt('talk_correction', 'Correction') + '</b>';
+                             '<b>' + tt('talk_correction', 'Correction') + '</b>' +
+                             '<span class="demo-fix-more">' + tt('demo_fix_show', 'show') + '</span>';
 
             var body = document.createElement('div');
             body.className = 'demo-fix-body';
             body.textContent = tt(m.fixKey, m.fix);
 
             head.addEventListener('click', function () {
-              fx.classList.toggle('open');
+              var open = fx.classList.toggle('open');
+              head.setAttribute('aria-expanded', open ? 'true' : 'false');
+              head.querySelector('.demo-fix-more').textContent =
+                open ? tt('demo_fix_hide', 'hide') : tt('demo_fix_show', 'show');
             });
             fx.appendChild(head);
             fx.appendChild(body);
             el.appendChild(fx);
-            chatTimers.push(setTimeout(function () { fx.classList.add('open'); }, 1500));
           }
           box.appendChild(el);
         }, i * 1500));   // reading pace, not a stopwatch
