@@ -6288,6 +6288,7 @@ function generateNewQuestion() {
       loadCardVocab();
       updateProgressVocab();
       wireVocabListen();
+      wireVocabKeys();
     }
 
     // Always speak the hiragana reading: it is the one field that is never
@@ -6317,6 +6318,166 @@ function generateNewQuestion() {
       if (window.KA_Speech) window.KA_Speech.onReady(paint);
       if (window.KA_Azure) window.KA_Azure.listVoices().then(paint).catch(paint);
     }
+
+    // ---------- vocabulary: keyboard ----------
+    // Same conventions as the Kana Drill and Talk: Alt+I holds open the help,
+    // Alt+letter toggles a setting, arrows move.
+    var VOCAB_INFO_ROWS_FALLBACK = [
+      ['← / →', 'Previous and next card.'],
+      ['Space', 'Hear the word read aloud.'],
+      ['Alt+F (hold)', 'Hold to flip the card; let go and it flips back. Click the card to flip it and keep it flipped.'],
+      ['Alt+E', 'Show the translation first, instead of the Japanese.'],
+      ['Alt+K', 'Show the kanji spelling.'],
+      ['Alt+T', 'Show the katakana spelling.'],
+      ['Alt+R', 'Show rōmaji under the word.'],
+      ['Alt+S', 'Shuffle the deck.'],
+      ['Alt+V', 'Open the voice options next to Listen.'],
+      ['Alt+I (hold)', 'Hold to read this box; let go and it closes. The ⓘ button opens it to stay — Esc or a click outside closes that.']
+    ];
+
+    function vocabInfoRows() {
+      var rows = (typeof I18N !== 'undefined' && I18N[LANG] && I18N[LANG].vocab_info_rows)
+        || (typeof I18N !== 'undefined' && I18N.en && I18N.en.vocab_info_rows);
+      return Array.isArray(rows) ? rows : VOCAB_INFO_ROWS_FALLBACK;
+    }
+
+    var vocabInfoPeeking = false;
+    var vocabFlipPeeking = false;
+
+    function vocabInfoOpen() {
+      var o = document.getElementById('vocab-info-overlay');
+      return !!o && o.classList.contains('show');
+    }
+
+    function openVocabInfo(peeking) {
+      var box = document.getElementById('vocab-info-content');
+      if (!box) return;
+      vocabInfoPeeking = !!peeking;
+      var ct = window.KA_ct || function (k, f) { return f; };
+      document.getElementById('vocab-info-title').textContent = ct('vocab_info_title', 'Shortcuts & options');
+      document.getElementById('vocab-info-sub').textContent =
+        ct('vocab_info_sub', 'Keyboard shortcuts and what the controls on this page do.');
+      box.innerHTML = '';
+      vocabInfoRows().forEach(function (row) {
+        var r = document.createElement('div'); r.className = 'info-row';
+        var k = document.createElement('div'); k.className = 'info-keys'; k.textContent = row[0];
+        var d = document.createElement('div'); d.className = 'info-desc'; d.textContent = row[1];
+        r.appendChild(k); r.appendChild(d); box.appendChild(r);
+      });
+      document.getElementById('vocab-info-overlay').classList.add('show');
+    }
+
+    function closeVocabInfo() {
+      var o = document.getElementById('vocab-info-overlay');
+      if (o) o.classList.remove('show');
+      vocabInfoPeeking = false;
+    }
+
+    // Typing somewhere? Then the keys belong to that field, not to us.
+    function vocabTyping(e) {
+      var el = e.target;
+      if (!el) return false;
+      var tag = (el.tagName || '').toLowerCase();
+      return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+    }
+
+    function vocabToggle(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.checked = !el.checked;
+      // Fire the same path a real click takes, so the handler runs.
+      el.dispatchEvent(new Event('change'));
+    }
+
+    var VOCAB_TOGGLE_KEYS = {
+      e: 'toggle-reverse-vocab',
+      k: 'toggle-kanji-vocab',
+      t: 'toggle-katakana-vocab',
+      r: 'toggle-romaji-vocab'
+    };
+
+    function wireVocabKeys() {
+      if (document.body.getAttribute('data-vocab-keys') === '1') return;
+      document.body.setAttribute('data-vocab-keys', '1');
+
+      var chip = document.getElementById('vocab-info-chip');
+      if (chip) chip.addEventListener('click', function () { openVocabInfo(false); });
+      var close = document.getElementById('vocab-info-close');
+      if (close) close.addEventListener('click', closeVocabInfo);
+      var overlay = document.getElementById('vocab-info-overlay');
+      if (overlay) overlay.addEventListener('click', function (e) {
+        if (e.target === this) closeVocabInfo();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { closeVocabInfo(); return; }
+        if (vocabTyping(e) || e.ctrlKey || e.metaKey) return;
+
+        // ---- no modifier ----
+        if (!e.altKey) {
+          if (vocabInfoOpen()) return;
+          if (e.key === 'ArrowRight') { e.preventDefault(); nextCardVocab(); return; }
+          if (e.key === 'ArrowLeft')  { e.preventDefault(); previousCardVocab(); return; }
+          if (e.key === ' ' || e.key === 'Spacebar') {
+            // Space would otherwise scroll the page, or re-press whichever
+            // button was last clicked.
+            e.preventDefault();
+            var listen = document.getElementById('vocab-listen');
+            if (listen && listen.offsetParent !== null) listen.click();
+            return;
+          }
+          return;
+        }
+
+        // ---- Alt+… ----
+        var key = (e.key || '').toLowerCase();
+        if (key === 'i') {
+          e.preventDefault();
+          if (!e.repeat && !vocabInfoOpen()) openVocabInfo(true);
+          return;
+        }
+        if (vocabInfoOpen()) return;   // the rest belong to the cards
+
+        if (key === 'f') {
+          e.preventDefault();
+          if (e.repeat) return;
+          var card = document.getElementById('flashcard-vocab');
+          if (!card) return;
+          // Peek: remember how it was, so releasing restores it rather than
+          // blindly flipping back to the front.
+          if (!vocabFlipPeeking) {
+            vocabFlipPeeking = card.classList.contains('flipped') ? 'back' : 'front';
+            flipCardVocab();
+          }
+          return;
+        }
+        if (key === 's') { e.preventDefault(); shuffleCardsVocab(); return; }
+        if (key === 'v') {
+          e.preventDefault();
+          var caret = document.getElementById('vocab-audio-caret');
+          if (caret && caret.offsetParent !== null) caret.click();
+          return;
+        }
+        if (VOCAB_TOGGLE_KEYS[key]) { e.preventDefault(); vocabToggle(VOCAB_TOGGLE_KEYS[key]); return; }
+      });
+
+      function endPeeks(e) {
+        var k = (e && e.key || '').toLowerCase();
+        var altGone = !e || k === 'alt' || !e.altKey;
+        if (vocabInfoPeeking && (k === 'i' || altGone)) closeVocabInfo();
+        if (vocabFlipPeeking && (k === 'f' || altGone)) {
+          var card = document.getElementById('flashcard-vocab');
+          var wantFlipped = vocabFlipPeeking === 'back';
+          vocabFlipPeeking = false;
+          if (card && card.classList.contains('flipped') !== wantFlipped) flipCardVocab();
+        }
+      }
+      document.addEventListener('keyup', endPeeks);
+      // Alt+Tab away mid-hold and no keyup ever arrives.
+      window.addEventListener('blur', function () { endPeeks(null); });
+    }
+
+    window.KA_VocabInfo = { open: openVocabInfo, close: closeVocabInfo };
 
     // Load current card (updated for reverse mode, kanji, katakana, and improved display)
     function loadCardVocab() {

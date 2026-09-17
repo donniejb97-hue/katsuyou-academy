@@ -706,6 +706,18 @@
             <span class="toggle-slider"></span>
           </label>
         </div>
+
+        <button type="button" class="drill-chip info-chip" id="vocab-info-chip"
+                aria-label="Shortcuts and options" title="Shortcuts and options (hold Alt+I)">i</button>
+      </div>
+
+      <div id="vocab-info-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="vocab-info-title">
+        <div class="cheat-box" style="max-width: 540px;">
+          <button class="cheat-close" id="vocab-info-close" aria-label="Close">×</button>
+          <h2 class="cheat-title" id="vocab-info-title"></h2>
+          <div class="cheat-hint" id="vocab-info-sub"></div>
+          <div id="vocab-info-content"></div>
+        </div>
       </div>
 
 <div class="flashcard-area">
