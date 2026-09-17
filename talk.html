@@ -127,6 +127,14 @@
       font-size: 0.8rem; color: var(--text-light); font-family: inherit; opacity: 0.75; transition: all 0.15s; }
     .talk-speak:hover { opacity: 1; color: var(--accent); }
     .talk-speak.playing { color: var(--accent); opacity: 1; }
+    .talk-voice-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+      padding: 0.5rem 0 0.1rem; font-size: 0.85rem; }
+    .talk-voice-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-light); }
+    .talk-voice-select { padding: 0.3rem 0.5rem; border: 1px solid rgba(0,0,0,0.15);
+      border-radius: 6px; background: var(--paper); font-family: inherit; font-size: 0.85rem;
+      color: var(--text); max-width: 15rem; }
+    .talk-voice-select:focus { outline: none; border-color: var(--accent); }
     .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
     .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
     .talk-send:disabled { opacity: 0.5; cursor: default; }
@@ -312,6 +320,11 @@
             <button type="button" class="talk-mini-chip" id="talk-toggle-romaji">+ Rōmaji</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-english">+ English</button>
             <button type="button" class="talk-mini-chip" id="talk-toggle-speak" style="display: none;">🔊 Read aloud</button>
+          </div>
+          <div class="talk-voice-row" id="talk-voice-row" style="display: none;">
+            <span class="talk-voice-label" id="talk-voice-label" data-i18n="talk_voice">Voice</span>
+            <select id="talk-voice-select" class="talk-voice-select"></select>
+            <button type="button" class="talk-mini-chip" id="talk-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
           </div>
           <div class="talk-msgs" id="talk-msgs"></div>
           <form class="talk-form" id="talk-form">
@@ -787,7 +800,7 @@
       }
 
       // Hear it: only for the Japanese, and only if a Japanese voice exists.
-      if (parts.jp && window.KA_Speech && window.KA_Speech.available()) {
+      if (parts.jp && canSpeak()) {
         var say = document.createElement('button');
         say.type = 'button';
         say.className = 'talk-speak';
@@ -825,28 +838,68 @@
     function setSpeechOn(on) {
       try { localStorage.setItem('katsuyo-talk-speak', on ? 'on' : 'off'); } catch (e) {}
       paintSpeechToggle();
-      if (!on && window.KA_Speech) window.KA_Speech.stop();
+      if (!on && window.KA_Voice) window.KA_Voice.stop();
     }
 
     function paintSpeechToggle() {
       var btn = $('talk-toggle-speak');
       if (!btn) return;
-      var sp = window.KA_Speech;
-      if (!sp || !sp.available()) { btn.style.display = 'none'; return; }
+      if (!canSpeak()) { btn.style.display = 'none'; return; }
       btn.style.display = '';
       btn.textContent = '🔊 ' + tt('talk_read_aloud', 'Read aloud');
       btn.classList.toggle('on', speechOn());
-      btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically')
-                  + ' — ' + (sp.voiceName() || '');
+      btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically');
     }
 
+    function canSpeak() {
+      return !!(window.KA_Voice && window.KA_Voice.available());
+    }
+
+    var speakingBtn = null;
+
     function speakJapanese(text, btn) {
-      var sp = window.KA_Speech;
-      if (!sp || !sp.available() || !text) return;
-      if (sp.speaking()) { sp.stop(); if (btn) btn.classList.remove('playing'); return; }
-      sp.speak(text, {
+      if (!canSpeak() || !text) return;
+      // A second click stops it, rather than queueing another clip.
+      if (speakingBtn) {
+        window.KA_Voice.stop();
+        speakingBtn.classList.remove('playing');
+        var wasSame = speakingBtn === btn;
+        speakingBtn = null;
+        if (wasSame) return;
+      }
+      speakingBtn = btn || null;
+      if (btn) btn.classList.add('playing');
+      window.KA_Voice.speak(text, {
         onstart: function () { if (btn) btn.classList.add('playing'); },
-        onend:   function () { if (btn) btn.classList.remove('playing'); }
+        onend:   function () { if (btn) btn.classList.remove('playing'); speakingBtn = null; }
+      }).then(function (how) {
+        if (how === 'none' && btn) { btn.classList.remove('playing'); speakingBtn = null; }
+      });
+    }
+
+    // ---------- voice picker ----------
+    function buildVoicePicker() {
+      var wrap = $('talk-voice-row');
+      if (!wrap || !window.KA_Azure) return;
+      window.KA_Azure.listVoices().then(function (list) {
+        if (!list || !list.length) { wrap.style.display = 'none'; return; }
+        wrap.style.display = '';
+        var sel = $('talk-voice-select');
+        sel.innerHTML = '';
+        list.forEach(function (v) {
+          var o = document.createElement('option');
+          o.value = v.name;
+          // "Nanami — Female". The local name is what a learner recognises.
+          o.textContent = v.display + (v.gender ? ' \u2014 ' + tt('voice_' + v.gender.toLowerCase(), v.gender) : '');
+          sel.appendChild(o);
+        });
+        sel.value = window.KA_Azure.currentVoice();
+        if (!sel.value && list[0]) sel.value = list[0].name;
+        sel.onchange = function () { window.KA_Azure.setVoice(this.value); };
+        $('talk-voice-preview').onclick = function () {
+          speakJapanese(tt('voice_sample', '\u3053\u3093\u306b\u3061\u306f\u3002\u4eca\u65e5\u306f\u3044\u3044\u5929\u6c17\u3067\u3059\u306d\u3002'), null);
+        };
+        $('talk-voice-label').textContent = tt('talk_voice', 'Voice');
       });
     }
 
@@ -1476,16 +1529,25 @@
           rerenderAll();
         });
       }
+      // Azure's voice list decides whether the picker appears at all.
+      buildVoicePicker();
+      if (window.KA_Azure) {
+        window.KA_Azure.listVoices().then(function () {
+          paintSpeechToggle();
+          rerenderAll();
+        });
+      }
 
       // Never leave a voice talking to an empty room.
       window.addEventListener('pagehide', function () {
-        if (window.KA_Speech) window.KA_Speech.stop();
+        if (window.KA_Voice) window.KA_Voice.stop();
       });
 
       // Keep the chips and the input helper in sync when the language changes.
       window.refreshTalkI18n = function () {
         buildDisplayControls();
         paintRomajiToggle();
+        buildVoicePicker();
       };
     }
 

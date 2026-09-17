@@ -248,6 +248,13 @@ var I18N = {
     talk_read_aloud:"Read aloud",
     talk_read_aloud_hint:"Speak each of Katsu’s replies automatically",
     talk_listen:"Listen",
+    // ---- talk: voice picker ----
+    talk_voice:"Voice",
+    talk_voice_preview:"▶ Preview",
+    voice_female:"Female",
+    voice_male:"Male",
+    voice_neutral:"Neutral",
+    voice_sample:"こんにちは。今日はいい天気ですね。",
   },
   de: {
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
@@ -485,6 +492,13 @@ var I18N = {
     talk_read_aloud:"Vorlesen",
     talk_read_aloud_hint:"Jede Antwort von Katsu automatisch vorlesen",
     talk_listen:"Anhören",
+    // ---- talk: voice picker ----
+    talk_voice:"Stimme",
+    talk_voice_preview:"▶ Anhören",
+    voice_female:"weiblich",
+    voice_male:"männlich",
+    voice_neutral:"neutral",
+    voice_sample:"こんにちは。今日はいい天気ですね。",
   },
   fr: {
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
@@ -722,6 +736,13 @@ var I18N = {
     talk_read_aloud:"Lecture à voix haute",
     talk_read_aloud_hint:"Lire automatiquement chaque réponse de Katsu",
     talk_listen:"Écouter",
+    // ---- talk: voice picker ----
+    talk_voice:"Voix",
+    talk_voice_preview:"▶ Aperçu",
+    voice_female:"féminine",
+    voice_male:"masculine",
+    voice_neutral:"neutre",
+    voice_sample:"こんにちは。今日はいい天気ですね。",
   },
   zh: {
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
@@ -959,6 +980,13 @@ var I18N = {
     talk_read_aloud:"朗读",
     talk_read_aloud_hint:"自动朗读活先生的每一句回复",
     talk_listen:"听",
+    // ---- talk: voice picker ----
+    talk_voice:"语音",
+    talk_voice_preview:"▶ 试听",
+    voice_female:"女声",
+    voice_male:"男声",
+    voice_neutral:"中性",
+    voice_sample:"こんにちは。今日はいい天気ですね。",
   }
 };
 

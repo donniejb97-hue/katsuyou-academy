@@ -1146,6 +1146,132 @@
       };
     })();
 
+    // ------------------------------------------------------------------------
+    // Azure Neural voices, with the browser voice underneath.
+    // The Azure key lives on the server; this only ever talks to our own
+    // /api/tts. If that is unreachable, misconfigured, rate-limited or simply
+    // slow, the free browser voice takes over — audio never just stops.
+    // ------------------------------------------------------------------------
+    var KA_Azure = (function () {
+      var ENDPOINT = (typeof VERCEL_BACKEND_URL === 'string')
+        ? VERCEL_BACKEND_URL.replace(/\/api\/claude$/, '/api/tts')
+        : '/api/tts';
+
+      var VOICE_KEY = 'katsuyo-ja-voice';
+      var audio = null;
+      var voices = null;          // null = not asked yet, [] = none available
+      var defaultVoice = 'ja-JP-NanamiNeural';
+      var disabled = false;       // set once the backend says it isn't configured
+      var cache = {};             // text|voice -> object URL, per page load
+
+      function savedVoice() {
+        try { return localStorage.getItem(VOICE_KEY) || ''; } catch (e) { return ''; }
+      }
+      function setVoice(name) {
+        try { localStorage.setItem(VOICE_KEY, name || ''); } catch (e) {}
+        cache = {};   // a new voice means new audio
+      }
+      function currentVoice() { return savedVoice() || defaultVoice; }
+
+      function listVoices() {
+        if (voices) return Promise.resolve(voices);
+        if (disabled) return Promise.resolve([]);
+        return fetch(ENDPOINT + '?voices=1')
+          .then(function (r) {
+            if (r.status === 503) { disabled = true; return { voices: [] }; }
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+          })
+          .then(function (data) {
+            voices = (data && data.voices) || [];
+            if (data && data.default) defaultVoice = data.default;
+            return voices;
+          })
+          .catch(function () { voices = []; return voices; });
+      }
+
+      function stop() {
+        if (audio) { audio.pause(); audio.currentTime = 0; audio = null; }
+      }
+
+      // Resolves true when Azure played it, false to mean "you take it".
+      function speak(text, opts) {
+        opts = opts || {};
+        if (disabled || !text) return Promise.resolve(false);
+
+        var voice = currentVoice();
+        var key = voice + '|' + text;
+        stop();
+
+        function play(url) {
+          return new Promise(function (resolve) {
+            audio = new Audio(url);
+            audio.onplay = function () { if (opts.onstart) opts.onstart(); };
+            audio.onended = function () { audio = null; if (opts.onend) opts.onend(); resolve(true); };
+            audio.onerror = function () { audio = null; if (opts.onend) opts.onend(); resolve(false); };
+            audio.play().catch(function () {
+              // Autoplay blocked, usually because no gesture has happened yet.
+              audio = null; if (opts.onend) opts.onend(); resolve(false);
+            });
+          });
+        }
+
+        if (cache[key]) return play(cache[key]);
+
+        return fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text, voice: voice })
+        })
+          .then(function (r) {
+            if (r.status === 503) { disabled = true; return null; }
+            if (!r.ok) return null;          // 429 included — fall back quietly
+            return r.blob();
+          })
+          .then(function (blob) {
+            if (!blob) return false;
+            var url = URL.createObjectURL(blob);
+            cache[key] = url;
+            return play(url);
+          })
+          .catch(function () { return false; });
+      }
+
+      return {
+        endpoint: ENDPOINT,
+        listVoices: listVoices,
+        currentVoice: currentVoice,
+        setVoice: setVoice,
+        speak: speak,
+        stop: stop,
+        offline: function () { return disabled; },
+        // Usable only once we've actually seen voices come back. Before that,
+        // and after any failure, we can't promise audio — which matters when
+        // there's no browser voice to fall back to, because then offering a
+        // Listen button would offer a button that does nothing.
+        usable: function () { return !disabled && !!voices && voices.length > 0; }
+      };
+    })();
+
+    window.KA_Azure = KA_Azure;
+
+    // One call site for the whole site: try the good voice, fall back to the
+    // free one. Callers never need to know which they got.
+    window.KA_Voice = {
+      speak: function (text, opts) {
+        opts = opts || {};
+        KA_Speech.stop();
+        return KA_Azure.speak(text, opts).then(function (played) {
+          if (played) return 'azure';
+          var ok = KA_Speech.speak(text, opts);
+          return ok ? 'browser' : 'none';
+        });
+      },
+      stop: function () { KA_Azure.stop(); KA_Speech.stop(); },
+      // Something can actually speak if either path is proven open.
+      available: function () { return KA_Azure.usable() || KA_Speech.available(); }
+    };
+
     window.KA_Speech = KA_Speech;
 
     // t() returns the key itself when a translation is missing. ct() falls
