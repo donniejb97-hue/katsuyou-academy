@@ -61,38 +61,98 @@
   <div id="page-home" class="page active">
     <div class="home">
 
-      <!-- HERO -->
+      <!-- HERO — the demo lives here now, so the first thing on the page is
+           something you can do rather than something to read. -->
       <section class="hero">
-        <div class="hero-content">
-          <div class="hero-badge" data-i18n="hero_badge">Japanese Study Toolkit</div>
-          <h1 class="hero-title">Katsuyō Academy</h1>
-          <p class="hero-subtitle jp">日本語を学ぶ</p>
-          <p class="hero-desc" data-i18n="hero_desc">
-            A free Japanese learning platform. Learn and drill kana, kanji, vocabulary and verb conjugation,
-            then put it to use in conversation — all in one place.
-          </p>
-          <div class="hero-cta">
-            <button class="btn btn-primary" style="min-width: 220px;" onclick="showPage('kana')" data-i18n="btn_start_kana">Start with Kana</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="location.href='/kana-drill'" data-i18n="btn_practice_kana">Practice Kana</button>
+        <div class="hero-grid">
+
+          <div class="hero-copy">
+            <div class="hero-badge" data-i18n="hero_badge">Japanese Study Toolkit</div>
+            <h1 class="hero-title">Katsuyō Academy</h1>
+            <p class="hero-subtitle jp">日本語を学ぶ</p>
+            <p class="hero-desc" data-i18n="hero_desc">
+              A free Japanese learning platform. Learn and drill kana, kanji, vocabulary and every
+              verb form, then put it to use in conversation — all in one place. No account,
+              nothing to install.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="showPage('kana')" data-i18n="btn_start_kana">Start with Kana</button>
+              <a class="hero-jump" href="#toolkit" data-i18n="hero_browse">Browse the tools ↓</a>
+            </div>
+            <div class="hero-meta">
+              <div><b>104</b><span data-i18n="meta_kana">kana, with audio</span></div>
+              <div><b>2,300</b><span data-i18n="meta_kanji">kanji from the KLC</span></div>
+              <div><b>491</b><span data-i18n="meta_vocab">vocabulary cards</span></div>
+              <div><b>4</b><span data-i18n="meta_langs">languages</span></div>
+            </div>
           </div>
-          <!-- HIDDEN ROW — delete the "display: none;" below to bring Explore Kanji / Practice Kanji back -->
-          <div class="hero-cta" style="display: none; margin-top: 1rem;">
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('kanji')" data-i18n="btn_explore_kanji">Explore Kanji</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="location.href='/kanji-drill'" data-i18n="btn_practice_kanji">Practice Kanji</button>
+
+          <div class="hero-demo">
+            <div class="demo-head">
+              <span class="demo-eyebrow" data-i18n="demo_eyebrow">Try it right here</span>
+            </div>
+          <div class="demo-tabs" role="tablist">
+            <button class="demo-tab cat-ref on" role="tab" data-demo="kana" data-i18n="demo_tab_kana">Kana Drill</button>
+            <button class="demo-tab cat-prac" role="tab" data-demo="conj" data-i18n="demo_tab_conj">Conjugator</button>
+            <button class="demo-tab cat-conv" role="tab" data-demo="talk" data-i18n="demo_tab_talk">Talk</button>
           </div>
-          <div class="hero-cta" style="margin-top: 1rem;">
-            <button class="btn btn-sage" style="min-width: 220px;" onclick="showPage('learn')" data-i18n="btn_learn_basics">Learn the Basics</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('conjugator')" data-i18n="btn_practice_conj">Practice Conjugation</button>
+
+          <!-- Kana -->
+          <div class="demo-pane show" id="demo-kana">
+            <div class="demo-stage">
+              <div class="demo-kana-card">
+                <span class="demo-kana-tag" id="demo-kana-tag">HIRAGANA — TYPE THE READING</span>
+                <!-- Listen belongs to the character, not to the page underneath it. -->
+                <div class="demo-kana-row">
+                  <span class="demo-kana-face jp" id="demo-kana-face">あ</span>
+                  <button type="button" class="demo-kana-speak" id="demo-kana-listen"
+                          style="display:none;" aria-label="Listen">🔊</button>
+                </div>
+                <span class="demo-kana-hear" id="demo-kana-hear" style="display:none;"
+                      data-i18n="demo_kana_hear">Not sure? Hear it first.</span>
+              </div>
+              <div class="demo-row">
+                <input type="text" class="demo-input" id="demo-kana-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <button type="button" class="start-btn is-primary cat-ref" id="demo-kana-check">Check</button>
+              </div>
+              <p class="demo-verdict" id="demo-kana-verdict"></p>
+            </div>
+            <a class="demo-cta cat-ref" href="/kana-drill" data-i18n="demo_cta_kana">Open the full Kana Drill →</a>
           </div>
-          <div class="hero-cta" style="margin-top: 1rem;">
-            <button class="btn btn-gold" style="min-width: 220px;" onclick="location.href='/talk'" data-i18n="btn_practice_talk">Practice Speaking</button>
-            <button class="btn btn-secondary" style="min-width: 220px;" onclick="showPage('vocabulary')" data-i18n="start_vocab">Vocabulary</button>
+
+          <!-- Conjugator -->
+          <div class="demo-pane" id="demo-conj">
+            <div class="demo-stage">
+              <div class="demo-verb jp" id="demo-conj-verb">食べる</div>
+              <div class="demo-verb-sub" id="demo-conj-gloss">たべる — to eat</div>
+              <div class="demo-form" id="demo-conj-form">NEGATIVE (ない)</div>
+              <div class="demo-row">
+                <input type="text" class="demo-input" id="demo-conj-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <span class="demo-ime" id="demo-conj-ime" aria-hidden="true">あ</span>
+                <button type="button" class="start-btn is-primary cat-prac" id="demo-conj-check">Check</button>
+              </div>
+              <p class="demo-hint" id="demo-conj-ime-hint" data-i18n="demo_conj_ime">Type rōmaji — it becomes kana as you go, exactly as it does in the drill.</p>
+              <p class="demo-verdict" id="demo-conj-verdict"></p>
+            </div>
+            <a class="demo-cta cat-prac" href="#" onclick="showPage('conjugator');return false;" data-i18n="demo_cta_conj">Open the full Conjugator →</a>
           </div>
+
+          <!-- Talk -->
+          <div class="demo-pane" id="demo-talk">
+            <div class="demo-stage">
+              <div class="demo-chat" id="demo-chat"></div>
+              <p class="demo-hint" data-i18n="demo_talk_note">A recorded exchange. The real thing answers live, stays in character, and speaks out loud.</p>
+            </div>
+            <a class="demo-cta cat-conv" href="/talk" data-i18n="demo_cta_talk">Open Talk →</a>
+          </div>
+          </div>
+
         </div>
       </section>
 
-      <!-- INTRODUCTION -->
-      <section class="home-section">
+      <!-- INTRODUCTION — folded into the hero (the stats row now lives there).
+           Delete the style below to bring the long version back. -->
+      <section class="home-section" style="display: none;">
         <div class="home-panel">
           <span class="section-mark" aria-hidden="true">基</span>
           <h2 class="home-h2" data-i18n="intro_title">Your Complete Japanese Foundation</h2>
@@ -143,111 +203,8 @@
         </div>
       </section>
 
-      <!-- WHERE TO START — the arc, in order -->
-      <section class="home-section">
-        <div class="home-panel">
-          <div style="text-align: center;">
-            <span class="section-mark" aria-hidden="true">道</span>
-            <h2 class="home-h2" data-i18n="tour_title">Where to Start</h2>
-            <p class="tour-sub" data-i18n="tour_sub">New to Japanese? This is the order that works. About an hour a day gets you through it.</p>
-          </div>
-          <ol class="tour-path">
-            <li class="tour-step cat-ref" onclick="showPage('kana')" role="link" tabindex="0">
-              <span class="tour-num">1</span>
-              <span class="tour-body">
-                <strong data-i18n="tour_1_t">Learn the kana</strong>
-                <span data-i18n="tour_1_d">Both alphabets, 104 characters. A week or two, and everything after this gets easier.</span>
-              </span>
-            </li>
-            <li class="tour-step cat-ref" onclick="showPage('learn')" role="link" tabindex="0">
-              <span class="tour-num">2</span>
-              <span class="tour-body">
-                <strong data-i18n="tour_2_t">Get the grammar basics</strong>
-                <span data-i18n="tour_2_d">Particles, word order, the polite form — enough to build a sentence on purpose.</span>
-              </span>
-            </li>
-            <li class="tour-step cat-prac" onclick="showPage('conjugator')" role="link" tabindex="0">
-              <span class="tour-num">3</span>
-              <span class="tour-body">
-                <strong data-i18n="tour_3_t">Drill the conjugations</strong>
-                <span data-i18n="tour_3_d">Every form, on every verb type, until you stop having to think about them.</span>
-              </span>
-            </li>
-            <li class="tour-step cat-conv" onclick="location.href='/talk'" role="link" tabindex="0">
-              <span class="tour-num">4</span>
-              <span class="tour-body">
-                <strong data-i18n="tour_4_t">Hold a conversation</strong>
-                <span data-i18n="tour_4_d">Order food, ask directions, get corrected as you go. This is what the rest was for.</span>
-              </span>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <!-- SEE IT WORKING — real widgets, not screenshots -->
-      <section class="home-section">
-        <div class="home-panel">
-          <div style="text-align: center;">
-            <span class="section-mark" aria-hidden="true">試</span>
-            <h2 class="home-h2" data-i18n="demo_title">See It Working</h2>
-            <p class="tour-sub" data-i18n="demo_sub">Three of the tools, running right here. Nothing to install, no account.</p>
-          </div>
-
-          <div class="demo-tabs" role="tablist">
-            <button class="demo-tab cat-ref on" role="tab" data-demo="kana" data-i18n="demo_tab_kana">Kana Drill</button>
-            <button class="demo-tab cat-prac" role="tab" data-demo="conj" data-i18n="demo_tab_conj">Conjugator</button>
-            <button class="demo-tab cat-conv" role="tab" data-demo="talk" data-i18n="demo_tab_talk">Talk</button>
-          </div>
-
-          <!-- Kana -->
-          <div class="demo-pane show" id="demo-kana">
-            <div class="demo-stage">
-              <div class="demo-kana-card">
-                <span class="demo-kana-tag" id="demo-kana-tag">HIRAGANA — TYPE THE READING</span>
-                <span class="demo-kana-face jp" id="demo-kana-face">あ</span>
-              </div>
-              <div class="demo-row">
-                <input type="text" class="demo-input" id="demo-kana-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                <button type="button" class="start-btn is-primary cat-ref" id="demo-kana-check">Check</button>
-              </div>
-              <p class="demo-verdict" id="demo-kana-verdict"></p>
-              <div class="demo-actions">
-                <button type="button" class="ka-listen" id="demo-kana-listen" style="display:none;">🔊 <span data-i18n="talk_listen">Listen</span></button>
-              </div>
-            </div>
-            <a class="demo-cta cat-ref" href="/kana-drill" data-i18n="demo_cta_kana">Open the full Kana Drill →</a>
-          </div>
-
-          <!-- Conjugator -->
-          <div class="demo-pane" id="demo-conj">
-            <div class="demo-stage">
-              <div class="demo-verb jp" id="demo-conj-verb">食べる</div>
-              <div class="demo-verb-sub" id="demo-conj-gloss">たべる — to eat</div>
-              <div class="demo-form" id="demo-conj-form">NEGATIVE (ない)</div>
-              <div class="demo-row">
-                <input type="text" class="demo-input" id="demo-conj-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-                <span class="demo-ime" id="demo-conj-ime" aria-hidden="true">あ</span>
-                <button type="button" class="start-btn is-primary cat-prac" id="demo-conj-check">Check</button>
-              </div>
-              <p class="demo-hint" id="demo-conj-ime-hint" data-i18n="demo_conj_ime">Type rōmaji — it becomes kana as you go, exactly as it does in the drill.</p>
-              <p class="demo-verdict" id="demo-conj-verdict"></p>
-            </div>
-            <a class="demo-cta cat-prac" href="#" onclick="showPage('conjugator');return false;" data-i18n="demo_cta_conj">Open the full Conjugator →</a>
-          </div>
-
-          <!-- Talk -->
-          <div class="demo-pane" id="demo-talk">
-            <div class="demo-stage">
-              <div class="demo-chat" id="demo-chat"></div>
-              <p class="demo-hint" data-i18n="demo_talk_note">A recorded exchange. The real thing answers live, stays in character, and speaks out loud.</p>
-            </div>
-            <a class="demo-cta cat-conv" href="/talk" data-i18n="demo_cta_talk">Open Talk →</a>
-          </div>
-        </div>
-      </section>
-
       <!-- THE TOOLKIT -->
-      <section class="features" style="background: var(--paper-warm); padding: 4rem 2rem;">
+      <section class="features" id="toolkit" style="background: var(--paper-warm); padding: 4rem 2rem;">
         <div class="features-inner" style="max-width: 1200px; margin: 0 auto;">
           <div class="features-header" style="text-align: center; margin-bottom: 3rem;">
             <span class="section-mark" aria-hidden="true">具</span>
@@ -420,8 +377,50 @@
         </div>
       </section>
 
-      <!-- WHAT MAKES THIS DIFFERENT -->
-      <section class="home-section">
+      <!-- WHERE TO START — the arc, in order -->
+      <section class="home-section is-band">
+        <div class="home-panel">
+          <div style="text-align: center;">
+            <span class="section-mark" aria-hidden="true">道</span>
+            <h2 class="home-h2" data-i18n="tour_title">Where to Start</h2>
+            <p class="tour-sub" data-i18n="tour_sub">New to Japanese? This is the order that works. About an hour a day gets you through it.</p>
+          </div>
+          <ol class="tour-path">
+            <li class="tour-step cat-ref" onclick="showPage('kana')" role="link" tabindex="0">
+              <span class="tour-num">1</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_1_t">Learn the kana</strong>
+                <span data-i18n="tour_1_d">Both alphabets, 104 characters. A week or two, and everything after this gets easier.</span>
+              </span>
+            </li>
+            <li class="tour-step cat-ref" onclick="showPage('learn')" role="link" tabindex="0">
+              <span class="tour-num">2</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_2_t">Get the grammar basics</strong>
+                <span data-i18n="tour_2_d">Particles, word order, the polite form — enough to build a sentence on purpose.</span>
+              </span>
+            </li>
+            <li class="tour-step cat-prac" onclick="showPage('conjugator')" role="link" tabindex="0">
+              <span class="tour-num">3</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_3_t">Drill the conjugations</strong>
+                <span data-i18n="tour_3_d">Every form, on every verb type, until you stop having to think about them.</span>
+              </span>
+            </li>
+            <li class="tour-step cat-conv" onclick="location.href='/talk'" role="link" tabindex="0">
+              <span class="tour-num">4</span>
+              <span class="tour-body">
+                <strong data-i18n="tour_4_t">Hold a conversation</strong>
+                <span data-i18n="tour_4_d">Order food, ask directions, get corrected as you go. This is what the rest was for.</span>
+              </span>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- WHAT MAKES THIS DIFFERENT — hidden to keep the page to four beats.
+           Delete the style below to bring it back; it slots in here cleanly. -->
+      <section class="home-section" style="display: none;">
         <div class="home-panel is-dark">
           <span class="section-mark" aria-hidden="true">違</span>
           <h2 class="home-h2" data-i18n="why_title">What Makes This Different</h2>
@@ -496,41 +495,21 @@
         </div>
       </section>
 
-      <!-- GET STARTED -->
-      <section class="home-section">
-        <div class="home-panel" style="text-align: center;">
+      <!-- CLOSING — the creator note, which used to be buried under nine
+           buttons. Every one of those links is in the grid above. -->
+      <section class="home-close">
+        <div class="home-close-inner">
           <span class="section-mark" aria-hidden="true">始</span>
-          <h2 class="home-h2" data-i18n="start_title">Ready to Get Started?</h2>
-          <p style="font-size: 1.05rem; color: var(--text); margin-bottom: 2rem; line-height: 1.7;" data-i18n="start_desc">
-            Whether you're learning kana, drilling characters, studying verbs, building vocabulary or holding your
-            first conversation—choose your path below.
+          <p class="home-close-note" data-i18n-html="creator_note_plain">
+            I built Katsuyō Academy because I needed it myself. Scattered textbook chapters,
+            confusing online resources, flashcard apps that didn't quite work the way I wanted —
+            I wanted everything in one place, designed the way I learn best. This is that place.
+            If it helps you too, then it's done its job.
           </p>
-
-          <div class="start-actions">
-            <button class="start-btn is-primary cat-ref" onclick="showPage('kana')"><span class="jp">あ</span> <span data-i18n="start_kana">Learn Kana</span></button>
-            <button class="start-btn is-primary cat-ref" onclick="showPage('learn')"><span data-i18n="start_learn">Learn the Basics</span></button>
-            <button class="start-btn is-primary cat-prac" onclick="showPage('conjugator')"><span data-i18n="start_conj">Start Practicing</span></button>
-            <button class="start-btn is-primary cat-conv" onclick="location.href='/talk'"><span data-i18n="start_talk">Start Talking</span></button>
-          </div>
-
-          <div class="start-actions">
-            <button class="start-btn is-secondary cat-prac" onclick="location.href='/kana-drill'"><span data-i18n="start_kana_drill">Practice Kana</span></button>
-            <button class="start-btn is-secondary cat-ref" onclick="showPage('forms')"><span data-i18n="start_forms">View Form Charts</span></button>
-            <button class="start-btn is-secondary cat-ref" onclick="showPage('verblist')"><span data-i18n="start_verbs">Browse Verbs</span></button>
-            <button class="start-btn is-secondary cat-prac" onclick="showPage('vocabulary')"><span data-i18n="start_vocab">Vocabulary</span></button>
-            <button class="start-btn is-secondary cat-prac" onclick="showPage('kanji')"><span class="jp">字</span> <span data-i18n="start_kanji">Learn Kanji</span></button>
-            <!-- HIDDEN — delete the "display: none;" below to bring these back -->
-            <button class="start-btn is-secondary cat-prac" style="display: none;" onclick="showPage('datedojo')"><span data-i18n="start_dates">Dates &amp; Numbers</span></button>
-            <button class="start-btn is-secondary cat-prac" style="display: none;" onclick="location.href='/kanji-drill'"><span data-i18n="start_kanji_drill">Practice Kanji</span></button>
-          </div>
-
-          <div class="creator-note">
-            <p data-i18n-html="creator_note">
-              <strong style="color: var(--ink);">A note from the creator:</strong><br>
-              I built Katsuyō Academy because I needed it myself. Scattered textbook chapters, confusing online resources,
-              flashcard apps that didn't quite work the way I wanted—I wanted everything in one place, designed the way I learn best.
-              This is that place. If it helps you too, then it's done its job. <span class="jp">頑張ってください！</span>
-            </p>
+          <p class="home-close-sig jp">頑張ってください！</p>
+          <div class="home-close-actions">
+            <button class="start-btn is-primary cat-ref" onclick="showPage('kana')" data-i18n="btn_start_kana">Start with Kana</button>
+            <a class="start-btn is-secondary cat-prac" href="#toolkit" data-i18n="hero_browse_short">Browse the tools</a>
           </div>
         </div>
       </section>
@@ -647,7 +626,14 @@
     if (kListen && window.KA_Listen) {
       window.KA_Listen.attach(kListen, function () { return KANA[kIdx][0]; });
       kListen.title = tt('demo_kana_listen_hint', 'Hear it before you answer');
-      var paintListen = function () { window.KA_Listen.paint(kListen); };
+      // The speaker and its one-line prompt appear and disappear together —
+      // a hint pointing at a button that isn't there is worse than neither.
+      var kHear = $('demo-kana-hear');
+      var paintListen = function () {
+        var on = window.KA_Listen.available();
+        kListen.style.display = on ? '' : 'none';
+        if (kHear) kHear.style.display = on ? '' : 'none';
+      };
       paintListen();
       if (window.KA_Speech) window.KA_Speech.onReady(paintListen);
       if (window.KA_Azure) window.KA_Azure.listVoices().then(paintListen).catch(paintListen);
