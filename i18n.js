@@ -1402,7 +1402,7 @@ function setLang(lang) {
     '  border:1px solid rgba(0,0,0,0.1);border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.22);',
     '  padding:0.3rem;margin:0;list-style:none;z-index:1300;opacity:0;visibility:hidden;transform:translateY(-6px);',
     '  transition:opacity 0.16s ease,transform 0.16s ease,visibility 0.16s;}',
-    '.lang-switch.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0);}',
+    '.lang-menu.open{opacity:1;visibility:visible;transform:translateY(0);}',
     '.lang-menu li{margin:0;}',
     '.lang-menu button{display:flex;align-items:center;justify-content:space-between;gap:0.6rem;width:100%;',
     '  background:none;border:none;border-radius:7px;padding:0.5rem 0.6rem;font-family:inherit;font-size:0.88rem;',
@@ -1433,7 +1433,23 @@ function setLang(lang) {
     '  border-radius:7px;color:var(--ink,#1a1a2e);opacity:1;text-decoration:none;font-size:0.9rem;white-space:nowrap;}',
     '.nav-group-menu a.nav-link:hover{background:var(--paper-warm,#f1eee8);color:var(--ink,#1a1a2e);}',
     '.nav-group-menu a.nav-link.active{background:rgba(196,92,74,0.1);color:var(--accent,#c45c4a);font-weight:600;}',
-    '.nav-group-menu a.nav-link::after{display:none;}'
+    '.nav-group-menu a.nav-link::after{display:none;}',
+
+    /* ---------- phones ----------
+       Last in the sheet on purpose: these override the rules above, and a
+       media query does not raise specificity, so order is what decides.
+       The nav wraps — logo and the language button share the top row, the
+       links scroll on their own row underneath. Ordering rather than DOM
+       order, so the desktop bar keeps logo | links | language. */
+    '@media (max-width: 600px){',
+    '  .nav-inner{flex-wrap:wrap;}',
+    '  .lang-switch{order:2;margin-left:auto;}',
+    '  .nav-links{order:3;width:100%;}',
+    '  .lang-btn{padding:0.5rem 0.9rem;}',
+    '  .lang-menu{min-width:12.5rem;}',
+    '  .lang-menu button{padding:0.75rem 0.7rem;font-size:0.95rem;}',
+    '  .nav-group-menu a.nav-link{padding:0.75rem 0.7rem;font-size:0.95rem;}',
+    '}'
   ].join('');
   var s = document.createElement('style');
   s.textContent = css;
@@ -1545,11 +1561,13 @@ function setLang(lang) {
     }
     function open() {
       wrap.classList.add('open');
+      menu.classList.add('open');           // menu sits on <body>, so it toggles itself
       btn.setAttribute('aria-expanded', 'true');
       placeMenu(btn, menu, true);   // right-aligned, as before
     }
     function close() {
       wrap.classList.remove('open');
+      menu.classList.remove('open');
       btn.setAttribute('aria-expanded', 'false');
     }
     // the bar can scroll under the menu, so follow the button while open
@@ -1566,7 +1584,8 @@ function setLang(lang) {
       wrap.classList.contains('open') ? close() : open();
     });
     document.addEventListener('click', function (e) {
-      if (!wrap.contains(e.target)) close();
+      // The menu lives on <body> now, so it is not inside wrap any more.
+      if (!wrap.contains(e.target) && !menu.contains(e.target)) close();
     });
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') close();
@@ -1575,8 +1594,16 @@ function setLang(lang) {
     paintButton();
     paintMenu();
     wrap.appendChild(btn);
-    wrap.appendChild(menu);
-    sel.parentNode.insertBefore(wrap, sel.nextSibling);
+    // The menu goes on <body>, exactly as the nav-group menus do. position:fixed
+    // does NOT escape an ancestor with -webkit-overflow-scrolling:touch on iOS —
+    // it gets positioned and clipped by that scroller instead, which is why the
+    // menu opened into nothing on a phone.
+    document.body.appendChild(menu);
+    // The button itself leaves the scrolling link bar too, so it can never be
+    // scrolled out of reach or end up sitting on top of the links.
+    var inner = document.querySelector('.nav-inner');
+    if (inner) inner.appendChild(wrap);
+    else sel.parentNode.insertBefore(wrap, sel.nextSibling);
 
     // keep the button label in sync if the language changes elsewhere
     window.refreshLangSwitch = function () { paintButton(); paintMenu(); };
