@@ -376,9 +376,14 @@
     .demo-kana-hear { font-size: 0.74rem; color: var(--text-light); }
 
     /* ---- dark band for the path -------------------------------------- */
+    /* .home is a column flex container and .home-section carries margin: 0 auto,
+       so an auto margin shrinks the item to its content. width + align-self is
+       what actually makes the colour run the full width of the viewport. */
     .home-section.is-band {
-      max-width: none; background: var(--ink); padding: 4.5rem 2rem;
+      max-width: none; width: 100%; margin: 0; align-self: stretch;
+      background: var(--ink); padding: 4.5rem 2rem;
     }
+    .home-close { width: 100%; align-self: stretch; }
     .home-section.is-band > .home-panel {
       background: none; border: none; max-width: 1200px; margin: 0 auto; padding: 0;
     }
