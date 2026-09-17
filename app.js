@@ -1022,6 +1022,12 @@
         if (lower[0] === 'n') {
           if (lower[1] === "'") { out += 'ん'; i += 2; continue; }
           if (lower[1] === 'n') {
+            // "nn" sitting at the very end while you are still typing: we
+            // cannot yet know whether a vowel follows (konni → こんに) or not
+            // (honn → ほん), and committing ん here throws the second n away —
+            // which is why konnichiwa came out こんいちわ when typed letter by
+            // letter but こんにちわ when converted in one go. Hold both back.
+            if (lower.length === 2 && !final) { out += text.slice(i); break; }
             out += 'ん';
             i += /[aiueoy]/.test(lower[2] || '') ? 1 : 2;
             continue;
@@ -4632,11 +4638,20 @@ function generateNewQuestion() {
     // as it's typed so the Conjugator works without a Japanese IME.
     var answerInputEl = document.getElementById('answer-input');
     if (answerInputEl) {
-      answerInputEl.addEventListener('input', function() {
+      answerInputEl.addEventListener('input', function(e) {
+        // Self-heal: `isComposing` is false for ordinary typing, so this clears
+        // a composing flag that got stuck. compositionend does not always fire
+        // — focus leaving mid-word, an IME switched off, or a browser firing
+        // compositionstart for autofill or dictation all strand it, and once
+        // stranded the converter was dead for the rest of the session.
+        if (e && e.isComposing === false) delete this.dataset.composing;
+        var composing = (e && e.isComposing) || this.dataset.composing;
         // The verb-type quiz wants Latin words ("godan"), so leave it alone.
         // An IME composing text must also be left alone until it commits.
-        if (!isTypeIdentificationQuiz && !this.dataset.composing && romajiInputEnabled()) {
-          var atEnd = this.selectionStart === this.value.length;
+        if (!isTypeIdentificationQuiz && !composing && romajiInputEnabled()) {
+          // selectionStart can be null in some contexts — treat it as the end.
+          var caret = this.selectionStart;
+          var atEnd = caret == null || caret === this.value.length;
           // Only rewrite while typing at the end — never while editing the
           // middle of the string, where moving the caret would be maddening.
           if (atEnd) {
@@ -4651,6 +4666,8 @@ function generateNewQuestion() {
       });
       answerInputEl.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
       answerInputEl.addEventListener('compositionend', function () { delete this.dataset.composing; });
+      answerInputEl.addEventListener('blur',  function () { delete this.dataset.composing; });
+      answerInputEl.addEventListener('focus', function () { delete this.dataset.composing; });
     }
 
     function toggleRomajiInput() {

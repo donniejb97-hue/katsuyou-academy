@@ -1493,10 +1493,21 @@
       if (!input || !window.KA_toKana) return;
       input.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
       input.addEventListener('compositionend', function () { delete this.dataset.composing; });
-      input.addEventListener('input', function () {
-        if (!romajiOn() || this.dataset.composing) return;
-        // Only rewrite while typing at the end, never mid-edit.
-        if (this.selectionStart !== this.value.length) return;
+      // Belt and braces for the same problem.
+      input.addEventListener('blur',  function () { delete this.dataset.composing; });
+      input.addEventListener('focus', function () { delete this.dataset.composing; });
+      input.addEventListener('input', function (e) {
+      // Self-heal: `isComposing` is false for ordinary typing, so this clears a
+      // composing flag that got stuck. compositionend does not always fire —
+      // focus leaving mid-word, an IME switched off, or a browser firing
+      // compositionstart for autofill or dictation all strand it, and once
+      // stranded the converter was dead for the rest of the session.
+        if (e && e.isComposing === false) delete this.dataset.composing;
+        if (!romajiOn() || (e && e.isComposing) || this.dataset.composing) return;
+        // Only rewrite while typing at the end, never mid-edit. selectionStart
+        // can be null in some contexts — treat that as "at the end".
+        var caret = this.selectionStart;
+        if (caret != null && caret !== this.value.length) return;
         var converted = convertForMode(this.value, false);
         if (converted !== this.value) {
           this.value = converted;

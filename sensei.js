@@ -455,6 +455,9 @@
 
     function closePanel(manual) {
       panel.classList.remove('open');
+      // Fold the settings away with the window. Leaving them open meant the
+      // next time you opened Katsu you got the settings, not the conversation.
+      settingsPanel.classList.remove('open');
       persistOpen(false);
       if (manual) lastManualCloseAt = Date.now();
     }

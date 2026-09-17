@@ -76,7 +76,7 @@
               nothing to install.
             </p>
             <div class="hero-actions">
-              <button class="btn btn-primary" onclick="showPage('learn')" data-i18n="btn_learn_basics">Learn the Basics</button>
+              <a class="btn btn-primary" href="/learn" data-i18n="btn_learn_basics">Learn the Basics</a>
             </div>
             <div class="hero-meta">
               <div><b>104</b><span data-i18n="meta_kana">kana, with audio</span></div>
@@ -587,7 +587,11 @@
     function nextKana() {
       kIdx = (kIdx + 1) % KANA.length;
       paintKana();
-      if (window.KA_Listen) window.KA_Listen.stop();
+      // Whatever is playing belongs to the card we just left.
+      if (typeof stopKanaAudio === 'function') stopKanaAudio();
+      else if (window.KA_Listen) window.KA_Listen.stop();
+      // A character with no recording may still need the voice, or neither.
+      if (window.KA_DemoPaintListen) window.KA_DemoPaintListen();
     }
 
     // Check, then Next — the same button, relabelled. An automatic jump took
@@ -615,21 +619,63 @@
       paintKana();
     }
 
-    // The Listen button is live — it uses the same voice the rest of the
-    // site does, and hides itself when nothing can speak.
+    // Listen plays the very same recordings the Kana page plays — a real voice
+    // per mora, which a synthesised one cannot match on a single character.
+    // The TTS voice is only the fallback for anything with no recording.
     var kListen = $('demo-kana-listen');
-    if (kListen && window.KA_Listen) {
-      window.KA_Listen.attach(kListen, function () { return KANA[kIdx][0]; });
+    var kHear = $('demo-kana-hear');
+
+    function kanaClip(ch) {
+      try { return (kanaAudioMap && kanaAudioMap[ch]) || null; } catch (e) { return null; }
+    }
+
+    function kanaCanPlay(ch) {
+      return !!kanaClip(ch) || !!(window.KA_Listen && window.KA_Listen.available());
+    }
+
+    function stopKanaAudio() {
+      // playKanaAudio keeps its clip on a global; stop it before the next card.
+      try { if (window.currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; } } catch (e) {}
+      if (window.KA_Listen) window.KA_Listen.stop();
+      if (kListen) kListen.classList.remove('playing');
+    }
+
+    function playCurrentKana() {
+      var ch = KANA[kIdx][0];
+      stopKanaAudio();
+      if (typeof playKanaAudio === 'function' && kanaClip(ch)) {
+        playKanaAudio(ch);
+        kListen.classList.add('playing');
+        // playKanaAudio doesn't report back, so follow its own audio element.
+        try {
+          var a = window.currentAudio;
+          if (a) {
+            a.addEventListener('ended', function () { kListen.classList.remove('playing'); });
+            a.addEventListener('error', function () { kListen.classList.remove('playing'); });
+          }
+        } catch (e) {}
+        return;
+      }
+      if (window.KA_Listen) window.KA_Listen.speak(ch, kListen);
+    }
+
+    if (kListen) {
+      kListen.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        playCurrentKana();
+      });
       kListen.title = tt('demo_kana_listen_hint', 'Hear it before you answer');
+
       // The speaker and its one-line prompt appear and disappear together —
       // a hint pointing at a button that isn't there is worse than neither.
-      var kHear = $('demo-kana-hear');
       var paintListen = function () {
-        var on = window.KA_Listen.available();
+        var on = kanaCanPlay(KANA[kIdx][0]);
         kListen.style.display = on ? '' : 'none';
         if (kHear) kHear.style.display = on ? '' : 'none';
       };
       paintListen();
+      window.KA_DemoPaintListen = paintListen;   // repainted on every new card
       if (window.KA_Speech) window.KA_Speech.onReady(paintListen);
       if (window.KA_Azure) window.KA_Azure.listVoices().then(paintListen).catch(paintListen);
     }
@@ -710,9 +756,18 @@
       if (window.KA_toKana) {
         vInput.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
         vInput.addEventListener('compositionend', function () { delete this.dataset.composing; });
-        vInput.addEventListener('input', function () {
-          if (this.dataset.composing) return;
-          if (this.selectionStart !== this.value.length) return;   // never rewrite mid-edit
+        vInput.addEventListener('blur',  function () { delete this.dataset.composing; });
+        vInput.addEventListener('focus', function () { delete this.dataset.composing; });
+        vInput.addEventListener('input', function (e) {
+      // Self-heal: `isComposing` is false for ordinary typing, so this clears a
+      // composing flag that got stuck. compositionend does not always fire —
+      // focus leaving mid-word, an IME switched off, or a browser firing
+      // compositionstart for autofill or dictation all strand it, and once
+      // stranded the converter was dead for the rest of the session.
+          if (e && e.isComposing === false) delete this.dataset.composing;
+          if ((e && e.isComposing) || this.dataset.composing) return;
+          var caret = this.selectionStart;
+          if (caret != null && caret !== this.value.length) return;   // never rewrite mid-edit
           var out = window.KA_toKana(this.value, false);
           if (out !== this.value) {
             this.value = out;
