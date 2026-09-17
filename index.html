@@ -202,13 +202,16 @@
           <!-- Kana -->
           <div class="demo-pane show" id="demo-kana">
             <div class="demo-stage">
-              <button type="button" class="demo-kana-card" id="demo-kana-card">
+              <div class="demo-kana-card">
+                <span class="demo-kana-tag" id="demo-kana-tag">HIRAGANA — TYPE THE READING</span>
                 <span class="demo-kana-face jp" id="demo-kana-face">あ</span>
-                <span class="demo-kana-read" id="demo-kana-read">a</span>
-              </button>
-              <p class="demo-hint" id="demo-kana-hint" data-i18n="demo_kana_hint">Click the card to reveal the reading.</p>
+              </div>
+              <div class="demo-row">
+                <input type="text" class="demo-input" id="demo-kana-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <button type="button" class="start-btn is-primary cat-ref" id="demo-kana-check" data-i18n="demo_check">Check</button>
+              </div>
+              <p class="demo-verdict" id="demo-kana-verdict"></p>
               <div class="demo-actions">
-                <button type="button" class="start-btn is-secondary cat-ref" id="demo-kana-next" data-i18n="demo_next">Next character</button>
                 <button type="button" class="ka-listen" id="demo-kana-listen" style="display:none;">🔊 <span data-i18n="talk_listen">Listen</span></button>
               </div>
             </div>
@@ -223,8 +226,10 @@
               <div class="demo-form" id="demo-conj-form">NEGATIVE (ない)</div>
               <div class="demo-row">
                 <input type="text" class="demo-input" id="demo-conj-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <span class="demo-ime" id="demo-conj-ime" aria-hidden="true">あ</span>
                 <button type="button" class="start-btn is-primary cat-prac" id="demo-conj-check" data-i18n="demo_check">Check</button>
               </div>
+              <p class="demo-hint" id="demo-conj-ime-hint" data-i18n="demo_conj_ime">Type rōmaji — it becomes kana as you go, exactly as it does in the drill.</p>
               <p class="demo-verdict" id="demo-conj-verdict"></p>
             </div>
             <a class="demo-cta cat-prac" href="#" onclick="showPage('conjugator');return false;" data-i18n="demo_cta_conj">Open the full Conjugator →</a>
@@ -573,27 +578,64 @@
       });
     });
 
-    /* ---- kana ---- */
+    /* ---- kana ----
+       The real drill shows a character and asks you to type the reading, so
+       the demo does too. A flip card looked nothing like it, and revealing
+       the answer for you is the opposite of what a drill is for.
+       Each entry: [character, accepted readings..., script label] */
     var KANA = [
-      ['あ', 'a'], ['き', 'ki'], ['つ', 'tsu'], ['ね', 'ne'], ['ほ', 'ho'],
-      ['ミ', 'mi'], ['ラ', 'ra'], ['ヲ', 'wo'], ['しゃ', 'sha'], ['びょ', 'byo']
+      ['あ', ['a'], 'hira'],
+      ['き', ['ki'], 'hira'],
+      ['つ', ['tsu', 'tu'], 'hira'],
+      ['ね', ['ne'], 'hira'],
+      ['ミ', ['mi'], 'kata'],
+      ['ラ', ['ra'], 'kata'],
+      ['しゃ', ['sha', 'sya'], 'hira'],
+      ['ジュ', ['ju', 'jyu', 'zyu'], 'kata']
     ];
-    var kIdx = 0;
-    var kCard = $('demo-kana-card'), kFace = $('demo-kana-face'), kRead = $('demo-kana-read');
+    var kIdx = 0, kLocked = false;
+    var kFace = $('demo-kana-face'), kInput = $('demo-kana-input'), kVerdict = $('demo-kana-verdict');
 
     function paintKana() {
       if (!kFace) return;
       kFace.textContent = KANA[kIdx][0];
-      kRead.textContent = KANA[kIdx][1];
-      kCard.classList.remove('revealed');
+      $('demo-kana-tag').textContent = KANA[kIdx][2] === 'kata'
+        ? tt('demo_kana_tag_kata', 'KATAKANA — TYPE THE READING')
+        : tt('demo_kana_tag_hira', 'HIRAGANA — TYPE THE READING');
+      kInput.value = '';
+      kInput.placeholder = tt('demo_kana_ph', 'Type the rōmaji…');
+      kVerdict.textContent = '';
+      kVerdict.className = 'demo-verdict';
+      $('demo-kana-check').textContent = tt('demo_check', 'Check');
+      kLocked = false;
     }
-    if (kCard) {
-      kCard.addEventListener('click', function () { kCard.classList.add('revealed'); });
-      $('demo-kana-next').addEventListener('click', function () {
-        kIdx = (kIdx + 1) % KANA.length;
-        paintKana();
-        if (window.KA_Listen) window.KA_Listen.stop();
-      });
+
+    function nextKana() {
+      kIdx = (kIdx + 1) % KANA.length;
+      paintKana();
+      if (window.KA_Listen) window.KA_Listen.stop();
+    }
+
+    function checkKana() {
+      if (kLocked) return;
+      var given = String(kInput.value || '').trim().toLowerCase();
+      if (!given) return;
+      var entry = KANA[kIdx];
+      if (entry[1].indexOf(given) !== -1) {
+        kVerdict.textContent = tt('demo_kana_right', 'Correct.');
+        kVerdict.className = 'demo-verdict good';
+      } else {
+        kVerdict.textContent = tt('demo_conj_wrong', 'Not quite.') + ' ' +
+          tt('demo_conj_answer', 'Answer:') + ' ' + entry[1][0];
+        kVerdict.className = 'demo-verdict bad';
+      }
+      kLocked = true;
+      setTimeout(function () { nextKana(); kInput.focus(); }, 1500);
+    }
+
+    if (kInput) {
+      $('demo-kana-check').addEventListener('click', checkKana);
+      kInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') checkKana(); });
       paintKana();
     }
 
@@ -602,6 +644,7 @@
     var kListen = $('demo-kana-listen');
     if (kListen && window.KA_Listen) {
       window.KA_Listen.attach(kListen, function () { return KANA[kIdx][0]; });
+      kListen.title = tt('demo_kana_listen_hint', 'Hear it before you answer');
       var paintListen = function () { window.KA_Listen.paint(kListen); };
       paintListen();
       if (window.KA_Speech) window.KA_Speech.onReady(paintListen);
@@ -642,6 +685,11 @@
 
     function checkVerb() {
       var v = VERBS[vIdx];
+      // Commit a half-finished syllable first — a trailing "n" becomes ん.
+      if (window.KA_toKana) {
+        var done = window.KA_toKana(vInput.value, true);
+        if (done !== vInput.value) vInput.value = done;
+      }
       var given = norm(vInput.value);
       if (!given) return;
       var hit = v.ok.filter(function (a) { return norm(a) === given; })[0];
@@ -664,6 +712,26 @@
     if (vInput) {
       $('demo-conj-check').addEventListener('click', checkVerb);
       vInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') checkVerb(); });
+
+      // The same converter the real Conjugator uses. Without it nobody on a
+      // Latin keyboard can type an answer at all, so the demo proved nothing.
+      if (window.KA_toKana) {
+        vInput.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
+        vInput.addEventListener('compositionend', function () { delete this.dataset.composing; });
+        vInput.addEventListener('input', function () {
+          if (this.dataset.composing) return;
+          if (this.selectionStart !== this.value.length) return;   // never rewrite mid-edit
+          var out = window.KA_toKana(this.value, false);
+          if (out !== this.value) {
+            this.value = out;
+            this.setSelectionRange(out.length, out.length);
+          }
+        });
+      } else {
+        var ime = $('demo-conj-ime'), imeHint = $('demo-conj-ime-hint');
+        if (ime) ime.style.display = 'none';
+        if (imeHint) imeHint.style.display = 'none';
+      }
       paintVerb();
     }
 
@@ -701,28 +769,44 @@
             el.appendChild(en);
           }
           if (m.fix) {
+            // Folded, exactly as it arrives in the real thing — then opened a
+            // beat later, so the demo shows the behaviour rather than
+            // describing it. Clickable too, in case they get there first.
             var fx = document.createElement('div');
             fx.className = 'demo-b-fix';
-            var lb = document.createElement('b');
-            lb.textContent = tt('talk_correction', 'Correction');
-            fx.appendChild(lb);
-            fx.appendChild(document.createTextNode(tt(m.fixKey, m.fix)));
+
+            var head = document.createElement('button');
+            head.type = 'button';
+            head.className = 'demo-fix-head';
+            head.innerHTML = '<span class="demo-fix-caret" aria-hidden="true">▸</span>' +
+                             '<b>' + tt('talk_correction', 'Correction') + '</b>';
+
+            var body = document.createElement('div');
+            body.className = 'demo-fix-body';
+            body.textContent = tt(m.fixKey, m.fix);
+
+            head.addEventListener('click', function () {
+              fx.classList.toggle('open');
+            });
+            fx.appendChild(head);
+            fx.appendChild(body);
             el.appendChild(fx);
+            chatTimers.push(setTimeout(function () { fx.classList.add('open'); }, 1500));
           }
           box.appendChild(el);
-        }, i * 650));
+        }, i * 1500));   // reading pace, not a stopwatch
       });
     }
     playChat();
 
     // Re-label everything when the language changes, since these strings are
     // painted from JS and the i18n observer never sees them.
-    document.addEventListener('katsuyo:lang', function () { paintVerb(); playChat(); });
+    document.addEventListener('katsuyo:lang', function () { paintKana(); paintVerb(); playChat(); });
     var origSetLang = window.setLang;
     if (typeof origSetLang === 'function') {
       window.setLang = function (l) {
         var r = origSetLang.apply(this, arguments);
-        setTimeout(function () { paintVerb(); playChat(); }, 60);
+        setTimeout(function () { paintKana(); paintVerb(); playChat(); }, 60);
         return r;
       };
     }

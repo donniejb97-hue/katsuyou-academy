@@ -1992,9 +1992,9 @@ a.nav-link {
 
     .demo-stage {
       background: var(--paper-warm); border: 1px solid rgba(0,0,0,0.07);
-      border-radius: 6px; padding: 1.75rem 1.5rem; text-align: center;
-      min-height: 17rem; display: flex; flex-direction: column;
-      align-items: center; justify-content: center; gap: 0.75rem;
+      border-radius: 6px; padding: 2.25rem 1.75rem; text-align: center;
+      min-height: 23rem; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.9rem;
     }
     .demo-hint { color: var(--text-light); font-size: 0.85rem; margin: 0; max-width: 42ch; }
     .demo-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; align-items: center; }
@@ -2009,18 +2009,20 @@ a.nav-link {
     .demo-cta.cat-conv { --btn-c: #9a8144; }
     .demo-cta:hover { border-bottom-color: currentColor; }
 
-    /* kana */
+    /* kana — shaped like the real drill's question card, not a flip card */
     .demo-kana-card {
-      width: 11rem; height: 9rem; border-radius: 8px; cursor: pointer;
-      background: var(--ink); border: none; color: var(--paper);
-      display: grid; place-items: center; gap: 0.3rem;
-      font-family: inherit; transition: transform 0.18s;
+      width: 100%; max-width: 22rem; border-radius: 8px;
+      background: #fff; border: 1px solid rgba(0,0,0,0.08);
+      padding: 1.1rem 1rem 1.4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.9rem;
     }
-    .demo-kana-card:hover { transform: translateY(-2px); }
-    .demo-kana-face { font-family: 'Noto Serif JP', serif; font-size: 3.4rem; line-height: 1; }
-    .demo-kana-read { font-size: 1rem; letter-spacing: 0.06em; color: #d4786a;
-      opacity: 0; transition: opacity 0.18s; }
-    .demo-kana-card.revealed .demo-kana-read { opacity: 1; }
+    .demo-kana-tag {
+      display: inline-block; padding: 0.22rem 0.7rem; border-radius: 999px;
+      background: rgba(196,92,74,0.12); color: #a8422f;
+      font-size: 0.64rem; font-weight: 700; letter-spacing: 0.09em;
+    }
+    .demo-kana-face { font-family: 'Noto Serif JP', serif; font-size: 4.4rem;
+      line-height: 1; color: var(--ink); }
 
     /* conjugator */
     .demo-verb { font-family: 'Noto Serif JP', serif; font-size: 2.4rem; color: var(--ink); line-height: 1.1; }
@@ -2033,6 +2035,13 @@ a.nav-link {
       font-family: inherit; font-size: 1rem; width: 14rem; outline: none; background: #fff;
     }
     .demo-input:focus { border-color: #6f9673; }
+    /* The same green あ the Conjugator and Talk use, so the converter is
+       visibly the site's, not a homepage toy. */
+    .demo-ime {
+      display: inline-grid; place-items: center; width: 2.5rem;
+      border-radius: 6px; background: var(--sage); color: #fff;
+      font-family: 'Noto Serif JP', serif; font-size: 1.05rem; font-weight: 600;
+    }
     .demo-verdict { margin: 0; font-size: 0.9rem; min-height: 2.6em; max-width: 40ch; line-height: 1.55; }
     .demo-verdict.good { color: #4f7a55; }
     .demo-verdict.bad  { color: var(--accent); }
@@ -2048,10 +2057,27 @@ a.nav-link {
     .demo-b .jp { font-family: 'Noto Serif JP', serif; }
     .demo-b-en { display: block; margin-top: 0.35rem; padding-top: 0.35rem;
       border-top: 1px dashed rgba(0,0,0,0.1); color: var(--text-light); font-size: 0.85rem; }
-    .demo-b-fix { margin-top: 0.45rem; padding: 0.4rem 0.6rem; border-left: 3px solid var(--accent);
-      background: rgba(196,92,74,0.07); border-radius: 0 4px 4px 0; font-size: 0.82rem; color: var(--text); }
-    .demo-b-fix b { display: block; font-size: 0.66rem; letter-spacing: 0.09em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 0.15rem; }
+    /* Folded by default, the way it arrives in the real conversation. */
+    .demo-b-fix { margin-top: 0.45rem; border-left: 3px solid var(--accent);
+      background: rgba(196,92,74,0.07); border-radius: 0 4px 4px 0; color: var(--text); }
+    .demo-fix-head {
+      display: flex; align-items: center; gap: 0.35rem; width: 100%;
+      background: none; border: none; padding: 0.4rem 0.6rem; cursor: pointer;
+      font-family: inherit; text-align: left;
+    }
+    .demo-fix-head b { font-size: 0.66rem; letter-spacing: 0.09em;
+      text-transform: uppercase; color: var(--accent); }
+    .demo-fix-caret { color: var(--accent); font-size: 0.7rem; transition: transform 0.2s; }
+    .demo-b-fix.open .demo-fix-caret { transform: rotate(90deg); }
+    .demo-fix-body {
+      font-size: 0.82rem; line-height: 1.6;
+      max-height: 0; overflow: hidden; padding: 0 0.6rem;
+      transition: max-height 0.28s ease, padding 0.28s ease;
+    }
+    .demo-b-fix.open .demo-fix-body { max-height: 10rem; padding: 0 0.6rem 0.5rem; }
+    @media (prefers-reduced-motion: reduce) {
+      .demo-fix-body, .demo-fix-caret { transition: none; }
+    }
 
     /* ---- Shared home section furniture --------------------------------- */
     .home-section { max-width: 1000px; margin: 0 auto; padding: 3.5rem 2rem; }
