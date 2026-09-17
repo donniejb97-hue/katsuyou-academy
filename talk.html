@@ -129,6 +129,7 @@
     .talk-speak.playing { color: var(--accent); opacity: 1; }
     .talk-voice-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
       padding: 0.5rem 0 0.1rem; font-size: 0.85rem; }
+    .talk-audio-controls { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
     .talk-voice-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--text-light); }
     .talk-voice-select { padding: 0.3rem 0.5rem; border: 1px solid rgba(0,0,0,0.15);
@@ -295,6 +296,18 @@
             <div class="talk-opt-row">
               <span class="talk-opt-label" data-i18n="talk_level">Level</span>
               <div class="talk-chip-group" id="level-chips-grammar"></div>
+            </div>
+          </div>
+
+          <!-- Audio applies to every mode, so it sits outside the per-mode
+               panels — and it has to be here rather than only in-session,
+               because with Read aloud on the first reply speaks immediately. -->
+          <div class="talk-opt-row" id="talk-setup-audio" style="display: none;">
+            <span class="talk-opt-label" data-i18n="talk_audio">Audio</span>
+            <div class="talk-audio-controls">
+              <button type="button" class="talk-mini-chip" id="talk-setup-speak">🔊 Read aloud</button>
+              <select id="talk-setup-voice" class="talk-voice-select"></select>
+              <button type="button" class="talk-mini-chip" id="talk-setup-preview" data-i18n="talk_voice_preview">▶ Preview</button>
             </div>
           </div>
 
@@ -553,6 +566,7 @@
       });
       document.querySelectorAll('.talk-options').forEach(function (o) { o.classList.remove('show'); });
       $('talk-setup-hint').style.display = 'none';
+      paintAudioControls();
 
       if (mode === 'scenario') {
         $('opt-scenario').classList.add('show');
@@ -842,13 +856,24 @@
     }
 
     function paintSpeechToggle() {
-      var btn = $('talk-toggle-speak');
-      if (!btn) return;
-      if (!canSpeak()) { btn.style.display = 'none'; return; }
-      btn.style.display = '';
-      btn.textContent = '🔊 ' + tt('talk_read_aloud', 'Read aloud');
-      btn.classList.toggle('on', speechOn());
-      btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically');
+      ['talk-toggle-speak', 'talk-setup-speak'].forEach(function (id) {
+        var btn = $(id);
+        if (!btn) return;
+        if (!canSpeak()) { btn.style.display = 'none'; return; }
+        btn.style.display = '';
+        btn.textContent = '🔊 ' + tt('talk_read_aloud', 'Read aloud');
+        btn.classList.toggle('on', speechOn());
+        btn.title = tt('talk_read_aloud_hint', 'Speak each of Katsu\u2019s replies automatically');
+      });
+      paintAudioControls();
+    }
+
+    // The setup row only earns its space once a mode is picked and there is
+    // actually something that can speak.
+    function paintAudioControls() {
+      var row = $('talk-setup-audio');
+      if (!row) return;
+      row.style.display = (state.mode && canSpeak()) ? '' : 'none';
     }
 
     // Which speaking style suits the situation. Azure only honours these for
@@ -899,28 +924,52 @@
     }
 
     // ---------- voice picker ----------
+    function previewVoice() {
+      // Neutral on purpose: this is about comparing voices, not scenarios.
+      speakJapanese(tt('voice_sample', '\u3053\u3093\u306b\u3061\u306f\u3002\u4eca\u65e5\u306f\u3044\u3044\u5929\u6c17\u3067\u3059\u306d\u3002'), null, { style: '' });
+    }
+
     function buildVoicePicker() {
-      var wrap = $('talk-voice-row');
-      if (!wrap || !window.KA_Azure) return;
+      if (!window.KA_Azure) return;
       window.KA_Azure.listVoices().then(function (list) {
-        if (!list || !list.length) { wrap.style.display = 'none'; return; }
-        wrap.style.display = '';
-        var sel = $('talk-voice-select');
-        sel.innerHTML = '';
-        list.forEach(function (v) {
-          var o = document.createElement('option');
-          o.value = v.name;
-          // "Nanami — Female". The local name is what a learner recognises.
-          o.textContent = v.display + (v.gender ? ' \u2014 ' + tt('voice_' + v.gender.toLowerCase(), v.gender) : '');
-          sel.appendChild(o);
+        var have = !!(list && list.length);
+        var row = $('talk-voice-row');
+        if (row) row.style.display = have ? '' : 'none';
+        paintAudioControls();
+        if (!have) return;
+
+        // Both selects are filled from the same list and write the same
+        // setting, so changing one is reflected by the other.
+        ['talk-voice-select', 'talk-setup-voice'].forEach(function (id) {
+          var sel = $(id);
+          if (!sel) return;
+          sel.innerHTML = '';
+          list.forEach(function (v) {
+            var o = document.createElement('option');
+            o.value = v.name;
+            // "七海 — Female". The local name is what a learner recognises.
+            o.textContent = v.display + (v.gender ? ' \u2014 ' + tt('voice_' + v.gender.toLowerCase(), v.gender) : '');
+            sel.appendChild(o);
+          });
+          sel.value = window.KA_Azure.currentVoice();
+          if (!sel.value && list[0]) sel.value = list[0].name;
+          sel.onchange = function () {
+            window.KA_Azure.setVoice(this.value);
+            // keep the other one in step
+            ['talk-voice-select', 'talk-setup-voice'].forEach(function (other) {
+              var el = $(other);
+              if (el && el !== this) el.value = this.value;
+            }, this);
+          };
         });
-        sel.value = window.KA_Azure.currentVoice();
-        if (!sel.value && list[0]) sel.value = list[0].name;
-        sel.onchange = function () { window.KA_Azure.setVoice(this.value); };
-        $('talk-voice-preview').onclick = function () {
-          speakJapanese(tt('voice_sample', '\u3053\u3093\u306b\u3061\u306f\u3002\u4eca\u65e5\u306f\u3044\u3044\u5929\u6c17\u3067\u3059\u306d\u3002'), null, { style: '' });
-        };
-        $('talk-voice-label').textContent = tt('talk_voice', 'Voice');
+
+        ['talk-voice-preview', 'talk-setup-preview'].forEach(function (id) {
+          var b = $(id);
+          if (b) b.onclick = previewVoice;
+        });
+
+        var lbl = $('talk-voice-label');
+        if (lbl) lbl.textContent = tt('talk_voice', 'Voice');
       });
     }
 
@@ -1536,6 +1585,9 @@
         rerenderAll();
       });
       $('talk-toggle-speak').addEventListener('click', function () {
+        setSpeechOn(!speechOn());
+      });
+      $('talk-setup-speak').addEventListener('click', function () {
         setSpeechOn(!speechOn());
       });
 

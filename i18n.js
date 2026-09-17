@@ -255,6 +255,7 @@ var I18N = {
     voice_male:"Male",
     voice_neutral:"Neutral",
     voice_sample:"こんにちは。今日はいい天気ですね。",
+    talk_audio:"Audio",
   },
   de: {
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
@@ -499,6 +500,7 @@ var I18N = {
     voice_male:"männlich",
     voice_neutral:"neutral",
     voice_sample:"こんにちは。今日はいい天気ですね。",
+    talk_audio:"Audio",
   },
   fr: {
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
@@ -743,6 +745,7 @@ var I18N = {
     voice_male:"masculine",
     voice_neutral:"neutre",
     voice_sample:"こんにちは。今日はいい天気ですね。",
+    talk_audio:"Audio",
   },
   zh: {
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
@@ -987,6 +990,7 @@ var I18N = {
     voice_male:"男声",
     voice_neutral:"中性",
     voice_sample:"こんにちは。今日はいい天気ですね。",
+    talk_audio:"语音",
   }
 };
 
