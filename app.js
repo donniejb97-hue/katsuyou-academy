@@ -1065,6 +1065,102 @@
     window.KA_toKana = romajiToKana;
 
     // ========================================================================
+    // SHARED KANA INPUT
+    // ------------------------------------------------------------------------
+    // Every box on the site that takes romaji and gives back kana wants the
+    // same four behaviours, and until now each one had its own copy — which is
+    // why the Dojo learned to resolve a trailing ん on its own while Talk and
+    // the Conjugator still made you type nnn, and why the Conjugator still
+    // refused to convert anything unless the caret sat at the very end.
+    //
+    //   1. Convert behind the caret, leave the tail alone. Editing the middle
+    //      of a sentence has to keep working — speech and paste both fill the
+    //      box from nowhere near the end.
+    //   2. Survive a stranded IME composition. compositionend does not always
+    //      fire (focus leaving mid-word, an IME switched off, autofill or
+    //      dictation firing compositionstart), and once stranded the converter
+    //      was dead for the rest of the session. `isComposing === false` on an
+    //      ordinary keystroke clears it.
+    //   3. Resolve a lone trailing "n" by time, not by a third keystroke. It
+    //      cannot be resolved while you are still typing — "kyuunin" might
+    //      become きゅうにん or continue into きゅうにな — and committing early
+    //      turns こんにちわ into こんいちわ. Stop typing for a moment and the
+    //      pending n becomes ん; keep typing and it resolves as the next
+    //      syllable, which is what it was waiting for.
+    //   4. Commit on blur, so leaving the box never strands a half-syllable.
+    // ========================================================================
+    var KANA_N_DELAY = 420;
+
+    function attachKanaInput(input, opts) {
+      if (!input || !window.KA_toKana) return null;
+      opts = opts || {};
+      var enabled = opts.enabled || function () { return true; };
+      // Talk overrides this, because katakana mode converts only the trailing
+      // run of Latin letters rather than the whole head.
+      var convert = opts.convert || function (t, final) { return romajiToKana(t, final); };
+      var timer = null;
+
+      function clearComposing() { delete input.dataset.composing; }
+
+      function commit() {
+        if (timer) { clearTimeout(timer); timer = null; }
+        if (!enabled() || input.dataset.composing) return;
+        // Only when the caret is at the end: committing behind a caret someone
+        // has moved would rewrite text they are in the middle of editing.
+        var caret = input.selectionStart;
+        if (caret != null && caret !== input.value.length) return;
+        var done = convert(input.value, true);
+        if (done !== input.value) {
+          input.value = done;
+          try { input.setSelectionRange(done.length, done.length); } catch (e) {}
+        }
+      }
+
+      function armN() {
+        if (timer) { clearTimeout(timer); timer = null; }
+        if (!/n$/i.test(input.value)) return;
+        timer = setTimeout(commit, KANA_N_DELAY);
+      }
+
+      input.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
+      input.addEventListener('compositionend', clearComposing);
+      input.addEventListener('focus', clearComposing);
+      input.addEventListener('blur', function () { clearComposing(); commit(); });
+
+      input.addEventListener('input', function (e) {
+        if (e && e.isComposing === false) clearComposing();
+        if (enabled() && !(e && e.isComposing) && !this.dataset.composing) {
+          var caret = this.selectionStart;
+          if (caret == null) caret = this.value.length;
+          var head = this.value.slice(0, caret);
+          var tail = this.value.slice(caret);
+          var converted = convert(head, false);
+          if (converted !== head) {
+            this.value = converted + tail;
+            try { this.setSelectionRange(converted.length, converted.length); } catch (e2) {}
+          }
+          armN();
+        }
+        if (opts.onInput) opts.onInput.call(this, e);
+      });
+
+      return {
+        // Force the pending syllable through — for Enter / Check / Send, where
+        // the caret rule does not apply because the learner is done.
+        flush: function () {
+          if (timer) { clearTimeout(timer); timer = null; }
+          if (!enabled()) return;
+          var done = convert(input.value, true);
+          if (done !== input.value) input.value = done;
+        },
+        commit: commit,
+        cancel: function () { if (timer) { clearTimeout(timer); timer = null; } }
+      };
+    }
+
+    window.KA_KanaInput = { attach: attachKanaInput, delay: KANA_N_DELAY };
+
+    // ========================================================================
     // JAPANESE SPEECH
     // ------------------------------------------------------------------------
     // Uses the browser's own speech synthesis — no server, no API key, no
@@ -4043,10 +4139,7 @@ function generateNewQuestion() {
       const answerEl = document.getElementById('answer-input');
       // Commit any half-finished romaji — a dangling "n" becomes ん — so the
       // learner is judged on what they meant, not on where they stopped.
-      if (answerEl && !isTypeIdentificationQuiz && romajiInputEnabled()) {
-        const committed = romajiToKana(answerEl.value, true);
-        if (committed !== answerEl.value) answerEl.value = committed;
-      }
+      if (conjKana) conjKana.flush();
       const userAnswer = answerEl.value.trim();
 
       // Don't process empty answers (unless in continue/next mode)
@@ -4637,37 +4730,16 @@ function generateNewQuestion() {
     // Enable/disable check button based on input, and convert romaji to kana
     // as it's typed so the Conjugator works without a Japanese IME.
     var answerInputEl = document.getElementById('answer-input');
+    var conjKana = null;
     if (answerInputEl) {
-      answerInputEl.addEventListener('input', function(e) {
-        // Self-heal: `isComposing` is false for ordinary typing, so this clears
-        // a composing flag that got stuck. compositionend does not always fire
-        // — focus leaving mid-word, an IME switched off, or a browser firing
-        // compositionstart for autofill or dictation all strand it, and once
-        // stranded the converter was dead for the rest of the session.
-        if (e && e.isComposing === false) delete this.dataset.composing;
-        var composing = (e && e.isComposing) || this.dataset.composing;
+      conjKana = attachKanaInput(answerInputEl, {
         // The verb-type quiz wants Latin words ("godan"), so leave it alone.
-        // An IME composing text must also be left alone until it commits.
-        if (!isTypeIdentificationQuiz && !composing && romajiInputEnabled()) {
-          // selectionStart can be null in some contexts — treat it as the end.
-          var caret = this.selectionStart;
-          var atEnd = caret == null || caret === this.value.length;
-          // Only rewrite while typing at the end — never while editing the
-          // middle of the string, where moving the caret would be maddening.
-          if (atEnd) {
-            var converted = romajiToKana(this.value, false);
-            if (converted !== this.value) {
-              this.value = converted;
-              this.setSelectionRange(converted.length, converted.length);
-            }
-          }
+        enabled: function () { return !isTypeIdentificationQuiz && romajiInputEnabled(); },
+        onInput: function () {
+          var btn = document.getElementById('check-btn');
+          if (btn) btn.disabled = this.value.trim() === '';
         }
-        document.getElementById('check-btn').disabled = this.value.trim() === '';
       });
-      answerInputEl.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
-      answerInputEl.addEventListener('compositionend', function () { delete this.dataset.composing; });
-      answerInputEl.addEventListener('blur',  function () { delete this.dataset.composing; });
-      answerInputEl.addEventListener('focus', function () { delete this.dataset.composing; });
     }
 
     function toggleRomajiInput() {
@@ -5039,6 +5111,46 @@ function generateNewQuestion() {
         8000: 'はっせん', 9000: 'きゅうせん', 10000: 'いちまん', 20000: 'にまん',
         50000: 'ごまん', 100000: 'じゅうまん', 1000000: 'ひゃくまん', 100000000: 'いちおく'
       },
+      // ---- counters --------------------------------------------------------
+      // The sound changes ARE the lesson: 1本 is いっぽん, 3本 さんぼん, 6本 ろっぽん.
+      // Each counter lists only the readings that deviate; everything else is
+      // the plain number plus the counter's base reading.
+      counters: {
+        '本': { base: 'ほん', en: 'long thin things', example: '鉛筆', exampleKana: 'えんぴつ', exampleEn: 'pencils',
+          irr: { 1:'いっぽん', 3:'さんぼん', 6:'ろっぽん', 8:'はっぽん', 10:'じゅっぽん' } },
+        '個': { base: 'こ', en: 'small round things', example: 'りんご', exampleKana: 'りんご', exampleEn: 'apples',
+          irr: { 1:'いっこ', 6:'ろっこ', 8:'はっこ', 10:'じゅっこ' } },
+        '枚': { base: 'まい', en: 'flat things', example: '紙', exampleKana: 'かみ', exampleEn: 'sheets of paper',
+          irr: {} },
+        '人': { base: 'にん', en: 'people', example: '学生', exampleKana: 'がくせい', exampleEn: 'students', animate: true,
+          irr: { 1:'ひとり', 2:'ふたり', 4:'よにん', 7:'しちにん' } },
+        '匹': { base: 'ひき', en: 'small animals', example: '猫', exampleKana: 'ねこ', exampleEn: 'cats', animate: true,
+          irr: { 1:'いっぴき', 3:'さんびき', 6:'ろっぴき', 8:'はっぴき', 10:'じゅっぴき' } }
+      },
+      // Counting 1-10 in the native series, used by 人 and as a fallback.
+      plainCount: { 1:'いち', 2:'に', 3:'さん', 4:'よん', 5:'ご',
+                    6:'ろく', 7:'なな', 8:'はち', 9:'きゅう', 10:'じゅう' },
+      // 年 as a duration counter. Calendar years come from the number engine
+      // and are perfectly regular; durations are not.
+      yearCount: { 1:'いちねん', 2:'にねん', 3:'さんねん', 4:'よねん', 5:'ごねん',
+                   6:'ろくねん', 7:'ななねん', 8:'はちねん', 9:'きゅうねん', 10:'じゅうねん' },
+      // Japanese era years. The offset is the year BEFORE the era began, so
+      // 2026 - 2018 = 令和8年. Year 1 of any era is 元年, never 一年.
+      //
+      // Transition years are deliberately absent from the ranges below: 2019
+      // was 平成31年 until April 30th and 令和元年 from May 1st, and 1989 was
+      // 昭和64年 for seven days before becoming 平成元年. Asking about them
+      // has two right answers, so the generator never picks one.
+      eras: [
+        { jp: '令和', en: 'Reiwa',  offset: 2018, from: 2020, to: 2035 },
+        { jp: '平成', en: 'Heisei', offset: 1988, from: 1990, to: 2018 },
+        { jp: '昭和', en: 'Showa',  offset: 1925, from: 1927, to: 1988 }
+      ],
+      hours: { 1:'いちじ', 2:'にじ', 3:'さんじ', 4:'よじ', 5:'ごじ', 6:'ろくじ',
+               7:'しちじ', 8:'はちじ', 9:'くじ', 10:'じゅうじ', 11:'じゅういちじ', 12:'じゅうにじ' },
+      // 分 alternates between ふん and ぷん by the preceding sound.
+      minuteUnits: { 1:'いっぷん', 2:'にふん', 3:'さんぷん', 4:'よんぷん', 5:'ごふん',
+                     6:'ろっぷん', 7:'ななふん', 8:'はっぷん', 9:'きゅうふん', 10:'じゅっぷん' },
       questionTypes: {
         currentDate: { jp: '今日の日付', en: "Today's date" },
         currentMonth: { jp: '今の月', en: 'Current month' },
@@ -5054,9 +5166,66 @@ function generateNewQuestion() {
         weekdayReading: { jp: '曜日の読み', en: 'Weekday reading' },
         numberReading: { jp: '数字の読み', en: 'Number reading' },
         weekdayName: { jp: '曜日の名前', en: 'Weekday name' },
-        weekdayNameFull: { jp: '曜日（〜ようび）', en: 'Weekday (full)' }
+        weekdayNameFull: { jp: '曜日（〜ようび）', en: 'Weekday (full)' },
+        // New: the two topics the page is named after but never covered, plus
+        // numbers that are actually worth practising.
+        timeReading: { jp: '時間の読み', en: 'Time reading' },
+        counterReading: { jp: '助数詞', en: 'Counters' },
+        bigNumber: { jp: '大きい数字', en: 'Large numbers' },
+        calendarYear: { jp: '西暦', en: 'Calendar year' },
+        yearDuration: { jp: '〜年間', en: 'Years (duration)' },
+        eraYear: { jp: '元号', en: 'Japanese era year' },
+        dateToEnglish: { jp: '英語で（日付）', en: 'Date \u2192 English' },
+        weekdayToEnglish: { jp: '英語で（曜日）', en: 'Weekday \u2192 English' }
       },
+      // Which questions are the whole point. Weighted up, because everything
+      // else in this page is mechanical once you know the pattern.
+      irregularDates: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 14, 20, 24],
       kanjiDict: {
+        // Everything that can appear in a question, so nothing on screen is
+        // unreadable. parseKanjiText matches longest-first up to 3 characters,
+        // so compounds must be listed before their parts.
+        '日本語': { reading: 'にほんご', en: 'Japanese (language)' },
+        '英語': { reading: 'えいご', en: 'English (language)' },
+        '読': { reading: 'よ', en: 'to read' },
+        '何': { reading: 'なん', en: 'what' },
+        '年': { reading: 'ねん', en: 'year' },
+        '何年': { reading: 'なんねん', en: 'what year' },
+        '時': { reading: 'じ', en: "o'clock" },
+        '分': { reading: 'ふん', en: 'minute' },
+        '何時': { reading: 'なんじ', en: 'what time' },
+        '本': { reading: 'ほん', en: 'counter: long thin things' },
+        '個': { reading: 'こ', en: 'counter: small round things' },
+        '枚': { reading: 'まい', en: 'counter: flat things' },
+        '人': { reading: 'にん', en: 'counter: people' },
+        '匹': { reading: 'ひき', en: 'counter: small animals' },
+        '鉛筆': { reading: 'えんぴつ', en: 'pencil' },
+        '猫': { reading: 'ねこ', en: 'cat' },
+        '紙': { reading: 'かみ', en: 'paper' },
+        '学生': { reading: 'がくせい', en: 'student' },
+        '西暦': { reading: 'せいれき', en: 'Western calendar year' },
+        '令和': { reading: 'れいわ', en: 'Reiwa era (2019\u2013)' },
+        '平成': { reading: 'へいせい', en: 'Heisei era (1989\u20132019)' },
+        '昭和': { reading: 'しょうわ', en: 'Showa era (1926\u20131989)' },
+        '元年': { reading: 'がんねん', en: 'first year of an era' },
+        '間': { reading: 'かん', en: 'duration' },
+        '勉強': { reading: 'べんきょう', en: 'study' },
+        // Words that only ever appear in the verdict and hint boxes — the one
+        // place on the page where kanji had no tooltip at all.
+        '期待': { reading: 'きたい', en: 'expected' },
+        '答え': { reading: 'こたえ', en: 'answer' },
+        '正しい': { reading: 'ただしい', en: 'correct' },
+        '正解': { reading: 'せいかい', en: 'correct!' },
+        'ざんねん': { reading: 'ざんねん', en: 'not quite' },
+        '惜しい': { reading: 'おしい', en: 'so close' },
+        '現在': { reading: 'げんざい', en: 'present' },
+        '過去': { reading: 'かこ', en: 'past' },
+        '惜': { reading: 'お', en: 'so close' },
+        '過去形': { reading: 'かこけい', en: 'past tense' },
+        '現在形': { reading: 'げんざいけい', en: 'present tense' },
+        '日付': { reading: 'ひづけ', en: 'date' },
+        '読み方': { reading: 'よみかた', en: 'reading' },
+        '不要': { reading: 'ふよう', en: 'not needed' },
         '今日': { reading: 'きょう', en: 'today' },
         '何日': { reading: 'なんにち', en: 'what day' },
         '何月': { reading: 'なんがつ', en: 'what month' },
@@ -5100,6 +5269,245 @@ function generateNewQuestion() {
       dojoHiraganaDict[dojoData.numbers[k]] = Number(k).toLocaleString();
     });
 
+    // =====================================================================
+    // Numbers, generated rather than listed.
+    //
+    // The old pool was 24 hard-coded round numbers — 100, 500, 10000 — which
+    // is both too small to stay interesting and too easy to be worth drilling.
+    // Nobody struggles with ひゃく. The difficulty is in the sound changes:
+    // 300 is さんびゃく not さんひゃく, 600 ろっぴゃく, 800 はっぴゃく,
+    // 3000 さんぜん, 8000 はっせん. Building the reading from the digits gives
+    // every number up to 99,999 with those rules applied exactly once, here.
+    // =====================================================================
+    // =====================================================================
+    // Question shapes.
+    //
+    // The old prompts trailed off — "100,000,000 は？" never says whether to
+    // read it, say it, or translate it. Every question now ends in one of four
+    // fixed patterns, so after a couple of questions you stop reading the
+    // wrapper and just answer.
+    // =====================================================================
+    function dojoAskRead(subject) {           // 〜は何と読みますか？
+      return subject + 'は何と読みますか？';
+    }
+    function dojoAskInJapanese(subject) {     // 〜は日本語で何ですか？
+      return subject + 'は日本語で何ですか？';
+    }
+    function dojoAskInEnglish(subject) {      // 〜は英語で何ですか？
+      return subject + 'は英語で何ですか？';
+    }
+
+    // =====================================================================
+    // Dates that carry their own premise.
+    //
+    // "5日後は何日ですか？" needs you to already know today's date, so it tests
+    // calendar arithmetic as much as Japanese — and the answer cannot be
+    // checked from the question alone. Stating the premise fixes both, and
+    // frees the premise from being today: any of the 366 possible dates works,
+    // which takes the pool from 14 questions to over ten thousand.
+    // =====================================================================
+    var DOJO_MONTH_EN = ['January','February','March','April','May','June',
+                         'July','August','September','October','November','December'];
+
+    function dojoDaysInMonth(year, month) {   // month is 1-12
+      // Day 0 of the next month is the last day of this one — which is also
+      // what keeps 2月30日 from ever being generated, and makes leap years
+      // fall out for free.
+      return new Date(year, month, 0).getDate();
+    }
+
+    // A random real date. The year matters only so February has the right
+    // length; it is never shown.
+    function dojoRandomDate() {
+      var year = 2028;                        // a leap year, so 2月29日 is reachable
+      var month = 1 + Math.floor(Math.random() * 12);
+      var day = 1 + Math.floor(Math.random() * dojoDaysInMonth(year, month));
+      return new Date(year, month - 1, day);
+    }
+
+    function dojoShiftDate(date, days) {
+      var d = new Date(date.getTime());
+      d.setDate(d.getDate() + days);          // rolls months and years correctly
+      return d;
+    }
+
+    function dojoPlural(n, word) { return n + ' ' + word + (n === 1 ? '' : 's'); }
+
+    function dojoOrdinal(n) {
+      if (n % 100 >= 11 && n % 100 <= 13) return 'th';
+      return ['th','st','nd','rd'][n % 10] || 'th';
+    }
+
+    function dojoDateJp(d) {
+      return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+    }
+    function dojoDateEn(d) {
+      return DOJO_MONTH_EN[d.getMonth()] + ' ' + d.getDate();
+    }
+
+    var DOJO_DIGITS = ['', 'いち', 'に', 'さん', 'よん', 'ご', 'ろく', 'なな', 'はち', 'きゅう'];
+    var DOJO_HUNDREDS = { 1:'ひゃく', 2:'にひゃく', 3:'さんびゃく', 4:'よんひゃく', 5:'ごひゃく',
+                          6:'ろっぴゃく', 7:'ななひゃく', 8:'はっぴゃく', 9:'きゅうひゃく' };
+    var DOJO_THOUSANDS = { 1:'せん', 2:'にせん', 3:'さんぜん', 4:'よんせん', 5:'ごせん',
+                           6:'ろくせん', 7:'ななせん', 8:'はっせん', 9:'きゅうせん' };
+
+    function dojoNumberToKana(n) {
+      n = Math.floor(Number(n) || 0);
+      if (n === 0) return 'ゼロ';
+      if (n < 0) return '';
+      var out = '';
+      var man = Math.floor(n / 10000);
+      if (man) { out += dojoUnder10000(man) + 'まん'; n -= man * 10000; }
+      out += dojoUnder10000(n);
+      return out;
+    }
+
+    function dojoUnder10000(n) {
+      var out = '';
+      var th = Math.floor(n / 1000); n %= 1000;
+      var hu = Math.floor(n / 100);  n %= 100;
+      var te = Math.floor(n / 10);   var on = n % 10;
+      if (th) out += DOJO_THOUSANDS[th];
+      if (hu) out += DOJO_HUNDREDS[hu];
+      // じゅう is bare at 10-19: 15 is じゅうご, never いちじゅうご.
+      if (te) out += (te === 1 ? '' : DOJO_DIGITS[te]) + 'じゅう';
+      if (on) out += DOJO_DIGITS[on];
+      return out;
+    }
+
+    // Counters: the counter's own irregular reading if it has one, otherwise
+    // the plain number plus the base.
+    function dojoCounterReading(n, mark) {
+      var c = dojoData.counters[mark];
+      if (!c) return '';
+      if (c.irr[n]) return c.irr[n];
+      if (n <= 10 && dojoData.plainCount[n]) return dojoData.plainCount[n] + c.base;
+      return dojoNumberToKana(n) + c.base;
+    }
+
+    function dojoTimeReading(h, m) {
+      var out = dojoData.hours[h] || '';
+      if (m === 0) return out;
+      var tens = Math.floor(m / 10), ones = m % 10;
+      // The 分 sound change is decided by the last digit group, so 30分 is
+      // さんじゅっぷん and 47分 is よんじゅうななふん.
+      if (m <= 10) return out + dojoData.minuteUnits[m];
+      // A round ten always takes じゅっぷん: 20分 にじゅっぷん, 30分 さんじゅっぷん.
+      if (ones === 0) return out + (tens === 1 ? '' : DOJO_DIGITS[tens]) + 'じゅっぷん';
+      out += (tens === 1 ? 'じゅう' : DOJO_DIGITS[tens] + 'じゅう');
+      return out + dojoData.minuteUnits[ones];
+    }
+
+    // =====================================================================
+    // Scope and weak spots.
+    //
+    // Fifteen question types shuffled at random is a slot machine, not a dojo:
+    // you cannot repeat the thing you are bad at, which is the only reason to
+    // practise. Scopes group the types into things a learner would actually
+    // choose between, and weak spots re-serve what you have missed.
+    // =====================================================================
+    // Three topics, not ten. The previous version listed every question type as
+    // its own chip, which is the same failure the page already had — a wall of
+    // choices nobody reads — just moved into a nicer box.
+    //
+    // English-answer questions are deliberately NOT a chip. If you can see one
+    // coming you stop reading the question, and reading the question is the
+    // whole point of giving every question a fixed shape. They are mixed into
+    // the topic they belong to and arrive unannounced.
+    var DOJO_SCOPES = {
+      datetime: ['currentDate', 'currentMonth', 'currentWeekday',
+                 'futureDate', 'pastDate', 'futureWeekday', 'pastWeekday',
+                 'relativeDay', 'dateFromJapanese', 'dateReading',
+                 'weekdayReading', 'weekdayName', 'weekdayNameFull',
+                 'timeReading',
+                 'dateToEnglish', 'weekdayToEnglish'],
+      counters: ['counterReading'],
+      numbers:  ['bigNumber', 'number', 'numberReading',
+                 'calendarYear', 'yearDuration', 'eraYear']
+    };
+    var DOJO_SCOPE_KEY = 'ka_dojo_scopes';
+    var DOJO_WEAK_KEY  = 'ka_dojo_weak';
+
+    var dojoScopes = { datetime: true, counters: true, numbers: true };
+    var dojoWeakOnly = true;     // the default; falls back gracefully when empty
+    var dojoWeak = {};           // uniqueKey -> { misses, q, due }
+    var dojoAsked = 0;
+
+    function dojoLoadPrefs() {
+      try {
+        var raw = localStorage.getItem(DOJO_SCOPE_KEY);
+        if (raw) {
+          var p = JSON.parse(raw);
+          if (p && p.scopes) dojoScopes = p.scopes;
+          if (typeof p.weakOnly === 'boolean') dojoWeakOnly = p.weakOnly;
+        }
+        var w = localStorage.getItem(DOJO_WEAK_KEY);
+        if (w) dojoWeak = JSON.parse(w) || {};
+      } catch (e) { /* private mode, cleared storage — defaults are fine */ }
+    }
+
+    function dojoSavePrefs() {
+      try {
+        localStorage.setItem(DOJO_SCOPE_KEY,
+          JSON.stringify({ scopes: dojoScopes, weakOnly: dojoWeakOnly }));
+        localStorage.setItem(DOJO_WEAK_KEY, JSON.stringify(dojoWeak));
+      } catch (e) {}
+    }
+
+    // The types allowed by the current chip selection. Never returns empty:
+    // deselecting everything would leave the page with nothing to ask.
+    function dojoActiveTypes() {
+      var out = [];
+      Object.keys(DOJO_SCOPES).forEach(function (scope) {
+        if (dojoScopes[scope]) out = out.concat(DOJO_SCOPES[scope]);
+      });
+      out = out.filter(function (t) { return !!dojoData.questionTypes[t]; });
+      return out.length ? out : Object.keys(dojoData.questionTypes);
+    }
+
+    function dojoWeakList() {
+      var active = dojoActiveTypes();
+      return Object.keys(dojoWeak).filter(function (k) {
+        var e = dojoWeak[k];
+        return e && e.q && active.indexOf(e.q.type) !== -1 && dojoAsked >= (e.due || 0);
+      });
+    }
+
+    // Missed items come back within a few questions rather than being filed in
+    // a list nobody opens. Three clean answers and it leaves.
+    function dojoMarkWrong(q) {
+      if (!q || !q.uniqueKey) return;
+      var e = dojoWeak[q.uniqueKey] || { misses: 0, streak: 0 };
+      e.misses += 1;
+      e.streak = 0;
+      // Keep the whole question, not a hand-picked subset. The subset was a
+      // standing bug: every field added later was silently dropped on the way
+      // back out, so a re-served counter lost its spoken sentence and a
+      // re-served English question lost answerLang and was then marked against
+      // the Japanese reading. Every field on a question is a string or a
+      // boolean, so this survives localStorage intact.
+      e.q = {};
+      Object.keys(q).forEach(function (k) { if (k !== 'fromWeak') e.q[k] = q[k]; });
+      e.due = dojoAsked + 2 + Math.floor(Math.random() * 3);
+      dojoWeak[q.uniqueKey] = e;
+      dojoSavePrefs();
+    }
+
+    function dojoMarkRight(q) {
+      if (!q || !q.uniqueKey) return false;
+      var e = dojoWeak[q.uniqueKey];
+      if (!e) return false;
+      e.streak = (e.streak || 0) + 1;
+      if (e.streak >= 3) { delete dojoWeak[q.uniqueKey]; dojoSavePrefs(); return true; }
+      e.due = dojoAsked + 3 + Math.floor(Math.random() * 4);
+      dojoSavePrefs();
+      return false;
+    }
+
+    function dojoWeakCount() {
+      return Object.keys(dojoWeak).length;
+    }
+
     var dojoQuestion = null;
     var dojoScore = { correct: 0, total: 0 };
     var dojoStreak = 0;
@@ -5110,6 +5518,19 @@ function generateNewQuestion() {
     var dojoTypeHistory = []; // Track recent question types for better variety
     var dojoMaxHistory = 5; // Remember last 5 questions
     var dojoMaxTypeHistory = 3; // Don't repeat same type within 3 questions
+
+    function dojoEscape(str) {
+      return String(str == null ? '' : str)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Verdict and hint text gets the same hoverable treatment as the question.
+    // Without it, the green box under the answer box was the one place on the
+    // page where kanji were unreadable with no way to check them.
+    function dojoTip(text) {
+      return parseKanjiText(dojoEscape(text));
+    }
 
     function parseKanjiText(text) {
       var result = '';
@@ -5136,23 +5557,184 @@ function generateNewQuestion() {
       return result;
     }
 
+    // =====================================================================
+    // Rōmaji → kana in the answer box.
+    //
+    // This page never loaded romaji.js at all, so answering required a real
+    // Japanese IME — while every other drill on the site converts as you type.
+    // Same behaviour and same あ toggle as the Conjugator and Talk, including
+    // the composition self-heal that stops a stranded IME flag killing it.
+    // =====================================================================
+    var dojoRomajiOn = true;
+    var dojoEnglishMode = false;   // set per question; overrides the toggle
+    var DOJO_ROMAJI_KEY = 'ka_dojo_romaji';
+
+    // The converter runs only when the learner wants it AND the question is
+    // asking for Japanese.
+    function dojoConverting() { return dojoRomajiOn && !dojoEnglishMode; }
+
+    function toggleDojoRomaji() {
+      if (dojoEnglishMode) return;   // nothing to toggle on an English answer
+      dojoRomajiOn = !dojoRomajiOn;
+      try { localStorage.setItem(DOJO_ROMAJI_KEY, dojoRomajiOn ? '1' : '0'); } catch (e) {}
+      paintDojoRomajiToggle();
+      var input = document.getElementById('dojo-answer-input');
+      if (input) input.focus();
+    }
+
+    function paintDojoRomajiToggle() {
+      var btn = document.getElementById('dojo-kana-toggle');
+      if (!btn) return;
+      var on = dojoConverting();
+      btn.classList.toggle('off', !on);
+      btn.disabled = dojoEnglishMode;
+      btn.title = dojoEnglishMode ? 'This answer is in English'
+                : on ? 'Rōmaji → kana is on' : 'Rōmaji → kana is off';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+
+    var dojoKana = null;
+
+    function wireDojoRomaji() {
+      var input = document.getElementById('dojo-answer-input');
+      if (!input || !window.KA_toKana) return;
+      try {
+        var saved = localStorage.getItem(DOJO_ROMAJI_KEY);
+        if (saved !== null) dojoRomajiOn = saved === '1';
+      } catch (e) {}
+      paintDojoRomajiToggle();
+
+      // Caret-aware conversion, IME self-heal, the idle-ん commit and the
+      // commit on blur all live in the shared helper now — see attachKanaInput.
+      dojoKana = attachKanaInput(input, { enabled: dojoConverting });
+    }
+
+    // Commit a half-typed syllable before checking — "youka" with a pending
+    // "ka" should be ようか when you press Enter, not ようka.
+    function dojoCommitRomaji() {
+      if (dojoKana) dojoKana.flush();
+    }
+
+    // ---- scope chips ----------------------------------------------------
+    var DOJO_SCOPE_LABELS = [
+      { key: 'weak',     i18n: 'dojo_scope_weak',     en: '\u25ce Weak spots', weak: true },
+      { key: 'datetime', i18n: 'dojo_scope_datetime', en: 'Dates & time' },
+      { key: 'counters', i18n: 'dojo_scope_counters', en: 'Counters' },
+      { key: 'numbers',  i18n: 'dojo_scope_numbers',  en: 'Numbers & years' }
+    ];
+
+    function buildDojoScopeChips() {
+      var wrap = document.getElementById('dojo-scope-chips');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      DOJO_SCOPE_LABELS.forEach(function (sc) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'dojo-chip' + (sc.weak ? ' weak' : '');
+        b.dataset.scope = sc.key;
+        b.textContent = ct(sc.i18n, sc.en);
+        b.addEventListener('click', function () {
+          if (sc.weak) dojoWeakOnly = !dojoWeakOnly;
+          else dojoScopes[sc.key] = !dojoScopes[sc.key];
+          dojoSavePrefs();
+          paintDojoScopeChips();
+          generateDojoQuestion();
+        });
+        wrap.appendChild(b);
+      });
+      paintDojoScopeChips();
+    }
+
+    function paintDojoScopeChips() {
+      var wrap = document.getElementById('dojo-scope-chips');
+      if (!wrap) return;
+      Array.prototype.forEach.call(wrap.querySelectorAll('.dojo-chip'), function (b) {
+        var k = b.dataset.scope;
+        b.classList.toggle('on', k === 'weak' ? dojoWeakOnly : !!dojoScopes[k]);
+      });
+      var sub = document.getElementById('dojo-scope-sub');
+      if (!sub) return;
+      var picked = Object.keys(DOJO_SCOPES).filter(function (k) { return dojoScopes[k]; }).length;
+      var weak = dojoWeakCount();
+      // Honest about the empty state: on a first visit there is nothing to
+      // re-serve, and saying so beats a chip that silently does nothing.
+      var weakTxt = weak
+        ? weak + ' ' + ct('dojo_weak_tracked', 'weak spots tracked')
+        : ct('dojo_weak_none', 'no weak spots yet — they appear as you miss things');
+      sub.textContent = picked + ' ' + ct('dojo_selected', 'selected') + ' \u00b7 ' + weakTxt;
+    }
+
+    var dojoExtrasReady = false;
+    function initDojoExtras() {
+      if (dojoExtrasReady) return;
+      dojoExtrasReady = true;
+
+      // Showing a verdict disables the answer box, so a keypress handler bound
+      // to that field stops firing exactly when you want Enter to mean "next".
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.metaKey) return;
+        if (!document.getElementById('dojo-answer-input')) return;
+        var tag = (e.target && e.target.tagName || '').toLowerCase();
+        if (tag === 'textarea' || (tag === 'input' && e.target.id !== 'dojo-answer-input')) return;
+        var nextRow = document.getElementById('dojo-next-btn-row');
+        if (nextRow && nextRow.style.display !== 'none') { e.preventDefault(); generateDojoQuestion(); }
+      });
+
+      dojoLoadPrefs();
+      buildDojoScopeChips();
+      wireDojoRomaji();
+      // The voice list arrives after first paint, so repaint the speaker once
+      // we actually know whether anything can speak.
+      if (window.KA_Speech) window.KA_Speech.onReady(paintDojoQuestionExtras);
+      if (window.KA_Azure && window.KA_Azure.listVoices) {
+        window.KA_Azure.listVoices().then(paintDojoQuestionExtras).catch(function () {});
+      }
+    }
+
     function generateDojoQuestion() {
-      var types = Object.keys(dojoData.questionTypes);
+      dojoAsked++;
+
+      // A due weak spot outranks a fresh question — that is the point of
+      // tracking them. Roughly every third question when any are due, so the
+      // session still moves forward instead of grinding on the same six items.
+      var due = dojoWeakList();
+      if (due.length && (dojoWeakOnly ? Math.random() < 0.7 : Math.random() < 0.35)) {
+        var pick = dojoWeak[due[Math.floor(Math.random() * due.length)]];
+        if (pick && pick.q) {
+          var revived = {};
+          Object.keys(pick.q).forEach(function (k) { revived[k] = pick.q[k]; });
+          revived.fromWeak = true;
+          dojoQuestion = revived;
+          dojoShowHint = false;
+          dojoPartialFeedback = null;
+          renderDojoQuestion();
+          return;
+        }
+      }
+
+      var types = dojoActiveTypes();
       var today = new Date();
       var q = null;
       var attempts = 0;
       var maxAttempts = 30;
-      
+
       // Keep trying until we get a unique question with good variety
       while (attempts < maxAttempts) {
         attempts++;
         var type = types[Math.floor(Math.random() * types.length)];
-        
+
         // Skip if this type was used recently (for better variety)
         if (dojoTypeHistory.indexOf(type) !== -1 && attempts < maxAttempts - 5) {
           continue;
         }
-        
+        // "Today's date" and friends give the same answer all day, so they are
+        // a fine opener and a poor drill item. Weighted down, not removed.
+        if (attempts < 12 &&
+            ['currentDate', 'currentMonth', 'currentWeekday'].indexOf(type) !== -1 &&
+            Math.random() < 0.75) {
+          continue;
+        }
+
         q = { type: type, requiresFullSentence: true };
 
         switch (type) {
@@ -5184,74 +5766,92 @@ function generateNewQuestion() {
             q.hint = 'Today is ' + dojoData.weekdays[weekday].en + ' — Answer with です';
             q.uniqueKey = 'currentWeekday';
             break;
-          case 'futureDate':
+          case 'futureDate': {
+            // The premise is stated, so the question is self-contained and the
+            // answer is checkable from what is on screen. It also no longer has
+            // to be today, which is what turns 14 possible questions into
+            // 366 premises x 14 offsets.
+            var base = dojoRandomDate();
             var daysAhead = Math.floor(Math.random() * 14) + 1;
-            var futureDate = new Date(today);
-            futureDate.setDate(today.getDate() + daysAhead);
-            var day = futureDate.getDate();
-            q.prompt = daysAhead + '日後は何日ですか？';
-            q.promptEn = 'What date will it be in ' + daysAhead + ' days?';
+            var target = dojoShiftDate(base, daysAhead);
+            var day = target.getDate();
+            q.prompt = '今日は' + dojoDateJp(base) + 'です。' + daysAhead + '日後は何日ですか？';
+            q.promptEn = 'Today is ' + dojoDateEn(base) + '. What date is it in ' + dojoPlural(daysAhead, 'day') + '?';
             q.coreAnswer = dojoData.dates[day];
             q.fullAnswer = dojoData.dates[day] + 'です';
-            q.hint = 'It will be the ' + day + (day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th') + ' — Answer with です';
-            q.uniqueKey = 'futureDate_' + daysAhead;
+            q.hint = 'It lands on the ' + day + dojoOrdinal(day) + ' \u2014 answer with です';
+            // The key carries the premise, so a stored weak spot keeps the same
+            // answer tomorrow. 'futureDate_5' would not.
+            q.uniqueKey = 'futureDate_' + dojoDateJp(base) + '_+' + daysAhead;
             break;
-          case 'pastDate':
+          }
+          case 'pastDate': {
+            var base = dojoRandomDate();
             var daysAgo = Math.floor(Math.random() * 14) + 1;
-            var pastDate = new Date(today);
-            pastDate.setDate(today.getDate() - daysAgo);
-            var day = pastDate.getDate();
-            q.prompt = daysAgo + '日前は何日でしたか？';
-            q.promptEn = 'What date was it ' + daysAgo + ' days ago?';
+            var target = dojoShiftDate(base, -daysAgo);
+            var day = target.getDate();
+            q.prompt = '今日は' + dojoDateJp(base) + 'です。' + daysAgo + '日前は何日でしたか？';
+            q.promptEn = 'Today is ' + dojoDateEn(base) + '. What date was it ' + dojoPlural(daysAgo, 'day') + ' ago?';
             q.coreAnswer = dojoData.dates[day];
             q.fullAnswer = dojoData.dates[day] + 'でした';
-            q.hint = 'It was the ' + day + (day === 1 ? 'st' : day === 2 ? 'nd' : day === 3 ? 'rd' : 'th') + ' — Answer with でした (past)';
-            q.uniqueKey = 'pastDate_' + daysAgo;
+            q.hint = 'It was the ' + day + dojoOrdinal(day) + ' \u2014 answer with でした (past)';
+            q.uniqueKey = 'pastDate_' + dojoDateJp(base) + '_-' + daysAgo;
             break;
-          case 'futureWeekday':
+          }
+          case 'futureWeekday': {
+            var base = dojoRandomDate();
             var daysAhead = Math.floor(Math.random() * 7) + 1;
-            var futureDate = new Date(today);
-            futureDate.setDate(today.getDate() + daysAhead);
+            var futureDate = dojoShiftDate(base, daysAhead);
             var weekday = futureDate.getDay();
-            q.prompt = daysAhead + '日後は何曜日ですか？';
-            q.promptEn = 'What day will it be in ' + daysAhead + ' days?';
+            // The premise names the weekday, not the date — counting forward
+            // from "Tuesday" is the skill; counting from a calendar date is
+            // arithmetic.
+            q.prompt = '今日は' + dojoData.weekdays[base.getDay()].kanji + 'です。' +
+                       daysAhead + '日後は何曜日ですか？';
+            q.promptEn = 'Today is ' + dojoData.weekdays[base.getDay()].en +
+                         '. What day will it be in ' + dojoPlural(daysAhead, 'day') + '?';
             q.coreAnswer = dojoData.weekdays[weekday].jp;
             q.fullAnswer = dojoData.weekdays[weekday].jp + 'です';
             q.kanjiAnswer = dojoData.weekdays[weekday].kanji + 'です';
-            q.hint = 'It will be ' + dojoData.weekdays[weekday].en + ' — Answer with です';
-            q.uniqueKey = 'futureWeekday_' + daysAhead;
+            q.hint = 'It will be ' + dojoData.weekdays[weekday].en + ' \u2014 answer with です';
+            q.uniqueKey = 'futureWeekday_' + base.getDay() + '_+' + daysAhead;
             break;
-          case 'pastWeekday':
+          }
+          case 'pastWeekday': {
+            var base = dojoRandomDate();
             var daysAgo = Math.floor(Math.random() * 7) + 1;
-            var pastDate = new Date(today);
-            pastDate.setDate(today.getDate() - daysAgo);
+            var pastDate = dojoShiftDate(base, -daysAgo);
             var weekday = pastDate.getDay();
-            q.prompt = daysAgo + '日前は何曜日でしたか？';
-            q.promptEn = 'What day was it ' + daysAgo + ' days ago?';
+            q.prompt = '今日は' + dojoData.weekdays[base.getDay()].kanji + 'です。' +
+                       daysAgo + '日前は何曜日でしたか？';
+            q.promptEn = 'Today is ' + dojoData.weekdays[base.getDay()].en +
+                         '. What day was it ' + dojoPlural(daysAgo, 'day') + ' ago?';
             q.coreAnswer = dojoData.weekdays[weekday].jp;
             q.fullAnswer = dojoData.weekdays[weekday].jp + 'でした';
             q.kanjiAnswer = dojoData.weekdays[weekday].kanji + 'でした';
-            q.hint = 'It was ' + dojoData.weekdays[weekday].en + ' — Answer with でした (past)';
-            q.uniqueKey = 'pastWeekday_' + daysAgo;
+            q.hint = 'It was ' + dojoData.weekdays[weekday].en + ' \u2014 answer with でした (past)';
+            q.uniqueKey = 'pastWeekday_' + base.getDay() + '_-' + daysAgo;
             break;
-          case 'relativeDay':
+          }
+          case 'relativeDay': {
+            var base = dojoRandomDate();
             var offsets = Object.keys(dojoData.relative).map(Number);
             var offset = offsets[Math.floor(Math.random() * offsets.length)];
-            var targetDate = new Date(today);
-            targetDate.setDate(today.getDate() + offset);
+            var targetDate = dojoShiftDate(base, offset);
             var day = targetDate.getDate();
             var relativeTerm = dojoData.relative[offset.toString()];
-            q.prompt = '「' + relativeTerm + '」は何日ですか？';
-            q.promptEn = 'What date is "' + relativeTerm + '"?';
+            q.prompt = '今日は' + dojoDateJp(base) + 'です。「' + relativeTerm + '」は何日ですか？';
+            q.promptEn = 'Today is ' + dojoDateEn(base) + '. What date is "' + relativeTerm + '"?';
             q.coreAnswer = dojoData.dates[day];
             q.fullAnswer = dojoData.dates[day] + 'です';
-            q.hint = relativeTerm + ' = ' + relativeLabels[offset.toString()] + ' — Answer with です';
-            q.uniqueKey = 'relativeDay_' + offset;
+            q.hint = relativeTerm + ' = ' + relativeLabels[offset.toString()] + ' \u2014 answer with です';
+            q.uniqueKey = 'relativeDay_' + dojoDateJp(base) + '_' + offset;
             break;
+          }
           case 'number':
             var numbers = Object.keys(dojoData.numbers).map(Number);
             var num = numbers[Math.floor(Math.random() * numbers.length)];
-            q.prompt = num.toLocaleString() + ' は？';
+            q.prompt = dojoAskInJapanese(num.toLocaleString());
             q.promptEn = 'How do you say ' + num.toLocaleString() + '?';
             q.coreAnswer = dojoData.numbers[num];
             q.fullAnswer = dojoData.numbers[num] + 'です';
@@ -5263,7 +5863,7 @@ function generateNewQuestion() {
             var entry = dates[Math.floor(Math.random() * dates.length)];
             var day = entry[0];
             var reading = entry[1];
-            q.prompt = '「' + reading + '」は何日？';
+            q.prompt = dojoAskInJapanese('「' + reading + '」') ;
             q.promptEn = 'What number date is "' + reading + '"?';
             q.coreAnswer = day + '日';
             q.fullAnswer = day + '日です';
@@ -5274,7 +5874,7 @@ function generateNewQuestion() {
           // NEW: Reading-only questions (no です required)
           case 'dateReading':
             var day = Math.floor(Math.random() * 10) + 1; // 1-10 for special readings
-            q.prompt = day + '日の読み方は？';
+            q.prompt = dojoAskRead(day + '日');
             q.promptEn = 'How do you read ' + day + '日?';
             q.coreAnswer = dojoData.dates[day];
             q.fullAnswer = dojoData.dates[day]; // No です needed
@@ -5285,7 +5885,7 @@ function generateNewQuestion() {
           case 'weekdayReading':
             var weekday = Math.floor(Math.random() * 7);
             var dayKanji = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'][weekday];
-            q.prompt = '「' + dayKanji + '」の読み方は？';
+            q.prompt = dojoAskRead('「' + dayKanji + '」');
             q.promptEn = 'How do you read "' + dayKanji + '"?';
             q.coreAnswer = dojoData.weekdays[weekday].jp;
             q.fullAnswer = dojoData.weekdays[weekday].jp; // No です needed
@@ -5296,7 +5896,7 @@ function generateNewQuestion() {
           case 'numberReading':
             var numbers = Object.keys(dojoData.numbers).map(Number);
             var num = numbers[Math.floor(Math.random() * numbers.length)];
-            q.prompt = num.toLocaleString() + ' の読み方は？';
+            q.prompt = dojoAskRead(num.toLocaleString());
             q.promptEn = 'How do you read ' + num.toLocaleString() + '?';
             q.coreAnswer = dojoData.numbers[num];
             q.fullAnswer = dojoData.numbers[num]; // No です needed
@@ -5309,7 +5909,7 @@ function generateNewQuestion() {
           case 'weekdayName':
             var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             var weekday = Math.floor(Math.random() * 7);
-            q.prompt = dayNames[weekday] + ' は日本語で何？';
+            q.prompt = dojoAskInJapanese(dayNames[weekday]);
             q.promptEn = 'What is ' + dayNames[weekday] + ' in Japanese?';
             // Accept short form (にち, げつ, etc.) or full form
             q.coreAnswer = dojoData.weekdays[weekday].short;
@@ -5322,7 +5922,7 @@ function generateNewQuestion() {
           case 'weekdayNameFull':
             var dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             var weekday = Math.floor(Math.random() * 7);
-            q.prompt = dayNames[weekday] + ' は日本語で何ようび？';
+            q.prompt = dojoAskInJapanese(dayNames[weekday]);
             q.promptEn = 'What is ' + dayNames[weekday] + ' in Japanese? (include ようび)';
             q.coreAnswer = dojoData.weekdays[weekday].jp;
             q.fullAnswer = dojoData.weekdays[weekday].jp;
@@ -5330,6 +5930,156 @@ function generateNewQuestion() {
             q.uniqueKey = 'weekdayNameFull_' + weekday;
             q.requiresFullSentence = false;
             break;
+
+          // ---- the three new types ----------------------------------------
+          case 'timeReading':
+            var h = 1 + Math.floor(Math.random() * 12);
+            var mn = Math.floor(Math.random() * 60);
+            q.prompt = dojoAskRead(h + '時' + (mn ? mn + '分' : ''));
+            q.promptEn = 'How do you read ' + h + ':' + (mn < 10 ? '0' : '') + mn + '?';
+            q.coreAnswer = dojoTimeReading(h, mn);
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = q.coreAnswer;
+            q.answerSpeech = q.coreAnswer + 'です';
+            q.hint = (h === 4 ? '4時 is よじ, never しじ. ' : h === 7 ? '7時 is しちじ. ' : h === 9 ? '9時 is くじ. ' : '') +
+                     (mn ? '分 is ふん or ぷん depending on the sound before it.' : 'Just the hour.');
+            q.uniqueKey = 'time_' + h + '_' + mn;
+            q.requiresFullSentence = false;
+            q.irregular = (h === 4 || h === 7 || h === 9 ||
+                           [1, 3, 4, 6, 8, 10].indexOf(mn % 10 || 10) !== -1);
+            break;
+
+          case 'counterReading':
+            var marks = Object.keys(dojoData.counters);
+            var mark = marks[Math.floor(Math.random() * marks.length)];
+            var cinfo = dojoData.counters[mark];
+            // Weight the low numbers, because that is where every sound change
+            // lives — 17本 is regular and teaches nothing.
+            var cn = Math.random() < 0.75
+              ? 1 + Math.floor(Math.random() * 10)
+              : 11 + Math.floor(Math.random() * 20);
+            q.prompt = cinfo.example + 'が' + cn + mark + (cinfo.animate ? 'います' : 'あります') +
+                       '。' + dojoAskRead('「' + cn + mark + '」');
+            q.promptEn = 'How do you read ' + cn + mark + ' (' + cinfo.en + ')?';
+            q.coreAnswer = dojoCounterReading(cn, mark);
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = q.coreAnswer;
+            // Hearing the counter alone teaches half of it — さんぼん means
+            // little until you hear えんぴつがさんぼんあります. The verdict
+            // speaker says the whole sentence; the answer stays just the
+            // counter, because that is what you were asked for.
+            q.answerSpeech = cinfo.exampleKana + 'が' + dojoCounterReading(cn, mark) +
+                             (cinfo.animate ? 'います' : 'あります');
+            q.hint = mark + ' counts ' + cinfo.en + ' — base reading ' + cinfo.base +
+                     (cinfo.irr[cn] ? '. This one is irregular.' : '.');
+            q.uniqueKey = 'counter_' + mark + '_' + cn;
+            q.requiresFullSentence = false;
+            q.irregular = !!cinfo.irr[cn];
+            break;
+
+          case 'bigNumber':
+            // Bias toward numbers that exercise a sound change rather than
+            // uniformly across 1-99999, most of which are mechanical.
+            var bn;
+            var roll = Math.random();
+            if (roll < 0.3)      bn = [300, 600, 800, 3000, 8000][Math.floor(Math.random() * 5)];
+            else if (roll < 0.6) bn = 101 + Math.floor(Math.random() * 899);
+            else if (roll < 0.85) bn = 1001 + Math.floor(Math.random() * 8999);
+            else                 bn = 10001 + Math.floor(Math.random() * 89999);
+            q.prompt = dojoAskRead(bn.toLocaleString());
+            q.promptEn = 'How do you read ' + bn.toLocaleString() + '?';
+            q.coreAnswer = dojoNumberToKana(bn);
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = q.coreAnswer;
+            q.hint = '300 さんびゃく · 600 ろっぴゃく · 800 はっぴゃく · 3000 さんぜん · 8000 はっせん';
+            q.uniqueKey = 'bignum_' + bn;
+            q.requiresFullSentence = false;
+            q.irregular = [3, 6, 8].indexOf(Math.floor(bn / 100) % 10) !== -1 ||
+                          [3, 8].indexOf(Math.floor(bn / 1000) % 10) !== -1;
+            break;
+
+          // ---- years -------------------------------------------------------
+          case 'calendarYear': {
+            // Free: calendar years are perfectly regular, so the number engine
+            // already knows them. 2000年 is にせんねん, not にせんゼロねん.
+            var cy = 1900 + Math.floor(Math.random() * 136);
+            q.prompt = dojoAskRead(cy + '年');
+            q.promptEn = 'How do you read the year ' + cy + '?';
+            q.coreAnswer = dojoNumberToKana(cy) + 'ねん';
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = q.coreAnswer;
+            q.hint = 'Read the number, then ねん. Calendar years take no irregulars.';
+            q.uniqueKey = 'calYear_' + cy;
+            q.requiresFullSentence = false;
+            break;
+          }
+
+          case 'yearDuration': {
+            // Durations are a counter, and they do have irregulars: よねん not
+            // しねん, きゅうねん not くねん.
+            var yd = Math.random() < 0.7
+              ? 1 + Math.floor(Math.random() * 10)
+              : 11 + Math.floor(Math.random() * 20);
+            q.prompt = '日本語を' + yd + '年勉強しました。「' + yd + '年」は何と読みますか？';
+            q.promptEn = 'I studied Japanese for ' + dojoPlural(yd, 'year') + '. How do you read ' + yd + '年?';
+            q.coreAnswer = dojoData.yearCount[yd] || (dojoNumberToKana(yd) + 'ねん');
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = q.coreAnswer;
+            q.altAnswer = (yd === 7) ? 'しちねん' : null;   // 7年 goes both ways
+            q.hint = 'Watch 4年 (よねん) and 9年 (きゅうねん).';
+            q.uniqueKey = 'yearDur_' + yd;
+            q.requiresFullSentence = false;
+            q.irregular = [4, 7, 9].indexOf(yd) !== -1;
+            break;
+          }
+
+          case 'eraYear': {
+            var era = dojoData.eras[Math.floor(Math.random() * dojoData.eras.length)];
+            var wy = era.from + Math.floor(Math.random() * (era.to - era.from + 1));
+            var en = wy - era.offset;
+            // Year 1 of an era is 元年 — がんねん — never 一年.
+            var eraJp = era.jp + (en === 1 ? '元年' : en + '年');
+            q.prompt = dojoAskInJapanese(wy + '年');
+            q.promptEn = 'What is ' + wy + ' in the Japanese era calendar?';
+            q.coreAnswer = eraJp;
+            q.fullAnswer = eraJp;
+            q.speakText = era.jp + (en === 1 ? 'がんねん' : dojoNumberToKana(en) + 'ねん');
+            q.hint = era.jp + ' (' + era.en + ') = Western year \u2212 ' + era.offset + '.';
+            q.uniqueKey = 'era_' + wy;
+            q.requiresFullSentence = false;
+            break;
+          }
+
+          // ---- answer in English ------------------------------------------
+          case 'dateToEnglish': {
+            var ed = 1 + Math.floor(Math.random() * 31);
+            q.prompt = dojoAskInEnglish('「' + dojoData.dates[ed] + '」');
+            q.promptEn = 'What is ' + dojoData.dates[ed] + ' in English?';
+            q.coreAnswer = ed + dojoOrdinal(ed);
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = dojoData.dates[ed];
+            q.answerLang = 'en';
+            q.altAnswer = String(ed);
+            q.hint = 'Which day of the month is it?';
+            q.uniqueKey = 'dateEn_' + ed;
+            q.requiresFullSentence = false;
+            q.irregular = dojoData.irregularDates.indexOf(ed) !== -1;
+            break;
+          }
+
+          case 'weekdayToEnglish': {
+            var ew = Math.floor(Math.random() * 7);
+            q.prompt = dojoAskInEnglish('「' + dojoData.weekdays[ew].jp + '」');
+            q.promptEn = 'What is ' + dojoData.weekdays[ew].jp + ' in English?';
+            q.coreAnswer = dojoData.weekdays[ew].en;
+            q.fullAnswer = q.coreAnswer;
+            q.speakText = dojoData.weekdays[ew].jp;
+            q.answerLang = 'en';
+            q.hint = 'The ' + dojoData.weekdays[ew].short + ' in ' + dojoData.weekdays[ew].jp + ' is the clue.';
+            q.uniqueKey = 'weekdayEn_' + ew;
+            q.requiresFullSentence = false;
+            break;
+          }
         }
         
         // Check if this question was asked recently
@@ -5356,8 +6106,14 @@ function generateNewQuestion() {
       dojoQuestion = q;
       dojoShowHint = false;
       dojoPartialFeedback = null;
-      
-      // Update UI
+      renderDojoQuestion();
+    }
+
+    // Split out of the generator so a revived weak spot renders through exactly
+    // the same path as a fresh question — two drawing routines would drift.
+    function renderDojoQuestion() {
+      var q = dojoQuestion;
+      if (!q) return;
       var typeInfo = dojoData.questionTypes[q.type];
       document.getElementById('dojo-question-type').innerHTML = parseKanjiText(typeInfo.jp);
       document.getElementById('dojo-question-type').title = typeInfo.en;
@@ -5369,10 +6125,26 @@ function generateNewQuestion() {
       
       // Update input hint based on whether full sentence is required
       var hintEl = document.getElementById('dojo-input-hint');
-      if (q.requiresFullSentence === false) {
-        hintEl.textContent = '読み方だけでOK！（です不要）';
+      var wantsEnglish = q.answerLang === 'en';
+      if (wantsEnglish) {
+        hintEl.innerHTML = dojoTip(ct('dojo_answer_en', 'Answer in English'));
+      } else if (q.requiresFullSentence === false) {
+        hintEl.innerHTML = dojoTip('読み方だけでOK！（です不要）');
       } else {
-        hintEl.textContent = 'フルセンテンスで答えてね！（〜です / 〜でした）';
+        hintEl.innerHTML = dojoTip('フルセンテンスで答えてね！（〜です / 〜でした）');
+      }
+      // Typing kana into an English answer is pure friction, so the converter
+      // switches itself off rather than making people notice and toggle it.
+      dojoEnglishMode = wantsEnglish;
+      paintDojoRomajiToggle();
+      var inputEl = document.getElementById('dojo-answer-input');
+      if (inputEl) {
+        inputEl.classList.toggle('en-mode', wantsEnglish);
+        // A Japanese placeholder over an English answer box is a small lie
+        // about what the field wants.
+        inputEl.placeholder = wantsEnglish
+          ? ct('dojo_type_en', 'Type your answer…')
+          : '答えを入力...';
       }
       
       document.getElementById('dojo-hint-box').style.display = 'none';
@@ -5382,25 +6154,158 @@ function generateNewQuestion() {
       document.getElementById('dojo-partial-feedback').style.display = 'none';
       document.getElementById('dojo-btn-row').style.display = 'flex';
       document.getElementById('dojo-next-btn-row').style.display = 'none';
+      paintDojoQuestionExtras();
+    }
+
+    // Listen on the question, and a badge when this one came back because you
+    // missed it — otherwise a repeat just looks like the generator glitching.
+    function paintDojoQuestionExtras() {
+      var q = dojoQuestion;
+      var spk = document.getElementById('dojo-speak');
+      if (spk) {
+        var canSpeak = !!(window.KA_Listen && window.KA_Listen.available()) && !!dojoSpeakText(q);
+        spk.style.display = canSpeak ? '' : 'none';
+        spk.classList.remove('playing');
+      }
+      var badge = document.getElementById('dojo-weak-badge');
+      if (badge) badge.style.display = (q && q.fromWeak) ? '' : 'none';
+    }
+
+    // The speaker on the QUESTION reads the question, because a counter in
+    // context is the thing being learned — hearing only the answer skips the
+    // sentence it lives in. The speaker on the VERDICT reads just the answer.
+    //
+    // The prompt is written for the eye, so strip what would be read wrong:
+    // the quoting brackets, and the digits that have a kana reading beside
+    // them already.
+    function dojoQuestionSpeech(q) {
+      if (!q || !q.prompt) return '';
+      return String(q.prompt)
+        .replace(/[「」]/g, '')
+        .replace(/,/g, '')
+        .trim();
+    }
+
+    // What the verdict speaker says: the answer as it would actually be spoken,
+    // which for a counter means the sentence it lives in rather than the bare
+    // word. Falls back through the full answer to the core one.
+    function dojoSpeakText(q) {
+      if (!q) return '';
+      return q.answerSpeech || q.fullAnswer || q.speakText || q.coreAnswer || '';
+    }
+
+    function speakDojoQuestion() {
+      var text = dojoQuestionSpeech(dojoQuestion);
+      if (!text || !window.KA_Listen) return;
+      window.KA_Listen.speak(text, document.getElementById('dojo-speak'));
+    }
+
+    function speakDojoAnswer() {
+      var text = dojoSpeakText(dojoQuestion);
+      if (!text || !window.KA_Listen) return;
+      window.KA_Listen.speak(text, document.getElementById('dojo-speak'));
+    }
+
+    // =====================================================================
+    // Answer normalisation.
+    //
+    // The old version was an exact string match plus seven hardcoded kanji
+    // substitutions, so a correct answer in the wrong register was simply
+    // marked wrong — the most demoralising thing a drill can do. This folds
+    // away everything that is not the actual skill: script, spacing,
+    // punctuation, katakana vs hiragana, and the reading pairs Japanese
+    // genuinely accepts either way.
+    // =====================================================================
+    var DOJO_KANJI_READINGS = [
+      ['日曜日','にちようび'], ['月曜日','げつようび'], ['火曜日','かようび'],
+      ['水曜日','すいようび'], ['木曜日','もくようび'], ['金曜日','きんようび'],
+      ['土曜日','どようび'],
+      ['一昨日','おととい'], ['明後日','あさって'], ['今日','きょう'],
+      ['昨日','きのう'], ['明日','あした']
+    ];
+
+    function dojoKatakanaToHiragana(str) {
+      return String(str).replace(/[\u30a1-\u30f6]/g, function (ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0x60);
+      });
+    }
+
+    function dojoNormalize(str) {
+      var out = String(str || '').trim();
+      DOJO_KANJI_READINGS.forEach(function (pair) {
+        out = out.split(pair[0]).join(pair[1]);
+      });
+      out = dojoKatakanaToHiragana(out)
+        .replace(/\s+/g, '')
+        .replace(/[。、.,!?！？]/g, '')
+        // Long vowels written with ー rather than a repeated kana.
+        .replace(/ー/g, '');
+      return out;
+    }
+
+    // Readings Japanese accepts either way. Both sides are folded to one form
+    // before comparing, so なな and しち are the same answer — because they are.
+    var DOJO_EQUIVALENTS = [
+      [/しち/g, 'なな'],
+      [/(?<![きじ])く(?=じ|にち|がつ)/g, 'きゅう'],
+      [/よ(?=じ)/g, 'よん'],
+      [/し(?=がつ)/g, 'よん'],
+      [/じっ/g, 'じゅっ']
+    ];
+
+    function dojoFold(str) {
+      var out = dojoNormalize(str);
+      DOJO_EQUIVALENTS.forEach(function (rule) {
+        try { out = out.replace(rule[0], rule[1]); } catch (e) { /* older browsers, no lookbehind */ }
+      });
+      return out;
+    }
+
+    // English answers are compared loosely: case, articles and punctuation are
+    // not the skill being tested. "Friday", "friday" and "the 8th" all pass.
+    function dojoNormalizeEnglish(str) {
+      return String(str || '').toLowerCase().trim()
+        .replace(/[.,!?'"]/g, '')
+        .replace(/^(the|a|an)\s+/, '')
+        .replace(/\s+/g, ' ');
+    }
+
+    function dojoSameEnglish(a, b) {
+      if (!a || !b) return false;
+      var x = dojoNormalizeEnglish(a), y = dojoNormalizeEnglish(b);
+      if (x === y) return true;
+      // "8" for "8th", and the other way round.
+      return x.replace(/(st|nd|rd|th)$/, '') === y.replace(/(st|nd|rd|th)$/, '');
+    }
+
+    // 0 is the one place katakana is conventional on this page, so all three
+    // spellings are the same answer.
+    var DOJO_ZERO = ['ゼロ', 'ぜろ', 'れい', '零'];
+
+    // True when two answers are the same reading in different clothes.
+    //
+    // `lang` is passed in rather than read from the current question: a
+    // comparator that silently changes behaviour depending on global state is
+    // one that works in the app and lies in a test.
+    function dojoSameReading(a, b, lang) {
+      if (!a || !b) return false;
+      if (lang === 'en') return dojoSameEnglish(a, b);
+      var na = dojoNormalize(a), nb = dojoNormalize(b);
+      if (na === nb) return true;
+      if (DOJO_ZERO.indexOf(na) !== -1 && DOJO_ZERO.indexOf(nb) !== -1) return true;
+      return dojoFold(a) === dojoFold(b);
     }
 
     function checkDojoAnswer() {
       if (!dojoQuestion) return;
+      dojoCommitRomaji();
       var userAnswer = document.getElementById('dojo-answer-input').value.trim();
       if (!userAnswer) return;
 
-      // Normalize the answer
-      var normalizedAnswer = userAnswer
-        .replace(/\s+/g, '')
-        .replace(/。$/g, '')
-        .replace(/日曜日/g, 'にちようび')
-        .replace(/月曜日/g, 'げつようび')
-        .replace(/火曜日/g, 'かようび')
-        .replace(/水曜日/g, 'すいようび')
-        .replace(/木曜日/g, 'もくようび')
-        .replace(/金曜日/g, 'きんようび')
-        .replace(/土曜日/g, 'どようび');
-
+      // An English answer must not be folded through the kana normaliser.
+      var normalizedAnswer = (dojoQuestion.answerLang === 'en')
+        ? userAnswer.trim()
+        : dojoNormalize(userAnswer);
       var fullAnswer = dojoQuestion.fullAnswer.replace(/\s+/g, '');
       var kanjiAnswer = dojoQuestion.kanjiAnswer ? dojoQuestion.kanjiAnswer.replace(/\s+/g, '') : null;
       var coreAnswer = dojoQuestion.coreAnswer.replace(/\s+/g, '');
@@ -5413,12 +6318,16 @@ function generateNewQuestion() {
       var hasWrongSpelling = false;
       
       // Check for exact match with full answer or alt answer
-      if (normalizedAnswer === fullAnswer || (kanjiAnswer && normalizedAnswer === kanjiAnswer) || (altAnswer && normalizedAnswer === altAnswer)) {
+      var answerLang = dojoQuestion.answerLang || 'jp';
+      if (dojoSameReading(normalizedAnswer, fullAnswer, answerLang) ||
+          (kanjiAnswer && dojoSameReading(normalizedAnswer, kanjiAnswer, answerLang)) ||
+          (altAnswer && dojoSameReading(normalizedAnswer, altAnswer, answerLang))) {
         isCorrect = true;
       }
       // Check if they got the core answer right
-      else if (normalizedAnswer === coreAnswer || 
-               (dojoQuestion.kanjiAnswer && normalizedAnswer === dojoQuestion.kanjiAnswer.replace('です', '').replace('でした', ''))) {
+      else if (dojoSameReading(normalizedAnswer, coreAnswer, answerLang) ||
+               (dojoQuestion.kanjiAnswer && dojoSameReading(normalizedAnswer,
+                  dojoQuestion.kanjiAnswer.replace('です', '').replace('でした', ''), answerLang))) {
         // For reading-only questions, core answer is sufficient
         if (!questionRequiresFullSentence) {
           isCorrect = true;
@@ -5436,7 +6345,8 @@ function generateNewQuestion() {
         // Extract what they wrote before です/でした
         var userCore = normalizedAnswer.replace(/です$/, '').replace(/でした$/, '');
         
-        if (userCore === coreAnswer || (altAnswer && userCore === altAnswer)) {
+        if (dojoSameReading(userCore, coreAnswer, answerLang) ||
+            (altAnswer && dojoSameReading(userCore, altAnswer, answerLang))) {
           // Core is right
           if (!questionRequiresFullSentence) {
             // Reading-only question - accept with or without です
@@ -5479,7 +6389,7 @@ function generateNewQuestion() {
           var gaveDate = dateValues.some(function(date) { return normalizedAnswer.indexOf(date) !== -1; });
           if (gaveDate) {
             dojoPartialFeedback = true;
-            document.getElementById('dojo-partial-message').textContent = 'その日付は合ってるかも！でも曜日は？';
+            document.getElementById('dojo-partial-message').innerHTML = dojoTip('その日付は合ってるかも！でも曜日は？');
             document.getElementById('dojo-partial-message-en').textContent = "That date might be right! But what's the weekday?";
             document.getElementById('dojo-partial-feedback').style.display = 'block';
             document.getElementById('dojo-answer-input').value = '';
@@ -5493,7 +6403,7 @@ function generateNewQuestion() {
           var gaveWeekday = weekdayValues.some(function(day) { return normalizedAnswer.indexOf(day) !== -1; });
           if (gaveWeekday) {
             dojoPartialFeedback = true;
-            document.getElementById('dojo-partial-message').textContent = 'その曜日は合ってるかも！でも日付は？';
+            document.getElementById('dojo-partial-message').innerHTML = dojoTip('その曜日は合ってるかも！でも日付は？');
             document.getElementById('dojo-partial-message-en').textContent = "That weekday might be right! But what's the date?";
             document.getElementById('dojo-partial-feedback').style.display = 'block';
             document.getElementById('dojo-answer-input').value = '';
@@ -5507,7 +6417,7 @@ function generateNewQuestion() {
       if (needsFullSentence && !dojoPartialFeedback) {
         dojoPartialFeedback = true;
         var needsPast = dojoQuestion.type === 'pastDate' || dojoQuestion.type === 'pastWeekday';
-        document.getElementById('dojo-partial-message').textContent = '惜しい！フルセンテンスで答えて！';
+        document.getElementById('dojo-partial-message').innerHTML = dojoTip('惜しい！フルセンテンスで答えて！');
         document.getElementById('dojo-partial-message-en').textContent = needsPast ? 'Almost! Add でした for past tense!' : 'Almost! Add です to complete your answer!';
         document.getElementById('dojo-partial-feedback').style.display = 'block';
         document.getElementById('dojo-answer-input').value = '';
@@ -5520,28 +6430,37 @@ function generateNewQuestion() {
         dojoPartialFeedback = true;
         var needsPast = dojoQuestion.type === 'pastDate' || dojoQuestion.type === 'pastWeekday';
         if (needsPast && normalizedAnswer.indexOf('です') !== -1 && normalizedAnswer.indexOf('でした') === -1) {
-          document.getElementById('dojo-partial-message').textContent = '過去形で！';
+          document.getElementById('dojo-partial-message').innerHTML = dojoTip('過去形で！');
           document.getElementById('dojo-partial-message-en').textContent = 'Use past tense! でした not です';
         } else if (!needsPast && normalizedAnswer.indexOf('でした') !== -1) {
-          document.getElementById('dojo-partial-message').textContent = '現在形で！';
+          document.getElementById('dojo-partial-message').innerHTML = dojoTip('現在形で！');
           document.getElementById('dojo-partial-message-en').textContent = 'Use present tense! です not でした';
         } else {
-          document.getElementById('dojo-partial-message').textContent = 'スペルをチェック！';
-          document.getElementById('dojo-partial-message-en').textContent = 'Check your spelling!';
+          document.getElementById('dojo-partial-message').innerHTML = dojoTip('もう一度！');
+          document.getElementById('dojo-partial-message-en').textContent = 'Not quite — have another look.';
         }
         document.getElementById('dojo-partial-feedback').style.display = 'block';
-        document.getElementById('dojo-answer-input').value = '';
-        document.getElementById('dojo-answer-input').focus();
+        // Keep what they wrote and select it, rather than wiping it. You cannot
+        // learn from a mistake you are not allowed to look at, and "check your
+        // spelling" on an answer that has been deleted is just baffling.
+        var retryInput = document.getElementById('dojo-answer-input');
+        retryInput.focus();
+        retryInput.select();
         return;
       }
 
       // Show final feedback
       dojoScore.total++;
+      var clearedWeak = false;
       if (isCorrect) {
         dojoScore.correct++;
         dojoStreak++;
+        clearedWeak = dojoMarkRight(dojoQuestion);
       } else {
         dojoStreak = 0;
+        // Missing it schedules it to come back, rather than only filing it in
+        // a list behind a button.
+        dojoMarkWrong(dojoQuestion);
         dojoMistakeLog.push({
           question: dojoQuestion.prompt,
           type: dojoQuestion.type,
@@ -5556,8 +6475,30 @@ function generateNewQuestion() {
       var feedback = document.getElementById('dojo-feedback');
       feedback.style.display = 'block';
       feedback.className = 'dojo-feedback ' + (isCorrect ? 'correct' : 'incorrect');
-      document.getElementById('dojo-feedback-title').innerHTML = (isCorrect ? '✨ ' : '✗ ') + (isCorrect ? '正解！' : 'ざんねん...');
-      document.getElementById('dojo-feedback-label').textContent = isCorrect ? '期待した答え' : '正しい答え';
+      document.getElementById('dojo-feedback-title').innerHTML =
+        (isCorrect ? '✨ ' : '✗ ') + dojoTip(isCorrect ? '正解！' : 'ざんねん...');
+      document.getElementById('dojo-feedback-label').innerHTML = dojoTip(isCorrect ? '期待した答え' : '正しい答え');
+
+      // Say why this one is coming back, or that it has finally gone away.
+      var note = document.getElementById('dojo-weak-note');
+      if (note) {
+        if (clearedWeak) {
+          note.textContent = ct('dojo_weak_cleared', 'weak spot cleared');
+          note.className = 'dojo-weak-note cleared';
+          note.style.display = '';
+        } else if (!isCorrect) {
+          note.textContent = ct('dojo_weak_added', 'added to your weak spots');
+          note.className = 'dojo-weak-note';
+          note.style.display = '';
+        } else {
+          note.style.display = 'none';
+        }
+      }
+      var ansSpk = document.getElementById('dojo-answer-speak');
+      if (ansSpk) {
+        ansSpk.style.display = (window.KA_Listen && window.KA_Listen.available() &&
+                                dojoSpeakText(dojoQuestion)) ? '' : 'none';
+      }
       
       var answerEl = document.getElementById('dojo-feedback-answer');
       var displayAnswer = dojoQuestion.answer;
@@ -5584,7 +6525,7 @@ function generateNewQuestion() {
       var hintBtn = document.getElementById('dojo-hint-btn');
       
       if (dojoShowHint) {
-        document.getElementById('dojo-hint-content').textContent = dojoQuestion.hint;
+        document.getElementById('dojo-hint-content').innerHTML = dojoTip(dojoQuestion.hint);
         hintBox.style.display = 'block';
         hintBtn.innerHTML = '🔓 <span class="dojo-tip" data-reading="ヒント" data-en="Hint">ヒント</span>';
         hintBtn.classList.add('active');
@@ -5596,14 +6537,16 @@ function generateNewQuestion() {
     }
 
     function handleDojoKeyPress(event) {
-      if (event.key === 'Enter') {
-        var feedback = document.getElementById('dojo-feedback');
-        if (feedback.style.display === 'block') {
-          generateDojoQuestion();
-        } else {
-          checkDojoAnswer();
-        }
-      }
+      if (event.key !== 'Enter') return;
+      // Enter carries you all the way through. It used to advance only when
+      // the main feedback box was showing, so the partial-credit and
+      // needs-です paths dumped you back on the mouse mid-drill.
+      var feedback = document.getElementById('dojo-feedback');
+      var nextRow = document.getElementById('dojo-next-btn-row');
+      var showingVerdict = (feedback && feedback.style.display === 'block') ||
+                           (nextRow && nextRow.style.display !== 'none');
+      if (showingVerdict) generateDojoQuestion();
+      else checkDojoAnswer();
     }
 
     function updateDojoDisplay() {
@@ -5741,6 +6684,7 @@ function generateNewQuestion() {
     showPage = function(pageName) {
       originalShowPage(pageName);
       if (pageName === 'datedojo' && !dojoQuestion) {
+        initDojoExtras();
         generateDojoQuestion();
         populateDojoReference();
       }
@@ -7305,6 +8249,7 @@ function generateNewQuestion() {
         initKanji();
       }
       if (document.getElementById('page-datedojo') && typeof generateDojoQuestion === 'function') {
+        initDojoExtras();
         generateDojoQuestion();
         populateDojoReference();
       }

@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-4XWJSE6WX0');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Analytics: Clarity + Google, both configured in analytics.js -->
+  <script src="analytics.js"></script>
   <title>Katsuyō Academy — Japanese Learning Platform</title>
   <meta name="description" content="Free Japanese learning platform: kana and kanji drills, flashcards, vocabulary, dates, and interactive verb conjugation practice — in English, German, French and Chinese.">
   <link rel="canonical" href="https://katsuyoacademy.com/">
@@ -691,7 +684,7 @@
       { jp: '飲む',   gloss: 'のむ — to drink',  formKey: 'form_potential', form: 'POTENTIAL (できる)',
         ok: ['のめる', '飲める'], show: '飲める' }
     ];
-    var vIdx = 0, vLocked = false;
+    var vIdx = 0, vLocked = false, vKana = null;
     var vInput = $('demo-conj-input'), vVerdict = $('demo-conj-verdict');
 
     function paintVerb() {
@@ -723,10 +716,7 @@
       if (vLocked) { nextVerb(); return; }
       var v = VERBS[vIdx];
       // Commit a half-finished syllable first — a trailing "n" becomes ん.
-      if (window.KA_toKana) {
-        var done = window.KA_toKana(vInput.value, true);
-        if (done !== vInput.value) vInput.value = done;
-      }
+      if (vKana) vKana.flush();
       var given = norm(vInput.value);
       if (!given) return;
       var hit = v.ok.filter(function (a) { return norm(a) === given; })[0];
@@ -753,27 +743,8 @@
 
       // The same converter the real Conjugator uses. Without it nobody on a
       // Latin keyboard can type an answer at all, so the demo proved nothing.
-      if (window.KA_toKana) {
-        vInput.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
-        vInput.addEventListener('compositionend', function () { delete this.dataset.composing; });
-        vInput.addEventListener('blur',  function () { delete this.dataset.composing; });
-        vInput.addEventListener('focus', function () { delete this.dataset.composing; });
-        vInput.addEventListener('input', function (e) {
-      // Self-heal: `isComposing` is false for ordinary typing, so this clears a
-      // composing flag that got stuck. compositionend does not always fire —
-      // focus leaving mid-word, an IME switched off, or a browser firing
-      // compositionstart for autofill or dictation all strand it, and once
-      // stranded the converter was dead for the rest of the session.
-          if (e && e.isComposing === false) delete this.dataset.composing;
-          if ((e && e.isComposing) || this.dataset.composing) return;
-          var caret = this.selectionStart;
-          if (caret != null && caret !== this.value.length) return;   // never rewrite mid-edit
-          var out = window.KA_toKana(this.value, false);
-          if (out !== this.value) {
-            this.value = out;
-            this.setSelectionRange(out.length, out.length);
-          }
-        });
+      if (window.KA_KanaInput) {
+        vKana = window.KA_KanaInput.attach(vInput);
       } else {
         var ime = $('demo-conj-ime'), imeHint = $('demo-conj-ime-hint');
         if (ime) ime.style.display = 'none';
