@@ -213,14 +213,22 @@
     .talk-pron-word.good  { border-bottom-color: rgba(110, 155, 110, 0.85); }
     .talk-pron-word.fair  { border-bottom-color: rgba(214, 167, 78, 0.9); background: rgba(214, 167, 78, 0.1); }
     .talk-pron-word.poor  { border-bottom-color: rgba(196, 92, 74, 0.9); background: rgba(196, 92, 74, 0.12); }
-    .talk-pron-dismiss { background: none; border: none; color: var(--text-light); cursor: pointer;
-      font-size: 0.78rem; padding: 0.2rem 0; text-decoration: underline; }
+    /* Sits at the end of the header row (so it costs no extra height) but is
+       drawn as a chip rather than a bare caret, so it reads as a control you
+       can press instead of decoration. */
+    .talk-pron-dismiss { background: none; border: 1px solid rgba(0,0,0,0.12); border-radius: 6px;
+      color: var(--text-light); cursor: pointer; font-family: inherit; font-size: 0.72rem;
+      letter-spacing: 0.03em; padding: 0.18rem 0.5rem; margin-left: 0.6rem; line-height: 1.35; }
+    .talk-pron-dismiss:hover { border-color: var(--accent); color: var(--accent); }
     .talk-pron-note { color: var(--text-light); margin-top: 0.45rem; font-size: 0.78rem; }
     /* What Hide leaves behind: enough to know the score is still there, small
        enough to be out of the way. */
-    .talk-pron-reopen { background: none; border: none; padding: 0; cursor: pointer;
-      font-family: inherit; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.02em; }
-    .talk-pron-reopen:hover { color: var(--accent); text-decoration: underline; }
+    /* Collapsed: one slim line keeping the score in view, with the same chip
+       flipped to point the other way. */
+    .talk-pron-collapsed { display: flex; align-items: center; gap: 0.45rem;
+      font-size: 0.8rem; color: var(--text-light); }
+    .talk-pron-collapsed b { font-size: 0.95rem; font-weight: 700; }
+    .talk-pron-reopen { margin-left: auto; }
 
     .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
     .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
@@ -789,9 +797,12 @@
         'Never deflect with a vague "we have many things" or invent a placeholder like "Movie A". Real, recognisable names, ' +
         'the kind that setting would actually have.\n' +
         '- Invent plausible specifics freely — prices, times, seat numbers — the point is a realistic conversation to practise on.\n' +
-        '- Never ask about the outcome of something you have only just done. If you set the food down this turn, ' +
-        'you do not also ask whether it is delicious — they have not tasted it yet. Put it down, say どうぞ, and ' +
-        'let them speak. The question comes a turn or two later, if at all.\n' +
+        '- Never ask about the outcome of something you have only just done, and never end such a turn with a question ' +
+        'at all. Serving food is the clearest case: "おまたせしました！カレーライスです。どうぞ！" is a complete turn — ' +
+        'stop there. Adding "おいしいですか？" to it asks how the food tastes before they have picked up a fork, and it is ' +
+        'the single most common way this goes wrong. The same holds for handing something over, ringing up a purchase, ' +
+        'or giving directions: deliver it, and let them respond. Asking how it went is a LATER turn, after they have ' +
+        'had one of their own. Delivering something is one of the few turns that should end without a question mark.\n' +
         '- Let the situation take the time it would really take, one step per turn. A waiter takes the order, ' +
         'repeats it back to check, and says they will bring it — the tea does not arrive in the same breath as the ' +
         'order. A clerk goes to look in the stock room. A receptionist checks the diary. Do not jump ahead to the ' +
@@ -2249,13 +2260,24 @@
       if (!box || !lastAssessment) return;
       box.innerHTML = '';
       box.hidden = false;
+      var row = document.createElement('div');
+      row.className = 'talk-pron-collapsed';
+      var lbl = document.createElement('span');
+      lbl.textContent = t('talk_pron_label', 'Pronunciation');
+      var num = document.createElement('b');
+      num.textContent = lastAssessment.overall;
+      num.style.color = lastAssessment.overall >= 80 ? 'rgb(96, 138, 96)'
+                      : lastAssessment.overall >= 60 ? 'rgb(186, 141, 60)'
+                      : 'var(--accent)';
+      row.appendChild(lbl); row.appendChild(num);
+
       var bar = document.createElement('button');
       bar.type = 'button';
-      bar.className = 'talk-pron-reopen';
-      bar.textContent = t('talk_pron_label', 'Pronunciation') + ' ' + lastAssessment.overall + '  ·  ' +
-                        t('talk_pron_show', 'show');
+      bar.className = 'talk-pron-dismiss talk-pron-reopen';
+      bar.textContent = '\u25b4 ' + t('talk_pron_show', 'show');
       bar.onclick = function () { showAssessment(lastAssessment.json); };
-      box.appendChild(bar);
+      row.appendChild(bar);
+      box.appendChild(row);
     }
 
     // Azure's 0-100 scores, in the three bands a learner can act on.
@@ -2302,6 +2324,16 @@
       sub.textContent = bits.join(' · ');
       head.appendChild(sub);
 
+      // The hide control lives on the header row, at the far end — same line as
+      // the score, so it adds no height, and drawn as a chip so it is obviously
+      // pressable.
+      var dismiss = document.createElement('button');
+      dismiss.type = 'button';
+      dismiss.className = 'talk-pron-dismiss';
+      dismiss.textContent = '\u25be ' + t('talk_pron_hide', 'hide');
+      dismiss.onclick = collapseFeedback;
+      head.appendChild(dismiss);
+
       box.appendChild(head);
 
       // Per-word. Japanese returns no phoneme breakdown — a documented gap, not
@@ -2323,12 +2355,6 @@
         box.appendChild(row);
       }
 
-      var dismiss = document.createElement('button');
-      dismiss.type = 'button';
-      dismiss.className = 'talk-pron-dismiss';
-      dismiss.textContent = t('talk_pron_hide', 'Hide');
-      dismiss.onclick = collapseFeedback;
-      box.appendChild(dismiss);
     }
 
     // ---- recognition ------------------------------------------------------
@@ -2348,7 +2374,10 @@
       var input = $('talk-input');
       if (!input) return;
       setMic('starting');
-      clearFeedback();
+      // Deliberately NOT clearing the score here. Pressing the microphone to
+      // say the next thing was wiping the previous score a second or two before
+      // the new one arrived, which read as "it hides when I send". The old score
+      // now stays put until a new one replaces it.
 
       fetchToken().then(function (haveToken) {
         if (!haveToken) throw new Error('no token');
