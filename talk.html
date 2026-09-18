@@ -178,6 +178,45 @@
     }
     .talk-voice-select:hover { border-color: var(--accent-soft); }
     .talk-voice-select:focus { outline: none; border-color: var(--ink); }
+    /* ---- microphone -------------------------------------------------- */
+    .talk-mic { flex: 0 0 auto; width: 2.7rem; border: 1.5px solid rgba(0,0,0,0.15);
+      background: #fff; border-radius: 8px; cursor: pointer; font-size: 1.05rem; line-height: 1;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s; }
+    .talk-mic:hover:not(:disabled) { border-color: var(--accent); }
+    .talk-mic:disabled { opacity: 0.45; cursor: default; }
+    /* Listening has to be unmistakable — someone speaking at their screen needs
+       to know the thing is actually on without reading anything. */
+    .talk-mic.listening { background: var(--accent); border-color: var(--accent); color: #fff;
+      animation: talk-mic-pulse 1.4s ease-in-out infinite; }
+    .talk-mic.starting { border-color: var(--accent); animation: talk-mic-pulse 0.9s ease-in-out infinite; }
+    @keyframes talk-mic-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(196, 92, 74, 0.45); }
+      50%      { box-shadow: 0 0 0 7px rgba(196, 92, 74, 0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .talk-mic.listening, .talk-mic.starting { animation: none; }
+    }
+
+    /* ---- pronunciation feedback -------------------------------------- */
+    .talk-pron { padding: 0.75rem 0.85rem; border-top: 1px solid rgba(0,0,0,0.08);
+      background: rgba(0,0,0,0.015); font-size: 0.85rem; }
+    .talk-pron[hidden] { display: none; }
+    .talk-pron-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .talk-pron-score { font-size: 1.35rem; font-weight: 700; line-height: 1; }
+    .talk-pron-label { color: var(--text-light); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .talk-pron-sub { color: var(--text-light); margin-left: auto; font-size: 0.78rem; }
+    .talk-pron-words { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+    .talk-pron-word { padding: 0.15rem 0.4rem; border-radius: 5px; font-size: 1rem;
+      border-bottom: 2.5px solid transparent; }
+    /* Three bands, not a gradient: a learner needs "fine / watch this / say it
+       again", and a continuous colour ramp says none of those clearly. */
+    .talk-pron-word.good  { border-bottom-color: rgba(110, 155, 110, 0.85); }
+    .talk-pron-word.fair  { border-bottom-color: rgba(214, 167, 78, 0.9); background: rgba(214, 167, 78, 0.1); }
+    .talk-pron-word.poor  { border-bottom-color: rgba(196, 92, 74, 0.9); background: rgba(196, 92, 74, 0.12); }
+    .talk-pron-dismiss { background: none; border: none; color: var(--text-light); cursor: pointer;
+      font-size: 0.78rem; padding: 0.2rem 0; text-decoration: underline; }
+    .talk-pron-note { color: var(--text-light); margin-top: 0.45rem; font-size: 0.78rem; }
+
     .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
     .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
     .talk-send:disabled { opacity: 0.5; cursor: default; }
@@ -397,10 +436,19 @@
           <div class="talk-msgs" id="talk-msgs" data-clarity-mask="true"></div>
           <form class="talk-form" id="talk-form">
             <input type="text" id="talk-input" class="talk-input" maxlength="400" placeholder="Type your reply in Japanese (or ask Katsu for help)…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            <!-- Hidden until a token proves speech input is actually available,
+                 so a misconfigured backend shows no microphone rather than a
+                 button that fails when pressed. -->
+            <button type="button" id="talk-mic" class="talk-mic" style="display: none;"
+                    onclick="TalkSpeech.toggle()" aria-pressed="false">🎤</button>
             <button type="button" id="talk-wait" class="talk-wait" onclick="TalkPractice.skipAhead()">⏳</button>
             <button type="button" id="talk-romaji-toggle" class="talk-romaji-toggle" onclick="TalkPractice.toggleRomaji()">あ</button>
             <button type="submit" class="talk-send" id="talk-send" data-i18n="talk_send">Send</button>
           </form>
+          <!-- Pronunciation feedback. Lives under the form rather than in the
+               conversation, because it is about how you said it, not what you
+               said — putting it in a bubble would make Katsu break character. -->
+          <div class="talk-pron" id="talk-pron" aria-live="polite" hidden></div>
         </div>
         <p class="talk-hint" data-i18n="talk_correction_hint">Katsu stays in character, and adds a short correction note when you make a mistake. Change how Japanese is shown any time — it re-renders instantly.</p>
       </div>
@@ -2032,6 +2080,344 @@
       speak: speakJapanese,
       openInfo: openInfo,
       closeInfo: closeInfo
+    };
+  })();
+
+  // =========================================================================
+  // TalkSpeech — speaking into the reply box, and being told how it sounded.
+  //
+  // How it fits together:
+  //   1. /api/speech-token hands us a 10-minute Azure token. The subscription
+  //      key stays on the server; the token can only start a recognition.
+  //   2. The Azure Speech SDK (~1 MB) is fetched ONLY when the microphone is
+  //      first pressed. Nobody who never speaks pays for that download.
+  //   3. The browser streams the microphone straight to Azure, so partial
+  //      words land in the input as they are spoken.
+  //   4. Pronunciation assessment rides along on the same recognition at no
+  //      extra cost — Azure bills it as ordinary speech-to-text.
+  //
+  // If any of that is unavailable the microphone simply never appears. Talk
+  // has always worked by typing and continues to.
+  // =========================================================================
+  var TalkSpeech = (function () {
+    'use strict';
+
+    var TOKEN_URL = 'https://katsuyou-backend.vercel.app/api/speech-token';
+    // Pinned rather than @latest: a silently-updated SDK on a page nobody is
+    // watching is how a working microphone breaks on a Tuesday.
+    var SDK_URL = 'https://cdn.jsdelivr.net/npm/microsoft-cognitiveservices-speech-sdk@1.41.0/distrib/browser/microsoft.cognitiveservices.speech.sdk.bundle-min.js';
+
+    // Azure issues 10-minute tokens. Re-fetch at nine so a long session never
+    // dies mid-sentence on an expiry we could have seen coming.
+    var TOKEN_LIFE_MS = 9 * 60 * 1000;
+
+    var sdk = null;           // the loaded SDK namespace
+    var sdkLoading = null;    // in-flight load promise, so a double click loads once
+    var token = null, tokenRegion = null, tokenAt = 0;
+    var recognizer = null;
+    var listening = false;
+    var available = false;
+    var baseText = '';        // what was already typed before we started
+
+    function $(id) { return document.getElementById(id); }
+    function t(key, fallback) {
+      try { return (typeof window.t === 'function' && window.t(key)) || fallback; }
+      catch (e) { return fallback; }
+    }
+
+    // ---- token ------------------------------------------------------------
+    function fetchToken() {
+      if (token && Date.now() - tokenAt < TOKEN_LIFE_MS) return Promise.resolve(true);
+      return fetch(TOKEN_URL, { method: 'GET' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (data) {
+          if (!data || !data.success || !data.token) return false;
+          token = data.token;
+          tokenRegion = data.region;
+          tokenAt = Date.now();
+          return true;
+        })
+        .catch(function () { return false; });
+    }
+
+    // ---- the SDK, loaded on demand ---------------------------------------
+    function loadSdk() {
+      if (sdk) return Promise.resolve(sdk);
+      if (sdkLoading) return sdkLoading;
+      sdkLoading = new Promise(function (resolve, reject) {
+        var s = document.createElement('script');
+        s.src = SDK_URL;
+        s.async = true;
+        s.onload = function () {
+          sdk = window.SpeechSDK || null;
+          sdk ? resolve(sdk) : reject(new Error('SDK loaded but SpeechSDK is missing'));
+        };
+        s.onerror = function () { reject(new Error('SDK failed to load')); };
+        document.head.appendChild(s);
+      });
+      sdkLoading.catch(function () { sdkLoading = null; });  // let a retry try again
+      return sdkLoading;
+    }
+
+    // ---- UI ---------------------------------------------------------------
+    function setMic(state) {
+      var mic = $('talk-mic');
+      if (!mic) return;
+      mic.classList.toggle('listening', state === 'listening');
+      mic.classList.toggle('starting', state === 'starting');
+      mic.setAttribute('aria-pressed', state === 'listening' ? 'true' : 'false');
+      mic.disabled = state === 'starting';
+      mic.textContent = state === 'listening' ? '⏹' : '🎤';
+      mic.title = state === 'listening'
+        ? t('talk_mic_stop', 'Stop listening')
+        : t('talk_mic_start', 'Speak your reply (Alt+M)');
+      mic.setAttribute('aria-label', mic.title);
+    }
+
+    function note(msg) {
+      var box = $('talk-pron');
+      if (!box) return;
+      box.hidden = false;
+      box.innerHTML = '';
+      var p = document.createElement('div');
+      p.className = 'talk-pron-note';
+      p.textContent = msg;
+      box.appendChild(p);
+    }
+
+    function clearFeedback() {
+      var box = $('talk-pron');
+      if (box) { box.hidden = true; box.innerHTML = ''; }
+    }
+
+    // Azure's 0-100 scores, in the three bands a learner can act on.
+    function band(score) {
+      if (score >= 80) return 'good';
+      if (score >= 60) return 'fair';
+      return 'poor';
+    }
+
+    function showAssessment(json) {
+      var box = $('talk-pron');
+      if (!box) return;
+      var nb = json && json.NBest && json.NBest[0];
+      var pa = nb && nb.PronunciationAssessment;
+      if (!pa) { clearFeedback(); return; }
+
+      box.hidden = false;
+      box.innerHTML = '';
+
+      var overall = Math.round(pa.PronScore != null ? pa.PronScore : pa.AccuracyScore || 0);
+
+      var head = document.createElement('div');
+      head.className = 'talk-pron-head';
+
+      var score = document.createElement('span');
+      score.className = 'talk-pron-score';
+      score.textContent = overall;
+      score.style.color = overall >= 80 ? 'rgb(96, 138, 96)'
+                        : overall >= 60 ? 'rgb(186, 141, 60)'
+                        : 'var(--accent)';
+      head.appendChild(score);
+
+      var label = document.createElement('span');
+      label.className = 'talk-pron-label';
+      label.textContent = t('talk_pron_label', 'Pronunciation');
+      head.appendChild(label);
+
+      var sub = document.createElement('span');
+      sub.className = 'talk-pron-sub';
+      var bits = [];
+      if (pa.AccuracyScore != null) bits.push(t('talk_pron_accuracy', 'accuracy') + ' ' + Math.round(pa.AccuracyScore));
+      if (pa.FluencyScore != null)  bits.push(t('talk_pron_fluency', 'fluency') + ' ' + Math.round(pa.FluencyScore));
+      sub.textContent = bits.join(' · ');
+      head.appendChild(sub);
+
+      box.appendChild(head);
+
+      // Per-word. Japanese returns no phoneme breakdown — a documented gap, not
+      // a bug here — so word level is as fine as this can honestly get.
+      var words = (nb.Words || []).filter(function (w) {
+        return w && w.Word && w.PronunciationAssessment;
+      });
+      if (words.length) {
+        var row = document.createElement('div');
+        row.className = 'talk-pron-words';
+        words.forEach(function (w) {
+          var acc = w.PronunciationAssessment.AccuracyScore;
+          var el = document.createElement('span');
+          el.className = 'talk-pron-word jp ' + band(acc == null ? 100 : acc);
+          el.textContent = w.Word;
+          if (acc != null) el.title = Math.round(acc) + '/100';
+          row.appendChild(el);
+        });
+        box.appendChild(row);
+      }
+
+      var dismiss = document.createElement('button');
+      dismiss.type = 'button';
+      dismiss.className = 'talk-pron-dismiss';
+      dismiss.textContent = t('talk_pron_hide', 'Hide');
+      dismiss.onclick = clearFeedback;
+      box.appendChild(dismiss);
+    }
+
+    // ---- recognition ------------------------------------------------------
+    function stop() {
+      listening = false;
+      setMic('idle');
+      if (!recognizer) return;
+      var r = recognizer;
+      recognizer = null;
+      try {
+        r.stopContinuousRecognitionAsync(function () { try { r.close(); } catch (e) {} },
+                                         function () { try { r.close(); } catch (e) {} });
+      } catch (e) { try { r.close(); } catch (e2) {} }
+    }
+
+    function start() {
+      var input = $('talk-input');
+      if (!input) return;
+      setMic('starting');
+      clearFeedback();
+
+      fetchToken().then(function (haveToken) {
+        if (!haveToken) throw new Error('no token');
+        return loadSdk();
+      }).then(function (S) {
+        var cfg = S.SpeechConfig.fromAuthorizationToken(token, tokenRegion);
+        cfg.speechRecognitionLanguage = 'ja-JP';
+
+        var audio = S.AudioConfig.fromDefaultMicrophoneInput();
+        recognizer = new S.SpeechRecognizer(cfg, audio);
+
+        // Unscripted assessment: no reference text, because the learner is
+        // answering Katsu, not reading a prompt. Word granularity — Japanese
+        // returns nothing below it. enableMiscue off: with no script there is
+        // nothing for inserted or skipped words to be measured against.
+        var pron = new S.PronunciationAssessmentConfig(
+          '',
+          S.PronunciationAssessmentGradingSystem.HundredMark,
+          S.PronunciationAssessmentGranularity.Word,
+          false
+        );
+        pron.applyTo(recognizer);
+
+        baseText = input.value ? input.value.replace(/\s+$/, '') + ' ' : '';
+
+        // Partial results: what makes this feel live rather than laggy. The
+        // romaji converter must not touch these — they are already kana.
+        recognizer.recognizing = function (_s, e) {
+          if (!listening || !e.result || !e.result.text) return;
+          input.dataset.speechLive = '1';
+          input.value = baseText + e.result.text;
+        };
+
+        recognizer.recognized = function (_s, e) {
+          if (!e.result) return;
+          if (e.result.reason !== S.ResultReason.RecognizedSpeech) return;
+          var said = e.result.text || '';
+          if (!said) return;
+          baseText = (baseText + said).replace(/\s+$/, '') + ' ';
+          input.value = baseText.replace(/\s+$/, '');
+          delete input.dataset.speechLive;
+
+          try {
+            var raw = e.result.properties.getProperty(
+              S.PropertyId.SpeechServiceResponse_JsonResult);
+            if (raw) showAssessment(JSON.parse(raw));
+          } catch (err) { /* transcription still worked; scoring is a bonus */ }
+        };
+
+        recognizer.canceled = function (_s, e) {
+          var why = (e && e.errorDetails) || '';
+          stop();
+          // A token that expired mid-session is worth one silent retry.
+          if (/token|authenticat|1006/i.test(why) && Date.now() - tokenAt > 60000) {
+            token = null;
+            note(t('talk_mic_reconnect', 'Reconnecting…'));
+            setTimeout(start, 300);
+            return;
+          }
+          if (why) note(t('talk_mic_error', 'The microphone stopped unexpectedly. You can keep typing.'));
+        };
+
+        recognizer.sessionStopped = function () { stop(); };
+
+        return new Promise(function (resolve, reject) {
+          recognizer.startContinuousRecognitionAsync(resolve, reject);
+        });
+      }).then(function () {
+        listening = true;
+        setMic('listening');
+      }).catch(function (err) {
+        stop();
+        var msg = String((err && (err.message || err.name)) || err || '');
+        // Permission is the one failure worth explaining, because it is the
+        // one the person can actually fix.
+        if (/permission|NotAllowed|denied/i.test(msg)) {
+          note(t('talk_mic_denied', 'Microphone access was blocked. Allow it in your browser’s address bar to speak your replies.'));
+        } else if (/no token/i.test(msg)) {
+          note(t('talk_mic_unavailable', 'Speech input is not available right now. You can still type.'));
+        } else {
+          note(t('talk_mic_error', 'The microphone stopped unexpectedly. You can keep typing.'));
+        }
+      });
+    }
+
+    function toggle() { listening ? stop() : start(); }
+
+    // ---- setup ------------------------------------------------------------
+    function init() {
+      var mic = $('talk-mic');
+      if (!mic) return;
+      // Three things must be true before the button is worth showing: the
+      // browser can capture audio, the page is on a secure origin (getUserMedia
+      // is refused otherwise), and the backend will actually issue a token.
+      var canCapture = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+      if (!canCapture || !window.isSecureContext) return;
+
+      fetchToken().then(function (ok) {
+        if (!ok) return;
+        available = true;
+        mic.style.display = '';
+        setMic('idle');
+      });
+
+      // Alt+M, matching the page's other Alt shortcuts. e.code so the layout
+      // cannot change which physical key it is.
+      document.addEventListener('keydown', function (e) {
+        if (!e.altKey || e.ctrlKey || e.metaKey) return;
+        var k = /^Key[A-Z]$/.test(e.code || '') ? e.code.slice(3).toLowerCase()
+                                                : (e.key || '').toLowerCase();
+        if (k !== 'm' || !available) return;
+        var micEl = $('talk-mic');
+        if (!micEl || micEl.offsetParent === null) return;
+        e.preventDefault();
+        toggle();
+      });
+
+      // Never keep the microphone open on a page nobody is looking at.
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden && listening) stop();
+      });
+      window.addEventListener('pagehide', function () { if (listening) stop(); });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+    return {
+      toggle: toggle,
+      stop: stop,
+      isListening: function () { return listening; },
+      isAvailable: function () { return available; },
+      // Exposed for the tests, which stand in for the SDK and the token.
+      _setSdk: function (s) { sdk = s; sdkLoading = Promise.resolve(s); },
+      _showAssessment: showAssessment
     };
   })();
   </script>
