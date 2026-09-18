@@ -266,6 +266,9 @@
       }
       #page-vocabquiz .vq-feedback.correct   { background: rgba(122,158,126,0.09); border-color: rgba(122,158,126,0.4); }
       #page-vocabquiz .vq-feedback.incorrect { background: rgba(180,75,65,0.09);  border-color: rgba(180,75,65,0.45); }
+      /* Shown is its own state: you did not get it wrong, but you did not know
+         it either, so it must not look like a pass. */
+      #page-vocabquiz .vq-feedback.revealed  { background: rgba(201,169,98,0.08); border-color: rgba(201,169,98,0.4); }
       #page-vocabquiz .vq-verdict-title {
         font-weight: 600; margin-bottom: 0.45rem; display: flex; align-items: center; gap: 9px;
         font-family: 'Noto Serif JP', serif;
@@ -398,6 +401,7 @@
         <div class="vq-btn-row" id="vq-btn-row">
           <span id="vq-check-row" style="display:flex;gap:9px;">
             <button type="button" class="vq-btn primary" id="vq-check-btn" data-i18n="vq_check">Check</button>
+            <button type="button" class="vq-btn" id="vq-show-btn" data-i18n="vq_show">Show me</button>
             <button type="button" class="vq-btn" id="vq-skip-btn" data-i18n="vq_skip">Skip</button>
           </span>
           <span id="vq-next-row" style="display:none;gap:9px;">
@@ -441,6 +445,7 @@
         if (el) el.addEventListener('click', fn);
       };
       on('vq-check-btn',   function () { vqCheck(); });
+      on('vq-show-btn',    function () { vqReveal(); });
       on('vq-next-btn',    function () { vqNext(); });
       on('vq-skip-btn',    function () { vqNext(); });
       on('vq-speak',       function () { vqSpeakPrompt(); });

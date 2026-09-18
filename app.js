@@ -9417,6 +9417,21 @@ function generateNewQuestion() {
       vqRenderVerdict(right, before, after, given);
     }
 
+    // Show me. Deliberately counted as a miss: you did not know it, and a
+    // reveal that costs nothing would let the scheduler be talked out of ever
+    // asking again, which is the one thing it is for. Skip stays neutral, so
+    // there is still a way to pass on a card without being marked for it.
+    function vqReveal() {
+      if (!vqQuestion || vqAnswered) return;
+      vqAnswered = true;
+      vqSession.asked++;
+      vqSession.streak = 0;
+      KA_Memory.tick();
+      var before = KA_Memory.state(vqQuestion.id);
+      var after = KA_Memory.record(vqQuestion.id, false);
+      vqRenderVerdict(false, before, after, '', true);
+    }
+
     // How long until this comes back, in words rather than a date.
     function vqWhenBack(id) {
       var e = KA_Memory.get(id);
@@ -9527,14 +9542,15 @@ function generateNewQuestion() {
       try { input.focus(); } catch (e) {}
     }
 
-    function vqRenderVerdict(right, before, after, given) {
+    function vqRenderVerdict(right, before, after, given, shown) {
       var q = vqQuestion;
       var box = vqEl('vq-feedback');
       box.style.display = 'block';
-      box.className = 'vq-feedback ' + (right ? 'correct' : 'incorrect');
+      box.className = 'vq-feedback ' + (shown ? 'revealed' : right ? 'correct' : 'incorrect');
       // The title is rewritten wholesale, so the "when" chip is rebuilt with it.
       vqEl('vq-verdict-title').innerHTML =
-        (right ? '✨ ' : '✗ ') + dojoTip(right ? '正解！' : 'ざんねん...') +
+        (shown ? '👁 ' : right ? '✨ ' : '✗ ') +
+        dojoTip(shown ? '答え' : right ? '正解！' : 'ざんねん...') +
         '<span class="vq-when" id="vq-verdict-when"></span>';
 
       var ansEl = vqEl('vq-verdict-answer');
@@ -9543,7 +9559,7 @@ function generateNewQuestion() {
                                               : parseKanjiText(dojoEscape(q.shown));
 
       var yours = vqEl('vq-verdict-yours');
-      if (!right && given) {
+      if (!right && given && !shown) {
         yours.style.display = '';
         yours.innerHTML = ct('vq_you_wrote', 'You wrote') + ' <b>' + dojoEscape(given) + '</b>';
       } else {
@@ -9552,7 +9568,10 @@ function generateNewQuestion() {
 
       // The whole point of the two clocks is that they are visible.
       var when = vqEl('vq-verdict-when');
-      when.textContent = vqWhenBack(q.id);
+      // Say plainly that a reveal is counted, rather than letting it be a
+      // penalty you only discover later.
+      when.textContent = (shown ? ct('vq_counts_missed', 'counted as missed') + ' · ' : '') +
+                         vqWhenBack(q.id);
       when.className = 'vq-when' + (after === 'known' ? ' cleared' : right ? ' ok' : ' no');
 
       var gloss = vqEl('vq-verdict-gloss');
