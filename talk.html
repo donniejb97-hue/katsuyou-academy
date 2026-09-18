@@ -824,8 +824,14 @@
           if (props) situation += '\n\n' + props;
         }
         return base +
-          'You are roleplaying as ' + persona + '.\n' +
+          'ROLEPLAY — this overrides the description of you above. For the whole of this session you are NOT Katsu the tutor. ' +
+          'You are ' + persona + '.\n' +
           'Situation: ' + situation + '\n' +
+          'Your very first message is already inside that situation — the greeting this character would actually give. ' +
+          'Do NOT introduce yourself as Katsu or カツ先生, do NOT ask what the student would like to practise, and do NOT ' +
+          'mention lessons, levels or practice at all. The student knows why they are here; the scene simply starts. ' +
+          'A waiter greets them and offers a menu; a shop clerk asks if they are looking for anything; a classmate says hello. ' +
+          'Katsu exists only in the FIX line, which is the one place you step outside the scene.\n' +
           'Stay in character the entire time. Keep the exchange moving naturally toward a believable resolution of the situation. ' +
           'If the student answers in their own language rather than Japanese, gently encourage them (in the FIX line) to try it in Japanese, but still respond in character.';
       }
@@ -1439,6 +1445,22 @@
     }
 
     // requestTurn(userText): userText is null for Katsu's opening line
+    // The very first turn has no student message, so something has to stand in
+    // for one. "(Please start the conversation.)" was too meta: it reads as a
+    // request to the tutor, and the tutor answered it — introducing herself and
+    // asking what to practise, in the middle of a restaurant. The cue now says
+    // where we are, so the scene opens instead of the lesson.
+    function openingCue() {
+      if (state.mode === 'scenario') {
+        return '(The student has just walked in. Open the scene in character with the ' +
+               'first thing this person would actually say. No introductions, no mention of practice.)';
+      }
+      if (state.mode === 'grammar') {
+        return '(Greet the student warmly and ask an opening question that invites the target form.)';
+      }
+      return '(Greet the student warmly as Katsu and ask an easy opening question to get talking.)';
+    }
+
     function requestTurn(userText) {
       if (state.busy) return;
       state.busy = true;
@@ -1454,7 +1476,7 @@
 
       var payload = {
         system: buildSystemPrompt(),
-        messages: state.messages.length ? state.messages : [{ role: 'user', content: '(Please start the conversation.)' }],
+        messages: state.messages.length ? state.messages : [{ role: 'user', content: openingCue() }],
         maxTokens: MAX_TOKENS_TURN
       };
 
@@ -1596,6 +1618,10 @@
       var text = input.value.trim();
       if (!text || state.busy) return;
       input.value = '';
+      // The microphone keeps running across sends, so tell it the box is empty
+      // now — otherwise the sentence just sent reappears in front of the next
+      // one. Also clears the score, which belonged to the sentence just sent.
+      if (window.TalkSpeech && TalkSpeech.replySent) TalkSpeech.replySent();
       disarmWait();
       removeContinueCard();   // they answered it by just carrying on
       addMsg('student', text);
@@ -1928,8 +1954,12 @@
     }
 
     function closeAssessment() {
+      // Closing the report closes the report — nothing more. It used to drop
+      // you back at the menu, which threw the conversation away as the price of
+      // dismissing a dialog: no way to re-read what you said, or to fetch the
+      // report again. The way back is the Stop button, which is still there,
+      // and taking it is the learner's decision rather than ours.
       $('talk-assessment-modal').classList.remove('active');
-      backToSetup();
     }
 
     function init() {
@@ -2118,6 +2148,7 @@
     var listening = false;
     var available = false;
     var baseText = '';        // what was already typed before we started
+    var livePartial = false;  // a partial result is currently on screen
 
     function $(id) { return document.getElementById(id); }
     function t(key, fallback) {
@@ -2307,9 +2338,25 @@
 
         // Partial results: what makes this feel live rather than laggy. The
         // romaji converter must not touch these — they are already kana.
+        // The box can change under us between utterances — Send empties it, and
+        // the learner may edit by hand. Trusting our own memory of what was
+        // there is what pasted an already-sent sentence back in front of the
+        // next one. So we re-read the box; the only subtlety is that while a
+        // partial is on screen the box legitimately holds baseText + partial,
+        // and adopting THAT as the new base is how the same words got counted
+        // twice.
+        function stillOurs() {
+          return input.value.indexOf(baseText.replace(/\s+$/, '')) === 0;
+        }
+        function adoptBox() {
+          var current = input.value.replace(/\s+$/, '');
+          baseText = current ? current + ' ' : '';
+        }
+
         recognizer.recognizing = function (_s, e) {
           if (!listening || !e.result || !e.result.text) return;
-          input.dataset.speechLive = '1';
+          if (!livePartial && !stillOurs()) adoptBox();   // typed or cleared since last time
+          livePartial = true;
           input.value = baseText + e.result.text;
         };
 
@@ -2318,9 +2365,14 @@
           if (e.result.reason !== S.ResultReason.RecognizedSpeech) return;
           var said = e.result.text || '';
           if (!said) return;
+          // With a partial showing, the box is baseText + partial, so we only
+          // check that our base is still the prefix; without one, whatever is
+          // in the box is what the learner left there.
+          if (livePartial) { if (!stillOurs()) baseText = ''; }
+          else if (!stillOurs()) adoptBox();
+          livePartial = false;
           baseText = (baseText + said).replace(/\s+$/, '') + ' ';
           input.value = baseText.replace(/\s+$/, '');
-          delete input.dataset.speechLive;
 
           try {
             var raw = e.result.properties.getProperty(
@@ -2413,6 +2465,10 @@
     return {
       toggle: toggle,
       stop: stop,
+      // Called by the page when the reply box is emptied by Send. Continuous
+      // recognition survives a send, so without this the microphone would
+      // keep building on text that is no longer on screen.
+      replySent: function () { baseText = ''; livePartial = false; clearFeedback(); },
       isListening: function () { return listening; },
       isAvailable: function () { return available; },
       // Exposed for the tests, which stand in for the SDK and the token.
