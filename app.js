@@ -7016,10 +7016,20 @@ function generateNewQuestion() {
           select: 'kanji-voice-select',
           preview: 'kanji-voice-preview'
         });
-        // Both halves open the panel here — there is no single reading to play.
+        // The main half speaks the card's readings; the caret opens the voice
+        // panel. It used to open the panel from both halves, on the reasoning
+        // that a bare kanji has no single pronunciation — true, but it left a
+        // speaker icon that made no sound, which is worse than choosing.
+        // Reading the readings aloud is the honest answer to "how does this
+        // sound": 日 is ニチ、ジツ、ひ, and hearing all three is the point.
         var open = document.getElementById('kanji-audio-open');
         var caret = document.getElementById('kanji-audio-caret');
-        if (open && caret) open.addEventListener('click', function (e) { e.stopPropagation(); caret.click(); });
+        if (open) open.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var card = currentKanjiCard();
+          var text = card ? kanjiReadingSpeech(card) : '';
+          if (text) window.KA_Listen.speak(text, open);
+        });
 
         // settled: the voice list has come back, so we can finally say whether
         // there is a choice to offer. Before that the control stays hidden
@@ -7027,8 +7037,11 @@ function generateNewQuestion() {
         var redraw = function (settled) {
           var split = document.getElementById('kanji-audio-split');
           if (split && settled) {
-            var canPick = caret && caret.style.display !== 'none';
-            split.style.display = (window.KA_Listen.available() && canPick) ? '' : 'none';
+            // Show it whenever anything can speak. It used to also require a
+            // voice worth choosing between, which made sense when both halves
+            // only opened the picker — now the main half speaks, so a browser
+            // voice alone is reason enough to offer it.
+            split.style.display = window.KA_Listen.available() ? '' : 'none';
           }
           if (kanjiIsFlipped) return;   // redrawing would flip it back
           var had = !!document.querySelector('#kanji-vocab-list .ka-listen');
@@ -7077,6 +7090,32 @@ function generateNewQuestion() {
       showKanjiCard();
     }
     
+    function currentKanjiCard() {
+      return filteredKanjiCards.length ? filteredKanjiCards[currentKanjiIndex] : null;
+    }
+
+    // The readings, cleaned up enough to be spoken. The data carries dictionary
+    // notation the voice would read literally: "-び" marks a reading that takes
+    // a prefix, and "ひと.つ" separates the kanji's own reading from its
+    // okurigana. Strip the markers, keep the sound.
+    function kanjiReadingSpeech(card) {
+      if (!card) return '';
+      var parts = [];
+      (card.onyomi || []).forEach(function (o) {
+        var s = String(o).replace(/-/g, '').trim();
+        if (s) parts.push(s);
+      });
+      String(card.kunyomi || '').split(/[・,、]/).forEach(function (k) {
+        var s = String(k).replace(/-/g, '').replace(/\./g, '').trim();
+        if (s) parts.push(s);
+      });
+      var seen = {}, out = [];
+      parts.forEach(function (p) { if (!seen[p]) { seen[p] = 1; out.push(p); } });
+      // Four is plenty. 生 has a dozen readings, and reciting them all is a
+      // lecture, not an answer.
+      return out.slice(0, 4).join('、');
+    }
+
     function showKanjiCard() {
       if (filteredKanjiCards.length === 0) return;
       if (window.KA_Listen) window.KA_Listen.stop();   // never talk over the next card
