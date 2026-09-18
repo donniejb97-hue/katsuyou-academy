@@ -6991,7 +6991,7 @@ function generateNewQuestion() {
       { japanese: "うし", kanji: "牛", katakana: null, english: "Cow", category: "noun", topic: "general", level: null },
       { japanese: "うそ", kanji: "嘘", katakana: null, english: "Lie", category: "noun", topic: "general", level: null },
       { japanese: "うた", kanji: "歌", katakana: null, english: "Song", category: "noun", topic: "general", level: null },
-      { japanese: "うちがわ", kanji: "内側", katakana: null, english: "Inside", category: "noun", topic: "general", level: null },
+      { japanese: "うちがわ", kanji: "内側", katakana: null, english: "Inner Side", category: "noun", topic: "general", level: null },
       { japanese: "うみ", kanji: "海", katakana: null, english: "Sea", category: "noun", topic: "general", level: "N5" },
       { japanese: "うめ", kanji: "梅", katakana: null, english: "Plum", category: "noun", topic: "general", level: null },
       { japanese: "うんどう", kanji: "運動", katakana: null, english: "Exercise", category: "noun", topic: "general", level: "N4" },
@@ -7159,7 +7159,7 @@ function generateNewQuestion() {
       { japanese: "じてんしゃ", kanji: "自転車", katakana: null, english: "Bicycle", category: "noun", topic: "general", level: "N5" },
       { japanese: "じぶん", kanji: "自分", katakana: null, english: "Self", category: "noun", topic: "general", level: null },
       { japanese: "じゃどう", kanji: "邪道", katakana: null, english: "Wrong Way", category: "noun", topic: "general", level: null },
-      { japanese: "じゃっかん", kanji: "若干", katakana: null, english: "A Little", category: "noun", topic: "general", level: null },
+      { japanese: "じゃっかん", kanji: "若干", katakana: null, english: "Somewhat (formal)", category: "noun", topic: "general", level: null },
       { japanese: "じゃま", kanji: "邪魔", katakana: null, english: "Hindrance", category: "noun", topic: "general", level: null },
       { japanese: "じゃんけん", kanji: null, katakana: "ジャンケン", english: "Rock Paper Scissors", category: "noun", topic: "general", level: null },
       { japanese: "しゃかい", kanji: "社会", katakana: null, english: "Society", category: "noun", topic: "general", level: "N3" },
@@ -7169,7 +7169,7 @@ function generateNewQuestion() {
       { japanese: "しゅうかい", kanji: "集会", katakana: null, english: "Gathering / Assembly", category: "noun", topic: "general", level: null },
       { japanese: "しゅうかん", kanji: "習慣", katakana: null, english: "Habit", category: "noun", topic: "general", level: "N3" },
       { japanese: "しゅうきょう", kanji: "宗教", katakana: null, english: "Religion", category: "noun", topic: "general", level: null },
-      { japanese: "しゅうごう", kanji: "集合", katakana: null, english: "Gathering", category: "noun", topic: "general", level: null },
+      { japanese: "しゅうごう", kanji: "集合", katakana: null, english: "Meeting Up / Assembling", category: "noun", topic: "general", level: null },
       { japanese: "しゅくだい", kanji: "宿題", katakana: null, english: "Homework", category: "noun", topic: "general", level: "N4" },
       { japanese: "しゅみ", kanji: "趣味", katakana: null, english: "Hobby", category: "noun", topic: "general", level: "N4" },
       { japanese: "じゅうしょ", kanji: "住所", katakana: null, english: "Address", category: "noun", topic: "general", level: null },
@@ -7203,7 +7203,7 @@ function generateNewQuestion() {
       { japanese: "ぜいきん", kanji: "税金", katakana: null, english: "Tax", category: "noun", topic: "general", level: null },
       { japanese: "ぜいたく", kanji: "贅沢", katakana: null, english: "Luxury", category: "noun", topic: "general", level: null },
       { japanese: "ぜいにく", kanji: "贅肉", katakana: null, english: "Flab", category: "noun", topic: "general", level: null },
-      { japanese: "せなか", kanji: "背中", katakana: null, english: "Back", category: "noun", topic: "general", level: "N4" },
+      { japanese: "せなか", kanji: "背中", katakana: null, english: "Back (of the body)", category: "noun", topic: "general", level: "N4" },
       { japanese: "せんせい", kanji: "先生", katakana: null, english: "Teacher / Sensei", category: "noun", topic: "general", level: "N5" },
       { japanese: "せんたく", kanji: "洗濯", katakana: null, english: "Laundry", category: "noun", topic: "general", level: "N5" },
       { japanese: "ぜっけい", kanji: "絶景", katakana: null, english: "Spectacular Scenery", category: "noun", topic: "general", level: null },
@@ -7464,7 +7464,7 @@ function generateNewQuestion() {
       { japanese: "みなみ", kanji: "南", katakana: null, english: "South", category: "noun", topic: "location", level: "N5" },
       { japanese: "ここ", kanji: null, katakana: null, english: "Here", category: "noun", topic: "location", level: "N5" },
       { japanese: "そこ", kanji: null, katakana: null, english: "There", category: "noun", topic: "location", level: "N5" },
-      { japanese: "あそこ", kanji: null, katakana: null, english: "Over There", category: "noun", topic: "location", level: "N5" },
+      { japanese: "あそこ", kanji: null, katakana: null, english: "Over There (away from both)", category: "noun", topic: "location", level: "N5" },
       { japanese: "どこ", kanji: null, katakana: null, english: "Where", category: "noun", topic: "location", level: "N5" },
       { japanese: "バナナ", kanji: null, katakana: null, english: "Banana", category: "noun", topic: "food", level: "N4" },
       { japanese: "ビール", kanji: null, katakana: null, english: "Beer", category: "noun", topic: "food", level: "N5" },
@@ -7528,7 +7528,7 @@ function generateNewQuestion() {
       { japanese: "にがい", kanji: "苦い", katakana: null, english: "Bitter", category: "i-adjective", topic: "taste", level: "N4" },
       { japanese: "つめたい", kanji: "冷たい", katakana: null, english: "Cold (to the touch)", category: "i-adjective", topic: "taste", level: "N5" },
       { japanese: "おいしい", kanji: "美味しい", katakana: null, english: "Delicious", category: "i-adjective", topic: "taste", level: "N5" },
-      { japanese: "しんせん", kanji: "新鮮", katakana: null, english: "Fresh", category: "na-adjective", topic: "taste", level: "N4" },
+      { japanese: "しんせん", kanji: "新鮮", katakana: null, english: "Fresh (food)", category: "na-adjective", topic: "taste", level: "N4" },
       { japanese: "かたい", kanji: "硬い", katakana: null, english: "Hard", category: "i-adjective", topic: "taste", level: "N4" },
       { japanese: "あつい", kanji: "熱い", katakana: null, english: "Hot (to the touch)", category: "i-adjective", topic: "taste", level: "N5" },
       { japanese: "あたらしい", kanji: "新しい", katakana: null, english: "New / Fresh", category: "i-adjective", topic: "taste", level: "N5" },
@@ -7569,7 +7569,7 @@ function generateNewQuestion() {
       { japanese: "ゆうがた", kanji: "夕方", katakana: null, english: "Early Evening", category: "noun", topic: "time", level: "N4" },
       { japanese: "ごぜんちゅう", kanji: "午前中", katakana: null, english: "During the Morning", category: "noun", topic: "time", level: "N4" },
       { japanese: "ごご", kanji: "午後", katakana: null, english: "Afternoon / PM", category: "noun", topic: "time", level: "N5" },
-      { japanese: "ごぜん", kanji: "午前", katakana: null, english: "Morning / AM", category: "noun", topic: "time", level: "N5" },
+      { japanese: "ごぜん", kanji: "午前", katakana: null, english: "AM / Before Noon", category: "noun", topic: "time", level: "N5" },
       { japanese: "あさ", kanji: "朝", katakana: null, english: "Morning", category: "noun", topic: "time", level: "N5" },
       { japanese: "ばん", kanji: "晩", katakana: null, english: "Evening", category: "noun", topic: "time", level: "N5" },
       { japanese: "しゅうまつ", kanji: "週末", katakana: null, english: "Weekend", category: "noun", topic: "time", level: "N4" },
@@ -9319,14 +9319,124 @@ function generateNewQuestion() {
     // "Chin / Jaw" should take either, and "Father (one's own)" should take
     // "father" too — the parenthetical is there to tell two cards apart on
     // screen, not to be typed out.
+    // A card carries one English gloss, but most words have several correct
+    // translations — 飲み物 is a drink AND a beverage, and marking "beverage"
+    // wrong teaches nothing except that the quiz is arbitrary. Rather than
+    // editing 941 glosses, equivalent words are grouped once here and any
+    // member of a group is accepted for any other.
+    var VQ_EN_SYNONYMS = [
+      ['drink', 'beverage'], ['car', 'automobile', 'auto'], ['bicycle', 'bike'],
+      ['photo', 'photograph', 'picture'], ['movie', 'film'], ['shop', 'store'],
+      ['doctor', 'physician'], ['restroom', 'toilet', 'bathroom', 'washroom', 'lavatory'],
+      ['trousers', 'pants'], ['sneakers', 'trainers'], ['jumper', 'sweater', 'pullover'],
+      ['spectacles', 'glasses', 'eyeglasses'], ['purse', 'wallet'], ['sofa', 'couch'],
+      ['pot', 'pan', 'saucepan'], ['plate', 'dish'], ['cupboard', 'closet', 'wardrobe'],
+      ['refrigerator', 'fridge'], ['television', 'tv'], ['telephone', 'phone'],
+      ['mobile phone', 'cellphone', 'cell phone', 'mobile'],
+      ['underground', 'subway', 'metro'], ['aeroplane', 'airplane', 'plane'],
+      ['boat', 'ship'], ['taxi', 'cab'], ['ticket', 'fare ticket'],
+      ['autumn', 'fall'], ['soccer', 'football'], ['post', 'mail'],
+      ['postcard', 'post card'], ['newspaper', 'paper'], ['notebook', 'note book'],
+      ['rubber', 'eraser'], ['university', 'college'], ['pupil', 'student'],
+      ['teacher', 'instructor'], ['company', 'firm'], ['salary', 'wage', 'pay'],
+      ['shopping', 'errands'], ['journey', 'trip', 'travel'], ['holiday', 'vacation'],
+      ['garbage', 'rubbish', 'trash'], ['flat', 'apartment'], ['lift', 'elevator'],
+      ['tap', 'faucet'], ['biscuit', 'cookie'], ['sweets', 'candy', 'confectionery'],
+      ['prawn', 'shrimp'], ['maize', 'corn'], ['aubergine', 'eggplant'],
+      ['courgette', 'zucchini'], ['coriander', 'cilantro'], ['jam', 'preserve'],
+      ['cooker', 'stove'], ['hob', 'stovetop'], ['torch', 'flashlight'],
+      ['lorry', 'truck'], ['motorbike', 'motorcycle'], ['pavement', 'sidewalk'],
+      ['queue', 'line'], ['timetable', 'schedule'], ['nappy', 'diaper'],
+      ['grey', 'gray'], ['colour', 'color'], ['centre', 'center'],
+      ['favourite', 'favorite'], ['neighbour', 'neighbor'], ['practise', 'practice'],
+      ['grandfather', 'grandpa'], ['grandmother', 'grandma'],
+      ['father', 'dad'], ['mother', 'mum', 'mom'],
+      ['stomach', 'belly', 'tummy'], ['illness', 'sickness', 'disease'],
+      ['delicious', 'tasty'], ['pretty', 'beautiful'], ['big', 'large'],
+      ['small', 'little'], ['quick', 'fast'], ['happy', 'glad'],
+      ['tired', 'sleepy'], ['difficult', 'hard'], ['easy', 'simple'],
+      ['cheap', 'inexpensive'], ['expensive', 'costly'], ['clever', 'smart'],
+      ['noon', 'midday'], ['evening', 'night'], ['weekday', 'working day'],
+      ['work', 'job'], ['meeting', 'conference'], ['answer', 'reply', 'response'],
+      ['question', 'query'], ['reason', 'cause'], ['method', 'way'],
+      ['seaweed', 'nori'], ['rice ball', 'onigiri'], ['boxed lunch', 'bento'],
+      ['soy sauce', 'soya sauce'], ['green onion', 'spring onion', 'scallion'],
+      ['bell pepper', 'green pepper', 'capsicum'], ['mandarin orange', 'mandarin', 'tangerine'],
+      ['watermelon', 'water melon'], ['squid', 'cuttlefish'],
+      ['stairs', 'staircase', 'steps'], ['road', 'street'], ['town', 'city'],
+      ['forest', 'woods'], ['sea', 'ocean'],
+      ['weather forecast', 'forecast'], ['typhoon', 'hurricane'],
+      ['thunder', 'lightning'], ['air temperature', 'temperature']
+    ];
+
+    // A group is only safe when the deck does not already hold two of its words
+    // as separate cards. ['soccer','football'] is a fine equivalence in general
+    // and a bug here, because サッカー and フットボール are both in the deck —
+    // accepting either for either would mark a genuinely wrong answer right.
+    // Worked out from the deck rather than curated by hand, so it stays correct
+    // as words are added.
+    var VQ_SYN_INDEX = null;
+
+    function vqBuildSynonyms() {
+      var deck = (typeof vocabDataList !== 'undefined') ? vocabDataList : [];
+      // Which words are some card's own stated gloss.
+      var claimed = {};
+      deck.forEach(function (c) {
+        String(c.english || '').split('/').forEach(function (part) {
+          // The FULL gloss, parenthetical included. "Father (one's own)" and
+          // "Father (someone else's)" are two cards but one English word, so
+          // neither of them claims plain "father" — otherwise the father/dad
+          // group would be dropped for a clash that isn't one.
+          var k = dojoNormalizeEnglish(part);
+          if (!k) return;
+          (claimed[k] = claimed[k] || []).push(c.japanese);
+        });
+      });
+      var idx = {};
+      var dropped = [];
+      VQ_EN_SYNONYMS.forEach(function (group) {
+        var owners = {};
+        group.forEach(function (w) {
+          (claimed[w] || []).forEach(function (jp) { owners[jp] = 1; });
+        });
+        if (Object.keys(owners).length > 1) { dropped.push(group.join('/')); return; }
+        group.forEach(function (w) {
+          idx[w] = (idx[w] || []).concat(group.filter(function (x) { return x !== w; }));
+        });
+      });
+      VQ_SYN_INDEX = idx;
+      VQ_SYN_INDEX.__dropped = dropped;
+      return idx;
+    }
+
+    function vqSynonymsFor(word) {
+      if (!VQ_SYN_INDEX) vqBuildSynonyms();
+      return VQ_SYN_INDEX[word] || [];
+    }
+
     function vqEnglishAnswers(gloss) {
       var set = [];
+      var push = function (v) { if (v && set.indexOf(v) === -1) set.push(v); };
       String(gloss || '').split('/').forEach(function (part) {
         var p = part.trim();
         if (!p) return;
-        set.push(p);
-        var bare = p.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
-        if (bare && bare !== p) set.push(bare);
+        push(p);
+        // "Father (one's own)" should also take plain "father": the
+        // parenthetical is there to tell two cards apart on screen, not to type.
+        var bare = p.replace(/\s*\([^)]*\)\s*/g, ' ').replace(/\s+/g, ' ').trim();
+        push(bare);
+      });
+      // ...and anything that means the same thing. The table is singular, so a
+      // plural gloss ("Colours") is looked up in the singular and the matching
+      // synonyms are pluralised back.
+      set.slice().forEach(function (v) {
+        var k = dojoNormalizeEnglish(v);
+        vqSynonymsFor(k).forEach(push);
+        if (/s$/.test(k)) {
+          vqSynonymsFor(k.replace(/s$/, '')).forEach(function (w) {
+            push(w); push(w + 's');
+          });
+        }
       });
       return set;
     }

@@ -238,8 +238,15 @@
       }
       #page-vocabquiz .vq-kana-toggle.off {
         background: transparent; color: var(--vq-dim2); border-color: rgba(255,255,255,0.18);
-        cursor: default;
       }
+      /* Katakana is gold, the same as in Talk, so the mode reads at a glance
+         without having to notice which character is on the key. */
+      #page-vocabquiz .vq-kana-toggle.kata {
+        background: var(--vq-gold); border-color: var(--vq-gold); color: #2a2109;
+      }
+      /* Off is a mode you can choose; disabled is the English-answer case. Only
+         the second one should stop looking clickable. */
+      #page-vocabquiz .vq-kana-toggle:disabled { cursor: default; }
 
       #page-vocabquiz .vq-btn-row { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 1rem; }
       /* The verdict is followed by the Next button, which takes focus as soon
