@@ -241,7 +241,14 @@
         cursor: default;
       }
 
-      #page-vocabquiz .vq-btn-row { display: flex; gap: 9px; flex-wrap: wrap; }
+      #page-vocabquiz .vq-btn-row { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 1rem; }
+      /* The verdict is followed by the Next button, which takes focus as soon
+         as it appears. Without the offset its focus ring is drawn over the
+         verdict box's border and the two look like they are overlapping. */
+      #page-vocabquiz .vq-btn:focus-visible {
+        outline: 2px solid var(--vq-tan2);
+        outline-offset: 3px;
+      }
       #page-vocabquiz .vq-btn {
         border-radius: 9px; padding: 0.62rem 1.3rem; font-family: inherit;
         font-size: 0.92rem; cursor: pointer; border: 1px solid var(--vq-line);
@@ -255,7 +262,7 @@
 
       /* verdict */
       #page-vocabquiz .vq-feedback {
-        margin-top: 1.1rem; border-radius: 11px; padding: 0.95rem 1.1rem; border: 1px solid;
+        margin-top: 0.15rem; border-radius: 11px; padding: 0.95rem 1.1rem; border: 1px solid;
       }
       #page-vocabquiz .vq-feedback.correct   { background: rgba(122,158,126,0.09); border-color: rgba(122,158,126,0.4); }
       #page-vocabquiz .vq-feedback.incorrect { background: rgba(180,75,65,0.09);  border-color: rgba(180,75,65,0.45); }
