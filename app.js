@@ -6394,11 +6394,46 @@ function generateNewQuestion() {
     }
 
     // Typing somewhere? Then the keys belong to that field, not to us.
+    // Text-entry controls only. The earlier version treated every <input> as
+    // typing, which quietly killed the whole keyboard layer: the toggles are
+    // checkboxes, so clicking one leaves focus on it, and from that moment
+    // Alt+R (and Alt+K, Space, the arrows — everything) did nothing until you
+    // clicked elsewhere on the page. Rōmaji is the toggle people notice it on,
+    // because it is the one you flick on, look at, and try to flick back off
+    // from the keyboard.
+    var VOCAB_TEXT_INPUTS = /^(text|search|email|url|tel|password|number)$/;
+
     function vocabTyping(e) {
       var el = e.target;
       if (!el) return false;
+      if (el.isContentEditable) return true;
       var tag = (el.tagName || '').toLowerCase();
-      return tag === 'input' || tag === 'textarea' || tag === 'select' || el.isContentEditable;
+      if (tag === 'textarea') return true;
+      // A <select> keeps its own arrow-key behaviour, so leave it alone.
+      if (tag === 'select') return true;
+      if (tag !== 'input') return false;
+      return VOCAB_TEXT_INPUTS.test((el.type || 'text').toLowerCase());
+    }
+
+    // Focus sitting on something Space is supposed to activate — a checkbox or
+    // a button. Space must keep toggling it natively there, so the Listen
+    // shortcut stands down rather than stealing the key.
+    function vocabSpaceTarget(e) {
+      var el = e.target;
+      if (!el) return false;
+      var tag = (el.tagName || '').toLowerCase();
+      if (tag === 'button') return true;
+      return tag === 'input' && /^(checkbox|radio|button|submit|reset)$/.test((el.type || '').toLowerCase());
+    }
+
+    // Alt changes what e.key reports on some keyboard layouts, and AltGr
+    // (Ctrl+Alt on German layouts) changes it again. e.code names the physical
+    // key, so Alt+R is Alt+R wherever you are — the Kana Drill already does
+    // this; the vocabulary layer did not.
+    function vocabLetter(e) {
+      var code = e.code || '';
+      if (/^Key[A-Z]$/.test(code)) return code.slice(3).toLowerCase();
+      return (e.key || '').toLowerCase();
     }
 
     function vocabToggle(id) {
@@ -6440,7 +6475,10 @@ function generateNewQuestion() {
           if (e.key === 'ArrowLeft')  { e.preventDefault(); previousCardVocab(); return; }
           if (e.key === ' ' || e.key === 'Spacebar') {
             // Space would otherwise scroll the page, or re-press whichever
-            // button was last clicked.
+            // button was last clicked. But when focus is on a toggle or a
+            // button, Space belongs to that control — taking it would break
+            // keyboard operation of the very switches this page is built on.
+            if (vocabSpaceTarget(e)) return;
             e.preventDefault();
             var listen = document.getElementById('vocab-listen');
             if (listen && listen.offsetParent !== null) listen.click();
@@ -6450,7 +6488,7 @@ function generateNewQuestion() {
         }
 
         // ---- Alt+… ----
-        var key = (e.key || '').toLowerCase();
+        var key = vocabLetter(e);
         if (key === 'i') {
           e.preventDefault();
           if (!e.repeat && !vocabInfoOpen()) openVocabInfo(true);
@@ -6482,8 +6520,10 @@ function generateNewQuestion() {
       });
 
       function endPeeks(e) {
-        var k = (e && e.key || '').toLowerCase();
-        var altGone = !e || k === 'alt' || !e.altKey;
+        // Same layout-proof key reading as the keydown side — otherwise a hold
+        // could be started by Alt+F and never released by letting F go.
+        var k = e ? vocabLetter(e) : '';
+        var altGone = !e || k === 'alt' || (e && e.key || '').toLowerCase() === 'alt' || !e.altKey;
         if (vocabInfoPeeking && (k === 'i' || altGone)) closeVocabInfo();
         if (vocabFlipPeeking && (k === 'f' || altGone)) {
           var card = document.getElementById('flashcard-vocab');

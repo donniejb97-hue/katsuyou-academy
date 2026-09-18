@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-4XWJSE6WX0');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Analytics: Clarity + Google, both configured in analytics.js -->
+  <script src="analytics.js"></script>
   <title>Conversation Practice — Talk with Katsu | Katsuyō Academy</title>
   <meta name="description" content="Practice real Japanese conversation with Katsu, your AI tutor. Roleplay everyday scenarios, chat freely, or drill a specific grammar form — then get an assessment of how you did.">
   <link rel="canonical" href="https://katsuyoacademy.com/talk">
@@ -395,7 +388,13 @@
             <select id="talk-voice-select"></select>
             <button type="button" id="talk-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
           </div>
-          <div class="talk-msgs" id="talk-msgs"></div>
+          <!-- data-clarity-mask: the conversation is rendered into <div>s, which
+               Clarity's Balanced mode would otherwise record as readable text.
+               Inputs are masked by Clarity in every mode already; these bubbles
+               are not, so they say so themselves. Keeping the attribute in the
+               markup rather than in the Clarity portal means the protection
+               travels with the file and cannot be toggled off by accident. -->
+          <div class="talk-msgs" id="talk-msgs" data-clarity-mask="true"></div>
           <form class="talk-form" id="talk-form">
             <input type="text" id="talk-input" class="talk-input" maxlength="400" placeholder="Type your reply in Japanese (or ask Katsu for help)…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
             <button type="button" id="talk-wait" class="talk-wait" onclick="TalkPractice.skipAhead()">⏳</button>
@@ -442,7 +441,9 @@
           <button class="report-close" onclick="TalkPractice.closeAssessment()" aria-label="Close">×</button>
         </div>
       </div>
-      <div class="report-body" id="talk-assessment-body"></div>
+      <!-- The assessment quotes the learner's own sentences back at them, so it
+           is masked for the same reason as the conversation itself. -->
+      <div class="report-body" id="talk-assessment-body" data-clarity-mask="true"></div>
     </div>
   </div>
 
@@ -746,9 +747,19 @@
         '- Then hold to it. If the student asks for something this place does not have, say so in character and ' +
         'point them somewhere that does, or offer what you do have. Do not quietly produce whatever they ask for: ' +
         'a real shop has limits, and talking your way around one is exactly the language worth practising.\n\n' +
+        'How the student writes — read this before judging anything:\n' +
+        '- The student types on a Latin keyboard through a rōmaji-to-kana converter, so they can only produce kana. ' +
+        'They physically cannot type kanji here. Writing ごはん instead of ご飯, にほん instead of 日本, or a whole sentence ' +
+        'in kana is CORRECT and completely normal. Never treat a missing kanji as a mistake, never mention kanji in the ' +
+        'FIX line, and never ask them to write something in kanji.\n' +
+        '- Read kana generously. Without kanji some words look identical, so take the reading that fits the ' +
+        'conversation rather than assuming they meant something odd.\n' +
+        '- Small spacing and punctuation differences are not mistakes either. Only grammar, vocabulary choice and ' +
+        'politeness level are worth correcting.\n\n' +
         'Rules for the FIX line:\n' +
         '- Write it in ' + lang + ', keep it to one or two short sentences, and be kind: name what was wrong and give the right version.\n' +
         '- Omit it entirely when the student made no mistake — do not praise every single turn.\n' +
+        '- Correct meaning, grammar and politeness. Never correct the script they wrote in.\n' +
         '- This is the only place you step outside the roleplay; never break character elsewhere.\n\n';
 
       if (state.mode === 'scenario') {
@@ -804,7 +815,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       }).then(function (res) {
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (!res.ok) {
+          // The backend puts the real reason in the body — an Anthropic billing
+          // message, a validation complaint, a rate limit. Throwing on the
+          // status alone threw that away and left "couldn't reach the server"
+          // as the only clue, which is true of every failure and useful for none.
+          return res.json().catch(function () { return null; }).then(function (body) {
+            var why = (body && (body.error || body.message)) || '';
+            throw new Error('HTTP ' + res.status + (why ? ' — ' + why : ''));
+          });
+        }
         return res.json();
       }).then(function (data) {
         var text = (data.feedback || '').trim();
