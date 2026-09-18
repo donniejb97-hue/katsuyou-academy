@@ -1161,6 +1161,167 @@
     window.KA_KanaInput = { attach: attachKanaInput, delay: KANA_N_DELAY };
 
     // ========================================================================
+    // SHARED MEMORY
+    // ------------------------------------------------------------------------
+    // One store for everything the site knows about what you can and can't do.
+    // Before this there were two — the Conjugator's and the Dojo's — and three
+    // pages with none at all, so missing a word in Vocabulary taught the site
+    // nothing and the Kanji page never heard about it.
+    //
+    // An entry is a THING plus a SKILL, because recognising 海 and producing
+    // うみ are different abilities:
+    //
+    //   vocab:海|reading     conj:行く|negative     dojo:counter_匹_8
+    //
+    // Two clocks, deliberately. Vocabulary and kanji are memorisation, which is
+    // what spaced repetition is for, so their intervals are measured in real
+    // days: get a card right and it moves out 1 → 3 → 7 → 16 → 35. The Dojo and
+    // the Conjugator drill rules you either apply or don't, where "come back in
+    // a few questions" is the useful horizon and a backlog across days would be
+    // meaningless. The clock is chosen by prefix, not by the caller.
+    // ========================================================================
+    var KA_Memory = (function () {
+      var KEY = 'ka_memory_v1';
+      var MIGRATED = 'ka_memory_migrated';
+      var DAY = 86400000;
+      // Streak → how many days until it is due again. Past the end, it stays
+      // at the last interval rather than disappearing for a year.
+      var INTERVALS = [1, 3, 7, 16, 35];
+      var SESSION_GAP = [2, 4, 7];       // same idea, measured in questions
+      var WEAK_AFTER = 1;                // one miss is enough to be weak
+      var KNOWN_STREAK = 4;
+
+      var store = {};
+      var asked = 0;                     // questions this session, for the session clock
+      var loaded = false;
+
+      function today() { return Math.floor(Date.now() / DAY); }
+      function clockFor(id) {
+        return /^(vocab|kanji):/.test(id) ? 'days' : 'session';
+      }
+
+      function load() {
+        if (loaded) return;
+        loaded = true;
+        try {
+          var raw = localStorage.getItem(KEY);
+          if (raw) store = JSON.parse(raw) || {};
+        } catch (e) { store = {}; }
+        migrate();
+      }
+
+      function save() {
+        try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {}
+      }
+
+      // ---- one-time import of the two stores that came before -------------
+      function migrate() {
+        try { if (localStorage.getItem(MIGRATED)) return; } catch (e) { return; }
+        var moved = 0;
+        // The Conjugator: "行く|negative" -> {misses, hits, ...}
+        try {
+          var w = JSON.parse(localStorage.getItem('katsuyo-weakspots') || '{}');
+          Object.keys(w).forEach(function (k) {
+            var e = w[k] || {};
+            var id = 'conj:' + k;
+            if (store[id]) return;
+            store[id] = { s: (e.misses || 0) + (e.hits || 0), m: e.misses || 0,
+                          k: e.hits || 0, d: 0, t: 0 };
+            moved++;
+          });
+        } catch (e) {}
+        // The Dojo: uniqueKey -> {misses, streak, due, q}
+        try {
+          var d = JSON.parse(localStorage.getItem('ka_dojo_weak') || '{}');
+          Object.keys(d).forEach(function (k) {
+            var e = d[k] || {};
+            var id = 'dojo:' + k;
+            if (store[id]) return;
+            store[id] = { s: (e.misses || 0) + (e.streak || 0), m: e.misses || 0,
+                          k: e.streak || 0, d: 0, t: 0 };
+            moved++;
+          });
+        } catch (e) {}
+        try { localStorage.setItem(MIGRATED, String(Date.now())); } catch (e) {}
+        if (moved) save();
+      }
+
+      function get(id) { load(); return store[id] || null; }
+
+      function state(id) {
+        var e = get(id);
+        if (!e || !e.s) return 'new';
+        if (e.k >= KNOWN_STREAK) return 'known';
+        if (e.m >= WEAK_AFTER && e.k < 2) return 'weak';
+        return 'learning';
+      }
+
+      function isDue(id) {
+        var e = get(id);
+        if (!e || !e.s) return false;               // never seen is not "due"
+        if (state(id) === 'known') return false;
+        return clockFor(id) === 'days' ? e.d <= today() : e.d <= asked;
+      }
+
+      // Record an answer. Correct extends the interval, wrong resets it.
+      function record(id, correct) {
+        load();
+        var e = store[id] || { s: 0, m: 0, k: 0, d: 0, t: 0 };
+        e.s += 1;
+        if (correct) {
+          e.k += 1;
+        } else {
+          e.m += 1;
+          e.k = 0;
+        }
+        var step = Math.min(e.k, INTERVALS.length) - 1;
+        if (clockFor(id) === 'days') {
+          e.d = today() + (correct ? INTERVALS[Math.max(step, 0)] : 1);
+        } else {
+          var gap = SESSION_GAP[Math.min(Math.max(e.k - 1, 0), SESSION_GAP.length - 1)];
+          e.d = asked + (correct ? gap : 2);
+        }
+        e.t = Date.now();
+        store[id] = e;
+        save();
+        return state(id);
+      }
+
+      function forget(id) { load(); delete store[id]; save(); }
+
+      // Counts across one family of entries, for the scope row.
+      function counts(prefix) {
+        load();
+        var out = { new: 0, learning: 0, weak: 0, known: 0, due: 0 };
+        Object.keys(store).forEach(function (id) {
+          if (id.indexOf(prefix) !== 0) return;
+          out[state(id)] += 1;
+          if (isDue(id)) out.due += 1;
+        });
+        return out;
+      }
+
+      function dueIds(prefix) {
+        load();
+        return Object.keys(store).filter(function (id) {
+          return id.indexOf(prefix) === 0 && isDue(id);
+        });
+      }
+
+      function tick() { asked += 1; }
+      function askedCount() { return asked; }
+
+      // Exposed for tests and for the eventual progress page.
+      function all() { load(); return store; }
+
+      return { get: get, state: state, isDue: isDue, record: record, forget: forget,
+               counts: counts, dueIds: dueIds, tick: tick, asked: askedCount,
+               all: all, clockFor: clockFor, KNOWN_STREAK: KNOWN_STREAK };
+    })();
+
+    window.KA_Memory = KA_Memory;
+
+    // ========================================================================
     // JAPANESE SPEECH
     // ------------------------------------------------------------------------
     // Uses the browser's own speech synthesis — no server, no API key, no
@@ -8216,9 +8377,13 @@ function generateNewQuestion() {
     }
     
     // Back to top button
+    // Guarded: this runs at the top level of app.js, so on a page without the
+    // button it used to throw and take every line of app.js after it with it —
+    // which is a whole page of dead features because of one missing <button>.
     (function() {
       var backToTop = document.getElementById('back-to-top');
-      
+      if (!backToTop) return;
+
       window.addEventListener('scroll', function() {
         if (window.scrollY > 400) {
           backToTop.classList.add('visible');
@@ -8226,7 +8391,7 @@ function generateNewQuestion() {
           backToTop.classList.remove('visible');
         }
       });
-      
+
       backToTop.addEventListener('click', function() {
         window.scrollTo({
           top: 0,
@@ -8706,6 +8871,549 @@ function generateNewQuestion() {
     });
 
 
+    // ========================================================================
+    // VOCABULARY QUIZ
+    // ------------------------------------------------------------------------
+    // The flashcard page shows you both sides and asks you to be honest with
+    // yourself. This makes you produce the answer, which is the part that
+    // actually tests anything, and it writes what happened to KA_Memory so the
+    // rest of the site knows about it.
+    //
+    // Three shapes, three different abilities, three separate memory entries:
+    //
+    //   meaning   日曜日 (にちようび)  -> "Sunday"          recognition, JP -> EN
+    //   reading   日曜日              -> にちようび         can you read the kanji
+    //   produce   "Sunday"            -> にちようび         recall, EN -> JP
+    //
+    // A card with no kanji has nothing to read, so it only gets two.
+    // ========================================================================
+    var VQ_PREFS_KEY = 'ka_vq_prefs';
+    var VQ_SKILLS = ['meaning', 'reading', 'produce'];
+
+    var vqScopes  = { due: true, weak: true, learning: false, fresh: false };
+    var vqTopics  = {};             // empty object = every topic
+    var vqQuestion = null;
+    var vqKana = null;
+    var vqAnswered = false;
+    var vqRecent = [];              // ids served lately, so nothing repeats immediately
+    var vqSession = { asked: 0, right: 0, streak: 0, best: 0, cleared: 0 };
+
+    // A card's identity has to survive the deck being reordered or added to,
+    // so it is the word itself rather than its index.
+    function vqCardId(card) {
+      return (card.japanese || '') + '/' + (card.kanji || '');
+    }
+    function vqId(card, skill) { return 'vocab:' + vqCardId(card) + '|' + skill; }
+
+    function vqSkillsFor(card) {
+      return card.kanji ? VQ_SKILLS : ['meaning', 'produce'];
+    }
+
+    function vqDeck() {
+      return (typeof vocabDataList !== 'undefined') ? vocabDataList : [];
+    }
+
+    function vqTopicList() {
+      var seen = {};
+      vqDeck().forEach(function (c) { if (c.topic) seen[c.topic] = (seen[c.topic] || 0) + 1; });
+      return seen;
+    }
+
+    function vqTopicOn(topic) {
+      var any = Object.keys(vqTopics).some(function (k) { return vqTopics[k]; });
+      return !any || !!vqTopics[topic];
+    }
+
+    // ---- preferences ------------------------------------------------------
+    function vqSavePrefs() {
+      try {
+        localStorage.setItem(VQ_PREFS_KEY, JSON.stringify({ scopes: vqScopes, topics: vqTopics }));
+      } catch (e) {}
+    }
+    function vqLoadPrefs() {
+      try {
+        var raw = JSON.parse(localStorage.getItem(VQ_PREFS_KEY) || 'null');
+        if (raw && raw.scopes) vqScopes = raw.scopes;
+        if (raw && raw.topics) vqTopics = raw.topics;
+      } catch (e) {}
+    }
+
+    // ---- what is eligible right now ---------------------------------------
+    // Returns [{card, skill, id, state, due}] for everything the current scope
+    // allows. Deliberately rebuilt per question: answering changes the pool.
+    function vqPool() {
+      var out = [];
+      var wantFresh = vqScopes.fresh;
+      vqDeck().forEach(function (card) {
+        if (!vqTopicOn(card.topic)) return;
+        vqSkillsFor(card).forEach(function (skill) {
+          var id = vqId(card, skill);
+          var st = KA_Memory.state(id);
+          var due = KA_Memory.isDue(id);
+          var ok = (vqScopes.due && due) ||
+                   (vqScopes.weak && st === 'weak') ||
+                   (vqScopes.learning && st === 'learning') ||
+                   (wantFresh && st === 'new');
+          if (ok) out.push({ card: card, skill: skill, id: id, state: st, due: due });
+        });
+      });
+      return out;
+    }
+
+    // Everything, ignoring scope — the fallback when a scope is empty, which
+    // it always is on a first visit.
+    function vqPoolAll() {
+      var out = [];
+      vqDeck().forEach(function (card) {
+        if (!vqTopicOn(card.topic)) return;
+        vqSkillsFor(card).forEach(function (skill) {
+          var id = vqId(card, skill);
+          out.push({ card: card, skill: skill, id: id,
+                     state: KA_Memory.state(id), due: KA_Memory.isDue(id) });
+        });
+      });
+      return out;
+    }
+
+    function vqCounts() {
+      var c = { due: 0, weak: 0, learning: 0, fresh: 0, total: 0 };
+      vqPoolAll().forEach(function (q) {
+        c.total++;
+        if (q.due) c.due++;
+        if (q.state === 'weak') c.weak++;
+        else if (q.state === 'learning') c.learning++;
+        else if (q.state === 'new') c.fresh++;
+      });
+      return c;
+    }
+
+    // ---- choosing the next question ---------------------------------------
+    function vqPick() {
+      var pool = vqPool();
+      var usedFallback = false;
+      if (!pool.length) { pool = vqPoolAll(); usedFallback = true; }
+      if (!pool.length) return null;
+
+      // Don't serve the same thing twice in a row, or the same word twice in a
+      // row under a different skill — both feel like the quiz is stuck.
+      var fresh = pool.filter(function (q) {
+        return vqRecent.indexOf(q.id) === -1 && vqRecent.indexOf(vqCardId(q.card)) === -1;
+      });
+      if (fresh.length) pool = fresh;
+
+      // Weight: due beats weak beats everything else. Sampling rather than
+      // sorting, so a session doesn't march through the same order every time.
+      var weighted = [];
+      pool.forEach(function (q) {
+        var w = q.due ? 5 : q.state === 'weak' ? 4 : q.state === 'learning' ? 2 : 1;
+        for (var i = 0; i < w; i++) weighted.push(q);
+      });
+      var chosen = weighted[Math.floor(Math.random() * weighted.length)];
+      chosen.fallback = usedFallback;
+      return chosen;
+    }
+
+    // ---- building the question --------------------------------------------
+    // The accepted answers for the English direction. A gloss like
+    // "Chin / Jaw" should take either, and "Father (one's own)" should take
+    // "father" too — the parenthetical is there to tell two cards apart on
+    // screen, not to be typed out.
+    function vqEnglishAnswers(gloss) {
+      var set = [];
+      String(gloss || '').split('/').forEach(function (part) {
+        var p = part.trim();
+        if (!p) return;
+        set.push(p);
+        var bare = p.replace(/\s*\([^)]*\)\s*/g, ' ').trim();
+        if (bare && bare !== p) set.push(bare);
+      });
+      return set;
+    }
+
+    function vqBuild(pick) {
+      var c = pick.card;
+      var written = c.kanji || c.katakana || c.japanese;
+      var q = { card: c, skill: pick.skill, id: pick.id, state: pick.state,
+                due: pick.due, fallback: !!pick.fallback, topic: c.topic };
+
+      if (pick.skill === 'meaning') {
+        q.promptMain = written;
+        q.promptSub  = (written !== c.japanese) ? c.japanese : '';
+        q.ask        = ct('vq_ask_meaning', 'What does this mean?');
+        q.answerLang = 'en';
+        q.answers    = vqEnglishAnswers(c.english);
+        q.shown      = c.english;
+        q.speak      = c.japanese;
+      } else if (pick.skill === 'reading') {
+        q.promptMain = written;
+        q.promptSub  = '';
+        q.ask        = ct('vq_ask_reading', 'How is this read?');
+        q.answerLang = 'jp';
+        q.answers    = [c.japanese];
+        q.shown      = c.japanese;
+        q.speak      = c.japanese;
+      } else {
+        q.promptMain = c.english;
+        q.promptSub  = '';
+        q.ask        = ct('vq_ask_produce', 'How do you say this in Japanese?');
+        q.answerLang = 'jp';
+        q.answers    = [c.japanese];
+        if (c.kanji) q.answers.push(c.kanji);
+        q.shown      = c.japanese + (c.kanji ? '  ' + c.kanji : '');
+        q.speak      = c.japanese;
+      }
+      return q;
+    }
+
+    function vqNext() {
+      var pick = vqPick();
+      if (!pick) { vqRenderEmpty(); return; }
+      vqQuestion = vqBuild(pick);
+      vqAnswered = false;
+      vqRecent.unshift(pick.id);
+      vqRecent.unshift(vqCardId(pick.card));
+      if (vqRecent.length > 14) vqRecent.length = 14;
+      vqRender();
+    }
+
+    // ---- checking ---------------------------------------------------------
+    function vqCheck() {
+      if (!vqQuestion || vqAnswered) return;
+      if (vqKana) vqKana.flush();
+      var input = document.getElementById('vq-input');
+      var given = (input.value || '').trim();
+      if (!given) return;
+
+      var lang = vqQuestion.answerLang;
+      var right = vqQuestion.answers.some(function (a) {
+        return dojoSameReading(given, a, lang);
+      });
+
+      vqAnswered = true;
+      vqSession.asked++;
+      KA_Memory.tick();
+      var before = KA_Memory.state(vqQuestion.id);
+      if (right) {
+        vqSession.right++;
+        vqSession.streak++;
+        if (vqSession.streak > vqSession.best) vqSession.best = vqSession.streak;
+      } else {
+        vqSession.streak = 0;
+      }
+      var after = KA_Memory.record(vqQuestion.id, right);
+      if (right && after === 'known' && before !== 'known') vqSession.cleared++;
+      vqRenderVerdict(right, before, after, given);
+    }
+
+    // How long until this comes back, in words rather than a date.
+    function vqWhenBack(id) {
+      var e = KA_Memory.get(id);
+      if (!e) return '';
+      if (KA_Memory.state(id) === 'known') return ct('vq_retired', 'retired — you know this one');
+      if (KA_Memory.clockFor(id) === 'days') {
+        var days = e.d - Math.floor(Date.now() / 86400000);
+        if (days <= 0) return ct('vq_again_now', 'again this session');
+        if (days === 1) return ct('vq_again_tomorrow', 'back tomorrow');
+        return ct('vq_again_days', 'back in {n} days').replace('{n}', days);
+      }
+      return ct('vq_again_soon', 'back shortly');
+    }
+
+    // ---- rendering --------------------------------------------------------
+    var VQ_SKILL_LABEL = {
+      meaning: { i18n: 'vq_skill_meaning', jp: '意味', en: 'meaning' },
+      reading: { i18n: 'vq_skill_reading', jp: '読み', en: 'reading' },
+      produce: { i18n: 'vq_skill_produce', jp: '日本語で', en: 'produce it' }
+    };
+    var VQ_STATE_LABEL = {
+      new:      { i18n: 'vq_state_new',      en: 'new' },
+      learning: { i18n: 'vq_state_learning', en: 'learning' },
+      weak:     { i18n: 'vq_state_weak',     en: 'weak' },
+      known:    { i18n: 'vq_state_known',    en: 'known' }
+    };
+
+    function vqEl(id) { return document.getElementById(id); }
+
+    function vqRenderEmpty() {
+      vqQuestion = null;
+      var main = vqEl('vq-prompt-main');
+      if (!main) return;
+      main.textContent = 'やった！';
+      vqEl('vq-prompt-sub').textContent = '';
+      vqEl('vq-ask').textContent = ct('vq_all_done',
+        'Nothing is due. Widen the scope above, or come back tomorrow.');
+      vqEl('vq-input-row').style.display = 'none';
+      vqEl('vq-btn-row').style.display = 'none';
+      vqEl('vq-feedback').style.display = 'none';
+    }
+
+    function vqRender() {
+      var q = vqQuestion;
+      if (!q) return;
+      var main = vqEl('vq-prompt-main');
+      if (!main) return;
+
+      // The Japanese side gets the serif face; an English prompt must not.
+      var jpSide = (q.skill !== 'produce');
+      main.className = 'vq-prompt-main' + (jpSide ? ' jp' : ' en');
+      main.innerHTML = jpSide ? parseKanjiText(dojoEscape(q.promptMain)) : dojoEscape(q.promptMain);
+      var sub = vqEl('vq-prompt-sub');
+      sub.className = 'vq-prompt-sub jp';
+      sub.textContent = q.promptSub || '';
+      sub.style.display = q.promptSub ? '' : 'none';
+      vqEl('vq-ask').textContent = q.ask;
+
+      var chip = vqEl('vq-skill');
+      var lab = VQ_SKILL_LABEL[q.skill];
+      chip.innerHTML = '<span class="jp">' + lab.jp + '</span> · ' + ct(lab.i18n, lab.en);
+
+      var st = vqEl('vq-state');
+      var sl = VQ_STATE_LABEL[q.state] || VQ_STATE_LABEL.new;
+      st.textContent = ct(sl.i18n, sl.en);
+      st.className = 'vq-pill vq-' + q.state;
+      st.style.display = (q.state === 'new' && !q.due) ? 'none' : '';
+
+      // English answers want a Latin keyboard, so the kana converter steps
+      // aside rather than fighting the person typing "Sunday".
+      var input = vqEl('vq-input');
+      var toKana = (q.answerLang === 'jp');
+      input.value = '';
+      input.className = 'vq-input' + (toKana ? ' jp' : ' en-mode');
+      input.placeholder = toKana ? ct('vq_ph_kana', 'Answer in kana — rōmaji converts as you type')
+                                 : ct('vq_ph_en', 'Answer in English');
+      var kanaBtn = vqEl('vq-kana-toggle');
+      kanaBtn.disabled = !toKana;
+      kanaBtn.classList.toggle('off', !toKana);
+      kanaBtn.title = toKana ? ct('vq_kana_on', 'Rōmaji → kana is on')
+                             : ct('vq_kana_off', 'This answer is in English');
+
+      vqEl('vq-input-row').style.display = '';
+      vqEl('vq-btn-row').style.display = '';
+      vqEl('vq-feedback').style.display = 'none';
+      vqEl('vq-next-row').style.display = 'none';
+      vqEl('vq-check-row').style.display = 'flex';
+
+      var speak = vqEl('vq-speak');
+      if (speak) {
+        // Never offer to read the answer out before it has been given.
+        var canHear = q.skill !== 'produce' && window.KA_Listen && KA_Listen.available();
+        speak.style.display = canHear ? '' : 'none';
+      }
+      vqPaintScopeRow();
+      try { input.focus(); } catch (e) {}
+    }
+
+    function vqRenderVerdict(right, before, after, given) {
+      var q = vqQuestion;
+      var box = vqEl('vq-feedback');
+      box.style.display = 'block';
+      box.className = 'vq-feedback ' + (right ? 'correct' : 'incorrect');
+      // The title is rewritten wholesale, so the "when" chip is rebuilt with it.
+      vqEl('vq-verdict-title').innerHTML =
+        (right ? '✨ ' : '✗ ') + dojoTip(right ? '正解！' : 'ざんねん...') +
+        '<span class="vq-when" id="vq-verdict-when"></span>';
+
+      var ansEl = vqEl('vq-verdict-answer');
+      ansEl.className = 'vq-verdict-answer' + (q.answerLang === 'en' ? '' : ' jp');
+      ansEl.innerHTML = q.answerLang === 'en' ? dojoEscape(q.shown)
+                                              : parseKanjiText(dojoEscape(q.shown));
+
+      var yours = vqEl('vq-verdict-yours');
+      if (!right && given) {
+        yours.style.display = '';
+        yours.innerHTML = ct('vq_you_wrote', 'You wrote') + ' <b>' + dojoEscape(given) + '</b>';
+      } else {
+        yours.style.display = 'none';
+      }
+
+      // The whole point of the two clocks is that they are visible.
+      var when = vqEl('vq-verdict-when');
+      when.textContent = vqWhenBack(q.id);
+      when.className = 'vq-when' + (after === 'known' ? ' cleared' : right ? ' ok' : ' no');
+
+      var gloss = vqEl('vq-verdict-gloss');
+      if (gloss) {
+        // Fill in the side of the card they were NOT shown and did NOT answer,
+        // so each question still teaches the whole word — without repeating
+        // what is already on screen two lines above.
+        var c = q.card;
+        var bits = [];
+        if (q.skill === 'meaning') {
+          // They saw the written form and gave the English; the reading is
+          // the part still missing — but only if it isn't what they were shown.
+          if (c.kanji || c.katakana) bits.push('<span class="jp">' + dojoEscape(c.japanese) + '</span>');
+        } else if (q.skill === 'reading') {
+          // They read it. They may still have no idea what it means.
+          bits.push(dojoEscape(c.english));
+        }
+        // 'produce' already prints the kana and the kanji, and the English was
+        // the question itself, so there is nothing left to add.
+        gloss.innerHTML = bits.join(' · ');
+        gloss.style.display = bits.length ? '' : 'none';
+      }
+
+      vqEl('vq-check-row').style.display = 'none';
+      vqEl('vq-next-row').style.display = 'flex';
+      var ansSpk = vqEl('vq-answer-speak');
+      if (ansSpk) ansSpk.style.display = (window.KA_Listen && KA_Listen.available()) ? '' : 'none';
+      vqPaintStats();
+      vqPaintScopeRow();
+      try { vqEl('vq-next-btn').focus(); } catch (e) {}
+    }
+
+    function vqSpeakPrompt() {
+      if (!vqQuestion || !window.KA_Listen) return;
+      KA_Listen.speak(vqQuestion.speak);
+    }
+    function vqSpeakAnswer() {
+      if (!vqQuestion || !window.KA_Listen) return;
+      KA_Listen.speak(vqQuestion.card.japanese);
+    }
+
+    // ---- scope row --------------------------------------------------------
+    var VQ_SCOPE_CHIPS = [
+      { key: 'due',      i18n: 'vq_scope_due',      en: '◷ Due now', gold: true },
+      { key: 'weak',     i18n: 'vq_scope_weak',     en: 'Weak' },
+      { key: 'learning', i18n: 'vq_scope_learning', en: 'Learning' },
+      { key: 'fresh',    i18n: 'vq_scope_new',      en: 'New' }
+    ];
+
+    function vqBuildScopeChips() {
+      var wrap = vqEl('vq-scope-chips');
+      if (!wrap) return;
+      wrap.innerHTML = '';
+      VQ_SCOPE_CHIPS.forEach(function (sc) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'vq-chip' + (sc.gold ? ' gold' : '');
+        b.dataset.scope = sc.key;
+        b.textContent = ct(sc.i18n, sc.en);
+        b.addEventListener('click', function () {
+          vqScopes[sc.key] = !vqScopes[sc.key];
+          // Turning everything off would leave nothing to ask.
+          if (!VQ_SCOPE_CHIPS.some(function (x) { return vqScopes[x.key]; })) vqScopes[sc.key] = true;
+          vqSavePrefs(); vqPaintScopeRow(); vqNext();
+        });
+        wrap.appendChild(b);
+      });
+
+      // One dropdown rather than nineteen chips. The wall of chips took up more
+      // room than the question did, which is the opposite of what a quiz page
+      // should look like.
+      var sel = vqEl('vq-topic-select');
+      if (sel) {
+        sel.innerHTML = '';
+        var counts = vqTopicList();
+        var total = Object.keys(counts).reduce(function (n, k) { return n + counts[k]; }, 0);
+        var all = document.createElement('option');
+        all.value = '';
+        all.textContent = ct('vq_all_topics', 'All topics') + '  (' + total + ')';
+        sel.appendChild(all);
+        Object.keys(counts).sort(function (a, b) {
+          return vqTopicName(a).localeCompare(vqTopicName(b));
+        }).forEach(function (t) {
+          var o = document.createElement('option');
+          o.value = t;
+          o.textContent = ct('vq_topic_' + t, vqTopicName(t)) + '  (' + counts[t] + ')';
+          sel.appendChild(o);
+        });
+        sel.value = Object.keys(vqTopics).filter(function (k) { return vqTopics[k]; })[0] || '';
+        sel.addEventListener('change', function () {
+          vqTopics = {};
+          if (this.value) vqTopics[this.value] = true;
+          vqSavePrefs(); vqPaintScopeRow(); vqNext();
+        });
+      }
+
+      // The scope chips fold away, and stay folded unless you opened them.
+      var fbtn = vqEl('vq-filter-btn');
+      var fpanel = vqEl('vq-filters');
+      if (fbtn && fpanel) {
+        var open = false;
+        try { open = localStorage.getItem('ka_vq_filters_open') === '1'; } catch (e) {}
+        var paint = function () {
+          fpanel.style.display = open ? '' : 'none';
+          fbtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+        paint();
+        fbtn.addEventListener('click', function () {
+          open = !open;
+          try { localStorage.setItem('ka_vq_filters_open', open ? '1' : '0'); } catch (e) {}
+          paint();
+        });
+      }
+      vqPaintScopeRow();
+    }
+
+    var VQ_TOPIC_NAMES = {
+      general: 'General', location: 'Location', food: 'Food & drink', taste: 'Taste',
+      time: 'Time', frequency: 'Frequency', degree: 'Degree', clothing: 'Clothing',
+      weather: 'Weather', transport: 'Transport', colors: 'Colours', jobs: 'Jobs',
+      body: 'Body', home: 'Home', hobbies: 'Hobbies', countries: 'Countries',
+      school: 'School', subjects: 'Subjects', family: 'Family'
+    };
+    function vqTopicName(t) { return VQ_TOPIC_NAMES[t] || t; }
+
+    function vqPaintScopeRow() {
+      var wrap = vqEl('vq-scope-chips');
+      if (wrap) Array.prototype.forEach.call(wrap.querySelectorAll('.vq-chip'), function (b) {
+        b.classList.toggle('on', !!vqScopes[b.dataset.scope]);
+      });
+      var sel2 = vqEl('vq-topic-select');
+      if (sel2) sel2.value = Object.keys(vqTopics).filter(function (k) { return vqTopics[k]; })[0] || '';
+      var sub = vqEl('vq-scope-sub');
+      if (!sub) return;
+      var c = vqCounts();
+      // One short line. A breakdown is only worth reading once there is
+      // something in it, so zeros are left out rather than printed as "0 due".
+      var bits = [];
+      if (c.due) bits.push(c.due + ' ' + ct('vq_due', 'due'));
+      if (c.weak) bits.push(c.weak + ' ' + ct('vq_weak', 'weak'));
+      if (c.learning) bits.push(c.learning + ' ' + ct('vq_learning', 'learning'));
+      sub.textContent = bits.length ? bits.join(' · ')
+        : ct('vq_nothing_yet', 'nothing missed yet — everything is in play');
+    }
+
+    function vqPaintStats() {
+      var el = vqEl('vq-stats');
+      if (!el) return;
+      var pct = vqSession.asked ? Math.round(vqSession.right / vqSession.asked * 100) : 0;
+      el.textContent = vqSession.right + '/' + vqSession.asked +
+        (vqSession.asked ? '  ·  ' + pct + '%' : '') +
+        (vqSession.streak > 1 ? '  ·  🔥 ' + vqSession.streak : '');
+    }
+
+    // ---- init -------------------------------------------------------------
+    function initVocabQuiz() {
+      vqLoadPrefs();
+      vqBuildScopeChips();
+      var input = vqEl('vq-input');
+      if (input && window.KA_KanaInput) {
+        vqKana = KA_KanaInput.attach(input, {
+          enabled: function () { return vqQuestion && vqQuestion.answerLang === 'jp'; }
+        });
+      }
+      var kanaBtn = vqEl('vq-kana-toggle');
+      if (kanaBtn) kanaBtn.addEventListener('click', function () {
+        if (input) try { input.focus(); } catch (e) {}
+      });
+
+      // Enter checks, then Enter moves on. The verdict steals focus to the
+      // Next button, so this listens on the document rather than the field.
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter' || e.altKey || e.ctrlKey || e.metaKey) return;
+        if (!vqEl('vq-input')) return;
+        var tag = (e.target && e.target.tagName || '').toLowerCase();
+        if (tag === 'textarea') return;
+        e.preventDefault();
+        if (vqAnswered) vqNext(); else vqCheck();
+      });
+
+      if (window.KA_Speech) KA_Speech.onReady(function () { if (vqQuestion) vqRender(); });
+      vqNext();
+      vqPaintStats();
+    }
+
     // ============ MULTI-PAGE INIT ============
     // These used to run when showPage() switched tabs; now each page
     // initializes itself on load.
@@ -8716,6 +9424,9 @@ function generateNewQuestion() {
       if (document.getElementById('page-kanji') && typeof initKanji === 'function' &&
           typeof kanjiDataList !== 'undefined' && kanjiDataList.length > 0) {
         initKanji();
+      }
+      if (document.getElementById('page-vocabquiz') && typeof initVocabQuiz === 'function') {
+        initVocabQuiz();
       }
       if (document.getElementById('page-datedojo') && typeof generateDojoQuestion === 'function') {
         initDojoExtras();

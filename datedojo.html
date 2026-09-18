@@ -1,17 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XWJSE6WX0"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-4XWJSE6WX0');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Analytics: Clarity + Google, both configured in analytics.js -->
+  <script src="analytics.js"></script>
   <title>Date Dojo — Japanese Dates, Days & Months | Katsuyō Academy</title>
   <meta name="description" content="Drill Japanese dates, days of the week, and months with interactive quizzes.">
   <link rel="canonical" href="https://katsuyoacademy.com/datedojo">
@@ -45,6 +38,7 @@
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
         <a class="nav-link active" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
         <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
         <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
@@ -218,6 +212,57 @@
         border-radius: 4px;
         cursor: help;
       }
+      /* ---- scope picker ---- */
+      .dojo-scope { max-width: 720px; margin: 0 auto 22px; padding: 16px 18px;
+        background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px; }
+      .dojo-scope-label { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+        color: rgba(255,255,255,0.3); margin-bottom: 10px; }
+      .dojo-scope-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+      .dojo-chip { border: 1px solid rgba(255,255,255,0.16); background: transparent;
+        color: rgba(255,255,255,0.75); border-radius: 999px; padding: 0.42rem 0.95rem;
+        font-family: inherit; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
+      .dojo-chip:hover { border-color: rgba(255,255,255,0.4); }
+      .dojo-chip.on { background: #e8344e; border-color: #e8344e; color: #fff; font-weight: 600; }
+      .dojo-chip.weak { border-color: #c9a962; color: #c9a962; }
+      .dojo-chip.weak.on { background: #c9a962; border-color: #c9a962; color: #1a1a1a; }
+      .dojo-scope-sub { font-size: 0.78rem; color: rgba(255,255,255,0.3); }
+
+      /* ---- question row, speaker, weak badge ---- */
+      /* No wrapping: a long question pushed the speaker onto its own line,
+         between the Japanese and the English, which read as a third element
+         rather than a control belonging to the question. */
+      .dojo-question-row { display: flex; align-items: flex-start; gap: 12px; }
+      .dojo-question-row .dojo-question-text { flex: 1; min-width: 0; }
+      .dojo-question-row .dojo-speak { margin-top: 0.35rem; }
+      .dojo-question-row .dojo-weak-badge { flex: 0 0 auto; margin-top: 0.6rem; }
+      .dojo-speak { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+        color: rgba(255,255,255,0.7); border-radius: 8px; width: 36px; height: 36px;
+        cursor: pointer; font-size: 0.95rem; flex: 0 0 auto; transition: all 0.15s; }
+      .dojo-speak:hover { border-color: #e8344e; color: #e8344e; }
+      .dojo-speak.playing { border-color: #e8344e; color: #e8344e; }
+      .dojo-speak-sm { width: 28px; height: 28px; font-size: 0.8rem; margin-left: 8px;
+        vertical-align: middle; }
+      .dojo-weak-badge { font-size: 0.72rem; border: 1px solid #c9a962; color: #c9a962;
+        border-radius: 999px; padding: 0.15rem 0.6rem; }
+      .dojo-weak-note { font-size: 0.75rem; border: 1px solid #c9a962; color: #c9a962;
+        border-radius: 999px; padding: 0.12rem 0.6rem; margin-left: 10px; white-space: nowrap; }
+      .dojo-weak-note.cleared { border-color: #22c55e; color: #22c55e; }
+
+      /* ---- kana toggle beside the answer box ---- */
+      .dojo-input-row { display: flex; gap: 8px; align-items: stretch; }
+      .dojo-input-row .dojo-answer-input { flex: 1; }
+      .dojo-kana-toggle { flex: 0 0 auto; width: 3.1rem; border: 1.5px solid #7a9e7e;
+        background: #7a9e7e; color: #fff; border-radius: 9px; font-size: 1.15rem;
+        font-family: 'Noto Serif JP', serif; cursor: pointer; transition: all 0.15s; }
+      .dojo-kana-toggle.off { background: transparent; color: rgba(255,255,255,0.4);
+        border-color: rgba(255,255,255,0.18); }
+      .dojo-kana-toggle:disabled { cursor: default; opacity: 0.55; }
+      /* An English answer looks different, so you never wonder which language
+         the box wants. */
+      .dojo-answer-input.en-mode { border-color: rgba(143,184,216,0.6) !important;
+        font-family: 'Outfit', sans-serif !important; }
+
       .dojo-question-text {
         font-family: 'Noto Serif JP', serif;
         font-size: 2rem;
@@ -690,6 +735,9 @@
         .dojo-title { font-size: 2rem; }
         .dojo-subtitle { font-size: 0.7rem; letter-spacing: 0.2em; margin-top: 12px; }
         .dojo-question-text { font-size: 1.3rem; }
+        .dojo-scope { padding: 13px 14px; }
+        .dojo-chip { font-size: 0.8rem; padding: 0.5rem 0.85rem; }
+        .dojo-kana-toggle { width: 3rem; min-height: 44px; }
         .dojo-question-card { padding: 20px; }
         .dojo-reference-item { min-width: 100px; white-space: normal; }
         .dojo-stats-row { gap: 12px; margin-bottom: 24px; }
@@ -758,19 +806,41 @@
           </button>
         </div>
 
+        <!-- Scope picker: choose what you drill -->
+        <div class="dojo-scope" id="dojo-scope">
+          <div class="dojo-scope-label" data-i18n="dojo_practise">Practise</div>
+          <div class="dojo-scope-chips" id="dojo-scope-chips"></div>
+          <div class="dojo-scope-sub" id="dojo-scope-sub"></div>
+        </div>
+
         <!-- Question Card -->
         <div class="dojo-question-card">
           <div class="dojo-question-type" id="dojo-question-type" title="">今日の日付</div>
-          <div class="dojo-question-text" id="dojo-question-text">今日は何日ですか？</div>
-          <div class="dojo-question-text-en" id="dojo-question-text-en" data-i18n="today_q">What is today's date?</div>
+          <div class="dojo-question-row">
+            <div class="dojo-question-text" id="dojo-question-text">今日は何日ですか？</div>
+            <button type="button" class="dojo-speak" id="dojo-speak" style="display:none;"
+                    onclick="speakDojoQuestion()" aria-label="Listen to the question"
+                    title="Listen to the whole question">🔊</button>
+            <span class="dojo-weak-badge" id="dojo-weak-badge" style="display:none;"
+                  data-i18n="dojo_weak_badge">seen before</span>
+          </div>
+          <!-- No data-i18n here on purpose: this line is written per question
+               by the generator, and the i18n observer would stomp it back to a
+               fixed string ~30ms later. -->
+          <div class="dojo-question-text-en" id="dojo-question-text-en"></div>
 
-          <input 
-            type="text" 
-            class="dojo-answer-input" 
-            id="dojo-answer-input"
-            placeholder="答えを入力..."
-            onkeypress="handleDojoKeyPress(event)"
-          >
+          <div class="dojo-input-row">
+            <input 
+              type="text" 
+              class="dojo-answer-input" 
+              id="dojo-answer-input"
+              placeholder="答えを入力..."
+              autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+              onkeypress="handleDojoKeyPress(event)"
+            >
+            <button type="button" class="dojo-kana-toggle" id="dojo-kana-toggle"
+                    onclick="toggleDojoRomaji()" title="Rōmaji → kana">あ</button>
+          </div>
           <div class="dojo-input-hint" id="dojo-input-hint">フルセンテンスで答えてね！（〜です / 〜でした）</div>
 
           <!-- Hint Box -->
@@ -789,6 +859,9 @@
             <div class="dojo-feedback-title" id="dojo-feedback-title"></div>
             <div class="dojo-feedback-answer">
               <span id="dojo-feedback-label"></span>: <strong id="dojo-feedback-answer"></strong>
+              <button type="button" class="dojo-speak dojo-speak-sm" id="dojo-answer-speak"
+                      style="display:none;" onclick="speakDojoAnswer()" aria-label="Listen">🔊</button>
+              <span class="dojo-weak-note" id="dojo-weak-note" style="display:none;"></span>
             </div>
           </div>
 
@@ -922,6 +995,7 @@
 
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
+  <script src="romaji.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
