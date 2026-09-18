@@ -216,6 +216,11 @@
     .talk-pron-dismiss { background: none; border: none; color: var(--text-light); cursor: pointer;
       font-size: 0.78rem; padding: 0.2rem 0; text-decoration: underline; }
     .talk-pron-note { color: var(--text-light); margin-top: 0.45rem; font-size: 0.78rem; }
+    /* What Hide leaves behind: enough to know the score is still there, small
+       enough to be out of the way. */
+    .talk-pron-reopen { background: none; border: none; padding: 0; cursor: pointer;
+      font-family: inherit; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.02em; }
+    .talk-pron-reopen:hover { color: var(--accent); text-decoration: underline; }
 
     .talk-send { background: var(--accent); color: white; border: none; border-radius: 8px; padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; }
     .talk-send:hover:not(:disabled) { background: var(--accent-soft); }
@@ -784,6 +789,9 @@
         'Never deflect with a vague "we have many things" or invent a placeholder like "Movie A". Real, recognisable names, ' +
         'the kind that setting would actually have.\n' +
         '- Invent plausible specifics freely — prices, times, seat numbers — the point is a realistic conversation to practise on.\n' +
+        '- Never ask about the outcome of something you have only just done. If you set the food down this turn, ' +
+        'you do not also ask whether it is delicious — they have not tasted it yet. Put it down, say どうぞ, and ' +
+        'let them speak. The question comes a turn or two later, if at all.\n' +
         '- Let the situation take the time it would really take, one step per turn. A waiter takes the order, ' +
         'repeats it back to check, and says they will bring it — the tea does not arrive in the same breath as the ' +
         'order. A clerk goes to look in the stock room. A receptionist checks the diary. Do not jump ahead to the ' +
@@ -1594,13 +1602,21 @@
       // stranded the converter was dead for the rest of the session.
         if (e && e.isComposing === false) delete this.dataset.composing;
         if (!romajiOn() || (e && e.isComposing) || this.dataset.composing) return;
-        // Only rewrite while typing at the end, never mid-edit. selectionStart
-        // can be null in some contexts — treat that as "at the end".
+        // Convert what is behind the caret and leave the rest alone. This used
+        // to bail entirely unless the caret sat at the very end, which was fine
+        // while the only way to fill this box was typing into an empty one.
+        // Speaking changed that: the sentence arrives whole, you click into the
+        // middle to fix a particle, and the converter was simply switched off —
+        // so "wo" stayed as "wo" until Send rewrote it. selectionStart can be
+        // null in some contexts; treat that as the end.
         var caret = this.selectionStart;
-        if (caret != null && caret !== this.value.length) return;
-        var converted = convertForMode(this.value, false);
-        if (converted !== this.value) {
-          this.value = converted;
+        if (caret == null) caret = this.value.length;
+        var head = this.value.slice(0, caret);
+        var tail = this.value.slice(caret);
+        var converted = convertForMode(head, false);
+        if (converted !== head) {
+          this.value = converted + tail;
+          // Keep the caret where the typing was, not at the end of the line.
           this.setSelectionRange(converted.length, converted.length);
         }
       });
@@ -1620,7 +1636,7 @@
       input.value = '';
       // The microphone keeps running across sends, so tell it the box is empty
       // now — otherwise the sentence just sent reappears in front of the next
-      // one. Also clears the score, which belonged to the sentence just sent.
+      // one. The pronunciation score deliberately stays on screen.
       if (window.TalkSpeech && TalkSpeech.replySent) TalkSpeech.replySent();
       disarmWait();
       removeContinueCard();   // they answered it by just carrying on
@@ -1954,12 +1970,13 @@
     }
 
     function closeAssessment() {
-      // Closing the report closes the report — nothing more. It used to drop
-      // you back at the menu, which threw the conversation away as the price of
-      // dismissing a dialog: no way to re-read what you said, or to fetch the
-      // report again. The way back is the Stop button, which is still there,
-      // and taking it is the learner's decision rather than ours.
+      // Closing the report hands you back the menu you opened it from, so the
+      // three choices are still in front of you: keep talking, pick a different
+      // practice, or read the report again. It used to jump straight to the
+      // setup screen, which threw the conversation away as the price of
+      // dismissing a dialog — nothing to re-read, and no way back to the report.
       $('talk-assessment-modal').classList.remove('active');
+      $('talk-stop-modal').classList.add('active');
     }
 
     function init() {
@@ -2149,6 +2166,7 @@
     var available = false;
     var baseText = '';        // what was already typed before we started
     var livePartial = false;  // a partial result is currently on screen
+    var lastAssessment = null; // kept so Hide can be undone
 
     function $(id) { return document.getElementById(id); }
     function t(key, fallback) {
@@ -2216,9 +2234,28 @@
       box.appendChild(p);
     }
 
+    // Fully gone: the score belonged to a sentence that has now been sent.
     function clearFeedback() {
       var box = $('talk-pron');
       if (box) { box.hidden = true; box.innerHTML = ''; }
+      lastAssessment = null;
+    }
+
+    // Hide, on the other hand, must be reversible. Destroying the score meant
+    // dismissing it was permanent until you spoke again, which is a trap: the
+    // button looks like "get this out of my way", not "throw this away".
+    function collapseFeedback() {
+      var box = $('talk-pron');
+      if (!box || !lastAssessment) return;
+      box.innerHTML = '';
+      box.hidden = false;
+      var bar = document.createElement('button');
+      bar.type = 'button';
+      bar.className = 'talk-pron-reopen';
+      bar.textContent = t('talk_pron_label', 'Pronunciation') + ' ' + lastAssessment.overall + '  ·  ' +
+                        t('talk_pron_show', 'show');
+      bar.onclick = function () { showAssessment(lastAssessment.json); };
+      box.appendChild(bar);
     }
 
     // Azure's 0-100 scores, in the three bands a learner can act on.
@@ -2239,6 +2276,7 @@
       box.innerHTML = '';
 
       var overall = Math.round(pa.PronScore != null ? pa.PronScore : pa.AccuracyScore || 0);
+      lastAssessment = { json: json, overall: overall };
 
       var head = document.createElement('div');
       head.className = 'talk-pron-head';
@@ -2289,7 +2327,7 @@
       dismiss.type = 'button';
       dismiss.className = 'talk-pron-dismiss';
       dismiss.textContent = t('talk_pron_hide', 'Hide');
-      dismiss.onclick = clearFeedback;
+      dismiss.onclick = collapseFeedback;
       box.appendChild(dismiss);
     }
 
@@ -2355,7 +2393,11 @@
 
         recognizer.recognizing = function (_s, e) {
           if (!listening || !e.result || !e.result.text) return;
-          if (!livePartial && !stillOurs()) adoptBox();   // typed or cleared since last time
+          // Check every time, partial in flight or not. Guarding this behind
+          // !livePartial meant that clearing the box to redo a sentence, while
+          // a partial was still on screen, was ignored — and the cleared text
+          // came straight back on the next word.
+          if (!stillOurs()) adoptBox();
           livePartial = true;
           input.value = baseText + e.result.text;
         };
@@ -2468,7 +2510,11 @@
       // Called by the page when the reply box is emptied by Send. Continuous
       // recognition survives a send, so without this the microphone would
       // keep building on text that is no longer on screen.
-      replySent: function () { baseText = ''; livePartial = false; clearFeedback(); },
+      // Sending clears the box, not the score. The score is the record of how
+      // that sentence sounded, and it is most useful precisely after you have
+      // sent it — it stays until the next thing you say replaces it, or you
+      // hide it yourself.
+      replySent: function () { baseText = ''; livePartial = false; },
       isListening: function () { return listening; },
       isAvailable: function () { return available; },
       // Exposed for the tests, which stand in for the SDK and the token.
