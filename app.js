@@ -956,8 +956,8 @@
         ga:'が', gi:'ぎ', gu:'ぐ', ge:'げ', go:'ご',
         sa:'さ', shi:'し', si:'し', su:'す', se:'せ', so:'そ',
         za:'ざ', ji:'じ', zi:'じ', zu:'ず', ze:'ぜ', zo:'ぞ',
-        ta:'た', chi:'ち', ti:'ち', tsu:'つ', tu:'つ', te:'て', to:'と',
-        da:'だ', di:'ぢ', du:'づ', dzu:'づ', de:'で', "do":'ど',
+        ta:'た', chi:'ち', tsu:'つ', tu:'つ', te:'て', to:'と',
+        da:'だ', du:'づ', dzu:'づ', de:'で', "do":'ど',
         na:'な', ni:'に', nu:'ぬ', ne:'ね', no:'の',
         ha:'は', hi:'ひ', fu:'ふ', hu:'ふ', he:'へ', ho:'ほ',
         ba:'ば', bi:'び', bu:'ぶ', be:'べ', bo:'ぼ',
@@ -965,7 +965,7 @@
         ma:'ま', mi:'み', mu:'む', me:'め', mo:'も',
         ya:'や', yu:'ゆ', yo:'よ',
         ra:'ら', ri:'り', ru:'る', re:'れ', ro:'ろ',
-        wa:'わ', wi:'ゐ', we:'ゑ', wo:'を',
+        wa:'わ', wi:'うぃ', we:'うぇ', wo:'を',
         // digraphs
         kya:'きゃ', kyu:'きゅ', kyo:'きょ',
         gya:'ぎゃ', gyu:'ぎゅ', gyo:'ぎょ',
@@ -982,6 +982,21 @@
         pya:'ぴゃ', pyu:'ぴゅ', pyo:'ぴょ',
         mya:'みゃ', myu:'みゅ', myo:'みょ',
         rya:'りゃ', ryu:'りゅ', ryo:'りょ',
+        // Foreign sounds. These only exist in loanwords, which is exactly what
+        // the katakana mode is for — without them ソファ, シェフ, ファックス
+        // and パーティー simply cannot be typed.
+        fa:'ふぁ', fi:'ふぃ', fe:'ふぇ', fo:'ふぉ',
+        she:'しぇ', je:'じぇ', jye:'じぇ', zye:'じぇ', che:'ちぇ', tye:'ちぇ',
+        tsa:'つぁ', tsi:'つぃ', tse:'つぇ', tso:'つぉ',
+        va:'ゔぁ', vi:'ゔぃ', vu:'ゔ', ve:'ゔぇ', vo:'ゔぉ',
+        // ti / di are ティ / ディ in Hepburn, which is the romanisation this
+        // site teaches everywhere else — ち and ぢ remain chi and dji/di-less.
+        // thi / dhi are the IME spellings and work too.
+        ti:'てぃ', thi:'てぃ', di:'でぃ', dhi:'でぃ',
+        twu:'とぅ', dwu:'どぅ',
+        // ゐ and ゑ are archaic and appear in no modern word; うぃ / うぇ are
+        // what wi and we mean in a loanword.
+        wha:'うぁ', whi:'うぃ', whe:'うぇ', who:'うぉ',
         // small kana, IME-style
         xa:'ぁ', xi:'ぃ', xu:'ぅ', xe:'ぇ', xo:'ぉ',
         xya:'ゃ', xyu:'ゅ', xyo:'ょ', xtsu:'っ', xtu:'っ',
@@ -1158,7 +1173,74 @@
       };
     }
 
-    window.KA_KanaInput = { attach: attachKanaInput, delay: KANA_N_DELAY };
+    // Katakana. Loanwords are written in it — バナナ, コーヒー, ジュース — and
+    // 94 cards in the vocabulary deck have a katakana answer, so a converter
+    // that only ever produces hiragana cannot type them.
+    var KATAKANA_SHIFT = 0x60;
+    function toKatakana(str) {
+      return String(str).replace(/[\u3041-\u3096]/g, function (c) {
+        return String.fromCharCode(c.charCodeAt(0) + KATAKANA_SHIFT);
+      });
+    }
+
+    // Convert in one of three modes. Katakana converts only the TRAILING run of
+    // Latin letters rather than the whole head, because converting everything
+    // would rewrite kana already sitting in the box — りんご + juusu came out
+    // リンゴジュウス instead of りんごジュース.
+    // In katakana a repeated vowel is written with ー, not with the vowel kana:
+    // ジュース, not ジュウス. Every kana's vowel, so the rule can be applied.
+    var KANA_VOWEL = (function () {
+      var map = {};
+      // The small kana matter: ティ ends in ィ, so パーティー needs ィ to count
+      // as an i-vowel or "paatii" comes out パーティイ.
+      var rows = { a: 'アカサタナハマヤラワガザダバパャヮァ', i: 'イキシチニヒミリギジヂビピィ',
+                   u: 'ウクスツヌフムユルグズヅブプュヴッゥ', e: 'エケセテネヘメレゲゼデベペェ',
+                   o: 'オコソトノホモヨロヲゴゾドボポョォ' };
+      Object.keys(rows).forEach(function (v) {
+        rows[v].split('').forEach(function (c) { map[c] = v; });
+      });
+      return map;
+    })();
+
+    // `before` is the character already sitting in the box just ahead of this
+    // fragment. Without it, typing j-u-u-s-u one key at a time converts the
+    // second う on its own, with no preceding kana to be long against, and you
+    // get ジュウス — which is how this read before the context was passed in.
+    function katakanaLongVowels(str, before) {
+      var out = '';
+      for (var i = 0; i < str.length; i++) {
+        var c = str[i];
+        var prev = out.slice(-1) || before || '';
+        // ウ after a う- or お-row kana, and any vowel kana after its own row,
+        // is a long vowel. ー never starts a word.
+        if (prev && KANA_VOWEL[prev]) {
+          var v = KANA_VOWEL[prev];
+          if ((c === 'ア' && v === 'a') || (c === 'イ' && v === 'i') ||
+              (c === 'ウ' && (v === 'u' || v === 'o')) ||
+              (c === 'エ' && v === 'e') || (c === 'オ' && v === 'o')) {
+            out += 'ー'; continue;
+          }
+        }
+        out += c;
+      }
+      return out;
+    }
+
+    function convertKana(text, final, mode) {
+      if (mode === 'off') return text;
+      if (mode !== 'katakana') return romajiToKana(text, final);
+      var m = /[A-Za-z'\-]+$/.exec(text);
+      if (!m) return text;
+      var head = text.slice(0, m.index);
+      return head + katakanaLongVowels(toKatakana(romajiToKana(m[0], final)), head.slice(-1));
+    }
+
+    window.KA_KanaInput = {
+      attach: attachKanaInput,
+      delay: KANA_N_DELAY,
+      toKatakana: toKatakana,
+      convert: convertKana
+    };
 
     // ========================================================================
     // SHARED MEMORY
@@ -7876,6 +7958,192 @@ function generateNewQuestion() {
       loadCardVocab();  // Reload current card with romaji
     }
 
+    // ========================================================================
+    // VOCABULARY SEARCH
+    // ------------------------------------------------------------------------
+    // 941 cards with no way to find one. Searches both directions at once —
+    // English, kana, kanji, katakana — and converts rōmaji as it goes, so
+    // "ringo", "りんご", "林檎" and "apple" all land on the same card. There is
+    // no separate mode to choose: the query is matched against everything.
+    // ========================================================================
+    var vsHits = [];
+    var vsIndex = -1;
+
+    // Vowel of each hiragana, so ー can be expanded into the sound it stands
+    // for. Dropping ー instead does not work: ジュース folds to じゅす while
+    // "juusu" gives じゅうす, and the two never meet.
+    var VS_VOWEL = (function () {
+      var map = {};
+      var rows = { 'あ': 'あかさたなはまやらわがざだばぱゃゎぁ', 'い': 'いきしちにひみりぎじぢびぴぃ',
+                   'う': 'うくすつぬふむゆるぐずづぶぷゅゔっぅ', 'え': 'えけせてねへめれげぜでべぺぇ',
+                   'お': 'おこそとのほもよろをごぞどぼぽょぉ' };
+      Object.keys(rows).forEach(function (v) {
+        rows[v].split('').forEach(function (c) { map[c] = v; });
+      });
+      return map;
+    })();
+
+    function vsFold(str) {
+      var s = String(str || '').toLowerCase().trim()
+        .replace(/[ァ-ヶ]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x60); })
+        // Spaces are kept, not stripped: "heavy rain" has to stay two words or
+        // the word-boundary ranking below has nothing to find. Japanese fields
+        // have no spaces in them anyway.
+        .replace(/\s+/g, ' ');
+      var out = '';
+      for (var i = 0; i < s.length; i++) {
+        var c = s[i];
+        if (c === 'ー') {
+          // An お-row kana lengthens with う, exactly as the spelling does.
+          var v = VS_VOWEL[out.slice(-1)];
+          out += (v === 'お' ? 'う' : (v || ''));
+        } else {
+          out += c;
+        }
+      }
+      return out;
+    }
+
+    // What the query could mean. A Latin query is also tried as rōmaji, so
+    // "ringo" finds りんご without the learner switching anything on.
+    function vsQueries(raw) {
+      var q = String(raw || '').trim();
+      if (!q) return [];
+      var out = [vsFold(q)];
+      if (/^[a-zA-Z' \-]+$/.test(q) && window.KA_toKana) {
+        var kana = vsFold(window.KA_toKana(q, true));
+        if (kana && out.indexOf(kana) === -1) out.push(kana);
+      }
+      return out.filter(Boolean);
+    }
+
+    function vsSearch(raw) {
+      var qs = vsQueries(raw);
+      if (!qs.length) return [];
+      var deck = (typeof vocabDataList !== 'undefined') ? vocabDataList : [];
+      var scored = [];
+      deck.forEach(function (card, i) {
+        var fields = [card.english, card.japanese, card.kanji, card.katakana];
+        var best = 0;
+        qs.forEach(function (q) {
+          fields.forEach(function (f) {
+            if (!f) return;
+            var v = vsFold(f);
+            if (!v) return;
+            // Exact beats starts-with beats contains, so "apple" puts Apple
+            // above Pineapple.
+            if (v === q) best = Math.max(best, 4);
+            else if (v.indexOf(q) === 0) best = Math.max(best, 3);
+            // A match at the start of a word beats one buried inside another
+            // word, so "rain" puts Heavy Rain above Bullet Train.
+            else if (v.indexOf(' ' + q) !== -1) best = Math.max(best, 2);
+            else if (v.indexOf(q) !== -1) best = Math.max(best, 1);
+          });
+        });
+        if (best) scored.push({ card: card, rank: best });
+      });
+      scored.sort(function (a, b) {
+        if (b.rank !== a.rank) return b.rank - a.rank;
+        return a.card.english.localeCompare(b.card.english);
+      });
+      return scored.map(function (s) { return s.card; });
+    }
+
+    function vsRender(raw) {
+      var box = document.getElementById('vocab-search-results');
+      if (!box) return;
+      vsHits = vsSearch(raw);
+      vsIndex = -1;
+      if (!String(raw || '').trim()) { box.style.display = 'none'; box.innerHTML = ''; return; }
+
+      if (!vsHits.length) {
+        box.style.display = 'block';
+        box.innerHTML = '<div class="vocab-search-empty">' +
+          ct('vocab_search_none', 'Nothing matches') + ' “' + dojoEscape(raw) + '”</div>';
+        return;
+      }
+      var shown = vsHits.slice(0, 25);
+      box.innerHTML = shown.map(function (c, i) {
+        var written = c.kanji || c.katakana || '';
+        return '<button type="button" class="vocab-search-hit" data-i="' + i + '">' +
+          '<span class="vs-jp jp">' + dojoEscape(c.japanese) + '</span>' +
+          (written ? '<span class="vs-kj jp">' + dojoEscape(written) + '</span>' : '<span class="vs-kj"></span>') +
+          '<span class="vs-en">' + dojoEscape(c.english) + '</span>' +
+          (c.level ? '<span class="vs-lv">' + c.level + '</span>' : '') +
+          '</button>';
+      }).join('') + (vsHits.length > shown.length
+        ? '<div class="vocab-search-more">' + (vsHits.length - shown.length) + ' ' +
+          ct('vocab_search_more', 'more') + '</div>' : '');
+      box.style.display = 'block';
+      Array.prototype.forEach.call(box.querySelectorAll('.vocab-search-hit'), function (b) {
+        b.addEventListener('click', function () { vsGoTo(shown[Number(b.dataset.i)]); });
+      });
+    }
+
+    // Jump the deck to a card. It may not be in the current shuffled order at
+    // all if a filter is on, so it gets put in front rather than searched for.
+    function vsGoTo(card) {
+      if (!card) return;
+      var at = filteredCardsVocab.indexOf(card);
+      if (at === -1) {
+        filteredCardsVocab = [card].concat(filteredCardsVocab);
+        at = 0;
+      }
+      currentIndexVocab = at;
+      isFlippedVocab = false;
+      loadCardVocab();
+      updateProgressVocab();
+      vsClose();
+      var card1 = document.getElementById('flashcard-vocab');
+      if (card1 && card1.scrollIntoView) card1.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function vsClose() {
+      var box = document.getElementById('vocab-search-results');
+      var input = document.getElementById('vocab-search');
+      if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+      if (input) input.value = '';
+      vsHits = []; vsIndex = -1;
+    }
+
+    function vsMove(delta) {
+      var box = document.getElementById('vocab-search-results');
+      if (!box) return;
+      var btns = box.querySelectorAll('.vocab-search-hit');
+      if (!btns.length) return;
+      vsIndex = (vsIndex + delta + btns.length) % btns.length;
+      Array.prototype.forEach.call(btns, function (b, i) { b.classList.toggle('on', i === vsIndex); });
+      btns[vsIndex].scrollIntoView({ block: 'nearest' });
+    }
+
+    function wireVocabSearch() {
+      var input = document.getElementById('vocab-search');
+      if (!input) return;
+      var t = null;
+      input.addEventListener('input', function () {
+        clearTimeout(t);
+        var v = this.value;
+        t = setTimeout(function () { vsRender(v); }, 90);
+      });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') { vsClose(); this.blur(); return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); vsMove(1); return; }
+        if (e.key === 'ArrowUp') { e.preventDefault(); vsMove(-1); return; }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          var pick = vsIndex >= 0 ? vsHits[vsIndex] : vsHits[0];
+          if (pick) vsGoTo(pick);
+        }
+      });
+      // Clicking away closes it, but clicking a result must not.
+      document.addEventListener('click', function (e) {
+        var box = document.getElementById('vocab-search-results');
+        if (!box || box.style.display === 'none') return;
+        if (e.target === input || box.contains(e.target)) return;
+        box.style.display = 'none';
+      });
+    }
+
     // Initialize vocabulary
     function initVocab() {
       filteredCardsVocab = shuffleArrayVocab(vocabDataList);
@@ -7883,6 +8151,7 @@ function generateNewQuestion() {
       updateProgressVocab();
       wireVocabListen();
       wireVocabKeys();
+      wireVocabSearch();
     }
 
     // Always speak the hiragana reading: it is the one field that is never
@@ -8902,6 +9171,11 @@ function generateNewQuestion() {
     var vqQuestion = null;
     var vqKana = null;
     var vqAnswered = false;
+    // 'kana' | 'katakana' | 'off'. Set per question from the shape of the
+    // expected answer — 94 cards answer in katakana — and overridable by the
+    // あ / ア / A key for anyone using their own IME.
+    var vqKanaMode = 'kana';
+    var vqKanaModeForced = null;   // what the learner last chose, if anything
     var vqRecent = [];              // ids served lately, so nothing repeats immediately
     var vqSession = { asked: 0, right: 0, streak: 0, best: 0, cleared: 0 };
 
@@ -9092,10 +9366,21 @@ function generateNewQuestion() {
       return q;
     }
 
+    var VQ_KATAKANA_ONLY = /^[\u30a1-\u30f6ー]+$/;
+
+    // A katakana answer wants a katakana keyboard. Anything the learner has
+    // explicitly chosen wins, because they may be running their own IME.
+    function vqModeFor(q) {
+      if (vqKanaModeForced) return vqKanaModeForced;
+      if (q.answerLang !== 'jp') return 'kana';
+      return VQ_KATAKANA_ONLY.test(q.answers[0] || '') ? 'katakana' : 'kana';
+    }
+
     function vqNext() {
       var pick = vqPick();
       if (!pick) { vqRenderEmpty(); return; }
       vqQuestion = vqBuild(pick);
+      vqKanaMode = vqModeFor(vqQuestion);
       vqAnswered = false;
       vqRecent.unshift(pick.id);
       vqRecent.unshift(vqCardId(pick.card));
@@ -9213,14 +9498,18 @@ function generateNewQuestion() {
       // it from a grey line of prose was the single most confusing thing here.
       var band = vqEl('vq-lang');
       band.className = 'vq-lang ' + (toKana ? 'jp' : 'en');
+      var kata = toKana && vqKanaMode === 'katakana';
       var tag = vqEl('vq-lang-tag');
       tag.className = 'vq-lang-tag' + (toKana ? ' jp' : '');
-      tag.textContent = toKana ? 'あ' : 'EN';
-      var kanaBtn = vqEl('vq-kana-toggle');
-      kanaBtn.disabled = !toKana;
-      kanaBtn.classList.toggle('off', !toKana);
-      kanaBtn.title = toKana ? ct('vq_kana_on', 'Rōmaji → kana is on')
-                             : ct('vq_kana_off', 'This answer is in English');
+      tag.textContent = toKana ? (kata ? 'ア' : 'あ') : 'EN';
+      if (toKana && q.skill !== 'meaning') {
+        // Say which script, because バナナ in hiragana is not wrong here but it
+        // is not how the word is written either.
+        vqEl('vq-ask').textContent = kata
+          ? ct('vq_ask_katakana', 'Answer in katakana')
+          : q.ask;
+      }
+      vqPaintKanaKey();
 
       vqEl('vq-input-row').style.display = '';
       vqEl('vq-btn-row').style.display = '';
@@ -9294,6 +9583,33 @@ function generateNewQuestion() {
       vqPaintStats();
       vqPaintScopeRow();
       try { vqEl('vq-next-btn').focus(); } catch (e) {}
+    }
+
+    var VQ_MODE_FACE = { kana: 'あ', katakana: 'ア', off: 'A' };
+    var VQ_MODE_NEXT = { kana: 'katakana', katakana: 'off', off: 'kana' };
+
+    function vqPaintKanaKey() {
+      var btn = vqEl('vq-kana-toggle');
+      if (!btn) return;
+      var jp = vqQuestion && vqQuestion.answerLang === 'jp';
+      btn.disabled = !jp;
+      btn.textContent = jp ? VQ_MODE_FACE[vqKanaMode] : 'あ';
+      btn.classList.toggle('off', !jp || vqKanaMode === 'off');
+      btn.classList.toggle('kata', jp && vqKanaMode === 'katakana');
+      btn.title = !jp ? ct('vq_kana_off', 'This answer is in English')
+        : vqKanaMode === 'katakana' ? ct('vq_mode_katakana', 'Katakana — type juusu for ジュース')
+        : vqKanaMode === 'off' ? ct('vq_mode_off', 'Off — use your own Japanese keyboard')
+        : ct('vq_mode_kana', 'Hiragana — type youka for ようか');
+      btn.setAttribute('aria-pressed', vqKanaMode === 'off' ? 'false' : 'true');
+    }
+
+    function vqCycleKanaMode() {
+      if (!vqQuestion || vqQuestion.answerLang !== 'jp') return;
+      vqKanaMode = VQ_MODE_NEXT[vqKanaMode];
+      vqKanaModeForced = vqKanaMode;
+      vqPaintKanaKey();
+      var input = vqEl('vq-input');
+      if (input) try { input.focus(); } catch (e) {}
     }
 
     function vqSpeakPrompt() {
@@ -9512,13 +9828,16 @@ function generateNewQuestion() {
       var input = vqEl('vq-input');
       if (input && window.KA_KanaInput) {
         vqKana = KA_KanaInput.attach(input, {
-          enabled: function () { return vqQuestion && vqQuestion.answerLang === 'jp'; }
+          enabled: function () {
+            return vqQuestion && vqQuestion.answerLang === 'jp' && vqKanaMode !== 'off';
+          },
+          convert: function (text, final) {
+            return KA_KanaInput.convert(text, final, vqKanaMode);
+          }
         });
       }
       var kanaBtn = vqEl('vq-kana-toggle');
-      if (kanaBtn) kanaBtn.addEventListener('click', function () {
-        if (input) try { input.focus(); } catch (e) {}
-      });
+      if (kanaBtn) kanaBtn.addEventListener('click', vqCycleKanaMode);
 
       // Enter checks, then Enter moves on. The verdict steals focus to the
       // Next button, so this listens on the document rather than the field.

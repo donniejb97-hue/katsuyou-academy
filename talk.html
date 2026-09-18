@@ -1549,22 +1549,11 @@
 
     function romajiOn() { return inputMode() !== 'off'; }
 
-    var KATAKANA_SHIFT = 0x60;
-    function toKatakana(s) {
-      return String(s).replace(/[\u3041-\u3096]/g, function (c) {
-        return String.fromCharCode(c.charCodeAt(0) + KATAKANA_SHIFT);
-      });
-    }
-
+    // The katakana converter lives in app.js now, shared with the vocabulary
+    // quiz — this was the only copy and the quiz needed the same behaviour.
+    function toKatakana(s) { return window.KA_KanaInput.toKatakana(s); }
     function convertForMode(text, final) {
-      if (inputMode() !== 'katakana') return window.KA_toKana(text, final);
-
-      // Only the trailing run of Latin letters becomes katakana. Converting the
-      // whole box would rewrite kana already sitting there — so りんご + juusu
-      // came out リンゴジュウス instead of りんごジュース.
-      var m = /[A-Za-z'\-]+$/.exec(text);
-      if (!m) return text;
-      return text.slice(0, m.index) + toKatakana(window.KA_toKana(m[0], final));
+      return window.KA_KanaInput.convert(text, final, inputMode());
     }
 
     var MODE_FACE = { kana: 'あ', katakana: 'ア', off: 'A' };

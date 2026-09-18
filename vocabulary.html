@@ -109,6 +109,71 @@
         color: #f0ede8;
         background: rgba(180, 75, 65, 0.12);
       }
+
+      .vocab-search-wrap {
+        position: relative;
+        max-width: 30rem;
+        margin: 1.1rem auto 0;
+        text-align: left;
+      }
+      .vocab-search {
+        width: 100%;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 0.62rem 0.9rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.92rem;
+        color: #f0ede8;
+      }
+      .vocab-search:focus { outline: none; border-color: #a08a6d; }
+      .vocab-search::placeholder { color: rgba(240, 237, 232, 0.32); }
+
+      .vocab-search-results {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0; right: 0;
+        max-height: 21rem;
+        overflow-y: auto;
+        background: #22222a;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        z-index: 60;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+      }
+      .vocab-search-hit {
+        display: flex;
+        align-items: baseline;
+        gap: 0.65rem;
+        width: 100%;
+        background: none;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 0.5rem 0.8rem;
+        font-family: 'Outfit', sans-serif;
+        color: #f0ede8;
+        text-align: left;
+        cursor: pointer;
+      }
+      .vocab-search-hit:last-child { border-bottom: none; }
+      .vocab-search-hit:hover, .vocab-search-hit.on { background: rgba(180, 75, 65, 0.16); }
+      .vocab-search-hit .vs-jp { font-size: 1.02rem; min-width: 7.5rem; }
+      .vocab-search-hit .vs-kj { color: #a08a6d; font-size: 0.95rem; min-width: 4.5rem; }
+      .vocab-search-hit .vs-en { color: rgba(240, 237, 232, 0.6); font-size: 0.85rem; flex: 1; }
+      .vocab-search-hit .vs-lv {
+        font-size: 0.66rem; font-weight: 700; color: #7a9e7e;
+        border: 1px solid rgba(122, 158, 126, 0.45); border-radius: 999px;
+        padding: 0.02rem 0.4rem;
+      }
+      .vocab-search-empty, .vocab-search-more {
+        padding: 0.65rem 0.8rem;
+        color: rgba(240, 237, 232, 0.4);
+        font-size: 0.83rem;
+      }
+      @media (max-width: 640px) {
+        .vocab-search-hit .vs-jp { min-width: 5.5rem; }
+        .vocab-search-hit .vs-kj { min-width: 0; }
+      }
       
       .japanese-title {
         display: block;
@@ -684,6 +749,16 @@
         </h1>
         <!-- The cards show you both sides; the quiz makes you produce the answer. -->
         <a class="vocab-quiz-cta" href="/vocabquiz" data-i18n="vocab_try_quiz">Quiz yourself on these words →</a>
+
+        <!-- 941 cards with no way to find one. English and Japanese at once:
+             "ringo", "りんご", "林檎" and "apple" all land on the same card. -->
+        <div class="vocab-search-wrap">
+          <input type="text" id="vocab-search" class="vocab-search"
+                 autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                 data-i18n-placeholder="vocab_search_ph"
+                 placeholder="Search — apple, ringo, りんご or 林檎">
+          <div id="vocab-search-results" class="vocab-search-results" style="display:none;"></div>
+        </div>
       </div>
 
             <!-- Toggle Controls -->
