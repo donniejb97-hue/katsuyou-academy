@@ -110,12 +110,23 @@
     .rd-show-ev { background: none; border: 1px solid rgba(201,169,98,0.8); color: #7a5f1f; border-radius: 999px; padding: 0.2rem 0.75rem; font-family: inherit; font-size: 0.82rem; cursor: pointer; }
     .rd-show-ev:hover { background: rgba(201,169,98,0.15); }
 
-    /* ---- pick / write switch ---- */
-    .rd-qmode { display: inline-flex; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 999px; overflow: hidden; background: white; }
-    .rd-qmode button { border: none; background: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text-light); padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-    .rd-qmode button.on { background: var(--ink); color: var(--paper); }
-    .rd-qmode button:not(.on):hover { color: var(--ink); }
-    .rd-qmode .jp { font-size: 0.95em; margin-right: 0.3rem; }
+    /* ---- segmented switch, used by the settings panel and the question head ---- */
+    .rd-seg, .rd-qmode { display: inline-flex; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 999px; overflow: hidden; background: white; }
+    .rd-seg button, .rd-qmode button { border: none; background: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text-light); padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .rd-seg button.on, .rd-qmode button.on { background: var(--ink); color: var(--paper); }
+    .rd-seg button:not(.on):hover, .rd-qmode button:not(.on):hover { color: var(--ink); }
+    .rd-seg .jp, .rd-qmode .jp { font-size: 0.95em; margin-right: 0.3rem; }
+
+    /* ---- the ⚙ panel on the library page ---- */
+    .rd-gear { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text-light); width: 2.3rem; height: 2.3rem; border-radius: 999px; font-size: 1rem; line-height: 1; cursor: pointer; transition: all 0.15s; }
+    .rd-gear:hover { border-color: var(--accent-soft); color: var(--ink); }
+    .rd-gear.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .rd-settings { background: var(--paper-warm); border-radius: 12px; padding: 1rem 1.2rem; margin: 0.9rem 0 1.5rem; display: none; }
+    .rd-settings.open { display: block; }
+    .rd-set-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .rd-set-row + .rd-set-row { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(0,0,0,0.07); }
+    .rd-set-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); min-width: 86px; }
+    .rd-set-hint { font-size: 0.78rem; color: var(--text-light); margin-top: 0.55rem; }
     .rd-qhead .rd-qhead-r { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
     .rd-write-hint { font-size: 0.85rem; color: var(--text-light); margin: -0.35rem 0 0.9rem; }
 
@@ -236,6 +247,23 @@
 
         <div class="rd-row rd-levels" id="rd-levels">
           <span class="rd-label" data-i18n="rd_level">Level</span>
+          <button class="rd-gear" id="rd-gear" type="button" aria-expanded="false"
+                  data-i18n-title="rd_settings_title" title="Reading options">⚙</button>
+        </div>
+
+        <div class="rd-settings" id="rd-settings">
+          <div class="rd-set-row">
+            <span class="rd-set-label" data-i18n="rd_set_text">Show text as</span>
+            <span class="rd-seg" id="rd-set-modes"></span>
+          </div>
+          <div class="rd-set-row" id="rd-set-answers">
+            <span class="rd-set-label" data-i18n="rd_set_answers">Answers</span>
+            <span class="rd-seg" id="rd-set-write">
+              <button type="button" data-m="pick"><span class="jp">選択</span><span data-i18n="rd_mode_pick">Choose</span></button>
+              <button type="button" data-m="write"><span class="jp">記述</span><span data-i18n="rd_mode_write">Write</span></button>
+            </span>
+          </div>
+          <div class="rd-set-hint" id="rd-set-hint"></div>
         </div>
 
         <div class="rd-gen">
@@ -372,7 +400,7 @@
     function allStories() { return STORIES.concat(mine); }
     function findStory(id) { return allStories().filter(function (x) { return x.id === id; })[0]; }
 
-    var saved = { level: 'N5', mode: {}, best: {}, write: {} };
+    var saved = { level: 'N5', mode: {}, best: {}, write: {}, panel: false };
     try {
       var raw = JSON.parse(localStorage.getItem(STORE) || 'null');
       if (raw && typeof raw === 'object') {
@@ -380,6 +408,7 @@
         if (raw.mode && typeof raw.mode === 'object') saved.mode = raw.mode;
         if (raw.best && typeof raw.best === 'object') saved.best = raw.best;
         if (raw.write && typeof raw.write === 'object') saved.write = raw.write;
+        saved.panel = !!raw.panel;
       }
     } catch (e) { /* storage unavailable — fine */ }
 
@@ -510,7 +539,8 @@
         b.className = 'rd-chip' + (lv === state.level ? ' on' : '');
         b.innerHTML = lv + '<small>' + n + '</small>';
         b.onclick = function () { setLevel(lv); };
-        row.appendChild(b);
+        // before the ⚙, so the gear stays at the end of the row
+        row.insertBefore(b, $('rd-gear'));
       });
     }
 
@@ -519,7 +549,61 @@
       saved.level = lv;
       persist();
       renderLevels();
+      renderSettings();
       renderLibrary();
+    }
+
+    // ── the ⚙ panel ──────────────────────────────────────────────────────
+    // The same two settings the story view carries, surfaced before you open a
+    // story — otherwise nobody discovers 記述 exists. Both are per level, so the
+    // panel always describes the level currently selected above it.
+    function renderSettings() {
+      var lv = state.level;
+      var open = !!saved.panel;
+      $('rd-settings').classList.toggle('open', open);
+      $('rd-gear').classList.toggle('on', open);
+      $('rd-gear').setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (!open) return;
+
+      var box = $('rd-set-modes');
+      box.innerHTML = '';
+      var cur = modeFor(lv);
+      LEVEL_MODES[lv].forEach(function (m) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = m === cur ? 'on' : '';
+        btn.textContent = tr(MODE_KEY[m]);
+        btn.onclick = function () {
+          saved.mode[lv] = m;
+          persist();
+          renderSettings();
+          if (state.story && state.story.level === lv) renderStory();
+        };
+        box.appendChild(btn);
+      });
+
+      // No backend, no marking — so don't offer a mode that can't be graded.
+      var live = typeof VERCEL_BACKEND_URL === 'string' && !!VERCEL_BACKEND_URL;
+      $('rd-set-answers').classList.toggle('rd-hidden', !live);
+      var write = !!saved.write[lv];
+      Array.prototype.forEach.call($('rd-set-write').querySelectorAll('button'), function (btn) {
+        btn.classList.toggle('on', (btn.getAttribute('data-m') === 'write') === write);
+        btn.onclick = function () {
+          var on = btn.getAttribute('data-m') === 'write';
+          if (on === !!saved.write[lv]) return;
+          saved.write[lv] = on;
+          persist();
+          renderSettings();
+          if (state.story && state.story.level === lv && !state.marking) {
+            resetAnswers();
+            renderQuestions();
+            paintModeSwitch();
+          }
+        };
+      });
+      $('rd-set-hint').textContent = live
+        ? tr('rd_set_hint').replace('{level}', lv)
+        : tr('rd_set_hint_offline').replace('{level}', lv);
     }
 
     function badge(id, total) {
@@ -641,6 +725,7 @@
           saved.mode[s.level] = m;
           persist();
           renderStory();
+          renderSettings();
         };
         modes.appendChild(b);
       });
@@ -701,6 +786,7 @@
       resetAnswers();
       renderQuestions();
       paintModeSwitch();
+      renderSettings();
     }
 
     function paintModeSwitch() {
@@ -1272,6 +1358,7 @@
 
     window.refreshReadingI18n = function () {
       renderLevels();
+      renderSettings();
       if (state.story) {
         renderStory();
         if (state.graded) {
@@ -1301,6 +1388,11 @@
         };
       });
       $('rd-back').onclick = function () { closeStory(); };
+      $('rd-gear').onclick = function () {
+        saved.panel = !saved.panel;
+        persist();
+        renderSettings();
+      };
       $('rd-check').onclick = grade;
       $('rd-retry').onclick = function () { resetAnswers(); renderQuestions(); window.scrollTo({ top: $('rd-text').offsetTop - 90, behavior: 'smooth' }); };
       $('rd-next').onclick = nextStory;
@@ -1313,6 +1405,7 @@
       window.addEventListener('popstate', fromHash);
       window.addEventListener('hashchange', fromHash);
       renderLevels();
+      renderSettings();
       renderLibrary();
       fromHash();
     }
