@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Analytics: Clarity + Google, both configured in analytics.js -->
+  <script src="analytics.js"></script>
+  <title>Reading Practice — Graded Japanese Stories N5–N1 | Katsuyō Academy</title>
+  <meta name="description" content="Graded Japanese reading practice from JLPT N5 to N1. Short stories with kana, furigana or kanji, audio, word lists, and comprehension questions graded instantly.">
+  <link rel="canonical" href="https://katsuyoacademy.com/reading">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .rd-page { max-width: 760px; margin: 0 auto; padding: 2rem; }
+    .rd-header { margin-bottom: 1.5rem; }
+    .rd-desc { color: var(--text-light); line-height: 1.7; max-width: 60ch; }
+
+    /* ---- chips (same language as the drills) ---- */
+    .rd-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .rd-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); min-width: 60px; }
+    .rd-chip { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 1rem; border-radius: 999px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .rd-chip:hover { border-color: var(--accent-soft); }
+    .rd-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    .rd-chip small { opacity: 0.6; margin-left: 0.3rem; font-weight: 400; }
+    .rd-levels { margin-bottom: 1.5rem; }
+
+    /* ---- library ---- */
+    .rd-progress { font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem; }
+    .rd-progress strong { color: var(--ink); }
+    .rd-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
+    .rd-card { background: white; border: 1.5px solid transparent; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); padding: 1.1rem 1.2rem; cursor: pointer; text-align: left; font-family: inherit; color: var(--text); transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; gap: 0.5rem; }
+    .rd-card:hover { transform: translateY(-2px); border-color: var(--accent-soft); }
+    .rd-card-num { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); }
+    .rd-card-title { font-size: 1.2rem; color: var(--ink); line-height: 1.6; }
+    .rd-card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-light); margin-top: auto; }
+    .rd-badge { font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--paper-warm); color: var(--text-light); }
+    .rd-badge.done { background: rgba(122,158,126,0.18); color: #3f5c42; }
+    .rd-badge.perfect { background: rgba(201,169,98,0.22); color: #7a5f1f; }
+
+    /* ---- story view ---- */
+    .rd-back { background: none; border: none; color: var(--accent); font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 1rem; }
+    .rd-back:hover { text-decoration: underline; }
+    .rd-story-head { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+    .rd-level-tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: white; background: var(--accent); padding: 0.25rem 0.7rem; border-radius: 999px; }
+    .rd-story-title { font-size: 1.8rem; color: var(--ink); line-height: 1.6; margin: 0; }
+    .rd-toolbar { display: flex; gap: 0.75rem 1.25rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
+    .rd-tool { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 1rem; border-radius: 999px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+    .rd-tool:hover { border-color: var(--accent-soft); }
+    .rd-tool.on { background: var(--sage); border-color: var(--sage); color: white; }
+
+    .rd-text { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 2rem 2.2rem; margin-bottom: 1.25rem; font-size: 1.25rem; line-height: 2.3; color: var(--ink); }
+    .rd-text p { margin: 0 0 1rem; }
+    .rd-text p:last-child { margin-bottom: 0; }
+    .rd-text ruby rt, .rd-q ruby rt, .rd-opt ruby rt, .rd-vocab ruby rt, .rd-card-title ruby rt, .rd-story-title ruby rt { font-size: 0.5em; color: var(--text-light); font-family: 'Noto Serif JP', serif; }
+    .rd-sent { border-radius: 4px; transition: background 0.3s; }
+    .rd-sent.hl { background: rgba(201,169,98,0.35); box-shadow: 0 0 0 3px rgba(201,169,98,0.35); }
+
+    .rd-vocab { background: var(--paper-warm); border-radius: 12px; padding: 1.1rem 1.4rem; margin-bottom: 1.5rem; display: none; }
+    .rd-vocab.show { display: block; }
+    .rd-vocab h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin: 0 0 0.6rem; }
+    .rd-vocab-list { display: block; }
+    .rd-vocab-item { display: flex; gap: 0.8rem; align-items: baseline; line-height: 1.95;
+      padding: 0.1rem 0; }
+    .rd-vocab-item .vw { font-size: 1.05rem; color: var(--ink); min-width: 7rem; }
+    .rd-vocab-item .vr { font-size: 0.95rem; color: var(--accent); min-width: 7.5rem; }
+    .rd-vocab-item .vg { color: var(--text-light); font-size: 0.9rem; }
+
+    /* hover translation, on the word itself */
+    .rd-w { position: relative; cursor: help;
+      border-bottom: 1px dotted rgba(196, 92, 74, 0.45); }
+    .rd-w::after {
+      content: attr(data-r) " \00b7 " attr(data-g);
+      position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%);
+      margin-bottom: 0.45rem; background: var(--ink); color: var(--paper);
+      border-radius: 7px; padding: 0.32rem 0.65rem; font-size: 0.75rem;
+      font-family: 'Outfit', sans-serif; font-weight: 400; white-space: nowrap;
+      line-height: 1.4; pointer-events: none; opacity: 0; visibility: hidden;
+      transition: opacity 0.12s ease; z-index: 40;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
+    .rd-w:hover::after { opacity: 1; visibility: visible; }
+    @media (max-width: 640px) {
+      .rd-w::after { display: none; }
+      .rd-w { border-bottom: none; cursor: default; }
+      .rd-vocab-item { flex-wrap: wrap; gap: 0.5rem; }
+      .rd-vocab-item .vw, .rd-vocab-item .vr { min-width: 0; }
+    }
+
+    /* ---- questions ---- */
+    .rd-qhead { display: flex; justify-content: space-between; align-items: baseline; margin: 2rem 0 0.9rem; }
+    .rd-qhead h2 { font-size: 1.3rem; color: var(--ink); margin: 0; }
+    .rd-qcount { font-size: 0.85rem; color: var(--text-light); }
+    .rd-q { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1.2rem 1.4rem; margin-bottom: 0.9rem; border-left: 4px solid transparent; }
+    .rd-q.right { border-left-color: var(--sage); }
+    .rd-q.wrong { border-left-color: var(--accent); }
+    .rd-q.part { border-left-color: var(--gold); }
+    .rd-q-text { font-size: 1.1rem; color: var(--ink); line-height: 2.1; margin-bottom: 0.7rem; }
+    .rd-q-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--accent); margin-right: 0.4rem; }
+    .rd-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+    .rd-opt { background: white; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 0.55rem 0.9rem; font-size: 1rem; line-height: 2; text-align: left; cursor: pointer; transition: all 0.15s; color: var(--ink); }
+    .rd-opt:hover:not(:disabled) { border-color: var(--accent-soft); }
+    .rd-opt.picked { border-color: var(--ink); background: rgba(26,26,46,0.06); }
+    .rd-opt:disabled { cursor: default; }
+    .rd-opt.correct { background: rgba(122,158,126,0.18); border-color: var(--sage); }
+    .rd-opt.miss { background: rgba(196,92,74,0.12); border-color: var(--accent); }
+    .rd-opt.dim { opacity: 0.5; }
+    .rd-q-after { margin-top: 0.7rem; font-size: 0.9rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .rd-q-verdict.good { color: #3f5c42; font-weight: 600; }
+    .rd-q-verdict.bad { color: #8a3d2f; font-weight: 600; }
+    .rd-show-ev { background: none; border: 1px solid rgba(201,169,98,0.8); color: #7a5f1f; border-radius: 999px; padding: 0.2rem 0.75rem; font-family: inherit; font-size: 0.82rem; cursor: pointer; }
+    .rd-show-ev:hover { background: rgba(201,169,98,0.15); }
+
+    /* ---- pick / write switch ---- */
+    .rd-qmode { display: inline-flex; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 999px; overflow: hidden; background: white; }
+    .rd-qmode button { border: none; background: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text-light); padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .rd-qmode button.on { background: var(--ink); color: var(--paper); }
+    .rd-qmode button:not(.on):hover { color: var(--ink); }
+    .rd-qmode .jp { font-size: 0.95em; margin-right: 0.3rem; }
+    .rd-qhead .rd-qhead-r { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+    .rd-write-hint { font-size: 0.85rem; color: var(--text-light); margin: -0.35rem 0 0.9rem; }
+
+    .rd-write-row { display: flex; gap: 0.5rem; align-items: stretch; }
+    .rd-write-in { flex: 1 1 auto; min-width: 0; padding: 0.7rem 0.9rem; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; font-family: inherit; font-size: 1.05rem; line-height: 1.8; color: var(--ink); background: white; outline: none; }
+    .rd-write-in:focus { border-color: var(--accent-soft); }
+    .rd-write-kana { flex: 0 0 auto; width: 2.6rem; border: 2px solid var(--gold); background: rgba(201,169,98,0.14); color: #7a5f1f; border-radius: 10px; font-family: inherit; font-size: 1.05rem; font-weight: 600; cursor: default; }
+    .rd-wrote { font-size: 1.05rem; line-height: 1.9; color: var(--ink); background: var(--paper-warm); border-radius: 10px; padding: 0.6rem 0.9rem; }
+    .rd-mark { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.6; }
+    .rd-mark.good { color: #3f5c42; }
+    .rd-mark.part { color: #7a5f1f; }
+    .rd-mark.bad { color: #8a3d2f; }
+    .rd-model { margin-top: 0.5rem; font-size: 1rem; line-height: 2; color: var(--text); }
+    .rd-model span { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-right: 0.45rem; }
+
+    .rd-result { border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1.25rem 0; display: none; text-align: center; }
+    .rd-result.show { display: block; }
+    .rd-result.great { background: rgba(201,169,98,0.18); border: 1px solid var(--gold); }
+    .rd-result.good { background: rgba(122,158,126,0.15); border: 1px solid var(--sage); }
+    .rd-result.low { background: rgba(196,92,74,0.08); border: 1px solid var(--accent-soft); }
+    .rd-result-score { font-size: 2.2rem; font-weight: 700; color: var(--ink); line-height: 1.2; }
+    .rd-result-msg { color: var(--text); margin-top: 0.3rem; }
+
+    .rd-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .rd-btn { flex: 1; padding: 1rem; font-family: inherit; font-size: 1rem; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; transition: all 0.15s; min-width: 150px; }
+    .rd-btn.primary { background: var(--accent); color: white; }
+    .rd-btn.primary:hover:not(:disabled) { background: var(--accent-soft); }
+    .rd-btn.primary:disabled { opacity: 0.45; cursor: default; }
+    .rd-btn.ghost { background: white; border: 1.5px solid rgba(0,0,0,0.15); color: var(--text); }
+    .rd-btn.ghost:hover { border-color: var(--accent-soft); }
+
+    /* ---- AI story generator ---- */
+    .rd-gen { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.75rem; }
+    .rd-gen-head { display: flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .rd-gen-head strong { font-size: 1.05rem; }
+    .rd-gen-head span { font-size: 0.85rem; opacity: 0.7; }
+    .rd-gen-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .rd-topic { flex: 1 1 240px; padding: 0.8rem 1rem; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: var(--paper); font-family: inherit; font-size: 0.95rem; outline: none; }
+    .rd-topic::placeholder { color: rgba(250,249,247,0.55); }
+    .rd-topic:focus { border-color: var(--gold); }
+    .rd-gen-btn { flex: 0 0 auto; min-width: 170px; padding: 0.8rem 1.2rem; }
+    .rd-dice { flex: 0 0 auto; width: 3rem; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: var(--paper); font-size: 1.15rem; cursor: pointer; transition: all 0.15s; }
+    .rd-dice:hover { border-color: var(--gold); background: rgba(201,169,98,0.2); }
+    .rd-gen-note { font-size: 0.8rem; opacity: 0.7; margin-top: 0.6rem; }
+    .rd-gen-note.err { opacity: 1; color: #f3b2a6; }
+    .rd-spin { display: inline-block; width: 0.9em; height: 0.9em; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: rd-spin 0.8s linear infinite; vertical-align: -0.1em; margin-right: 0.45rem; }
+    @keyframes rd-spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .rd-spin { animation: none; } }
+    .rd-section-h { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin: 0 0 0.7rem; }
+    #rd-mine { margin-bottom: 1.75rem; }
+    .rd-card.ai { border-color: rgba(201,169,98,0.5); }
+    .rd-card-top { display: flex; justify-content: space-between; align-items: center; }
+    .rd-del { background: none; border: none; color: var(--text-light); font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0.1rem 0.3rem; border-radius: 6px; }
+    .rd-del:hover { color: var(--accent); background: var(--paper-warm); }
+    .rd-ai-note { font-size: 0.82rem; color: var(--text-light); margin: -0.4rem 0 1rem; }
+
+    .rd-hidden { display: none !important; }
+
+    @media (max-width: 600px) {
+      .rd-page { padding: 1.25rem 1rem; }
+      .rd-text { padding: 1.3rem 1.2rem; font-size: 1.15rem; }
+      .rd-opts { grid-template-columns: 1fr; }
+      .rd-story-title { font-size: 1.45rem; }
+    }
+  </style>
+</head>
+<body data-page="reading">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="/" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="adjectives" href="/adjectives" data-i18n="nav_adjectives">Adjectives</a>
+        <a class="nav-link" data-page="reference" href="/reference" data-i18n="nav_reference">Reference</a>
+        <a class="nav-link" data-page="conjugation" href="/conjugation" data-i18n="nav_conjugation">Conjugation</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
+        <a class="nav-link active" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-reading" class="page active">
+    <div class="rd-page">
+
+      <!-- ===== Library ===== -->
+      <section id="rd-library">
+        <div class="rd-header">
+          <div class="page-tag" data-i18n="rd_tag">Reading Practice</div>
+          <h1 class="page-title"><span class="jp">読解</span> — <span data-i18n="rd_title">Reading</span></h1>
+          <p class="rd-desc" data-i18n="rd_desc">Short graded stories from N5 to N1. Read, listen, then answer the questions — they're graded instantly, and your best score is saved.</p>
+        </div>
+
+        <div class="rd-row rd-levels" id="rd-levels">
+          <span class="rd-label" data-i18n="rd_level">Level</span>
+        </div>
+
+        <div class="rd-gen">
+          <div class="rd-gen-head">
+            <strong data-i18n="rd_gen_title">✨ Create a new story</strong>
+            <span id="rd-gen-sub"></span>
+          </div>
+          <div class="rd-gen-row">
+            <input type="text" id="rd-topic" class="rd-topic" maxlength="80" autocomplete="off"
+                   placeholder="Topic (optional) — e.g. a rainy day in Kyoto" data-i18n-placeholder="rd_gen_ph">
+            <button class="rd-dice" id="rd-dice" type="button" data-i18n-title="rd_dice_title" title="Suggest a topic">🎲</button>
+            <button class="rd-btn primary rd-gen-btn" id="rd-gen-btn" data-i18n="rd_gen_btn">Create story</button>
+          </div>
+          <div class="rd-gen-note" id="rd-gen-note"></div>
+        </div>
+
+        <div id="rd-mine-wrap" class="rd-hidden">
+          <h2 class="rd-section-h" data-i18n="rd_mine">Your stories</h2>
+          <div class="rd-list" id="rd-mine"></div>
+          <h2 class="rd-section-h" data-i18n="rd_library">Library</h2>
+        </div>
+
+        <div class="rd-progress" id="rd-progress"></div>
+        <div class="rd-list" id="rd-list"></div>
+      </section>
+
+      <!-- ===== Story ===== -->
+      <section id="rd-story" class="rd-hidden">
+        <button class="rd-back" id="rd-back" data-i18n="rd_back">← All stories</button>
+
+        <div class="rd-story-head">
+          <span class="rd-level-tag" id="rd-level-tag">N5</span>
+          <h1 class="rd-story-title jp" id="rd-story-title"></h1>
+        </div>
+        <p class="rd-ai-note rd-hidden" id="rd-ai-note" data-i18n="rd_ai_note">✨ Written by AI just for you — it can occasionally make a small mistake.</p>
+
+        <div class="rd-toolbar">
+          <div class="rd-row" id="rd-modes"></div>
+          <div class="rd-row">
+            <button class="rd-tool" id="rd-listen">🔊 Listen</button>
+            <button class="rd-tool" id="rd-words-btn" data-i18n="rd_words">📖 Words</button>
+          </div>
+        </div>
+
+        <div class="rd-text jp" id="rd-text"></div>
+
+        <div class="rd-vocab" id="rd-vocab">
+          <h2><span data-i18n="rd_words_h">Words in this story</span> · <span id="rd-vocab-count"></span></h2>
+          <div class="rd-vocab-list" id="rd-vocab-list"></div>
+        </div>
+
+        <div class="rd-qhead">
+          <h2><span class="jp">しつもん</span> · <span data-i18n="rd_questions">Questions</span></h2>
+          <span class="rd-qhead-r">
+            <span class="rd-qmode" id="rd-qmode">
+              <button type="button" data-m="pick"><span class="jp">選択</span><span data-i18n="rd_mode_pick">Choose</span></button>
+              <button type="button" data-m="write"><span class="jp">記述</span><span data-i18n="rd_mode_write">Write</span></button>
+            </span>
+            <span class="rd-qcount" id="rd-qcount"></span>
+          </span>
+        </div>
+        <p class="rd-write-hint rd-hidden" id="rd-write-hint" data-i18n="rd_write_hint">Answer in Japanese — Katsu marks what you write.</p>
+        <div id="rd-questions"></div>
+
+        <div class="rd-result" id="rd-result">
+          <div class="rd-result-score" id="rd-result-score"></div>
+          <div class="rd-result-msg" id="rd-result-msg"></div>
+        </div>
+
+        <div class="rd-actions">
+          <button class="rd-btn primary" id="rd-check" disabled data-i18n="rd_check">Check answers</button>
+          <button class="rd-btn ghost rd-hidden" id="rd-retry" data-i18n="rd_retry">↺ Try again</button>
+          <button class="rd-btn primary rd-hidden" id="rd-next">Next story →</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
+  <script src="reading.i18n.js"></script>
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+  <script src="sensei.js"></script>
+  <script src="reading-data.js"></script>
+
+  <script>
+  // ==========================================================================
+  // READING — graded stories with instantly graded comprehension questions.
+  //
+  // Stories live in reading-data.js. Japanese is written with readings in
+  // brackets, the same notation the rest of the site uses: 東京[とうきょう].
+  // One source string gives all three display modes:
+  //   kana  → とうきょう     furi → <ruby>東京<rt>とうきょう</rt></ruby>     kanji → 東京
+  // ==========================================================================
+  (function () {
+    'use strict';
+
+    var LEVELS = ['N5', 'N4', 'N3', 'N2', 'N1'];
+    // Lower levels can switch all the way down to kana while they learn the
+    // kanji; from N3 up kanji are expected, so the choice is just furigana on/off.
+    var LEVEL_MODES = {
+      N5: ['kana', 'furi', 'kanji'], N4: ['kana', 'furi', 'kanji'],
+      N3: ['furi', 'kanji'], N2: ['furi', 'kanji'], N1: ['furi', 'kanji']
+    };
+    var DEFAULT_MODE = { N5: 'kana', N4: 'furi', N3: 'furi', N2: 'kanji', N1: 'kanji' };
+    var MODE_KEY = { kana: 'rd_mode_kana', furi: 'rd_mode_furi', kanji: 'rd_mode_kanji' };
+    var STORE = 'katsuyoReading';
+
+    var READING_RE = /([々〆ヶ一-龯豈-﫿]+)\[([^\]]+)\]/g;
+
+    var STORIES = (typeof READING_STORIES !== 'undefined') ? READING_STORIES : [];
+
+    // Stories written by AI on request live in this browser only.
+    var MINE_STORE = 'katsuyoReadingAI';
+    var MINE_MAX = 30;
+    var mine = [];
+    try {
+      var rawMine = JSON.parse(localStorage.getItem(MINE_STORE) || '[]');
+      if (Array.isArray(rawMine)) mine = rawMine.filter(function (s) { return s && s.id && s.level && s.text && s.q; });
+    } catch (e) {}
+    function persistMine() {
+      try { localStorage.setItem(MINE_STORE, JSON.stringify(mine.slice(0, MINE_MAX))); } catch (e) {}
+    }
+    function allStories() { return STORIES.concat(mine); }
+    function findStory(id) { return allStories().filter(function (x) { return x.id === id; })[0]; }
+
+    var saved = { level: 'N5', mode: {}, best: {}, write: {} };
+    try {
+      var raw = JSON.parse(localStorage.getItem(STORE) || 'null');
+      if (raw && typeof raw === 'object') {
+        if (LEVELS.indexOf(raw.level) !== -1) saved.level = raw.level;
+        if (raw.mode && typeof raw.mode === 'object') saved.mode = raw.mode;
+        if (raw.best && typeof raw.best === 'object') saved.best = raw.best;
+        if (raw.write && typeof raw.write === 'object') saved.write = raw.write;
+      }
+    } catch (e) { /* storage unavailable — fine */ }
+
+    function persist() {
+      try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch (e) {}
+    }
+
+    var state = {
+      level: saved.level,
+      story: null,
+      order: [],      // per question: shuffled option indexes
+      picks: [],      // per question: chosen original option index, or null
+      written: [],    // per question: the sentence typed, in write mode
+      marks: null,    // per question: {verdict, note} once the AI has marked
+      marking: false,
+      graded: false,
+      speaking: false
+    };
+
+    function $(id) { return document.getElementById(id); }
+    function tr(key) { return (typeof t === 'function') ? t(key) : key; }
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function modeFor(level) {
+      var m = saved.mode[level];
+      return LEVEL_MODES[level].indexOf(m) !== -1 ? m : DEFAULT_MODE[level];
+    }
+
+    function jp(src, mode) {
+      var s = esc(src);
+      if (mode === 'kana') return s.replace(READING_RE, '$2');
+      // Beginner text spaces out its phrases for kana reading; with kanji the
+      // word shapes do that job, so the spaces go.
+      s = s.replace(/ +(?=[^\x00-\x7F])/g, '').replace(/([^\x00-\x7F]) +/g, '$1');
+      if (mode === 'kanji') return s.replace(READING_RE, '$1');
+      return s.replace(READING_RE, '<ruby>$1<rt>$2</rt></ruby>');
+    }
+
+    // The story's own vocabulary, hoverable inside the text. The word list under
+    // the passage stays — but a reader who does not recognise a word wants the
+    // meaning where the word is, not in a panel they have to go and open.
+    //
+    // Matching happens on the SOURCE string, before rendering, because both the
+    // text and the vocabulary entry carry the same bracket notation. Trying to
+    // match rendered HTML would mean matching across <ruby> tags.
+    function vocabIndex(story) {
+      return (story.vocab || []).slice()
+        .sort(function (a, b) { return b.w.length - a.w.length; });  // longest first
+    }
+
+    function jpWords(src, mode, vlist) {
+      if (!vlist || !vlist.length) return jp(src, mode);
+      var out = '';
+      var rest = String(src);
+      var guard = 0;
+      while (rest && guard++ < 400) {
+        var at = -1, hit = null;
+        for (var i = 0; i < vlist.length; i++) {
+          var k = rest.indexOf(vlist[i].w);
+          if (k !== -1 && (at === -1 || k < at)) { at = k; hit = vlist[i]; }
+        }
+        if (hit === null) { out += jp(rest, mode); break; }
+        if (at > 0) out += jp(rest.slice(0, at), mode);
+        out += '<span class="rd-w" data-r="' + esc(plainKana(hit.w)) +
+               '" data-g="' + esc(gloss(hit)) + '">' + jp(hit.w, mode) + '</span>';
+        rest = rest.slice(at + hit.w.length);
+      }
+      return out;
+    }
+
+    // 新[あたら]しい → あたらしい, for the tooltip's reading half.
+    function plainKana(src) {
+      return String(src).replace(READING_RE, '$2').replace(/ /g, '');
+    }
+
+    function plainReading(src) { return String(src || '').replace(READING_RE, '$2'); }
+    function plainKanji(src) { return String(src || '').replace(READING_RE, '$1'); }
+
+    // Sentences end at 。！？ — but not inside 「quotes」, so dialogue stays whole.
+    function sentences(par) {
+      var out = [], cur = '', depth = 0;
+      for (var i = 0; i < par.length; i++) {
+        var ch = par.charAt(i);
+        cur += ch;
+        if (ch === '「' || ch === '『') depth++;
+        else if ((ch === '」' || ch === '』') && depth > 0) depth--;
+        if (depth !== 0) continue;
+        var nx = par.charAt(i + 1);
+        if ('。！？'.indexOf(ch) !== -1) { out.push(cur); cur = ''; }
+        // 「…」と言いました continues the sentence; a quote standing alone ends one
+        else if ((ch === '」' || ch === '』') && (!nx || ('。！？'.indexOf(par.charAt(i - 1)) !== -1 && (nx === '「' || nx === '『')))) { out.push(cur); cur = ''; }
+      }
+      if (cur.trim()) out.push(cur);
+      return out;
+    }
+
+    function storiesAt(level) {
+      return STORIES.filter(function (s) { return s.level === level; });
+    }
+
+    function shuffled(n) {
+      var a = [];
+      for (var i = 0; i < n; i++) a.push(i);
+      for (var j = a.length - 1; j > 0; j--) {
+        var k = Math.floor(Math.random() * (j + 1));
+        var tmp = a[j]; a[j] = a[k]; a[k] = tmp;
+      }
+      return a;
+    }
+
+    function gloss(v) {
+      var g = v.g || {};
+      if (typeof g === 'string') return g;
+      return g[(typeof LANG === 'string') ? LANG : 'en'] || g.en || g._ || '';
+    }
+
+    // ======================= library =======================
+    function renderLevels() {
+      var row = $('rd-levels');
+      Array.prototype.slice.call(row.querySelectorAll('.rd-chip')).forEach(function (c) { c.remove(); });
+      LEVELS.forEach(function (lv) {
+        var n = storiesAt(lv).length;
+        var b = document.createElement('button');
+        b.className = 'rd-chip' + (lv === state.level ? ' on' : '');
+        b.innerHTML = lv + '<small>' + n + '</small>';
+        b.onclick = function () { setLevel(lv); };
+        row.appendChild(b);
+      });
+    }
+
+    function setLevel(lv) {
+      state.level = lv;
+      saved.level = lv;
+      persist();
+      renderLevels();
+      renderLibrary();
+    }
+
+    function badge(id, total) {
+      var b = saved.best[id];
+      if (b == null) return '<span class="rd-badge">' + esc(tr('rd_new')) + '</span>';
+      var cls = b === total ? 'rd-badge perfect' : 'rd-badge done';
+      return '<span class="' + cls + '">' + (b === total ? '★ ' : '') + b + '/' + total + '</span>';
+    }
+
+    function renderLibrary() {
+      var list = storiesAt(state.level);
+      var mode = modeFor(state.level);
+      var done = list.filter(function (s) { return saved.best[s.id] != null; }).length;
+      $('rd-progress').innerHTML = esc(tr('rd_progress'))
+        .replace('{done}', '<strong>' + done + '</strong>')
+        .replace('{total}', '<strong>' + list.length + '</strong>');
+
+      var box = $('rd-list');
+      box.innerHTML = '';
+      if (!list.length) box.innerHTML = '<p class="rd-desc">' + esc(tr('rd_empty')) + '</p>';
+      list.forEach(function (s, i) {
+        box.appendChild(storyCard(s, s.level + ' · ' + String(i + 1).padStart(2, '0'), mode));
+      });
+
+      var myList = mine.filter(function (s) { return s.level === state.level; });
+      $('rd-mine-wrap').classList.toggle('rd-hidden', !myList.length);
+      var mb = $('rd-mine');
+      mb.innerHTML = '';
+      myList.forEach(function (s) {
+        mb.appendChild(storyCard(s, '✨ ' + s.level, mode));
+      });
+      paintGen();
+    }
+
+    function storyCard(s, label, mode) {
+      var card = document.createElement('div');
+      card.className = 'rd-card' + (s.ai ? ' ai' : '');
+      card.setAttribute('role', 'button');
+      card.tabIndex = 0;
+      var chars = plainKanji(s.text.join('')).replace(/ /g, '').length;
+      card.innerHTML =
+        '<span class="rd-card-top"><span class="rd-card-num">' + esc(label) + '</span>' +
+        (s.ai ? '<button class="rd-del" title="' + esc(tr('rd_delete')) + '" aria-label="' + esc(tr('rd_delete')) + '">×</button>' : '') +
+        '</span>' +
+        '<span class="rd-card-title jp">' + jp(s.title, mode) + '</span>' +
+        '<span class="rd-card-meta"><span>' + chars + ' ' + esc(tr('rd_chars')) + ' · ' + s.q.length + ' ' + esc(tr('rd_qs')) + '</span>' +
+        badge(s.id, s.q.length) + '</span>';
+      card.onclick = function () { openStory(s.id); };
+      card.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStory(s.id); } };
+      var del = card.querySelector('.rd-del');
+      if (del) del.onclick = function (e) {
+        e.stopPropagation();
+        mine = mine.filter(function (x) { return x.id !== s.id; });
+        delete saved.best[s.id];
+        persistMine(); persist();
+        renderLibrary();
+      };
+      return card;
+    }
+
+    // ======================= story =======================
+    function openStory(id, fromHash) {
+      var s = findStory(id);
+      if (!s) return;
+      stopAudio();
+      state.story = s;
+      if (s.level !== state.level) { state.level = s.level; saved.level = s.level; persist(); }
+      resetAnswers();
+      $('rd-library').classList.add('rd-hidden');
+      $('rd-story').classList.remove('rd-hidden');
+      $('rd-vocab').classList.add('show');
+      $('rd-words-btn').classList.remove('on');
+      renderStory();
+      if (!fromHash && location.hash !== '#' + id) {
+        try { history.pushState(null, '', '#' + id); } catch (e) { location.hash = id; }
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function closeStory(fromHash) {
+      stopAudio();
+      state.story = null;
+      $('rd-story').classList.add('rd-hidden');
+      $('rd-library').classList.remove('rd-hidden');
+      renderLevels();
+      renderLibrary();
+      if (!fromHash && location.hash) {
+        try { history.pushState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; }
+      }
+      window.scrollTo(0, 0);
+    }
+
+    function resetAnswers() {
+      var s = state.story;
+      state.order = s.q.map(function (q) { return shuffled(q.o.length); });
+      state.picks = s.q.map(function () { return null; });
+      state.written = s.q.map(function () { return ''; });
+      state.marks = null;
+      state.graded = false;
+    }
+
+    function renderStory() {
+      var s = state.story;
+      var mode = modeFor(s.level);
+
+      $('rd-level-tag').textContent = s.level;
+      $('rd-story-title').innerHTML = jp(s.title, mode);
+      $('rd-ai-note').classList.toggle('rd-hidden', !s.ai);
+      $('rd-next').textContent = s.ai ? tr('rd_another') : tr('rd_next');
+
+      // display-mode chips
+      var modes = $('rd-modes');
+      modes.innerHTML = '';
+      LEVEL_MODES[s.level].forEach(function (m) {
+        var b = document.createElement('button');
+        b.className = 'rd-chip' + (m === mode ? ' on' : '');
+        b.textContent = tr(MODE_KEY[m]);
+        b.onclick = function () {
+          saved.mode[s.level] = m;
+          persist();
+          renderStory();
+        };
+        modes.appendChild(b);
+      });
+
+      // text, split into sentences so an answer can point back at its line
+      var html = '';
+      var vl = vocabIndex(s);
+      s.text.forEach(function (par) {
+        html += '<p>' + sentences(par).map(function (sen) {
+          return '<span class="rd-sent" data-src="' + esc(sen.trim()) + '">' +
+                 jpWords(sen, mode, vl) + '</span>';
+        }).join('') + '</p>';
+      });
+      $('rd-text').innerHTML = html;
+
+      // words
+      var vbox = $('rd-vocab-list');
+      vbox.innerHTML = '';
+      (s.vocab || []).forEach(function (v) {
+        var row = document.createElement('div');
+        row.className = 'rd-vocab-item';
+        // Three aligned columns — the word, its reading, then the meaning. The
+        // reading gets a column of its own because in kanji mode it is the half
+        // the reader is actually missing.
+        row.innerHTML =
+          '<span class="jp vw">' + jp(v.w, 'kanji') + '</span>' +
+          '<span class="jp vr">' + esc(plainKana(v.w)) + '</span>' +
+          '<span class="vg">' + esc(gloss(v)) + '</span>';
+        vbox.appendChild(row);
+      });
+      var vh = $('rd-vocab-count');
+      if (vh) vh.textContent = (s.vocab || []).length;
+      $('rd-words-btn').classList.toggle('rd-hidden', !(s.vocab && s.vocab.length));
+
+      $('rd-listen').classList.toggle('rd-hidden', !window.KA_Voice);
+      paintListen();
+      paintModeSwitch();
+      renderQuestions();
+    }
+
+    // ── Writing the answers instead of picking them ────────────────────────
+    // Multiple choice is the default because it is free and instant. But you
+    // can score 5/5 on it by elimination without ever producing a sentence, so
+    // there is a second mode where you write the answer in Japanese and the AI
+    // marks it. Available at EVERY level on purpose: reading outruns writing
+    // for almost everyone who learns from input, so tying production to reading
+    // level would get it backwards in both directions.
+    function writeMode() { return !!saved.write[state.story ? state.story.level : 'N5']; }
+
+    function currentScore() {
+      if (!writeMode()) return state.picks.filter(function (p) { return p === 0; }).length;
+      return (state.marks || []).filter(function (m) { return m.verdict === 'ok'; }).length;
+    }
+
+    function setWriteMode(on) {
+      saved.write[state.story.level] = !!on;
+      persist();
+      resetAnswers();
+      renderQuestions();
+      paintModeSwitch();
+    }
+
+    function paintModeSwitch() {
+      var wrap = $('rd-qmode');
+      if (!wrap) return;
+      var on = writeMode();
+      Array.prototype.forEach.call(wrap.querySelectorAll('button'), function (b) {
+        b.classList.toggle('on', (b.getAttribute('data-m') === 'write') === on);
+      });
+      var hint = $('rd-write-hint');
+      if (hint) hint.classList.toggle('rd-hidden', !on);
+      // No backend, no marking — so don't offer a mode that can't be graded.
+      var live = typeof VERCEL_BACKEND_URL === 'string' && !!VERCEL_BACKEND_URL;
+      wrap.classList.toggle('rd-hidden', !live);
+      if (!live && on) { saved.write[state.story.level] = false; }
+    }
+
+    function writtenAnswer(q, qi) {
+      var wrap = document.createElement('div');
+      wrap.className = 'rd-write';
+      if (state.graded) {
+        var mk = state.marks && state.marks[qi];
+        var vcls = mk ? (mk.verdict === 'ok' ? 'good' : mk.verdict === 'part' ? 'part' : 'bad') : 'bad';
+        wrap.innerHTML =
+          '<div class="rd-wrote jp">' + esc(state.written[qi] || '—') + '</div>' +
+          '<div class="rd-mark ' + vcls + '">' +
+            (mk ? (mk.verdict === 'ok' ? '\u2713 ' : mk.verdict === 'part' ? '\u25b3 ' : '\u2717 ') + esc(mk.note || '')
+                : esc(tr('rd_mark_none'))) +
+          '</div>' +
+          '<div class="rd-model jp"><span>' + esc(tr('rd_model_answer')) + '</span> ' + jp(q.o[0], 'kanji') + '</div>';
+        return wrap;
+      }
+      var row = document.createElement('div');
+      row.className = 'rd-write-row';
+      var input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'rd-write-in jp';
+      input.id = 'rd-w-' + qi;
+      input.value = state.written[qi] || '';
+      input.autocomplete = 'off'; input.spellcheck = false;
+      input.oninput = function () {
+        state.written[qi] = this.value;
+        var n = state.written.filter(function (a) { return a && a.trim(); }).length;
+        $('rd-qcount').textContent = tr('rd_answered').replace('{n}', n).replace('{total}', state.story.q.length);
+        $('rd-check').disabled = n < state.story.q.length;
+      };
+      row.appendChild(input);
+      var kana = document.createElement('button');
+      kana.className = 'rd-write-kana jp';
+      kana.textContent = '\u3042';
+      kana.title = tr('rd_kana_hint');
+      kana.onclick = function () { try { input.focus(); } catch (e) {} };
+      row.appendChild(kana);
+      wrap.appendChild(row);
+      // the site's shared r\u014dmaji converter, same as the quiz and Talk
+      if (window.KA_KanaInput) KA_KanaInput.attach(input, { enabled: function () { return true; } });
+      return wrap;
+    }
+
+    function renderQuestions() {
+      var s = state.story;
+      var mode = modeFor(s.level);
+      var box = $('rd-questions');
+      box.innerHTML = '';
+
+      s.q.forEach(function (q, qi) {
+        var card = document.createElement('div');
+        card.className = 'rd-q';
+        var picked = state.picks[qi];
+        var right = writeMode()
+          ? !!(state.marks && state.marks[qi] && state.marks[qi].verdict === 'ok')
+          : picked === 0;
+        var part = writeMode() && state.marks && state.marks[qi] && state.marks[qi].verdict === 'part';
+        if (state.graded) card.classList.add(right ? 'right' : part ? 'part' : 'wrong');
+
+        var qt = document.createElement('div');
+        qt.className = 'rd-q-text jp';
+        qt.innerHTML = '<span class="rd-q-num">' + (qi + 1) + '.</span>' + jp(q.q, mode);
+        card.appendChild(qt);
+
+        if (writeMode()) {
+          card.appendChild(writtenAnswer(q, qi));
+          box.appendChild(card);
+          return;
+        }
+
+        var opts = document.createElement('div');
+        opts.className = 'rd-opts';
+        state.order[qi].forEach(function (oi) {
+          var b = document.createElement('button');
+          b.className = 'rd-opt jp';
+          b.innerHTML = jp(q.o[oi], mode);
+          if (state.graded) {
+            b.disabled = true;
+            if (oi === 0) b.classList.add('correct');
+            else if (oi === picked) b.classList.add('miss');
+            else b.classList.add('dim');
+          } else {
+            if (oi === picked) b.classList.add('picked');
+            b.onclick = function () {
+              state.picks[qi] = oi;
+              renderQuestions();
+            };
+          }
+          opts.appendChild(b);
+        });
+        card.appendChild(opts);
+
+        if (state.graded) {
+          var after = document.createElement('div');
+          after.className = 'rd-q-after';
+          var v = document.createElement('span');
+          v.className = 'rd-q-verdict ' + (right ? 'good' : 'bad');
+          v.textContent = right ? tr('rd_right') : (picked == null ? tr('rd_blank') : tr('rd_wrong'));
+          after.appendChild(v);
+          if (q.ev) {
+            var ev = document.createElement('button');
+            ev.className = 'rd-show-ev';
+            ev.textContent = tr('rd_show_ev');
+            ev.onclick = function () { highlight(q.ev); };
+            after.appendChild(ev);
+          }
+          card.appendChild(after);
+        }
+        box.appendChild(card);
+      });
+
+      var answered = writeMode()
+        ? state.written.filter(function (a) { return a && a.trim(); }).length
+        : state.picks.filter(function (p) { return p != null; }).length;
+      $('rd-qcount').textContent = tr('rd_answered').replace('{n}', answered).replace('{total}', s.q.length);
+      $('rd-check').disabled = state.graded || answered < s.q.length || state.marking;
+      $('rd-check').classList.toggle('rd-hidden', state.graded);
+      $('rd-retry').classList.toggle('rd-hidden', !state.graded);
+      $('rd-next').classList.toggle('rd-hidden', !state.graded);
+      if (!state.graded) $('rd-result').className = 'rd-result';
+    }
+
+    function highlight(ev) {
+      var list = Array.isArray(ev) ? ev : [ev];
+      var spans = $('rd-text').querySelectorAll('.rd-sent');
+      var first = null;
+      Array.prototype.forEach.call(spans, function (sp) {
+        var on = list.indexOf(sp.getAttribute('data-src')) !== -1;
+        sp.classList.toggle('hl', on);
+        if (on && !first) first = sp;
+      });
+      if (first) {
+        first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(function () { first.classList.remove('hl'); }, 4000);
+        // keep every highlighted sentence lit for the same time
+        setTimeout(function () {
+          Array.prototype.forEach.call(spans, function (sp) { sp.classList.remove('hl'); });
+        }, 4000);
+      }
+    }
+
+    function grade() {
+      if (state.graded || state.marking) return;
+      if (writeMode()) { gradeWritten(); return; }
+      finishGrade(state.picks.filter(function (p) { return p === 0; }).length);
+    }
+
+    // Shared tail of both modes: save the best score, tell Katsu about the
+    // misses, paint the result band.
+    function finishGrade(score) {
+      var s = state.story;
+      var total = s.q.length;
+      state.graded = true;
+
+      var prev = saved.best[s.id];
+      if (prev == null || score > prev) { saved.best[s.id] = score; persist(); }
+
+      // Hand the misses to Katsu so "what did I get wrong?" works from any page.
+      if (window.KatsuMistakes) {
+        s.q.forEach(function (q, qi) {
+          var mine_;
+          if (writeMode()) {
+            var mk = state.marks && state.marks[qi];
+            if (mk && mk.verdict === 'ok') return;
+            mine_ = state.written[qi] || '';
+          } else {
+            var p = state.picks[qi];
+            if (p === 0) return;
+            mine_ = p == null ? '' : plainKanji(q.o[p]);
+          }
+          window.KatsuMistakes.log({
+            q: plainKanji(q.q),
+            a: mine_,
+            c: plainKanji(q.o[0]),
+            note: s.level + ' 「' + plainKanji(s.title) + '」'
+          });
+        });
+      }
+      if (window.KA_Track) window.KA_Track.event('reading_complete_' + s.level.toLowerCase());
+
+      renderQuestions();
+      var res = $('rd-result');
+      var ratio = score / total;
+      res.className = 'rd-result show ' + (ratio === 1 ? 'great' : ratio >= 0.6 ? 'good' : 'low');
+      $('rd-result-score').textContent = score + ' / ' + total;
+      $('rd-result-msg').textContent = ratio === 1 ? tr('rd_msg_perfect') : ratio >= 0.6 ? tr('rd_msg_good') : tr('rd_msg_low');
+      res.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ── AI marking ─────────────────────────────────────────────────────────
+    // One request for the whole set: the marker sees the passage, so it can
+    // accept an answer worded differently from the model one and reject one
+    // that only looks similar. A half-credit verdict exists because that is
+    // what a teacher would give, but it does not count toward the score.
+    function buildMarkPrompt() {
+      var s = state.story;
+      var lang = (typeof explainLanguage === 'function') ? explainLanguage() : 'English';
+      var system =
+        'You are marking a Japanese reading-comprehension test on Katsuyō Academy. ' +
+        'Reply with ONE JSON object and nothing else — no code fences, no commentary.\n' +
+        'Schema: {"marks": [{"verdict": "ok" | "part" | "no", "note": string}]}\n' +
+        'Rules:\n' +
+        '- One entry per question, in order.\n' +
+        '- Mark comprehension, not polish. If the answer shows the student understood the passage, ' +
+        'verdict is "ok" even when the wording differs from the model answer, the register is plain rather than polite, ' +
+        'particles are slightly off, or the answer is a bare noun phrase where a full sentence was expected.\n' +
+        '- "part" = the right idea but incomplete or with a factual slip. "no" = wrong, empty, or not answerable from the text.\n' +
+        '- note: one short sentence in ' + lang + '. For "ok", say what was right in a few words. ' +
+        'For "part" and "no", say what is missing or wrong. Never longer than 20 words. ' +
+        'If the Japanese has a mistake worth fixing, name it in the note even when the verdict is "ok".';
+
+      var body = s.text.map(function (p) { return plainKanji(p); }).join('\n');
+      var qs = s.q.map(function (q, i) {
+        return (i + 1) + '. Question: ' + plainKanji(q.q) +
+               '\n   Model answer: ' + plainKanji(q.o[0]) +
+               '\n   Student wrote: ' + ((state.written[i] || '').trim() || '(blank)');
+      }).join('\n');
+
+      var user = 'Passage (' + s.level + '):\n' + body + '\n\nAnswers to mark:\n' + qs +
+        '\n\nReturn the JSON object only, with exactly ' + s.q.length + ' marks.';
+      return { system: system, user: user, maxTokens: 700 };
+    }
+
+    function parseMarks(text, n) {
+      var s = String(text || '').replace(/```(?:json)?/g, '');
+      var a = s.indexOf('{'), b = s.lastIndexOf('}');
+      if (a === -1 || b <= a) throw new Error('no JSON');
+      var d = JSON.parse(s.slice(a, b + 1));
+      var list = Array.isArray(d.marks) ? d.marks : (Array.isArray(d) ? d : []);
+      if (list.length < n) throw new Error('too few marks');
+      return list.slice(0, n).map(function (m) {
+        var v = String(m && m.verdict || '').toLowerCase();
+        if (v !== 'ok' && v !== 'part') v = 'no';
+        return { verdict: v, note: String(m && m.note || '').slice(0, 200) };
+      });
+    }
+
+    function gradeWritten() {
+      var s = state.story;
+      state.marking = true;
+      $('rd-check').disabled = true;
+      $('rd-check').innerHTML = '<span class="rd-spin"></span>' + esc(tr('rd_marking'));
+
+      var p = buildMarkPrompt();
+      requestStory(p).then(function (text) {
+        return parseMarks(text, s.q.length);
+      }).then(function (marks) {
+        state.marking = false;
+        $('rd-check').textContent = tr('rd_check');
+        state.marks = marks;
+        finishGrade(marks.filter(function (m) { return m.verdict === 'ok'; }).length);
+      }).catch(function (err) {
+        state.marking = false;
+        console.error('Reading marker:', err);
+        $('rd-check').textContent = tr('rd_check');
+        $('rd-check').disabled = false;
+        var res = $('rd-result');
+        res.className = 'rd-result show low';
+        $('rd-result-score').textContent = '—';
+        $('rd-result-msg').textContent = tr('rd_mark_fail');
+      });
+    }
+
+    function nextStory() {
+      if (state.story.ai) {
+        // An AI story's "next" is a fresh one at the same level.
+        var lv = state.story.level;
+        closeStory();
+        setLevel(lv);
+        $('rd-topic').value = '';
+        generate();
+        return;
+      }
+      var list = storiesAt(state.story.level);
+      var i = list.indexOf(state.story);
+      if (i >= 0 && i + 1 < list.length) openStory(list[i + 1].id);
+      else {
+        var li = LEVELS.indexOf(state.story.level);
+        // Finished the level: go back to its list so the progress is visible.
+        closeStory();
+        if (li >= 0 && typeof showToast === 'function') showToast(tr('rd_level_done'), 'success');
+      }
+    }
+
+    // ======================= audio =======================
+    function paintListen() {
+      $('rd-listen').textContent = state.speaking ? tr('rd_stop') : tr('rd_listen');
+      $('rd-listen').classList.toggle('on', state.speaking);
+    }
+
+    function stopAudio() {
+      if (window.KA_Voice) window.KA_Voice.stop();
+      state.speaking = false;
+      if ($('rd-listen')) paintListen();
+    }
+
+    function toggleListen() {
+      if (!window.KA_Voice || !state.story) return;
+      if (state.speaking) { stopAudio(); return; }
+      var text = plainReading(state.story.text.join('\n'));
+      state.speaking = true;
+      paintListen();
+      window.KA_Voice.speak(text, {
+        onend: function () { state.speaking = false; paintListen(); }
+      }).then(function (how) {
+        if (how === 'none') {
+          state.speaking = false; paintListen();
+          if (typeof showToast === 'function') showToast(tr('rd_no_audio'), 'warning');
+        }
+      }).catch(function () { state.speaking = false; paintListen(); });
+    }
+
+    // ======================= AI stories on request =======================
+    // Goes through the same Vercel proxy as Katsu and Talk (ai.js defines the
+    // URL). The model returns one JSON story in the same shape as
+    // reading-data.js, so it renders and grades exactly like a library story.
+    var GEN_DAILY_LIMIT = 15;          // per browser — keeps a stuck button from running up the bill
+    var GEN_COUNT_KEY = 'katsuyoReadingGen';
+    var generating = false;
+
+    var GEN_SPEC = {
+      N5: { len: '150–220', tokens: 1300,
+        grammar: 'Separate phrases with one half-width space, like a children\'s book: わたしは まいあさ パンを 食[た]べます。 (text, questions and options). Polite です/ます style only. N5 grammar: particles は が を に で へ と も から まで, past and negative forms, い/な-adjectives, ～たいです, ～ましょう, ～てください, ～ています.',
+        kanji: 'Use ONLY these N5 kanji: 日 一 二 三 四 五 六 七 八 九 十 百 千 万 円 年 月 火 水 木 金 土 曜 時 分 半 今 何 人 子 女 男 父 母 友 先 生 学 校 本 名 前 後 午 上 下 中 外 右 左 東 西 南 北 大 小 高 安 新 古 長 白 山 川 天 気 雨 電 車 駅 道 店 食 飲 見 行 来 帰 買 読 書 話 聞 休 入 出 立 言 会 毎 朝 昼 夜 週 間 国 語 手 足 目 口 耳 花 京. Write every other word in hiragana or katakana.',
+        q: 'Very simple factual questions (だれ・どこ・なに・いつ・なんじ・どうして).' },
+      N4: { len: '250–330', tokens: 1600,
+        grammar: 'Polite style, with plain-form clauses inside sentences. N4 grammar such as ～たことがある, ～ながら, ～てしまう, ～なければならない, ～たら, ～と思う, ～そうだ, ～より, ～ので, ～のに, ～てみる.',
+        kanji: 'N5 and N4 kanji only; write rarer words in kana.',
+        q: 'Factual and reason questions (どうして／なぜ), one about the order of events.' },
+      N3: { len: '330–420', tokens: 1900,
+        grammar: 'Plain (だ/である) or polite style, consistently. N3 grammar such as ～ようになる, ～ことにする, ～ばかり, passive and causative, ～らしい, ～わけだ, ～ところ, ～うちに, ～ようとする.',
+        kanji: 'Kanji up to N3 level where natural.',
+        q: 'Factual, reason, and one inference question about feelings or intentions.' },
+      N2: { len: '380–460', tokens: 2400,
+        grammar: 'A short essay, column, letter, notice or article. N2 grammar such as ～にとって, ～に対して, ～ものの, ～ざるを得ない, ～わけではない, ～に違いない, ～をきっかけに, ～一方で.',
+        kanji: 'Natural adult kanji usage up to N2.',
+        q: 'Mostly inference: the writer\'s point, what a phrase refers to (これ／それ), reasons, and the main idea.' },
+      N1: { len: '420–500', tokens: 2600,
+        grammar: 'An editorial-style essay or reflective column with abstract vocabulary. N1 grammar such as ～をもって, ～ならでは, ～に即して, ～いかんによらず, ～ずにはおかない, ～きらいがある, ～とあって, ～に至っては.',
+        kanji: 'Unrestricted, natural written-Japanese kanji.',
+        q: 'The writer\'s claim, nuance of a phrase, what is implied but not stated, and the main idea.' }
+    };
+
+    var GEN_TOPICS = [
+      'a first day at a new job', 'cooking a family recipe', 'a lost umbrella', 'a summer festival', 'a train that is late',
+      'learning to swim', 'a visit to grandparents in the countryside', 'a cat that visits every morning', 'moving to a new town',
+      'a birthday surprise', 'a rainy weekend', 'a bakery early in the morning', 'a school trip to Kyoto', 'fishing at a lake',
+      'a misunderstanding with a neighbour', 'buying a first bicycle', 'a snowy day', 'an old photograph', 'a part-time job at a café',
+      'a library book returned years late', 'a hiking trip that goes wrong', 'a new hobby', 'a letter from a friend abroad',
+      'the last day before summer holidays', 'a small shop closing down', 'a karaoke night', 'planting a garden', 'a hot spring inn',
+      'a phone left on the bus', 'a cultural difference', 'a volunteer clean-up day', 'a speedrun record attempt at a game club'
+    ];
+    var GEN_TWISTS = [
+      'something unexpected happens halfway through', 'it ends with a small lesson learned', 'it is told as a diary entry',
+      'there is a funny misunderstanding', 'someone helps a stranger', 'a plan changes because of the weather',
+      'it is written as a letter or e-mail', 'a small mystery is solved at the end', 'two characters disagree and then agree'
+    ];
+    var GEN_NAMES = ['はると', 'さくら', 'けんた', 'あおい', 'ゆうき', 'みさき', 'だいき', 'ひなた', 'りく', 'めい', 'そうた', 'ゆい',
+      'マリア', 'トム', 'リー', 'アンナ', 'カルロス', 'ソフィー', 'ミン', 'ルーカス'];
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function genToday() {
+      var d = new Date();
+      return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+    function genUsed() {
+      try {
+        var g = JSON.parse(localStorage.getItem(GEN_COUNT_KEY) || 'null');
+        return (g && g.day === genToday()) ? (g.n || 0) : 0;
+      } catch (e) { return 0; }
+    }
+    function genBump() {
+      try { localStorage.setItem(GEN_COUNT_KEY, JSON.stringify({ day: genToday(), n: genUsed() + 1 })); } catch (e) {}
+    }
+
+    function paintGen(errKey, errDetail) {
+      $('rd-gen-sub').textContent = tr('rd_gen_sub').replace('{level}', state.level);
+      var btn = $('rd-gen-btn');
+      var left = Math.max(0, GEN_DAILY_LIMIT - genUsed());
+      if (generating) {
+        btn.disabled = true;
+        btn.innerHTML = '<span class="rd-spin"></span>' + esc(tr('rd_gen_busy'));
+      } else {
+        btn.disabled = left === 0;
+        btn.textContent = tr('rd_gen_btn');
+      }
+      var note = $('rd-gen-note');
+      if (errKey) {
+        note.className = 'rd-gen-note err';
+        note.textContent = tr(errKey) + (errDetail ? ' (' + errDetail + ')' : '');
+      } else {
+        note.className = 'rd-gen-note';
+        note.textContent = generating ? tr('rd_gen_wait') :
+          (left === 0 ? tr('rd_gen_limit') : tr('rd_gen_left').replace('{n}', left));
+      }
+    }
+
+    function buildGenPrompt(level, topic) {
+      var spec = GEN_SPEC[level];
+      var lang = (typeof explainLanguage === 'function') ? explainLanguage() : 'English';
+      var recent = mine.filter(function (s) { return s.level === level; }).slice(0, 8)
+        .map(function (s) { return plainKanji(s.title); });
+
+      var system =
+        'You write graded Japanese reading passages for learners on Katsuyō Academy. ' +
+        'Reply with ONE JSON object and nothing else — no code fences, no commentary.\n' +
+        'Schema: {"title": string, "text": [paragraph strings], "vocab": [{"w": string, "g": string}], ' +
+        '"q": [{"q": string, "o": [string, string, string, string], "ev": string}]}\n' +
+        'Rules:\n' +
+        '- Write EVERY kanji with its reading in square brackets right after the whole kanji run: ' +
+        '東京[とうきょう], 食[た]べます, 一緒[いっしょ]に, 日本語[にほんご]. The brackets cover all consecutive kanji before them. ' +
+        'Never put brackets after kana. This applies to title, text, questions, options and vocab.\n' +
+        '- text: 2–4 paragraphs of natural, correct Japanese. No line breaks inside strings.\n' +
+        '- q: exactly 5 comprehension questions in Japanese, answerable only from the text. ' +
+        'o: exactly 4 options; the FIRST option is the correct one (the site shuffles them). ' +
+        'Wrong options must be plausible but clearly wrong according to the text. Keep options short and similar in length.\n' +
+        '- ev: copy, character for character with its brackets, the ONE complete sentence of the text that proves the answer, ending with 。 ！ or ？.\n' +
+        '- vocab: 6–8 words from the text a learner at this level may not know. w: dictionary form in bracket notation. g: a short gloss in ' + lang + '.\n' +
+        '- Content is kind, everyday or cultural, suitable for all ages. Invent the characters.';
+
+      var user =
+        'Level: JLPT ' + level + '.\n' +
+        'Length: ' + spec.len + ' Japanese characters of text (not counting readings).\n' +
+        'Grammar: ' + spec.grammar + '\n' +
+        'Kanji: ' + spec.kanji + '\n' +
+        'Questions: ' + spec.q + '\n' +
+        'Topic: ' + (topic || pick(GEN_TOPICS)) + '.\n' +
+        'Main character: ' + pick(GEN_NAMES) + '. Also: ' + pick(GEN_TWISTS) + '.\n' +
+        (recent.length ? 'Make it clearly different from these earlier stories: ' + recent.join('、') + '.\n' : '') +
+        'Return the JSON object only.';
+
+      return { system: system, user: user, maxTokens: spec.tokens };
+    }
+
+    function parseStory(text, level) {
+      var s = String(text || '').replace(/```(?:json)?/g, '');
+      var a = s.indexOf('{'), b = s.lastIndexOf('}');
+      if (a === -1 || b <= a) throw new Error('no JSON');
+      var d = JSON.parse(s.slice(a, b + 1));
+
+      function str(x) { return typeof x === 'string' ? x.replace(/\s*\n\s*/g, '').trim() : ''; }
+      var title = str(d.title);
+      var paras = (Array.isArray(d.text) ? d.text : [d.text]).map(str).filter(Boolean);
+      if (!title || !paras.length) throw new Error('missing text');
+
+      var allSent = [];
+      paras.forEach(function (p) { sentences(p).forEach(function (x) { allSent.push(x.trim()); }); });
+
+      var qs = (Array.isArray(d.q) ? d.q : []).map(function (q) {
+        if (!q) return null;
+        var opts = (Array.isArray(q.o) ? q.o : []).map(str).filter(Boolean);
+        if (!str(q.q) || opts.length < 3) return null;
+        var ev = str(q.ev);
+        if (ev && allSent.indexOf(ev) === -1) {
+          // Nearly-right quotes still point somewhere useful; otherwise drop the button.
+          var hit = allSent.filter(function (x) { return x.indexOf(ev) !== -1 || ev.indexOf(x) !== -1; })[0];
+          ev = hit || '';
+        }
+        return { q: str(q.q), o: opts.slice(0, 4), ev: ev || undefined };
+      }).filter(Boolean);
+      if (qs.length < 3) throw new Error('too few questions');
+
+      var lang = (typeof LANG === 'string') ? LANG : 'en';
+      var vocab = (Array.isArray(d.vocab) ? d.vocab : []).map(function (v) {
+        if (!v || !str(v.w)) return null;
+        var g = {}; g[lang] = str(v.g); g._ = str(v.g);
+        return { w: str(v.w), g: g };
+      }).filter(Boolean).slice(0, 10);
+
+      return {
+        id: 'ai-' + Date.now().toString(36),
+        level: level, ai: true, created: Date.now(),
+        title: title, text: paras, vocab: vocab, q: qs.slice(0, 6)
+      };
+    }
+
+    function requestStory(p) {
+      if (typeof VERCEL_BACKEND_URL !== 'string' || !VERCEL_BACKEND_URL) return Promise.reject(new Error('no backend'));
+      return fetch(VERCEL_BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system: p.system, messages: [{ role: 'user', content: p.user }], maxTokens: p.maxTokens })
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok || !data.success) throw new Error((data && data.error) || ('HTTP ' + res.status));
+          return data.feedback;
+        });
+      });
+    }
+
+    function generate() {
+      if (generating) return;
+      if (genUsed() >= GEN_DAILY_LIMIT) { paintGen('rd_gen_limit'); return; }
+      var level = state.level;
+      var topic = $('rd-topic').value.trim().slice(0, 80);
+      generating = true;
+      paintGen();
+      genBump();
+
+      var attempt = function (n) {
+        var p = buildGenPrompt(level, topic);
+        return requestStory(p).then(function (text) {
+          return parseStory(text, level);
+        }).catch(function (err) {
+          // One quiet retry for a malformed reply; network/server errors surface at once.
+          if (n === 0 && /JSON|missing|few|Unexpected|no JSON/i.test(err.message)) return attempt(1);
+          throw err;
+        });
+      };
+
+      attempt(0).then(function (story) {
+        generating = false;
+        mine.unshift(story);
+        mine = mine.slice(0, MINE_MAX);
+        persistMine();
+        $('rd-topic').value = '';
+        if (window.KA_Track) window.KA_Track.event('reading_generate_' + level.toLowerCase());
+        paintGen();
+        openStory(story.id);
+      }).catch(function (err) {
+        generating = false;
+        console.error('Reading generator:', err);
+        var msg = String(err && err.message || '');
+        paintGen(/JSON|missing|few|Unexpected/i.test(msg) ? 'rd_gen_bad' : 'rd_gen_fail', msg.slice(0, 80));
+      });
+    }
+
+    // ======================= Katsu context =======================
+    // Lets Katsu answer "what does this sentence mean?" about the open story.
+    window.KatsuPageContext = function () {
+      var s = state.story;
+      if (!s) return '';
+      var body = plainKanji(s.text.join('\n'));
+      if (body.length > 1800) body = body.slice(0, 1800) + '…';
+      var ctx = 'The student is reading the ' + s.level + ' story "' + plainKanji(s.title) +
+        '" on the Reading page. Story text:\n' + body +
+        '\nHelp with vocabulary, grammar and meaning in this text when asked. ' +
+        'Do not give away the answers to its comprehension questions before the student has checked them.';
+      if (state.graded) {
+        var sc = currentScore();
+        ctx += '\nThey have checked their answers and scored ' + sc + '/' + s.q.length + ', so explaining answers is fine now.';
+      }
+      return ctx;
+    };
+
+    // ======================= wiring =======================
+    function fromHash() {
+      var id = decodeURIComponent(location.hash.slice(1));
+      if (id && findStory(id)) openStory(id, true);
+      else if (state.story) closeStory(true);
+    }
+
+    window.refreshReadingI18n = function () {
+      renderLevels();
+      if (state.story) {
+        renderStory();
+        if (state.graded) {
+          var s = state.story;
+          var score = currentScore();
+          var ratio = score / s.q.length;
+          $('rd-result-msg').textContent = ratio === 1 ? tr('rd_msg_perfect') : ratio >= 0.6 ? tr('rd_msg_good') : tr('rd_msg_low');
+        }
+      } else renderLibrary();
+    };
+
+    function init() {
+      $('rd-gen-btn').onclick = function () { generate(); };
+      $('rd-topic').addEventListener('keydown', function (e) { if (e.key === 'Enter') generate(); });
+      // The die fills the box rather than firing a request: you see the topic
+      // you are about to spend a story on, and can edit or re-roll it first.
+      $('rd-dice').onclick = function () {
+        var box = $('rd-topic'), had = box.value.trim(), next = pick(GEN_TOPICS);
+        while (next === had) next = pick(GEN_TOPICS);
+        box.value = next;
+        try { box.focus(); box.setSelectionRange(next.length, next.length); } catch (e) {}
+      };
+      Array.prototype.forEach.call(document.querySelectorAll('#rd-qmode button'), function (b) {
+        b.onclick = function () {
+          if (!state.story || state.marking) return;
+          setWriteMode(b.getAttribute('data-m') === 'write');
+        };
+      });
+      $('rd-back').onclick = function () { closeStory(); };
+      $('rd-check').onclick = grade;
+      $('rd-retry').onclick = function () { resetAnswers(); renderQuestions(); window.scrollTo({ top: $('rd-text').offsetTop - 90, behavior: 'smooth' }); };
+      $('rd-next').onclick = nextStory;
+      $('rd-listen').onclick = toggleListen;
+      $('rd-words-btn').onclick = function () {
+        var on = !$('rd-vocab').classList.contains('show');
+        $('rd-vocab').classList.toggle('show', on);
+        this.classList.toggle('on', on);
+      };
+      window.addEventListener('popstate', fromHash);
+      window.addEventListener('hashchange', fromHash);
+      renderLevels();
+      renderLibrary();
+      fromHash();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+  </script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>

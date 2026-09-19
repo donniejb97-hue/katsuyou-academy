@@ -34,7 +34,7 @@
   var PAGE_NAV_KEY = {
     home: 'nav_home', kana: 'nav_kana', learn: 'nav_learn', forms: 'nav_forms',
     verblist: 'nav_verbs', conjugator: 'nav_conjugator', 'kana-drill': 'nav_kana_drill',
-    'kanji-drill': 'nav_kanji_drill', talk: 'nav_talk', datedojo: 'nav_dates',
+    'kanji-drill': 'nav_kanji_drill', talk: 'nav_talk', reading: 'nav_reading', datedojo: 'nav_dates',
     vocabulary: 'nav_vocab', kanji: 'nav_kanji', about: 'nav_contact',
     adjectives: 'nav_adjectives', reference: 'nav_reference', conjugation: 'nav_conjugation'
   };
@@ -203,7 +203,7 @@
     '- You may answer grammar questions, cultural questions, and questions about ' +
     'how to use this website (it has Kana charts, a verb Learn section, a Forms ' +
     'reference, a Verb list, the Conjugator practice tool, Kana/Kanji Drill, a Talk ' +
-    'conversation-practice tool, Date Dojo, Vocabulary flashcards, and 2,300 KLC Kanji flashcards).\n' +
+    'conversation-practice tool, graded Reading stories (N5–N1) with comprehension questions, Date Dojo, Vocabulary flashcards, and 2,300 KLC Kanji flashcards).\n' +
     '- Politely decline questions unrelated to Japanese language, Japan, or this ' +
     'website, and steer back to Japanese learning.\n' +
     '- Be warm and encouraging, like a patient teacher.\n' +
@@ -223,6 +223,10 @@
       'unless they explicitly ask you to switch.';
 
     if (page) prompt += '\n\nThe student is currently on the "' + page + '" page of the site.';
+    // A page can describe what's on screen right now (Reading passes the open story).
+    if (typeof window.KatsuPageContext === 'function') {
+      try { var ctx = window.KatsuPageContext(); if (ctx) prompt += '\n\n' + ctx; } catch (e) {}
+    }
     prompt += mistakeContext();
     return prompt;
   }
