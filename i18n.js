@@ -5,7 +5,7 @@
 var I18N = {
   en: {
     nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
-    nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk',
+    nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk', nav_reading:'Reading',
     nav_dates:'Dates', nav_vocab:'Vocabulary',
     nav_vocab_quiz:'Vocab Quiz',
     vq_show:'Show me',
@@ -287,6 +287,9 @@ var I18N = {
     card_talk_t:"<span class=\"jp\">会話</span> — Talk",
     card_talk_d:"Actually use what you've learned. Pick a <strong>scenario</strong>—ordering food, a doctor's visit, buying cinema tickets—or describe your own. Prefer something looser? <strong>Free chat</strong>, or drill <strong>one grammar form</strong> until it sticks. Set the level to <strong>N5, N4 or N3</strong> and read the Japanese in <strong>kanji, kana or rōmaji</strong>. Stop whenever you like for a <strong>written assessment</strong>: what went well, what to fix, the full transcript, and the words you met along the way.",
     card_talk_cta:"Start Talking →",
+    card_reading_t:"<span class=\"jp\">読解</span> — Reading",
+    card_reading_d:"Graded short stories from <strong>N5 to N1</strong>, five per level to start. Read in <strong>kana, with furigana, or kanji only</strong>, listen to the story read aloud, check the key words, then answer <strong>comprehension questions graded instantly</strong>. Missed one? <strong>Show in text</strong> points to the exact sentence with the answer.",
+    card_reading_cta:"Start Reading →",
     why_title:"What Makes This Different",
     why_install_t:"Nothing to Install",
     why_install_d:"Fast, focused pages that open straight in your browser. No app to download, no account to create, nothing to configure—on your desktop, your tablet or your phone.",
@@ -414,7 +417,7 @@ var I18N = {
   },
   de: {
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
-    nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch',
+    nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch', nav_reading:'Lesen',
     nav_dates:'Datum', nav_vocab:'Vokabeln',
     nav_vocab_quiz:'Vokabelquiz',
     vq_show:'Zeig mir',
@@ -687,6 +690,9 @@ var I18N = {
     card_talk_t:"<span class=\"jp\">会話</span> — Gespräch",
     card_talk_d:"Wenden Sie an, was Sie gelernt haben. Wählen Sie ein <strong>Szenario</strong> — Essen bestellen, ein Arztbesuch, Kinokarten kaufen — oder beschreiben Sie Ihr eigenes. Lieber ungezwungen? <strong>Freies Gespräch</strong>, oder gezielt <strong>eine Grammatikform</strong> üben, bis sie sitzt. Stellen Sie das Niveau auf <strong>N5, N4 oder N3</strong> und lesen Sie das Japanische in <strong>Kanji, Kana oder Rōmaji</strong>. Hören Sie auf, wann Sie möchten, und erhalten Sie eine <strong>schriftliche Auswertung</strong>: was gut lief, was Sie verbessern können, das vollständige Gesprächsprotokoll und die Wörter, die Ihnen begegnet sind.",
     card_talk_cta:"Gespräch beginnen →",
+    card_reading_t:"<span class=\"jp\">読解</span> — Lesen",
+    card_reading_d:"Abgestufte Kurzgeschichten von <strong>N5 bis N1</strong>, zum Start fünf pro Niveau. Lesen Sie in <strong>Kana, mit Furigana oder nur mit Kanji</strong>, lassen Sie sich die Geschichte vorlesen, sehen Sie sich die wichtigsten Wörter an und beantworten Sie dann <strong>Verständnisfragen, die sofort ausgewertet werden</strong>. Etwas verfehlt? <strong>Im Text zeigen</strong> markiert genau den Satz mit der Antwort.",
+    card_reading_cta:"Lesen beginnen →",
     why_title:"Was hier anders ist",
     why_install_t:"Nichts zu installieren",
     why_install_d:"Schnelle, aufgeräumte Seiten, die direkt im Browser aufgehen. Keine App zum Herunterladen, kein Konto, nichts einzurichten — auf dem Rechner, dem Tablet oder dem Telefon.",
@@ -814,7 +820,7 @@ var I18N = {
   },
   fr: {
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
-    nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Discussion',
+    nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Discussion', nav_reading:'Lecture',
     nav_dates:'Dates', nav_vocab:'Vocabulaire',
     nav_vocab_quiz:'Quiz de vocabulaire',
     vq_show:'Montre-moi',
@@ -1087,6 +1093,9 @@ var I18N = {
     card_talk_t:"<span class=\"jp\">会話</span> — Conversation",
     card_talk_d:"Servez-vous enfin de ce que vous avez appris. Choisissez un <strong>scénario</strong> — commander à manger, une visite chez le médecin, acheter des places de cinéma — ou décrivez le vôtre. Envie de quelque chose de plus libre ? <strong>Discussion libre</strong>, ou travaillez <strong>une seule forme grammaticale</strong> jusqu'à ce qu'elle rentre. Réglez le niveau sur <strong>N5, N4 ou N3</strong> et lisez le japonais en <strong>kanji, kana ou rōmaji</strong>. Arrêtez quand vous voulez pour recevoir un <strong>bilan écrit</strong> : ce qui a bien marché, ce qu'il faut corriger, la transcription complète et les mots rencontrés en chemin.",
     card_talk_cta:"Commencer à parler →",
+    card_reading_t:"<span class=\"jp\">読解</span> — Lecture",
+    card_reading_d:"De courtes histoires graduées du <strong>N5 au N1</strong>, cinq par niveau pour commencer. Lisez <strong>en kana, avec furigana ou en kanji seuls</strong>, écoutez l'histoire lue à voix haute, consultez les mots clés, puis répondez à des <strong>questions de compréhension corrigées instantanément</strong>. Une erreur ? <strong>Voir dans le texte</strong> indique la phrase exacte qui contient la réponse.",
+    card_reading_cta:"Commencer à lire →",
     why_title:"Ce qui change ici",
     why_install_t:"Rien à installer",
     why_install_d:"Des pages rapides et sobres qui s'ouvrent directement dans le navigateur. Aucune application à télécharger, aucun compte à créer, rien à configurer — sur ordinateur, tablette ou téléphone.",
@@ -1214,7 +1223,7 @@ var I18N = {
   },
   zh: {
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
-    nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话',
+    nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话', nav_reading:'阅读',
     nav_dates:'日期', nav_vocab:'词汇',
     nav_vocab_quiz:'词汇测验',
     vq_show:'给我看',
@@ -1487,6 +1496,9 @@ var I18N = {
     card_talk_t:"<span class=\"jp\">会話</span> — 会话",
     card_talk_d:"把学到的东西真正用起来。挑一个<strong>情景</strong>——点餐、看医生、买电影票——或者自己描述一个。想随意一些？可以<strong>自由聊天</strong>，也可以只针对<strong>某一个语法形式</strong>反复练到熟为止。把难度设为 <strong>N5、N4 或 N3</strong>，日语可以用<strong>汉字、假名或罗马字</strong>来读。随时可以停下，拿到一份<strong>书面评估</strong>：哪里做得好、哪里要改、完整对话记录，以及过程中遇到的词汇。",
     card_talk_cta:"开始对话 →",
+    card_reading_t:"<span class=\"jp\">読解</span> — 阅读",
+    card_reading_d:"从 <strong>N5 到 N1</strong> 的分级短篇故事，首批每级五篇。可以用<strong>假名、带注音或仅汉字</strong>阅读，收听故事朗读，查看重点词汇，然后回答<strong>即时评分的阅读理解题</strong>。答错了？<strong>在原文中显示</strong>会标出包含答案的那一句。",
+    card_reading_cta:"开始阅读 →",
     why_title:"这里有什么不同",
     why_install_t:"无需安装",
     why_install_d:"页面轻快、专注，浏览器直接打开。不用下载应用，不用注册账号，也无需任何设置——电脑、平板、手机都一样。",
@@ -1698,6 +1710,7 @@ function setLang(lang) {
   if (window.refreshConjugatorI18n) window.refreshConjugatorI18n();
   if (window.refreshSenseiI18n) window.refreshSenseiI18n();
   if (window.refreshTalkI18n) window.refreshTalkI18n();
+  if (window.refreshReadingI18n) window.refreshReadingI18n();
   if (window.refreshLangSwitch) window.refreshLangSwitch();
   if (window.refreshNavGroups) window.refreshNavGroups();
 }
@@ -2029,7 +2042,27 @@ function setLang(lang) {
     };
   }
 
+  // ---------- Reading link ----------
+  // Every page carries its own copy of the nav. Rather than edit all of them,
+  // the Reading link is added here, right after Talk, wherever it's missing.
+  function addReadingLink() {
+    var bar = document.querySelector('.nav-links');
+    if (!bar || bar.querySelector('.nav-link[data-page="reading"]')) return;
+    var talk = bar.querySelector('.nav-link[data-page="talk"]');
+    var a = document.createElement('a');
+    a.className = 'nav-link';
+    a.setAttribute('data-page', 'reading');
+    a.setAttribute('data-i18n', 'nav_reading');
+    a.href = '/reading';
+    a.textContent = t('nav_reading');
+    if (document.body.getAttribute('data-page') === 'reading') a.classList.add('active');
+    if (talk && talk.parentNode === bar) bar.insertBefore(a, talk.nextSibling);
+    else if (talk && talk.parentNode) talk.parentNode.insertBefore(a, talk.nextSibling);
+    else bar.appendChild(a);
+  }
+
   function initNav() {
+    addReadingLink();
     buildLangSwitch();
     buildNavGroups();
   }
