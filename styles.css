@@ -156,7 +156,7 @@
     
     .nav-links {
       display: flex;
-      gap: 1.75rem;
+      gap: 1.75rem;   /* i18n.js tightens this to 0.05rem once the bar is built */
     }
     
     .nav-link {
@@ -1544,13 +1544,9 @@ a.nav-link {
   display: inline-block;
 }
 
-/* === Hidden nav links ===================================================
-   Every page loads this file, so these rules hide the links across the whole
-   site without touching any HTML. Delete a selector to bring a link back. */
-.nav-link[data-page="datedojo"],
-.nav-link[data-page="kanji-drill"] {
-  display: none !important;
-}
+/* Date Dojo and Kanji Drill used to be hidden here, because the top-level bar
+   had run out of room. They now live inside the Practice ▾ group (NAV_GROUPS in
+   i18n.js), which is where four drills belong anyway, so nothing needs hiding. */
 
     /* ====================================================================
        CONJUGATOR — practice options, streak, badges, session summary

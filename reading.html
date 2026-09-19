@@ -33,8 +33,11 @@
     .rd-card:hover { transform: translateY(-2px); border-color: var(--accent-soft); }
     .rd-card-num { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); }
     .rd-card-title { font-size: 1.2rem; color: var(--ink); line-height: 1.6; }
-    .rd-card-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-light); margin-top: auto; }
-    .rd-badge { font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--paper-warm); color: var(--text-light); }
+    .rd-card-meta { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--text-light); margin-top: auto; }
+    /* the character/question line is what gives way when the card is narrow —
+       a badge that wraps stops being a pill and becomes a blob */
+    .rd-card-meta > span:first-child { min-width: 0; }
+    .rd-badge { flex: 0 0 auto; white-space: nowrap; font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--paper-warm); color: var(--text-light); }
     .rd-badge.done { background: rgba(122,158,126,0.18); color: #3f5c42; }
     .rd-badge.perfect { background: rgba(201,169,98,0.22); color: #7a5f1f; }
 

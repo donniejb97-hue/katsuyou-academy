@@ -4,7 +4,7 @@
 // ============================================================
 var I18N = {
   en: {
-    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
+    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_group_practice:'Practice', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
     nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk', nav_reading:'Reading',
     nav_dates:'Dates', nav_vocab:'Vocabulary',
     nav_vocab_quiz:'Vocab Quiz',
@@ -416,7 +416,7 @@ var I18N = {
     ],
   },
   de: {
-    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
+    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_group_practice:'Üben', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
     nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch', nav_reading:'Lesen',
     nav_dates:'Datum', nav_vocab:'Vokabeln',
     nav_vocab_quiz:'Vokabelquiz',
@@ -819,8 +819,8 @@ var I18N = {
     ],
   },
   fr: {
-    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
-    nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Discussion', nav_reading:'Lecture',
+    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_group_practice:'Pratique', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
+    nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Parler', nav_reading:'Lecture',
     nav_dates:'Dates', nav_vocab:'Vocabulaire',
     nav_vocab_quiz:'Quiz de vocabulaire',
     vq_show:'Montre-moi',
@@ -1222,7 +1222,7 @@ var I18N = {
     ],
   },
   zh: {
-    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
+    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
     nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话', nav_reading:'阅读',
     nav_dates:'日期', nav_vocab:'词汇',
     nav_vocab_quiz:'词汇测验',
@@ -1798,7 +1798,11 @@ function setLang(lang) {
     '.nav-links .nav-link{white-space:nowrap;}',
     '.nav-links{display:flex;align-items:center;flex-wrap:nowrap;gap:0.05rem;}',
     /* tighten the gaps so the longer labels still fit before wrapping */
-    '.nav-links .nav-link{padding-left:0.55rem;padding-right:0.55rem;}',
+    /* One size at every desktop width. .nav-inner is capped at 1200px, so a
+       1920px screen gives the bar not one pixel more room than a 1366px one —
+       the wider padding this used to have above 1400px bought nothing and cost
+       the last link. */
+    '.nav-links .nav-link{padding-left:0.45rem;padding-right:0.45rem;font-size:0.9rem;}',
     /* the | separators: thinner, quieter, evenly spaced */
     '.nav-links > span{padding:0 0.25rem !important;font-size:1.05rem !important;opacity:0.45 !important;}',
     /* push the language switch to the far right, away from Contact */
@@ -1812,14 +1816,12 @@ function setLang(lang) {
        links don't show through as they scroll underneath */
     '.nav-links .lang-switch{position:sticky;right:0;background:var(--ink,#1a1a2e);}',
     '@media (max-width:1400px){',
-    '  .nav-links .nav-link{padding-left:0.45rem;padding-right:0.45rem;font-size:0.9rem;}',
     '  .nav-links .lang-switch{margin-left:0.5rem;}',
     '}',
-    /* Pages hidden from the nav while they're being reworked. One place for the
-       whole site — delete a selector here to put a page back in the bar. The
-       pages themselves stay live and reachable by URL. */
-    '.nav-links .nav-link[data-page="datedojo"],',
-    '.nav-links .nav-link[data-page="kanji-drill"]{display:none;}'
+    /* Nothing is hidden from the nav any more. Date Dojo and Kanji Drill were,
+       back when the top level had run out of room; they are in the Practice ▾
+       group now, which is what NAV_GROUPS below is for. */
+    ''
   ].join('');
   var navStyle = document.createElement('style');
   navStyle.textContent = navCss;
@@ -1956,7 +1958,12 @@ function setLang(lang) {
     // The cards and the quiz are the same subject, and the bar was already at
     // its limit — grouping them keeps the top level exactly as wide as before.
     { key: 'nav_group_vocab', fallback: 'Vocabulary',
-      pages: ['vocabulary', 'vocabquiz'] }
+      pages: ['vocabulary', 'vocabquiz'] },
+    // Four drills, one idea. Adding Reading pushed the bar past its width and
+    // the last item was being clipped; these four collapse to one and leave
+    // headroom for the longer German and French labels.
+    { key: 'nav_group_practice', fallback: 'Practice',
+      pages: ['conjugator', 'kana-drill', 'kanji-drill', 'datedojo'] }
   ];
 
   function buildNavGroups() {
