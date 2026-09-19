@@ -1096,15 +1096,23 @@
     //      dictation firing compositionstart), and once stranded the converter
     //      was dead for the rest of the session. `isComposing === false` on an
     //      ordinary keystroke clears it.
-    //   3. Resolve a lone trailing "n" by time, not by a third keystroke. It
-    //      cannot be resolved while you are still typing — "kyuunin" might
-    //      become きゅうにん or continue into きゅうにな — and committing early
-    //      turns こんにちわ into こんいちわ. Stop typing for a moment and the
-    //      pending n becomes ん; keep typing and it resolves as the next
-    //      syllable, which is what it was waiting for.
-    //   4. Commit on blur, so leaving the box never strands a half-syllable.
+    //   3. Guess a lone trailing "n" after a pause — and be willing to take the
+    //      guess back. A trailing n is undecidable while the field is open:
+    //      ni → に, nn → ん, nb → んb, and only the next character says which.
+    //      Showing ん once you stop typing is good feedback, so it stays; what
+    //      was wrong before was that the guess was never revisited. Typing
+    //      slower than about two characters a second silently produced んい for
+    //      "ni", こんんいちわ for "konnichiwa", かんんじ for "kannji" — with
+    //      nothing in the box to say it had happened. Now the ん is provisional:
+    //      if the next key is a vowel, y or another n, the ん is put back to an
+    //      n and the pair resolves properly. Any other key confirms it.
+    //   4. Commit on blur and on flush(), so leaving the box or pressing Check
+    //      never strands a half-syllable — that is where a trailing n becomes ん.
     // ========================================================================
     var KANA_N_DELAY = 420;
+    // The keys that prove a guessed ん wrong. Vowels and y continue into な行 or
+    // にゃ; a following n means the pair was "nn", which is one ん, not two.
+    var KANA_N_UNDO = /[aiueoyn]/i;
 
     function attachKanaInput(input, opts) {
       if (!input || !window.KA_toKana) return null;
@@ -1114,37 +1122,82 @@
       // run of Latin letters rather than the whole head.
       var convert = opts.convert || function (t, final) { return romajiToKana(t, final); };
       var timer = null;
+      // The exact field value right after this code guessed a ん. Null means
+      // there is nothing to take back. Anything the user does that we cannot
+      // account for character for character clears it.
+      var guessed = null;
 
       function clearComposing() { delete input.dataset.composing; }
+      function forget() { guessed = null; }
 
-      function commit() {
+      function commit(speculative) {
         if (timer) { clearTimeout(timer); timer = null; }
         if (!enabled() || input.dataset.composing) return;
         // Only when the caret is at the end: committing behind a caret someone
         // has moved would rewrite text they are in the middle of editing.
         var caret = input.selectionStart;
         if (caret != null && caret !== input.value.length) return;
-        var done = convert(input.value, true);
-        if (done !== input.value) {
-          input.value = done;
-          try { input.setSelectionRange(done.length, done.length); } catch (e) {}
+        var before = input.value;
+        var done = convert(before, true);
+        guessed = null;
+        if (done === before) return;
+        input.value = done;
+        try { input.setSelectionRange(done.length, done.length); } catch (e) {}
+        // A guess is revisable only when what changed was a trailing run of
+        // Latin letters ending in n — "…n" → …ん, "…nn" → …ん. Never a larger
+        // rewrite, and never on the blur path, where the learner has left and
+        // there is no next key to judge the guess by.
+        if (speculative && /n$/i.test(before)) {
+          var i = 0;
+          while (i < before.length && i < done.length && before.charAt(i) === done.charAt(i)) i++;
+          if (/^[A-Za-z]+$/.test(before.slice(i))) guessed = { before: before, after: done };
         }
+      }
+
+      // Put a guessed ん back to an n when the key that follows proves it wrong,
+      // so ん + i becomes に and "konnichiwa" survives a slow typist. Every
+      // condition here is a guard: the text must be exactly what this code left
+      // plus one appended character, and the caret must still be at the end, or
+      // the user has been editing and nothing may be rewritten.
+      function undoGuess(el) {
+        var g = guessed;
+        guessed = null;
+        if (!g) return false;
+        var v = el.value;
+        if (v.length !== g.after.length + 1 || v.slice(0, g.after.length) !== g.after) return false;
+        var caret = el.selectionStart;
+        if (caret != null && caret !== v.length) return false;
+        var next = v.charAt(v.length - 1);
+        if (!KANA_N_UNDO.test(next)) return false;
+        // Put the r\u014dmaji back exactly as it was and let the converter decide
+        // again, now that it can see the character it was missing: "\u307fnn" + a
+        // is \u307f\u3093\u306a, which no amount of patching the \u3093 itself would reach.
+        el.value = g.before + next;
+        try { el.setSelectionRange(el.value.length, el.value.length); } catch (e) {}
+        return true;
       }
 
       function armN() {
         if (timer) { clearTimeout(timer); timer = null; }
         if (!/n$/i.test(input.value)) return;
-        timer = setTimeout(commit, KANA_N_DELAY);
+        timer = setTimeout(function () { commit(true); }, KANA_N_DELAY);
       }
 
-      input.addEventListener('compositionstart', function () { this.dataset.composing = '1'; });
+      input.addEventListener('compositionstart', function () { this.dataset.composing = '1'; forget(); });
       input.addEventListener('compositionend', clearComposing);
-      input.addEventListener('focus', clearComposing);
+      input.addEventListener('focus', function () { clearComposing(); forget(); });
       input.addEventListener('blur', function () { clearComposing(); commit(); });
+      // A click or an arrow key means the caret may have moved; the guess is
+      // only safe while the user is still typing at the end of what we left.
+      input.addEventListener('click', forget);
+      input.addEventListener('keydown', function (e) {
+        if (e && /^(Arrow|Home|End|Page)/.test(e.key || '')) forget();
+      });
 
       input.addEventListener('input', function (e) {
         if (e && e.isComposing === false) clearComposing();
         if (enabled() && !(e && e.isComposing) && !this.dataset.composing) {
+          undoGuess(this);
           var caret = this.selectionStart;
           if (caret == null) caret = this.value.length;
           var head = this.value.slice(0, caret);
@@ -1155,6 +1208,8 @@
             try { this.setSelectionRange(converted.length, converted.length); } catch (e2) {}
           }
           armN();
+        } else {
+          forget();
         }
         if (opts.onInput) opts.onInput.call(this, e);
       });
@@ -1164,12 +1219,13 @@
         // the caret rule does not apply because the learner is done.
         flush: function () {
           if (timer) { clearTimeout(timer); timer = null; }
+          guessed = null;
           if (!enabled()) return;
           var done = convert(input.value, true);
           if (done !== input.value) input.value = done;
         },
         commit: commit,
-        cancel: function () { if (timer) { clearTimeout(timer); timer = null; } }
+        cancel: function () { if (timer) { clearTimeout(timer); timer = null; } guessed = null; }
       };
     }
 

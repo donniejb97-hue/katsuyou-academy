@@ -133,7 +133,13 @@
     .rd-write-row { display: flex; gap: 0.5rem; align-items: stretch; }
     .rd-write-in { flex: 1 1 auto; min-width: 0; padding: 0.7rem 0.9rem; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; font-family: inherit; font-size: 1.05rem; line-height: 1.8; color: var(--ink); background: white; outline: none; }
     .rd-write-in:focus { border-color: var(--accent-soft); }
-    .rd-write-kana { flex: 0 0 auto; width: 2.6rem; border: 2px solid var(--gold); background: rgba(201,169,98,0.14); color: #7a5f1f; border-radius: 10px; font-family: inherit; font-size: 1.05rem; font-weight: 600; cursor: default; }
+    /* Hiragana is the quiet default, katakana is gold (the same signal Talk and
+       the quiz use), off is grey — the mode reads without having to notice
+       which character is on the key. */
+    .rd-write-kana { flex: 0 0 auto; width: 2.6rem; border: 2px solid rgba(0,0,0,0.12); background: white; color: var(--text); border-radius: 10px; font-family: 'Noto Serif JP', serif; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .rd-write-kana:hover { border-color: var(--accent-soft); }
+    .rd-write-kana.kata { border-color: var(--gold); background: rgba(201,169,98,0.18); color: #7a5f1f; }
+    .rd-write-kana.off { border-color: rgba(0,0,0,0.1); background: transparent; color: var(--text-light); }
     .rd-wrote { font-size: 1.05rem; line-height: 1.9; color: var(--ink); background: var(--paper-warm); border-radius: 10px; padding: 0.6rem 0.9rem; }
     .rd-mark { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.6; }
     .rd-mark.good { color: #3f5c42; }
@@ -400,7 +406,7 @@
     function allStories() { return STORIES.concat(mine); }
     function findStory(id) { return allStories().filter(function (x) { return x.id === id; })[0]; }
 
-    var saved = { level: 'N5', mode: {}, best: {}, write: {}, panel: false };
+    var saved = { level: 'N5', mode: {}, best: {}, write: {}, panel: false, kana: 'kana' };
     try {
       var raw = JSON.parse(localStorage.getItem(STORE) || 'null');
       if (raw && typeof raw === 'object') {
@@ -409,6 +415,7 @@
         if (raw.best && typeof raw.best === 'object') saved.best = raw.best;
         if (raw.write && typeof raw.write === 'object') saved.write = raw.write;
         saved.panel = !!raw.panel;
+        if (raw.kana === 'kana' || raw.kana === 'katakana' || raw.kana === 'off') saved.kana = raw.kana;
       }
     } catch (e) { /* storage unavailable — fine */ }
 
@@ -698,9 +705,32 @@
       window.scrollTo(0, 0);
     }
 
+    // Where the correct answer sits, dealt rather than left to chance. Five
+    // independent shuffles will cheerfully drop four right answers into the
+    // same corner — it reads as broken, and the eye starts answering by
+    // position instead of by Japanese. Positions come out of a bag that refills
+    // only once empty, so every slot is used before any slot is used twice.
+    function slotPlan(qs) {
+      var bags = {};
+      return qs.map(function (q) {
+        var n = q.o.length;
+        if (!bags[n] || !bags[n].length) bags[n] = shuffled(n);
+        return bags[n].pop();
+      });
+    }
+
     function resetAnswers() {
       var s = state.story;
-      state.order = s.q.map(function (q) { return shuffled(q.o.length); });
+      var slots = slotPlan(s.q);
+      state.order = s.q.map(function (q, qi) {
+        // the wrong options, in random order, filling the slots left over
+        var rest = shuffled(q.o.length - 1).map(function (x) { return x + 1; });
+        var out = [];
+        for (var pos = 0; pos < q.o.length; pos++) {
+          out[pos] = (pos === slots[qi]) ? 0 : rest.pop();
+        }
+        return out;
+      });
       state.picks = s.q.map(function () { return null; });
       state.written = s.q.map(function () { return ''; });
       state.marks = null;
@@ -784,6 +814,11 @@
     function harvestWritten() {
       if (!state.story || state.graded) return;
       state.story.q.forEach(function (q, qi) {
+        // A trailing lone "n" is still a Latin n while the field is open — it
+        // could yet become に or ん. flush() settles it as ん, which is what
+        // pressing Check means.
+        var k = writeKanaInputs[qi];
+        if (k) try { k.flush(); } catch (e) {}
         var el = $('rd-w-' + qi);
         if (el) state.written[qi] = el.value;
       });
@@ -823,6 +858,23 @@
       if (!live && on) { saved.write[state.story.level] = false; }
     }
 
+    // \u3042 \u2192 \u30a2 \u2192 A, the same key the vocabulary quiz uses. Katakana is its own
+    // mode rather than something guessed from the text: \u30b3\u30fc\u30d2\u30fc and \u3053\u3053 both
+    // start ko-, so nothing in the r\u014dmaji says which script was meant.
+    var KANA_FACE = { kana: '\u3042', katakana: '\u30a2', off: 'A' };
+    var KANA_NEXT = { kana: 'katakana', katakana: 'off', off: 'kana' };
+    var KANA_HINT = { kana: 'rd_kana_hint', katakana: 'rd_kana_kata', off: 'rd_kana_off' };
+    var writeKana = KANA_FACE[saved.kana] ? saved.kana : 'kana';
+    var writeKanaInputs = {};   // question index → the KA_KanaInput handle
+
+    function paintKanaKey(btn) {
+      btn.textContent = KANA_FACE[writeKana];
+      btn.title = tr(KANA_HINT[writeKana]);
+      btn.classList.toggle('kata', writeKana === 'katakana');
+      btn.classList.toggle('off', writeKana === 'off');
+      btn.setAttribute('aria-pressed', writeKana === 'off' ? 'false' : 'true');
+    }
+
     function writtenAnswer(q, qi) {
       var wrap = document.createElement('div');
       wrap.className = 'rd-write';
@@ -857,14 +909,27 @@
       };
       row.appendChild(input);
       var kana = document.createElement('button');
-      kana.className = 'rd-write-kana jp';
-      kana.textContent = '\u3042';
-      kana.title = tr('rd_kana_hint');
-      kana.onclick = function () { try { input.focus(); } catch (e) {} };
+      kana.type = 'button';
+      kana.className = 'rd-write-kana';
+      kana.onclick = function () {
+        writeKana = KANA_NEXT[writeKana];
+        saved.kana = writeKana;
+        persist();
+        // every question's key shows the same mode, so repaint them all
+        Array.prototype.forEach.call(document.querySelectorAll('.rd-write-kana'), paintKanaKey);
+        try { input.focus(); } catch (e) {}
+      };
+      paintKanaKey(kana);
       row.appendChild(kana);
       wrap.appendChild(row);
-      // the site's shared r\u014dmaji converter, same as the quiz and Talk
-      if (window.KA_KanaInput) KA_KanaInput.attach(input, { enabled: function () { return true; } });
+      // the site's shared r\u014dmaji converter, same as the quiz and Talk \u2014 which
+      // is what makes \u30b8\u30e5\u30fc\u30b9 reachable from juusu without a Japanese keyboard
+      if (window.KA_KanaInput) {
+        writeKanaInputs[qi] = KA_KanaInput.attach(input, {
+          enabled: function () { return writeKana !== 'off'; },
+          convert: function (text, final) { return KA_KanaInput.convert(text, final, writeKana); }
+        });
+      }
       return wrap;
     }
 
@@ -873,6 +938,7 @@
       var mode = modeFor(s.level);
       var box = $('rd-questions');
       box.innerHTML = '';
+      writeKanaInputs = {};
 
       s.q.forEach(function (q, qi) {
         var card = document.createElement('div');
