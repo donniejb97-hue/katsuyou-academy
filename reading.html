@@ -591,11 +591,12 @@
         btn.onclick = function () {
           var on = btn.getAttribute('data-m') === 'write';
           if (on === !!saved.write[lv]) return;
+          if (state.story && state.story.level === lv) harvestWritten();
           saved.write[lv] = on;
           persist();
           renderSettings();
           if (state.story && state.story.level === lv && !state.marking) {
-            resetAnswers();
+            if (state.graded) resetAnswers();
             renderQuestions();
             paintModeSwitch();
           }
@@ -674,8 +675,9 @@
       resetAnswers();
       $('rd-library').classList.add('rd-hidden');
       $('rd-story').classList.remove('rd-hidden');
+      // the word list starts open, so the button starts lit
       $('rd-vocab').classList.add('show');
-      $('rd-words-btn').classList.remove('on');
+      $('rd-words-btn').classList.add('on');
       renderStory();
       if (!fromHash && location.hash !== '#' + id) {
         try { history.pushState(null, '', '#' + id); } catch (e) { location.hash = id; }
@@ -775,15 +777,32 @@
     // level would get it backwards in both directions.
     function writeMode() { return !!saved.write[state.story ? state.story.level : 'N5']; }
 
+    // The shared rōmaji converter finishes a word by writing straight into the
+    // input (an idle ん, a commit on blur), which fires no 'input' event — so a
+    // mirrored copy goes stale by exactly the last character. Read the boxes
+    // themselves before anything that consumes the answers.
+    function harvestWritten() {
+      if (!state.story || state.graded) return;
+      state.story.q.forEach(function (q, qi) {
+        var el = $('rd-w-' + qi);
+        if (el) state.written[qi] = el.value;
+      });
+    }
+
     function currentScore() {
       if (!writeMode()) return state.picks.filter(function (p) { return p === 0; }).length;
       return (state.marks || []).filter(function (m) { return m.verdict === 'ok'; }).length;
     }
 
     function setWriteMode(on) {
+      harvestWritten();
       saved.write[state.story.level] = !!on;
       persist();
-      resetAnswers();
+      // Picks and written answers live in separate arrays, so switching keeps
+      // both: look at the other mode, come back, your sentences are still
+      // there. Only a finished grade is dropped, because a grade belongs to
+      // the mode it was given in.
+      if (state.graded) resetAnswers();
       renderQuestions();
       paintModeSwitch();
       renderSettings();
@@ -827,6 +846,9 @@
       input.id = 'rd-w-' + qi;
       input.value = state.written[qi] || '';
       input.autocomplete = 'off'; input.spellcheck = false;
+      input.onblur = function () {
+        state.written[qi] = this.value;
+      };
       input.oninput = function () {
         state.written[qi] = this.value;
         var n = state.written.filter(function (a) { return a && a.trim(); }).length;
@@ -946,6 +968,7 @@
 
     function grade() {
       if (state.graded || state.marking) return;
+      harvestWritten();
       if (writeMode()) { gradeWritten(); return; }
       finishGrade(state.picks.filter(function (p) { return p === 0; }).length);
     }
