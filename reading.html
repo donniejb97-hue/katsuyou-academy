@@ -891,6 +891,16 @@
                 : esc(tr('rd_mark_none'))) +
           '</div>' +
           '<div class="rd-model jp"><span>' + esc(tr('rd_model_answer')) + '</span> ' + jp(q.o[0], 'kanji') + '</div>';
+        if (vcls !== 'good' && q.ev) {
+          var after = document.createElement('div');
+          after.className = 'rd-q-after';
+          var ev = document.createElement('button');
+          ev.className = 'rd-show-ev';
+          ev.textContent = tr('rd_show_ev');
+          ev.onclick = function () { highlight(q.ev); };
+          after.appendChild(ev);
+          wrap.appendChild(after);
+        }
         return wrap;
       }
       var row = document.createElement('div');
@@ -993,7 +1003,10 @@
           v.className = 'rd-q-verdict ' + (right ? 'good' : 'bad');
           v.textContent = right ? tr('rd_right') : (picked == null ? tr('rd_blank') : tr('rd_wrong'));
           after.appendChild(v);
-          if (q.ev) {
+          // Only on a question you missed. Getting it right and still being
+          // offered the answer reads as a hint you did not need, and on a 5/5
+          // it puts a row of them under a perfect score.
+          if (!right && q.ev) {
             var ev = document.createElement('button');
             ev.className = 'rd-show-ev';
             ev.textContent = tr('rd_show_ev');
@@ -1216,23 +1229,23 @@
     var generating = false;
 
     var GEN_SPEC = {
-      N5: { len: '150–220', tokens: 1300,
+      N5: { len: '220–290', tokens: 1700,
         grammar: 'Separate phrases with one half-width space, like a children\'s book: わたしは まいあさ パンを 食[た]べます。 (text, questions and options). Polite です/ます style only. N5 grammar: particles は が を に で へ と も から まで, past and negative forms, い/な-adjectives, ～たいです, ～ましょう, ～てください, ～ています.',
         kanji: 'Use ONLY these N5 kanji: 日 一 二 三 四 五 六 七 八 九 十 百 千 万 円 年 月 火 水 木 金 土 曜 時 分 半 今 何 人 子 女 男 父 母 友 先 生 学 校 本 名 前 後 午 上 下 中 外 右 左 東 西 南 北 大 小 高 安 新 古 長 白 山 川 天 気 雨 電 車 駅 道 店 食 飲 見 行 来 帰 買 読 書 話 聞 休 入 出 立 言 会 毎 朝 昼 夜 週 間 国 語 手 足 目 口 耳 花 京. Write every other word in hiragana or katakana.',
         q: 'Very simple factual questions (だれ・どこ・なに・いつ・なんじ・どうして).' },
-      N4: { len: '250–330', tokens: 1600,
+      N4: { len: '320–410', tokens: 2000,
         grammar: 'Polite style, with plain-form clauses inside sentences. N4 grammar such as ～たことがある, ～ながら, ～てしまう, ～なければならない, ～たら, ～と思う, ～そうだ, ～より, ～ので, ～のに, ～てみる.',
         kanji: 'N5 and N4 kanji only; write rarer words in kana.',
         q: 'Factual and reason questions (どうして／なぜ), one about the order of events.' },
-      N3: { len: '330–420', tokens: 1900,
+      N3: { len: '410–510', tokens: 2300,
         grammar: 'Plain (だ/である) or polite style, consistently. N3 grammar such as ～ようになる, ～ことにする, ～ばかり, passive and causative, ～らしい, ～わけだ, ～ところ, ～うちに, ～ようとする.',
         kanji: 'Kanji up to N3 level where natural.',
         q: 'Factual, reason, and one inference question about feelings or intentions.' },
-      N2: { len: '380–460', tokens: 2400,
+      N2: { len: '470–560', tokens: 2700,
         grammar: 'A short essay, column, letter, notice or article. N2 grammar such as ～にとって, ～に対して, ～ものの, ～ざるを得ない, ～わけではない, ～に違いない, ～をきっかけに, ～一方で.',
         kanji: 'Natural adult kanji usage up to N2.',
         q: 'Mostly inference: the writer\'s point, what a phrase refers to (これ／それ), reasons, and the main idea.' },
-      N1: { len: '420–500', tokens: 2600,
+      N1: { len: '520–620', tokens: 3000,
         grammar: 'An editorial-style essay or reflective column with abstract vocabulary. N1 grammar such as ～をもって, ～ならでは, ～に即して, ～いかんによらず, ～ずにはおかない, ～きらいがある, ～とあって, ～に至っては.',
         kanji: 'Unrestricted, natural written-Japanese kanji.',
         q: 'The writer\'s claim, nuance of a phrase, what is implied but not stated, and the main idea.' }
@@ -1308,7 +1321,7 @@
         '- Write EVERY kanji with its reading in square brackets right after the whole kanji run: ' +
         '東京[とうきょう], 食[た]べます, 一緒[いっしょ]に, 日本語[にほんご]. The brackets cover all consecutive kanji before them. ' +
         'Never put brackets after kana. This applies to title, text, questions, options and vocab.\n' +
-        '- text: 2–4 paragraphs of natural, correct Japanese. No line breaks inside strings.\n' +
+        '- text: 3–5 paragraphs of natural, correct Japanese. No line breaks inside strings.\n' +
         '- q: exactly 5 comprehension questions in Japanese, answerable only from the text. ' +
         'o: exactly 4 options; the FIRST option is the correct one (the site shuffles them). ' +
         'Wrong options must be plausible but clearly wrong according to the text. Keep options short and similar in length.\n' +
