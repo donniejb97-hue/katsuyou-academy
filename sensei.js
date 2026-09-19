@@ -19,12 +19,23 @@
   var MAX_TOKENS = 500;             // keep answers (and your API bill) small
 
   var STORAGE_HISTORY = 'katsuHistory';
+  var STORAGE_PREV = 'katsuPrevChat';
   var STORAGE_OPEN = 'katsuPanelOpen';
   var STORAGE_PROACTIVE = 'katsuProactive';
   var STORAGE_MISTAKES = 'katsuMistakes';
 
   var MAX_MISTAKES = 20;        // kept in storage
   var MISTAKE_CONTEXT = 5;      // sent to Katsu with a question
+
+  // ---------- how long anything Katsu remembers stays around ----------
+  // The panel used to open chock-full of whatever you last did, days later.
+  // Now both stores age out, but nothing is ever destroyed by an accident:
+  // a chat that has gone cold is SET ASIDE, not deleted, and one tap brings
+  // it back. So the clearing can be brisk without ever being the thing that
+  // loses someone's work to a dropped connection.
+  var CHAT_WARM_MS = 2 * 60 * 60 * 1000;    // a reload inside this keeps the chat
+  var PREV_CHAT_TTL_MS = 24 * 60 * 60 * 1000;  // how long "show previous" still works
+  var MISTAKE_TTL_MS = 12 * 60 * 60 * 1000;    // each mistake, from when it happened
 
   var STRUGGLE_WINDOW_MS = 120000;   // count misses within this window
   var STRUGGLE_THRESHOLD = 3;        // this many misses triggers a pop-in
@@ -115,8 +126,14 @@
       var raw = JSON.parse(localStorage.getItem(STORAGE_MISTAKES) || '[]');
       if (!Array.isArray(raw)) return [];
       var drop = handsOffLabels();
-      var kept = raw.filter(function (m) { return !(m && drop[m.page]); });
-      // Clear out anything recorded before a page became hands-off.
+      var cutoff = Date.now() - MISTAKE_TTL_MS;
+      var kept = raw.filter(function (m) {
+        if (!m || drop[m.page]) return false;          // recorded before a page went hands-off
+        // Each mistake ages out on its own clock rather than at midnight, so
+        // late-night practice isn't wiped ten minutes after you did it. An
+        // entry with no timestamp predates this and is treated as expired.
+        return typeof m.t === 'number' && m.t > cutoff;
+      });
       if (kept.length !== raw.length) {
         try { localStorage.setItem(STORAGE_MISTAKES, JSON.stringify(kept)); } catch (e) {}
       }
@@ -238,14 +255,51 @@
     if (savedProactive !== null) settings.proactive = savedProactive === '1';
   } catch (e) { /* storage unavailable */ }
 
+  // The stored chat is { t: when it was last touched, m: [messages] }. Older
+  // builds wrote a bare array; those are read as "no timestamp", which counts
+  // as cold, so the first load after an update starts clean and the old chat
+  // lands in the set-aside slot.
+  function readChat(key) {
+    try {
+      var raw = JSON.parse(localStorage.getItem(key) || 'null');
+      if (Array.isArray(raw)) return { t: 0, m: raw };
+      if (raw && Array.isArray(raw.m)) return { t: Number(raw.t) || 0, m: raw.m };
+    } catch (e) { /* unavailable or corrupt */ }
+    return { t: 0, m: [] };
+  }
+
+  function setAside(messages) {
+    if (!messages || !messages.length) return;
+    try { localStorage.setItem(STORAGE_PREV, JSON.stringify({ t: Date.now(), m: messages.slice(-MAX_STORED_MESSAGES) })); } catch (e) {}
+  }
+
+  function previousChat() {
+    var prev = readChat(STORAGE_PREV);
+    if (!prev.m.length || Date.now() - prev.t > PREV_CHAT_TTL_MS) return null;
+    return prev.m;
+  }
+
+  function dropPrevious() {
+    try { localStorage.removeItem(STORAGE_PREV); } catch (e) {}
+  }
+
   var history = [];   // { role: 'student'|'sensei', text: '...' }
-  try {
-    var savedHistory = JSON.parse(localStorage.getItem(STORAGE_HISTORY) || '[]');
-    if (Array.isArray(savedHistory)) history = savedHistory.slice(-MAX_STORED_MESSAGES);
-  } catch (e) { /* storage unavailable or corrupt — start fresh */ }
+  (function () {
+    var saved = readChat(STORAGE_HISTORY);
+    if (!saved.m.length) return;
+    if (Date.now() - saved.t <= CHAT_WARM_MS) {
+      history = saved.m.slice(-MAX_STORED_MESSAGES);   // a reload, or still the same sitting
+    } else {
+      setAside(saved.m);                               // cold: put it away, don't bin it
+      try { localStorage.removeItem(STORAGE_HISTORY); } catch (e) {}
+    }
+  })();
 
   function persistHistory() {
-    try { localStorage.setItem(STORAGE_HISTORY, JSON.stringify(history.slice(-MAX_STORED_MESSAGES))); } catch (e) {}
+    try {
+      localStorage.setItem(STORAGE_HISTORY,
+        JSON.stringify({ t: Date.now(), m: history.slice(-MAX_STORED_MESSAGES) }));
+    } catch (e) {}
   }
   function persistOpen(isOpen) {
     try { localStorage.setItem(STORAGE_OPEN, isOpen ? '1' : '0'); } catch (e) {}
@@ -302,6 +356,13 @@
     '  padding: 0.3rem 0.6rem; font-family: inherit; font-size: 0.78rem; cursor: pointer; }',
     '#sensei-clear:hover { border-color: var(--accent-soft, #d4786a); }',
     '#sensei-msgs { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.6rem; }',
+    /* the way back to a conversation that was set aside — quiet, and only
+       there while there is something to come back to */
+    '#sensei-restore { display: none; padding: 0.5rem 0.9rem 0; }',
+    '#sensei-restore.show { display: block; }',
+    '#sensei-restore button { width: 100%; background: none; border: 1px dashed rgba(0,0,0,0.18); color: var(--text-light, #6b6b6b);',
+    '  border-radius: 8px; padding: 0.45rem 0.6rem; font-family: inherit; font-size: 0.82rem; cursor: pointer; }',
+    '#sensei-restore button:hover { border-color: var(--accent-soft, #d4786a); color: var(--text, #3d3d3d); }',
     '.sensei-msg { max-width: 85%; padding: 0.55rem 0.8rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.45; white-space: pre-wrap; word-wrap: break-word; }',
     '.sensei-msg.student { align-self: flex-end; background: var(--ink, #1a1a2e); color: var(--paper, #faf9f7); border-bottom-right-radius: 2px; }',
     '.sensei-msg.sensei { align-self: flex-start; background: var(--paper-warm, #f5f3ef); border: 1px solid rgba(0,0,0,0.08); border-bottom-left-radius: 2px; }',
@@ -364,6 +425,7 @@
           '<button id="sensei-clear-mistakes"></button>' +
         '</div>' +
       '</div>' +
+      '<div id="sensei-restore"><button type="button" id="sensei-restore-btn"></button></div>' +
       '<div id="sensei-msgs"></div>' +
       '<div id="sensei-review"><button type="button" id="sensei-review-btn"></button></div>' +
       '<div id="sensei-form">' +
@@ -383,6 +445,8 @@
     var clearBtn = panel.querySelector('#sensei-clear');
     var clearMistakesBtn = panel.querySelector('#sensei-clear-mistakes');
 
+    var restoreRow = panel.querySelector('#sensei-restore');
+    var restoreBtn = panel.querySelector('#sensei-restore-btn');
     var reviewRow = panel.querySelector('#sensei-review');
     var reviewBtn = panel.querySelector('#sensei-review-btn');
 
@@ -391,7 +455,15 @@
       send.textContent = tr('sensei_send', 'Ask');
       panel.querySelector('#sensei-proactive-label').textContent = tr('sensei_proactive_label', 'Let Katsu check in when I seem stuck');
       clearBtn.textContent = tr('sensei_clear_history', '🗑 Clear chat');
+      refreshRestore();
       refreshMistakeUI();
+    }
+
+    // Shown only while a set-aside conversation is still within reach.
+    function refreshRestore() {
+      var prev = previousChat();
+      restoreRow.classList.toggle('show', !!prev && !history.length);
+      if (prev) restoreBtn.textContent = tr('sensei_restore_chat', '↩ Show previous conversation');
     }
 
     // Badge on the button, and a one-tap "go over them" row inside the panel.
@@ -431,10 +503,25 @@
     // it's a study record, not chat scrollback, and wiping it meant Katsu
     // could no longer explain anything you'd got wrong before.
     clearBtn.addEventListener('click', function () {
+      // Set aside rather than destroy: the same one-tap way back as an
+      // automatic clear, so a mis-click costs nothing.
+      setAside(history);
       history = [];
-      persistHistory();
+      try { localStorage.removeItem(STORAGE_HISTORY); } catch (e) {}
       msgsEl.innerHTML = '';
       addMsg('sensei', tr('sensei_greeting', greetingFallback()));
+      refreshRestore();
+    });
+
+    restoreBtn.addEventListener('click', function () {
+      var prev = previousChat();
+      if (!prev) { refreshRestore(); return; }
+      history = prev.slice(-MAX_STORED_MESSAGES);
+      dropPrevious();
+      persistHistory();
+      msgsEl.innerHTML = '';
+      history.forEach(function (m) { addMsg(m.role === 'student' ? 'student' : 'sensei', m.text); });
+      refreshRestore();
     });
 
     clearMistakesBtn.addEventListener('click', function () {
@@ -506,6 +593,7 @@
     history.forEach(function (m) {
       addMsg(m.role === 'student' ? 'student' : 'sensei', m.text);
     });
+    refreshRestore();
 
     // Restore panel open state across navigation.
     var wasOpen = false;
@@ -562,6 +650,7 @@
         history.push({ role: 'sensei', text: answer });
         history = history.slice(-MAX_STORED_MESSAGES);
         persistHistory();
+        refreshRestore();   // a live conversation hides the way back
       }).catch(function (err) {
         console.error('Sensei error:', err);
         thinkingEl.remove();
