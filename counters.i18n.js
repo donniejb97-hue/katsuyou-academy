@@ -1,0 +1,112 @@
+// counters.i18n.js — UI strings for the Counters page (counters.html).
+// Loaded after i18n.js. German is the reviewed reference (Sie-form).
+// The counters themselves, their rules and their examples live in
+// counters-data.js, which carries its own four languages.
+(function () {
+  var S = {
+    en: {
+      ct_tag: 'Reference',
+      ct_title: 'Counters',
+      ct_desc: 'Japanese picks a counter to suit the shape of the thing being counted — and the number in front changes sound to fit it. Every counter below shows one to ten, with the readings that change marked in gold.',
+      ct_guide_h: '📐 Quick Guide',
+      ct_g1_h: 'Japanese counts things twice',
+      ct_g1_p: 'There is a native series — <span class="jp">ひとつ、ふたつ、みっつ</span> — that works for almost anything up to ten, and a Sino-Japanese series where a number goes in front of a counter suited to the thing: <span class="jp">二本</span> for two pencils, <span class="jp">二枚</span> for two sheets of paper.',
+      ct_g2_h: "The sounds change, and that's the lesson",
+      ct_g2_p: 'You cannot say <span class="jp">いちほん</span>. It becomes <span class="jp">いっぽん</span>. Counters starting with h- turn to p- after 1, 6, 8 and 10, and to b- after 3. Counters with k-, s- and t- double the consonant after 1, 8 and 10.',
+      ct_g3_h: 'Asking how many',
+      ct_g3_p: 'Put <span class="jp">何</span> where the number goes: <span class="jp">何本</span>, <span class="jp">何枚</span>, <span class="jp">何人</span>. It takes the same sound change as 3 — <span class="jp">なんぼん</span>, not なんほん.',
+      ct_legend: 'Legend',
+      ct_legend_irr: 'The reading changes here — learn these',
+      ct_legend_reg: 'Regular: number + base reading',
+      ct_legend_ask: 'How many — 何〜',
+      ct_pick_h: "Pick what you're counting",
+      ct_count: '{n} counters',
+      ct_how_many: 'HOW MANY',
+      ct_listen: '🔊 Hear 1–10',
+      ct_stop: '■ Stop',
+      ct_ref_badge: 'Reference',
+      ct_ref_h: 'Everything at a glance',
+      ct_ref_sub: 'The same readings as a table, for looking something up rather than studying it. Gold cells are the readings that change. Click a row to open that counter above.',
+      ct_col_counter: 'Counter'
+    },
+    de: {
+      ct_tag: 'Referenz',
+      ct_title: 'Zählwörter',
+      ct_desc: 'Japanisch wählt ein Zählwort, das zur Form des gezählten Dings passt — und die Zahl davor ändert ihren Klang, damit es zusammenpasst. Jedes Zählwort unten zeigt eins bis zehn; die Lesungen, die sich ändern, sind golden markiert.',
+      ct_guide_h: '📐 Kurzüberblick',
+      ct_g1_h: 'Japanisch zählt auf zwei Arten',
+      ct_g1_p: 'Es gibt eine japanische Reihe — <span class="jp">ひとつ、ふたつ、みっつ</span> —, die bis zehn für fast alles funktioniert, und eine sinojapanische Reihe, bei der eine Zahl vor einem passenden Zählwort steht: <span class="jp">二本</span> für zwei Bleistifte, <span class="jp">二枚</span> für zwei Blatt Papier.',
+      ct_g2_h: 'Die Laute ändern sich — genau darum geht es',
+      ct_g2_p: 'Man kann nicht <span class="jp">いちほん</span> sagen. Es wird <span class="jp">いっぽん</span>. Zählwörter mit h- werden nach 1, 6, 8 und 10 zu p- und nach 3 zu b-. Zählwörter mit k-, s- und t- verdoppeln den Konsonanten nach 1, 8 und 10.',
+      ct_g3_h: 'Nach der Anzahl fragen',
+      ct_g3_p: 'Setzen Sie <span class="jp">何</span> an die Stelle der Zahl: <span class="jp">何本</span>, <span class="jp">何枚</span>, <span class="jp">何人</span>. Es nimmt dieselbe Lautänderung wie die 3 — <span class="jp">なんぼん</span>, nicht なんほん.',
+      ct_legend: 'Legende',
+      ct_legend_irr: 'Hier ändert sich die Lesung — diese lernen',
+      ct_legend_reg: 'Regelmäßig: Zahl + Grundlesung',
+      ct_legend_ask: 'Wie viele — 何〜',
+      ct_pick_h: 'Wählen Sie, was Sie zählen',
+      ct_count: '{n} Zählwörter',
+      ct_how_many: 'WIE VIELE',
+      ct_listen: '🔊 1–10 anhören',
+      ct_stop: '■ Stopp',
+      ct_ref_badge: 'Referenz',
+      ct_ref_h: 'Alles auf einen Blick',
+      ct_ref_sub: 'Dieselben Lesungen als Tabelle — zum Nachschlagen statt zum Lernen. Goldene Zellen sind die Lesungen, die sich ändern. Klicken Sie auf eine Zeile, um das Zählwort oben zu öffnen.',
+      ct_col_counter: 'Zählwort'
+    },
+    fr: {
+      ct_tag: 'Référence',
+      ct_title: 'Compteurs',
+      ct_desc: 'Le japonais choisit un compteur adapté à la forme de ce que l’on compte — et le nombre placé devant change de son pour s’y accorder. Chaque compteur ci-dessous montre de un à dix, les lectures qui changent étant marquées en doré.',
+      ct_guide_h: '📐 Aperçu rapide',
+      ct_g1_h: 'Le japonais compte de deux façons',
+      ct_g1_p: 'Il existe une série japonaise — <span class="jp">ひとつ、ふたつ、みっつ</span> — qui convient à presque tout jusqu’à dix, et une série sino-japonaise où un nombre précède un compteur adapté à l’objet : <span class="jp">二本</span> pour deux crayons, <span class="jp">二枚</span> pour deux feuilles de papier.',
+      ct_g2_h: 'Les sons changent, et c’est là toute la leçon',
+      ct_g2_p: 'On ne peut pas dire <span class="jp">いちほん</span>. Cela devient <span class="jp">いっぽん</span>. Les compteurs en h- passent à p- après 1, 6, 8 et 10, et à b- après 3. Ceux en k-, s- et t- doublent la consonne après 1, 8 et 10.',
+      ct_g3_h: 'Demander combien',
+      ct_g3_p: 'Mettez <span class="jp">何</span> à la place du nombre : <span class="jp">何本</span>, <span class="jp">何枚</span>, <span class="jp">何人</span>. Il subit le même changement que 3 — <span class="jp">なんぼん</span>, pas なんほん.',
+      ct_legend: 'Légende',
+      ct_legend_irr: 'La lecture change ici — à apprendre',
+      ct_legend_reg: 'Régulier : nombre + lecture de base',
+      ct_legend_ask: 'Combien — 何〜',
+      ct_pick_h: 'Choisissez ce que vous comptez',
+      ct_count: '{n} compteurs',
+      ct_how_many: 'COMBIEN',
+      ct_listen: '🔊 Écouter 1–10',
+      ct_stop: '■ Arrêter',
+      ct_ref_badge: 'Référence',
+      ct_ref_h: 'Tout d’un coup d’œil',
+      ct_ref_sub: 'Les mêmes lectures sous forme de tableau, pour chercher plutôt que pour apprendre. Les cases dorées sont les lectures qui changent. Cliquez sur une ligne pour ouvrir ce compteur ci-dessus.',
+      ct_col_counter: 'Compteur'
+    },
+    zh: {
+      ct_tag: '参考',
+      ct_title: '量词',
+      ct_desc: '日语会按照所数事物的形状选择量词 — 前面的数字也会随之变音。下面每个量词都列出一到十，读音发生变化的地方以金色标出。',
+      ct_guide_h: '📐 速查指南',
+      ct_g1_h: '日语有两套数法',
+      ct_g1_p: '一套是和语数词 — <span class="jp">ひとつ、ふたつ、みっつ</span> — 十以内几乎什么都能数；另一套是汉语数词加上与事物相配的量词：两支铅笔说 <span class="jp">二本</span>，两张纸说 <span class="jp">二枚</span>。',
+      ct_g2_h: '读音会变，这正是重点',
+      ct_g2_p: '不能说 <span class="jp">いちほん</span>，要说 <span class="jp">いっぽん</span>。h 开头的量词在 1、6、8、10 后变 p，在 3 后变 b。k、s、t 开头的量词在 1、8、10 后辅音变促音。',
+      ct_g3_h: '问“几个”',
+      ct_g3_p: '把 <span class="jp">何</span> 放在数字的位置：<span class="jp">何本</span>、<span class="jp">何枚</span>、<span class="jp">何人</span>。它和 3 发生同样的变音 — <span class="jp">なんぼん</span>，不是 なんほん。',
+      ct_legend: '图例',
+      ct_legend_irr: '此处读音改变 — 需要记住',
+      ct_legend_reg: '规则：数字 + 基本读音',
+      ct_legend_ask: '几个 — 何〜',
+      ct_pick_h: '选择你要数的东西',
+      ct_count: '{n} 个量词',
+      ct_how_many: '几个',
+      ct_listen: '🔊 听 1–10',
+      ct_stop: '■ 停止',
+      ct_ref_badge: '参考',
+      ct_ref_h: '一览表',
+      ct_ref_sub: '同样的读音以表格呈现，便于查找而非学习。金色格子是会变化的读音。点击某一行可在上方打开该量词。',
+      ct_col_counter: '量词'
+    }
+  };
+  for (var lang in S) {
+    if (!I18N[lang]) I18N[lang] = {};
+    for (var k in S[lang]) I18N[lang][k] = S[lang][k];
+  }
+})();

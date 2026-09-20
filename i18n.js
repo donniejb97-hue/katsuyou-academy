@@ -4,7 +4,7 @@
 // ============================================================
 var I18N = {
   en: {
-    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_group_practice:'Practice', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
+    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_group_practice:'Practice', nav_counters:'Counters', nav_new:'New', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
     nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk', nav_reading:'Reading',
     nav_dates:'Dates', nav_vocab:'Vocabulary',
     nav_vocab_quiz:'Vocab Quiz',
@@ -416,7 +416,7 @@ var I18N = {
     ],
   },
   de: {
-    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_group_practice:'Üben', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
+    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_group_practice:'Üben', nav_counters:'Zählwörter', nav_new:'Neu', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
     nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch', nav_reading:'Lesen',
     nav_dates:'Datum', nav_vocab:'Vokabeln',
     nav_vocab_quiz:'Vokabelquiz',
@@ -819,7 +819,7 @@ var I18N = {
     ],
   },
   fr: {
-    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_group_practice:'Pratique', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
+    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_group_practice:'Pratique', nav_counters:'Compteurs', nav_new:'Nouveau', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
     nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Parler', nav_reading:'Lecture',
     nav_dates:'Dates', nav_vocab:'Vocabulaire',
     nav_vocab_quiz:'Quiz de vocabulaire',
@@ -1222,7 +1222,7 @@ var I18N = {
     ],
   },
   zh: {
-    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
+    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_counters:'量词', nav_new:'新', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
     nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话', nav_reading:'阅读',
     nav_dates:'日期', nav_vocab:'词汇',
     nav_vocab_quiz:'词汇测验',
@@ -1665,6 +1665,12 @@ function applyI18n() {
   document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
     el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
   });
+  // The "New" badge is a ::after on the link, fed from a CSS variable. A
+  // pseudo-element survives the textContent rewrite above, which a real child
+  // element would not — the loop over [data-i18n] would wipe it every time.
+  try {
+    document.documentElement.style.setProperty('--nav-new-label', JSON.stringify(t('nav_new')));
+  } catch (e) {}
   var sel = document.getElementById('lang-select');
   if (sel) sel.value = LANG;
 }
@@ -1816,6 +1822,17 @@ function setLang(lang) {
     /* the switch rides along on the right; it needs the bar colour behind it so
        links don't show through as they scroll underneath */
     '.nav-links .lang-switch{position:sticky;right:0;background:var(--ink,#1a1a2e);}',
+    /* "New" badge on a recently added page. Set isNew:false in EXTRA_LINKS
+       above to retire it everywhere at once. */
+    '.nav-link[data-nav-new]{position:relative;}',
+    '.nav-link[data-nav-new]::after{content:var(--nav-new-label,"New");display:inline-block;margin-left:0.4rem;',
+    '  font-family:Outfit,sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.08em;',
+    '  text-transform:uppercase;vertical-align:0.35em;color:#2a2109;background:var(--gold,#c9a962);',
+    '  padding:0.1rem 0.32rem;border-radius:4px;}',
+    /* The rule above this one kills ::after inside a dropdown, because that is
+       how the active underline is hidden there. It has to be undone by name or
+       the badge vanishes the moment Counters moves into the Learn menu. */
+    '.nav-group-menu a.nav-link[data-nav-new]::after{display:inline-block;vertical-align:0.15em;}',
     '@media (max-width:1400px){',
     '  .nav-links .lang-switch{margin-left:0.5rem;}',
     '}',
@@ -1954,8 +1971,11 @@ function setLang(lang) {
   // menu. Add a group here and it applies to every page — the links are moved
   // out of the existing nav, so they keep their data-i18n and active state.
   var NAV_GROUPS = [
+    // Counters sits second on purpose: first is the course itself, and second is
+    // the slot the eye reaches next. Further down it would disappear into the
+    // run of Conjugation / Forms / Verbs, which it has nothing to do with.
     { key: 'nav_group_learn', fallback: 'Learn',
-      pages: ['learn', 'adjectives', 'reference', 'conjugation', 'forms', 'verblist'] },
+      pages: ['learn', 'counters', 'adjectives', 'reference', 'conjugation', 'forms', 'verblist'] },
     // The cards and the quiz are the same subject, and the bar was already at
     // its limit — grouping them keeps the top level exactly as wide as before.
     { key: 'nav_group_vocab', fallback: 'Vocabulary',
@@ -2050,27 +2070,40 @@ function setLang(lang) {
     };
   }
 
-  // ---------- Reading link ----------
-  // Every page carries its own copy of the nav. Rather than edit all of them,
-  // the Reading link is added here, right after Talk, wherever it's missing.
-  function addReadingLink() {
+  // ---------- pages added since the nav was last copied into the HTML -------
+  // Every page carries its own copy of the nav, so rather than editing all
+  // eighteen files whenever a page is added, the link is inserted here. Each
+  // entry says which existing link to sit after; NAV_GROUPS then decides
+  // whether it stays on the top level or moves inside a dropdown.
+  //
+  // `isNew` puts a small badge on the link while the page is still news.
+  // Empty the flag and the badge is gone everywhere — one edit.
+  var EXTRA_LINKS = [
+    { page: 'reading',  key: 'nav_reading',  href: '/reading',  after: 'talk' },
+    { page: 'counters', key: 'nav_counters', href: '/counters', after: 'learn', isNew: true }
+  ];
+
+  function addExtraLinks() {
     var bar = document.querySelector('.nav-links');
-    if (!bar || bar.querySelector('.nav-link[data-page="reading"]')) return;
-    var talk = bar.querySelector('.nav-link[data-page="talk"]');
-    var a = document.createElement('a');
-    a.className = 'nav-link';
-    a.setAttribute('data-page', 'reading');
-    a.setAttribute('data-i18n', 'nav_reading');
-    a.href = '/reading';
-    a.textContent = t('nav_reading');
-    if (document.body.getAttribute('data-page') === 'reading') a.classList.add('active');
-    if (talk && talk.parentNode === bar) bar.insertBefore(a, talk.nextSibling);
-    else if (talk && talk.parentNode) talk.parentNode.insertBefore(a, talk.nextSibling);
-    else bar.appendChild(a);
+    if (!bar) return;
+    EXTRA_LINKS.forEach(function (spec) {
+      if (bar.querySelector('.nav-link[data-page="' + spec.page + '"]')) return;
+      var a = document.createElement('a');
+      a.className = 'nav-link';
+      a.setAttribute('data-page', spec.page);
+      a.setAttribute('data-i18n', spec.key);
+      a.href = spec.href;
+      a.textContent = t(spec.key);
+      if (spec.isNew) a.setAttribute('data-nav-new', '1');
+      if (document.body.getAttribute('data-page') === spec.page) a.classList.add('active');
+      var anchor = bar.querySelector('.nav-link[data-page="' + spec.after + '"]');
+      if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(a, anchor.nextSibling);
+      else bar.appendChild(a);
+    });
   }
 
   function initNav() {
-    addReadingLink();
+    addExtraLinks();
     buildLangSwitch();
     buildNavGroups();
   }

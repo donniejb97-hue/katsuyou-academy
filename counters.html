@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Analytics: Clarity + Google, both configured in analytics.js -->
+  <script src="analytics.js"></script>
+  <title>Japanese Counters — 本, 枚, 人 and the readings that change | Katsuyō Academy</title>
+  <meta name="description" content="Every common Japanese counter with its readings from one to ten. The irregular readings are marked, and each counter states the sound-change rule behind it: 一本 いっぽん, 三本 さんぼん, 三階 さんがい.">
+  <link rel="canonical" href="https://katsuyoacademy.com/counters">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .ct-page { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+    .ct-desc { color: var(--text-light); line-height: 1.7; max-width: 62ch; }
+
+    /* ---- Quick Guide, the same shape the Kana page uses ---- */
+    .ct-guide { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; }
+    .ct-guide h2 { font-size: 1.15rem; color: var(--accent-soft); margin: 0 0 1rem; }
+    .ct-guide-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .ct-guide-col h3 { font-size: 0.95rem; color: var(--paper); margin: 0 0 0.4rem; }
+    .ct-guide-col p { font-size: 0.87rem; line-height: 1.7; color: rgba(250,249,247,0.72); margin: 0; }
+    .ct-guide-col .jp { color: var(--gold); }
+
+    /* ---- legend ---- */
+    .ct-legend { background: white; border-left: 4px solid var(--accent); border-radius: 8px;
+      padding: 0.8rem 1.2rem; margin-bottom: 1.75rem; display: flex; gap: 1.75rem; align-items: center; flex-wrap: wrap; }
+    .ct-legend-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); }
+    .ct-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.87rem; color: var(--text); }
+    .ct-swatch { width: 1.6rem; height: 1.6rem; border-radius: 6px; display: grid; place-items: center; font-size: 0.85rem; flex: 0 0 auto; }
+    .ct-swatch.irr { background: rgba(201,169,98,0.22); color: #7a5f1f; border: 1.5px solid var(--gold); font-weight: 700; }
+    .ct-swatch.reg { background: var(--paper-warm); color: var(--text-light); border: 1.5px solid rgba(0,0,0,0.1); }
+
+    /* ---- panels ---- */
+    .ct-panel { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 1.5rem 1.75rem; margin-bottom: 1.5rem; }
+    .ct-panel-head { display: flex; align-items: baseline; gap: 0.85rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+    .ct-badge { background: var(--accent); color: white; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 0.25rem 0.7rem; border-radius: 6px; white-space: nowrap; }
+    .ct-panel-head h2 { font-size: 1.3rem; color: var(--ink); margin: 0; }
+    .ct-panel-sub { color: var(--text-light); font-size: 0.9rem; margin: -0.6rem 0 1.1rem; }
+
+    /* ---- picker ---- */
+    .ct-group + .ct-group { margin-top: 1.1rem; }
+    .ct-group-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 0.55rem; }
+    .ct-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ct-chip { border: 1.5px solid rgba(0,0,0,0.13); background: white; border-radius: 10px; padding: 0.5rem 0.8rem;
+      cursor: pointer; font-family: inherit; display: flex; align-items: baseline; gap: 0.5rem; transition: all 0.15s; }
+    .ct-chip:hover { border-color: var(--accent-soft); transform: translateY(-1px); }
+    .ct-chip .k { font-family: 'Noto Serif JP', serif; font-size: 1.15rem; color: var(--ink); }
+    .ct-chip .w { font-size: 0.78rem; color: var(--text-light); }
+    .ct-chip.on { background: var(--ink); border-color: var(--ink); }
+    .ct-chip.on .k, .ct-chip.on .w { color: var(--paper); }
+
+    /* ---- the counter sheet ---- */
+    .ct-sheet { display: grid; grid-template-columns: 15rem 1fr; gap: 2rem; align-items: start; }
+    .ct-face { text-align: center; }
+    .ct-face .big { font-family: 'Noto Serif JP', serif; font-size: 5.5rem; line-height: 1.1; color: var(--ink); }
+    .ct-face .base { font-family: 'Noto Serif JP', serif; font-size: 1.3rem; color: var(--accent); margin-top: 0.2rem; }
+    .ct-face .what { font-size: 0.95rem; color: var(--text); margin-top: 0.7rem; }
+    .ct-eg { font-size: 0.85rem; color: var(--text-light); margin-top: 0.6rem; line-height: 1.9; }
+    .ct-eg b { color: var(--ink); font-weight: 600; font-family: 'Noto Serif JP', serif; }
+    .ct-listen { margin-top: 0.9rem; border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text);
+      border-radius: 999px; padding: 0.4rem 1rem; font-family: inherit; font-size: 0.85rem; cursor: pointer; transition: all 0.15s; }
+    .ct-listen:hover { border-color: var(--accent-soft); }
+    .ct-listen.on { background: var(--sage); border-color: var(--sage); color: white; }
+
+    .ct-cells { display: grid; grid-template-columns: repeat(auto-fit, minmax(7.2rem, 1fr)); gap: 0.6rem; }
+    .ct-cell { background: var(--paper-warm); border: 1.5px solid rgba(0,0,0,0.07); border-radius: 10px;
+      padding: 0.7rem 0.4rem; text-align: center; font-family: inherit; cursor: pointer; transition: all 0.15s; }
+    .ct-cell:hover { border-color: var(--accent-soft); }
+    .ct-cell .n { font-size: 0.7rem; font-weight: 700; color: var(--text-light); letter-spacing: 0.06em; }
+    .ct-cell .form { font-family: 'Noto Serif JP', serif; font-size: 1.3rem; color: var(--ink); line-height: 1.5; }
+    .ct-cell .read { font-family: 'Noto Serif JP', serif; font-size: 0.95rem; color: var(--text-light); line-height: 1.6; }
+    .ct-cell.irr { background: rgba(201,169,98,0.16); border-color: var(--gold); }
+    .ct-cell.irr .read { color: #7a5f1f; font-weight: 600; }
+    .ct-cell.irr .n { color: #8a7030; }
+    .ct-cell.ask { background: white; border-style: dashed; border-color: var(--accent-soft); }
+    .ct-cell.ask .form, .ct-cell.ask .read { color: var(--accent); }
+    .ct-cell.speaking { background: rgba(122,158,126,0.2); border-color: var(--sage); }
+
+    .ct-rule { margin-top: 1.1rem; background: rgba(201,169,98,0.1); border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0; padding: 0.75rem 1rem; font-size: 0.88rem; line-height: 1.75; color: var(--text); }
+    .ct-rule .jp { color: #7a5f1f; font-weight: 600; }
+    .ct-note { margin-top: 0.8rem; font-size: 0.85rem; color: var(--text-light); line-height: 1.7; }
+
+    /* ---- reference table ---- */
+    .ct-table-wrap { overflow-x: auto; }
+    .ct-table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+    .ct-table th, .ct-table td { padding: 0.5rem 0.6rem; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.07); white-space: nowrap; }
+    .ct-table thead th { background: var(--ink); color: var(--paper); font-size: 0.75rem; font-weight: 600; }
+    .ct-table tbody th { background: var(--paper-warm); font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: var(--ink); text-align: left; }
+    .ct-table tbody th small { font-family: 'Outfit', sans-serif; font-size: 0.72rem; color: var(--text-light); margin-left: 0.3rem; }
+    .ct-table td { font-family: 'Noto Serif JP', serif; color: var(--text); }
+    .ct-table td.irr { background: rgba(201,169,98,0.16); color: #7a5f1f; font-weight: 600; }
+    .ct-table tbody tr { cursor: pointer; }
+    .ct-table tbody tr:hover th, .ct-table tbody tr:hover td { background: rgba(196,92,74,0.06); }
+    .ct-table tbody tr:hover td.irr { background: rgba(201,169,98,0.28); }
+
+    @media (max-width: 820px) {
+      .ct-sheet { grid-template-columns: 1fr; }
+      .ct-face .big { font-size: 4rem; }
+      .ct-page { padding: 1.25rem; }
+      .ct-legend { gap: 0.75rem 1.25rem; }
+    }
+  </style>
+</head>
+<body data-page="counters">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="/" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="adjectives" href="/adjectives" data-i18n="nav_adjectives">Adjectives</a>
+        <a class="nav-link" data-page="reference" href="/reference" data-i18n="nav_reference">Reference</a>
+        <a class="nav-link" data-page="conjugation" href="/conjugation" data-i18n="nav_conjugation">Conjugation</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
+        <a class="nav-link" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+  <div id="page-counters" class="page active">
+    <div class="ct-page">
+
+      <div style="margin-bottom:1.5rem">
+        <div class="page-tag" data-i18n="ct_tag">Reference</div>
+        <h1 class="page-title"><span class="jp">助数詞</span> — <span data-i18n="ct_title">Counters</span></h1>
+        <p class="ct-desc" data-i18n="ct_desc">Japanese picks a counter to suit the shape of the thing being counted — and the number in front changes sound to fit it. Every counter below shows one to ten, with the readings that change marked in gold.</p>
+      </div>
+
+      <!-- ===== Quick Guide ===== -->
+      <div class="ct-guide">
+        <h2 data-i18n="ct_guide_h">📐 Quick Guide</h2>
+        <div class="ct-guide-cols">
+          <div class="ct-guide-col">
+            <h3 data-i18n="ct_g1_h">Japanese counts things twice</h3>
+            <p data-i18n-html="ct_g1_p">There is a native series — <span class="jp">ひとつ、ふたつ、みっつ</span> — that works for almost anything up to ten, and a Sino-Japanese series where a number goes in front of a counter suited to the thing: <span class="jp">二本</span> for two pencils, <span class="jp">二枚</span> for two sheets of paper.</p>
+          </div>
+          <div class="ct-guide-col">
+            <h3 data-i18n="ct_g2_h">The sounds change, and that's the lesson</h3>
+            <p data-i18n-html="ct_g2_p">You cannot say <span class="jp">いちほん</span>. It becomes <span class="jp">いっぽん</span>. Counters starting with h- turn to p- after 1, 6, 8 and 10, and to b- after 3. Counters with k-, s- and t- double the consonant after 1, 8 and 10.</p>
+          </div>
+          <div class="ct-guide-col">
+            <h3 data-i18n="ct_g3_h">Asking how many</h3>
+            <p data-i18n-html="ct_g3_p">Put <span class="jp">何</span> where the number goes: <span class="jp">何本</span>, <span class="jp">何枚</span>, <span class="jp">何人</span>. It takes the same sound change as 3 — <span class="jp">なんぼん</span>, not なんほん.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="ct-legend">
+        <span class="ct-legend-label" data-i18n="ct_legend">Legend</span>
+        <span class="ct-legend-item"><span class="ct-swatch irr jp">ぽ</span><span data-i18n="ct_legend_irr">The reading changes here — learn these</span></span>
+        <span class="ct-legend-item"><span class="ct-swatch reg jp">ほ</span><span data-i18n="ct_legend_reg">Regular: number + base reading</span></span>
+        <span class="ct-legend-item"><span class="ct-swatch reg jp">？</span><span data-i18n="ct_legend_ask">How many — 何〜</span></span>
+      </div>
+
+      <!-- ===== Picker ===== -->
+      <div class="ct-panel">
+        <div class="ct-panel-head">
+          <span class="ct-badge" id="ct-count"></span>
+          <h2 data-i18n="ct_pick_h">Pick what you're counting</h2>
+        </div>
+        <div id="ct-picker"></div>
+      </div>
+
+      <!-- ===== The selected counter ===== -->
+      <div class="ct-panel">
+        <div class="ct-sheet">
+          <div class="ct-face">
+            <div class="big jp" id="ct-kanji"></div>
+            <div class="base jp" id="ct-base"></div>
+            <div class="what" id="ct-what"></div>
+            <div class="ct-eg" id="ct-eg"></div>
+            <button class="ct-listen" id="ct-listen" type="button"></button>
+          </div>
+          <div>
+            <div class="ct-cells" id="ct-cells"></div>
+            <div class="ct-rule" id="ct-rule"></div>
+            <div class="ct-note" id="ct-note"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Reference table ===== -->
+      <div class="ct-panel">
+        <div class="ct-panel-head">
+          <span class="ct-badge" data-i18n="ct_ref_badge">Reference</span>
+          <h2 data-i18n="ct_ref_h">Everything at a glance</h2>
+        </div>
+        <p class="ct-panel-sub" data-i18n="ct_ref_sub">The same readings as a table, for looking something up rather than studying it. Gold cells are the readings that change. Click a row to open that counter above.</p>
+        <div class="ct-table-wrap"><table class="ct-table" id="ct-table"></table></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top" title="Back to top" aria-label="Back to top">
+    ↑
+  </button>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
+  <script src="counters.i18n.js"></script>
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+  <script src="sensei.js"></script>
+  <script src="counters-data.js"></script>
+
+  <script>
+  // ==========================================================================
+  // COUNTERS — a reference page about sound changes.
+  //
+  // Number + counter is the easy half. What has to be learned is that 一本 is
+  // いっぽん and 三階 is さんがい, so the page generates the regular readings
+  // and marks only the deviations, which live in counters-data.js.
+  // ==========================================================================
+  (function () {
+    'use strict';
+
+    var D = (typeof COUNTER_DATA !== 'undefined') ? COUNTER_DATA : null;
+    if (!D) return;
+
+    var STORE = 'katsuyoCounters';
+    var cur = 2;   // 本 — the counter that makes the point best
+    try {
+      var saved = parseInt(localStorage.getItem(STORE), 10);
+      if (saved >= 0 && saved < D.COUNTERS.length) cur = saved;
+    } catch (e) { /* storage unavailable */ }
+
+    function $(id) { return document.getElementById(id); }
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    function lang() { return (typeof LANG === 'string') ? LANG : 'en'; }
+    function tx(obj) { return (obj && (obj[lang()] || obj.en)) || ''; }
+    function tr(key, fallback) {
+      var v = (typeof t === 'function') ? t(key) : key;
+      return (v === key || v == null) ? fallback : v;
+    }
+
+    // {braces} in the data mark the Japanese worth setting apart — the rule
+    // text and the examples both use them, so neither has to carry markup.
+    function braces(s, cls) {
+      return esc(s).replace(/\{([^}]+)\}/g, '<span class="' + cls + '">$1</span>');
+    }
+
+    function reading(c, n) {
+      if (c.all) return c.all[n];
+      if (c.irr && c.irr[n]) return c.irr[n];
+      return D.NUM[n] + c.base;
+    }
+    function isIrr(c, n) { return c.all ? true : !!(c.irr && c.irr[n]); }
+    function form(c, n) { return D.KANJI_NUM[n] + c.k; }
+
+    // ---------- picker ----------
+    function renderPicker() {
+      var box = $('ct-picker');
+      box.innerHTML = '';
+      D.GROUPS.forEach(function (g) {
+        var members = [];
+        D.COUNTERS.forEach(function (c, i) { if (c.group === g.id) members.push(i); });
+        if (!members.length) return;
+
+        var wrap = document.createElement('div');
+        wrap.className = 'ct-group';
+        var lab = document.createElement('div');
+        lab.className = 'ct-group-label';
+        lab.textContent = tx(g.label);
+        wrap.appendChild(lab);
+
+        var chips = document.createElement('div');
+        chips.className = 'ct-chips';
+        members.forEach(function (i) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'ct-chip' + (i === cur ? ' on' : '');
+          b.innerHTML = '<span class="k jp">' + esc(D.COUNTERS[i].k) + '</span>' +
+                        '<span class="w">' + esc(tx(D.COUNTERS[i].what)) + '</span>';
+          b.onclick = function () { select(i); };
+          chips.appendChild(b);
+        });
+        wrap.appendChild(chips);
+        box.appendChild(wrap);
+      });
+      $('ct-count').textContent = tr('ct_count', '{n} counters').replace('{n}', D.COUNTERS.length);
+    }
+
+    function select(i) {
+      cur = i;
+      try { localStorage.setItem(STORE, String(i)); } catch (e) {}
+      stopSpeaking();
+      renderPicker();
+      renderSheet();
+      if (window.KA_Track) window.KA_Track.event('counters_view');
+    }
+
+    // ---------- the sheet ----------
+    function renderSheet() {
+      var c = D.COUNTERS[cur];
+      $('ct-kanji').textContent = c.k;
+      $('ct-base').textContent = c.base || '—';
+      $('ct-what').textContent = tx(c.what);
+
+      $('ct-eg').innerHTML = (c.eg || []).map(function (e) {
+        var jp = esc(e.jp).replace(/\{([^}]+)\}/g, '<b>$1</b>');
+        return '<div><span class="jp">' + jp + '</span> — ' + esc(tx(e.g)) + '</div>';
+      }).join('');
+
+      var cells = $('ct-cells');
+      cells.innerHTML = '';
+      for (var n = 1; n <= 10; n++) {
+        cells.appendChild(cell(c, n));
+      }
+      var ask = document.createElement('button');
+      ask.type = 'button';
+      ask.className = 'ct-cell ask';
+      ask.innerHTML = '<div class="n">' + esc(tr('ct_how_many', 'HOW MANY')) + '</div>' +
+                      '<div class="form jp">' + esc(c.askForm || ('何' + c.k)) + '</div>' +
+                      '<div class="read jp">' + esc(c.ask) + '</div>';
+      ask.onclick = function () { say(c.ask, ask); };
+      cells.appendChild(ask);
+
+      $('ct-rule').innerHTML = braces(tx(c.rule), 'jp');
+      var note = $('ct-note');
+      note.innerHTML = c.note ? '· ' + braces(tx(c.note), 'jp') : '';
+      note.style.display = c.note ? '' : 'none';
+
+      paintListen();
+    }
+
+    function cell(c, n) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'ct-cell' + (isIrr(c, n) ? ' irr' : '');
+      d.setAttribute('data-n', n);
+      d.innerHTML = '<div class="n">' + n + '</div>' +
+                    '<div class="form jp">' + esc(form(c, n)) + '</div>' +
+                    '<div class="read jp">' + esc(reading(c, n)) + '</div>';
+      d.onclick = function () { say(reading(c, n), d); };
+      return d;
+    }
+
+    // ---------- audio ----------
+    // The site's shared voice. Without it the buttons simply do nothing
+    // visible, which is better than a dead control that looks alive.
+    var speaking = false;
+    var seqTimer = null;
+
+    function canSpeak() { return !!window.KA_Voice; }
+
+    function stopSpeaking() {
+      if (seqTimer) { clearTimeout(seqTimer); seqTimer = null; }
+      if (window.KA_Voice) { try { window.KA_Voice.stop(); } catch (e) {} }
+      speaking = false;
+      Array.prototype.forEach.call(document.querySelectorAll('.ct-cell.speaking'),
+        function (el) { el.classList.remove('speaking'); });
+      paintListen();
+    }
+
+    function say(text, el) {
+      if (!canSpeak()) return;
+      stopSpeaking();
+      if (el) {
+        el.classList.add('speaking');
+        setTimeout(function () { el.classList.remove('speaking'); }, 1200);
+      }
+      try { window.KA_Voice.speak(text); } catch (e) {}
+    }
+
+    // Walk one to ten, lighting each cell as it is read.
+    function sayAll() {
+      if (!canSpeak()) return;
+      if (speaking) { stopSpeaking(); return; }
+      var c = D.COUNTERS[cur];
+      speaking = true;
+      paintListen();
+      var n = 1;
+      (function step() {
+        if (!speaking || n > 10) { stopSpeaking(); return; }
+        var el = document.querySelector('.ct-cell[data-n="' + n + '"]');
+        Array.prototype.forEach.call(document.querySelectorAll('.ct-cell.speaking'),
+          function (x) { x.classList.remove('speaking'); });
+        if (el) el.classList.add('speaking');
+        try { window.KA_Voice.speak(reading(c, n)); } catch (e) {}
+        n++;
+        seqTimer = setTimeout(step, 1100);
+      })();
+    }
+
+    function paintListen() {
+      var b = $('ct-listen');
+      if (!b) return;
+      b.classList.toggle('rd-hidden', !canSpeak());
+      b.style.display = canSpeak() ? '' : 'none';
+      b.classList.toggle('on', speaking);
+      b.textContent = speaking ? tr('ct_stop', '■ Stop') : tr('ct_listen', '🔊 Hear 1–10');
+    }
+
+    // ---------- reference table ----------
+    function renderTable() {
+      var t = $('ct-table');
+      var head = '<thead><tr><th style="text-align:left">' + esc(tr('ct_col_counter', 'Counter')) + '</th>';
+      for (var n = 1; n <= 10; n++) head += '<th>' + n + '</th>';
+      head += '<th>何〜</th></tr></thead>';
+
+      var body = '<tbody>';
+      D.COUNTERS.forEach(function (c, i) {
+        body += '<tr data-i="' + i + '"><th>' + esc(c.k) +
+                (c.base ? '<small>' + esc(c.base) + '</small>' : '') + '</th>';
+        for (var n = 1; n <= 10; n++) {
+          body += '<td class="' + (isIrr(c, n) ? 'irr' : '') + '">' + esc(reading(c, n)) + '</td>';
+        }
+        body += '<td>' + esc(c.ask) + '</td></tr>';
+      });
+      t.innerHTML = head + body + '</tbody>';
+
+      Array.prototype.forEach.call(t.querySelectorAll('tbody tr'), function (row) {
+        row.onclick = function () {
+          select(parseInt(row.getAttribute('data-i'), 10));
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+      });
+    }
+
+    // ---------- Katsu context ----------
+    // Lets Katsu answer "why is it さんがい?" about whatever is open.
+    window.KatsuPageContext = function () {
+      var c = D.COUNTERS[cur];
+      var rows = [];
+      for (var n = 1; n <= 10; n++) rows.push(n + ' = ' + reading(c, n));
+      return 'The student is on the Counters page looking at 「' + c.k + '」 (' +
+        (c.base || 'native series') + '), which counts ' + tx(c.what) + '. Readings: ' +
+        rows.join(', ') + ', and 何' + c.k + ' = ' + c.ask + '. ' +
+        'Explain the sound changes if asked, and give example sentences using this counter.';
+    };
+
+    window.refreshCountersI18n = function () {
+      renderPicker();
+      renderSheet();
+      renderTable();
+    };
+
+    function init() {
+      renderPicker();
+      renderSheet();
+      renderTable();
+      $('ct-listen').onclick = sayAll;
+      window.addEventListener('beforeunload', stopSpeaking);
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+    else init();
+  })();
+  </script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>
