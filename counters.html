@@ -280,10 +280,28 @@
     function reading(c, n) {
       if (c.all) return c.all[n];
       if (c.irr && c.irr[n]) return c.irr[n];
-      return D.NUM[n] + c.base;
+      return (D.NUM[n] || (D.NUM_HI && D.NUM_HI[n]) || '') + c.base;
     }
     function isIrr(c, n) { return c.all ? true : !!(c.irr && c.irr[n]); }
-    function form(c, n) { return D.KANJI_NUM[n] + c.k; }
+    function form(c, n) { return (D.KANJI_NUM[n] || '') + c.k; }
+
+    // Every cell a counter shows, in order. Almost all of them run 1–10; 月
+    // runs to twelve because the months do, and 日 tacks on the three past ten
+    // that keep the native reading (十四日, 二十日, 二十四日) rather than
+    // stretching the grid to twenty-four cells that are regular but for those.
+    // The grid, the read-aloud sequence and Katsu's context all walk this one
+    // list, so a counter cannot end up showing more than it will say.
+    function steps(c) {
+      var out = [];
+      var max = c.max || 10;
+      for (var n = 1; n <= max; n++) {
+        out.push({ n: n, form: form(c, n), read: reading(c, n), irr: isIrr(c, n) });
+      }
+      (c.extra || []).forEach(function (e) {
+        out.push({ n: e.n, form: e.form, read: e.read, irr: true });
+      });
+      return out;
+    }
 
     // ---------- picker ----------
     function renderPicker() {
@@ -341,9 +359,7 @@
 
       var cells = $('ct-cells');
       cells.innerHTML = '';
-      for (var n = 1; n <= 10; n++) {
-        cells.appendChild(cell(c, n));
-      }
+      steps(c).forEach(function (s) { cells.appendChild(cell(s)); });
       var ask = document.createElement('button');
       ask.type = 'button';
       ask.className = 'ct-cell ask';
@@ -361,15 +377,15 @@
       paintListen();
     }
 
-    function cell(c, n) {
+    function cell(s) {
       var d = document.createElement('button');
       d.type = 'button';
-      d.className = 'ct-cell' + (isIrr(c, n) ? ' irr' : '');
-      d.setAttribute('data-n', n);
-      d.innerHTML = '<div class="n">' + n + '</div>' +
-                    '<div class="form jp">' + esc(form(c, n)) + '</div>' +
-                    '<div class="read jp">' + esc(reading(c, n)) + '</div>';
-      d.onclick = function () { say(reading(c, n), d); };
+      d.className = 'ct-cell' + (s.irr ? ' irr' : '');
+      d.setAttribute('data-n', s.n);
+      d.innerHTML = '<div class="n">' + s.n + '</div>' +
+                    '<div class="form jp">' + esc(s.form) + '</div>' +
+                    '<div class="read jp">' + esc(s.read) + '</div>';
+      d.onclick = function () { say(s.read, d); };
       return d;
     }
 
@@ -421,16 +437,17 @@
       if (!canSpeak()) return;
       if (speaking) { stopSpeaking(); return; }
       var c = D.COUNTERS[cur];
+      var seq = steps(c);
       var token = ++playToken;
       speaking = true;
       paintListen();
 
-      function step(n) {
+      function step(i) {
         if (!speaking || token !== playToken) return;
-        if (n > 10) { stopSpeaking(); return; }
+        if (i >= seq.length) { stopSpeaking(); return; }
 
         clearHighlight();
-        var el = document.querySelector('.ct-cell[data-n="' + n + '"]');
+        var el = document.querySelector('.ct-cell[data-n="' + seq[i].n + '"]');
         if (el) el.classList.add('speaking');
 
         // "Done" can arrive twice — through onend and through the promise —
@@ -441,12 +458,12 @@
           if (moved || token !== playToken) return;
           moved = true;
           if (guard) { clearTimeout(guard); guard = null; }
-          seqTimer = setTimeout(function () { step(n + 1); }, GAP_MS);
+          seqTimer = setTimeout(function () { step(i + 1); }, GAP_MS);
         }
         guard = setTimeout(done, CLIP_TIMEOUT);
 
         try {
-          var r = window.KA_Voice.speak(reading(c, n), { onend: done });
+          var r = window.KA_Voice.speak(seq[i].read, { onend: done });
           if (r && typeof r.then === 'function') {
             // The Azure path resolves only once the clip has played out, so
             // that resolution is itself a real "finished". The browser path
@@ -457,7 +474,7 @@
         } catch (e) { done(); }
       }
 
-      step(1);
+      step(0);
     }
 
     function paintListen() {
@@ -466,7 +483,12 @@
       b.classList.toggle('rd-hidden', !canSpeak());
       b.style.display = canSpeak() ? '' : 'none';
       b.classList.toggle('on', speaking);
-      b.textContent = speaking ? tr('ct_stop', '■ Stop') : tr('ct_listen', '🔊 Hear 1–10');
+      // Every translation of ct_listen carries the literal "1–10", so the range
+      // can be corrected for 月 without a fifth string in four languages.
+      var c = D.COUNTERS[cur];
+      var max = (c && c.max) || 10;
+      var label = tr('ct_listen', '🔊 Hear 1–10').replace('1–10', '1–' + max);
+      b.textContent = speaking ? tr('ct_stop', '■ Stop') : label;
     }
 
     // ---------- reference table ----------
@@ -499,8 +521,7 @@
     // Lets Katsu answer "why is it さんがい?" about whatever is open.
     window.KatsuPageContext = function () {
       var c = D.COUNTERS[cur];
-      var rows = [];
-      for (var n = 1; n <= 10; n++) rows.push(n + ' = ' + reading(c, n));
+      var rows = steps(c).map(function (s) { return s.n + ' = ' + s.read; });
       return 'The student is on the Counters page looking at 「' + c.k + '」 (' +
         (c.base || 'native series') + '), which counts ' + tx(c.what) + '. Readings: ' +
         rows.join(', ') + ', and 何' + c.k + ' = ' + c.ask + '. ' +

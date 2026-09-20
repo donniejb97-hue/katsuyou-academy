@@ -11,6 +11,12 @@
 // throughout (つ and 日) — there, every reading is its own word.
 //
 // T(en, de, fr, zh) for anything the reader has to understand.
+//
+// This file is also the Date Dojo's source for counter questions. Eight of the
+// counters carry a `dojo` field — a plain noun to build a sentence around — and
+// app.js derives dojoData.counters, plainCount, yearCount, hours and
+// minuteUnits from here rather than keeping its own copy. Fix a reading once
+// and both the Counters page and the Dojo change together.
 
 var COUNTER_DATA = (function () {
   function T(en, de, fr, zh) { return { en: en, de: de, fr: fr, zh: zh }; }
@@ -19,7 +25,14 @@ var COUNTER_DATA = (function () {
   var NUM = { 1:'いち', 2:'に', 3:'さん', 4:'よん', 5:'ご',
               6:'ろく', 7:'なな', 8:'はち', 9:'きゅう', 10:'じゅう' };
   var KANJI_NUM = { 1:'一', 2:'二', 3:'三', 4:'四', 5:'五',
-                    6:'六', 7:'七', 8:'八', 9:'九', 10:'十' };
+                    6:'六', 7:'七', 8:'八', 9:'九', 10:'十',
+                    11:'十一', 12:'十二' };
+
+  // The teens, kept apart from NUM on purpose. NUM is what the Date Dojo reads
+  // to build its plain-number answers, and that drill runs 1–10; widening NUM
+  // would quietly widen the drill too. Only the grid needs these, and only for
+  // the one counter that runs past ten (月).
+  var NUM_HI = { 11:'じゅういち', 12:'じゅうに' };
 
   var GROUPS = [
     { id: 'things',  label: T('Everyday things', 'Alltagsdinge', 'Objets du quotidien', '日常物品') },
@@ -52,6 +65,8 @@ var COUNTER_DATA = (function () {
     {
       k: '個', base: 'こ', group: 'things',
       what: T('small, roundish things', 'kleine, runde Dinge', 'petits objets ronds', '小而圆的东西'),
+      // used by the Date Dojo to build a sentence: りんごが三個あります
+      dojo: { noun: 'りんご', nounKana: 'りんご', nounEn: 'apples', animate: false },
       eg: [
         { jp: 'たまご{三個}', g: T('three eggs', 'drei Eier', 'trois œufs', '三个鸡蛋') },
         { jp: 'おにぎり{一個}', g: T('one rice ball', 'ein Reisball', 'une boulette de riz', '一个饭团') }
@@ -65,6 +80,8 @@ var COUNTER_DATA = (function () {
     {
       k: '本', base: 'ほん', group: 'things',
       what: T('long, thin things', 'lange, dünne Dinge', 'objets longs et fins', '细长的东西'),
+      // used by the Date Dojo to build a sentence: 鉛筆が三本あります
+      dojo: { noun: '鉛筆', nounKana: 'えんぴつ', nounEn: 'pencils', animate: false },
       eg: [
         { jp: '鉛筆{二本}', g: T('two pencils', 'zwei Bleistifte', 'deux crayons', '两支铅笔') },
         { jp: 'ビール{一本}', g: T('a bottle of beer', 'eine Flasche Bier', 'une bouteille de bière', '一瓶啤酒') }
@@ -82,6 +99,8 @@ var COUNTER_DATA = (function () {
     {
       k: '枚', base: 'まい', group: 'things',
       what: T('flat, thin things', 'flache, dünne Dinge', 'objets plats et fins', '扁平的东西'),
+      // used by the Date Dojo to build a sentence: 紙が三枚あります
+      dojo: { noun: '紙', nounKana: 'かみ', nounEn: 'sheets of paper', animate: false },
       eg: [
         { jp: '紙{五枚}', g: T('five sheets of paper', 'fünf Blatt Papier', 'cinq feuilles de papier', '五张纸') },
         { jp: 'シャツ{二枚}', g: T('two shirts', 'zwei Hemden', 'deux chemises', '两件衬衫') }
@@ -95,6 +114,8 @@ var COUNTER_DATA = (function () {
     {
       k: '冊', base: 'さつ', group: 'things',
       what: T('bound things', 'gebundene Dinge', 'objets reliés', '装订成册的东西'),
+      // used by the Date Dojo to build a sentence: 本が三冊あります
+      dojo: { noun: '本', nounKana: 'ほん', nounEn: 'books', animate: false },
       eg: [
         { jp: '本{三冊}', g: T('three books', 'drei Bücher', 'trois livres', '三本书') },
         { jp: 'ノート{一冊}', g: T('one notebook', 'ein Heft', 'un cahier', '一本笔记本') }
@@ -108,6 +129,8 @@ var COUNTER_DATA = (function () {
     {
       k: '台', base: 'だい', group: 'things',
       what: T('machines and vehicles', 'Maschinen und Fahrzeuge', 'machines et véhicules', '机器和车辆'),
+      // used by the Date Dojo to build a sentence: 車が三台あります
+      dojo: { noun: '車', nounKana: 'くるま', nounEn: 'cars', animate: false },
       eg: [
         { jp: '車{二台}', g: T('two cars', 'zwei Autos', 'deux voitures', '两辆车') },
         { jp: 'パソコン{一台}', g: T('one computer', 'ein Computer', 'un ordinateur', '一台电脑') }
@@ -121,6 +144,8 @@ var COUNTER_DATA = (function () {
     {
       k: '杯', base: 'はい', group: 'things',
       what: T('cupfuls and glassfuls', 'Tassen und Gläser voll', 'tasses et verres', '杯'),
+      // used by the Date Dojo to build a sentence: コーヒーが三杯あります
+      dojo: { noun: 'コーヒー', nounKana: 'コーヒー', nounEn: 'cups of coffee', animate: false },
       eg: [
         { jp: 'コーヒー{一杯}', g: T('a cup of coffee', 'eine Tasse Kaffee', 'une tasse de café', '一杯咖啡') },
         { jp: 'ビール{三杯}', g: T('three glasses of beer', 'drei Gläser Bier', 'trois verres de bière', '三杯啤酒') }
@@ -178,6 +203,8 @@ var COUNTER_DATA = (function () {
     {
       k: '人', base: 'にん', group: 'living',
       what: T('people', 'Menschen', 'personnes', '人'),
+      // used by the Date Dojo to build a sentence: 学生が三人あります
+      dojo: { noun: '学生', nounKana: 'がくせい', nounEn: 'students', animate: true },
       eg: [
         { jp: '学生{三人}', g: T('three students', 'drei Studierende', 'trois étudiants', '三名学生') },
         { jp: '{一人}で', g: T('by myself, alone', 'allein', 'tout seul', '独自一人') }
@@ -195,6 +222,8 @@ var COUNTER_DATA = (function () {
     {
       k: '匹', base: 'ひき', group: 'living',
       what: T('small animals', 'kleine Tiere', 'petits animaux', '小动物'),
+      // used by the Date Dojo to build a sentence: 猫が三匹あります
+      dojo: { noun: '猫', nounKana: 'ねこ', nounEn: 'cats', animate: true },
       eg: [
         { jp: '猫{二匹}', g: T('two cats', 'zwei Katzen', 'deux chats', '两只猫') },
         { jp: '魚{三匹}', g: T('three fish', 'drei Fische', 'trois poissons', '三条鱼') }
@@ -280,6 +309,26 @@ var COUNTER_DATA = (function () {
               '本页最不规则的量词：1、3、4、6、8、10 后 {ふ → ぷ}。只有 2、5、7、9 保持 {ふん}。')
     },
     {
+      // The one counter that runs past ten, hence `max`. 11 and 12 are
+      // perfectly regular, so they are built from NUM_HI like any other cell.
+      k: '月', base: 'がつ', group: 'time', max: 12,
+      what: T('months of the year', 'Monate des Jahres', 'mois de l’année', '月份'),
+      eg: [
+        { jp: '{四月}から', g: T('from April', 'ab April', 'à partir d’avril', '从四月起') },
+        { jp: '{七月}七日', g: T('the seventh of July', 'der siebte Juli', 'le sept juillet', '七月七日') }
+      ],
+      irr: { 4:'しがつ', 7:'しちがつ', 9:'くがつ' }, ask: 'なんがつ', askForm: '何月',
+      rule: T('Month names rather than a count — the number only labels the month. Three break the pattern: {しがつ}, {しちがつ} and {くがつ}, never よんがつ, ながつ or きゅうがつ.',
+              'Monatsnamen, keine Anzahl — die Zahl benennt nur den Monat. Drei fallen aus dem Muster: {しがつ}, {しちがつ} und {くがつ}, niemals よんがつ, ながつ oder きゅうがつ.',
+              'Des noms de mois, pas un décompte — le nombre ne fait que désigner le mois. Trois sortent du schéma : {しがつ}, {しちがつ} et {くがつ}, jamais よんがつ, ながつ ni きゅうがつ.',
+              '这是月份名称，不是数量 — 数字只是给月份命名。三个例外：{しがつ}、{しちがつ}、{くがつ}，绝不说 よんがつ、ながつ、きゅうがつ。'),
+      note: T('Not to be confused with か月, which counts months: 三月 is March, 三か月 is three months long. 何月 asks which month, 何か月 asks how many.',
+              'Nicht mit か月 verwechseln, das Monate zählt: 三月 ist der März, 三か月 sind drei Monate. 何月 fragt nach welchem Monat, 何か月 nach wie vielen.',
+              'À ne pas confondre avec か月, qui compte les mois : 三月 c’est mars, 三か月 c’est une durée de trois mois. 何月 demande quel mois, 何か月 combien.',
+              '不要与计数的 か月 混淆：三月 是三月份，三か月 是三个月。何月 问几月，何か月 问几个月。')
+    },
+
+    {
       k: '日', base: 'にち', group: 'duration',
       what: T('days', 'Tage', 'jours', '天、日'),
       eg: [
@@ -288,15 +337,23 @@ var COUNTER_DATA = (function () {
       ],
       all: { 1:'ついたち', 2:'ふつか', 3:'みっか', 4:'よっか', 5:'いつか',
              6:'むいか', 7:'なのか', 8:'ようか', 9:'ここのか', 10:'とおか' },
+      // Past ten the days are regular with three exceptions, and はつか is the
+      // one that catches everybody. `extra` puts them in the grid as their own
+      // cells rather than stretching it to twenty-four mostly-regular ones.
+      extra: [
+        { n: 14, form: '十四日', read: 'じゅうよっか' },
+        { n: 20, form: '二十日', read: 'はつか' },
+        { n: 24, form: '二十四日', read: 'にじゅうよっか' }
+      ],
       ask: 'なんにち', askForm: '何日',
       rule: T('Days 1–10 use the native series and have to be learned as words. From 11 on it is regular: {じゅういちにち}.',
               'Die Tage 1–10 folgen der japanischen Reihe und müssen als Wörter gelernt werden. Ab 11 ist es regelmäßig: {じゅういちにち}.',
               'Les jours 1 à 10 suivent la série japonaise et s’apprennent comme des mots. À partir de 11, c’est régulier : {じゅういちにち}.',
               '1–10 日使用和语数词，须当作单词记。从 11 起规则：{じゅういちにち}。'),
-      note: T('一日 is ついたち for the first of the month, but いちにち when you mean "one day".',
-              '一日 ist ついたち für den Monatsersten, aber いちにち, wenn „ein Tag“ gemeint ist.',
-              '一日 se lit ついたち pour le premier du mois, mais いちにち au sens de « une journée ».',
-              '一日 指“一号”时读 ついたち，指“一天”时读 いちにち。')
+      note: T('一日 is ついたち for the first of the month, but いちにち when you mean "one day". Past ten a few keep the native reading — 十四日, 二十日 and 二十四日 are in the grid. Add 〜間 to make it a stretch of time: 三日間, three days long.',
+              '一日 ist ついたち für den Monatsersten, aber いちにち, wenn „ein Tag“ gemeint ist. Über zehn hinaus behalten einige die japanische Lesung — 十四日, 二十日 und 二十四日 stehen im Raster. Mit 〜間 wird ein Zeitraum daraus: 三日間, drei Tage lang.',
+              '一日 se lit ついたち pour le premier du mois, mais いちにち au sens de « une journée ». Au-delà de dix, quelques-uns gardent la lecture japonaise — 十四日, 二十日 et 二十四日 figurent dans la grille. Ajoutez 〜間 pour en faire une durée : 三日間, pendant trois jours.',
+              '一日 指“一号”时读 ついたち，指“一天”时读 いちにち。十以后仍有几个保留和语读音 — 表格中的 十四日、二十日、二十四日。加 〜間 表示时长：三日間，为期三天。')
     },
 
     {
@@ -405,5 +462,6 @@ var COUNTER_DATA = (function () {
     }
   ];
 
-  return { NUM: NUM, KANJI_NUM: KANJI_NUM, GROUPS: GROUPS, COUNTERS: COUNTERS };
+  return { NUM: NUM, NUM_HI: NUM_HI, KANJI_NUM: KANJI_NUM,
+           GROUPS: GROUPS, COUNTERS: COUNTERS };
 })();

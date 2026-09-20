@@ -5375,6 +5375,52 @@ function generateNewQuestion() {
     }
 
     // ============ DATE DOJO SYSTEM ============
+    // ---------- reading counters-data.js ----------
+    // counters.html and the Date Dojo share one set of readings. These three
+    // helpers shape that file into what the Dojo expects. If it has not been
+    // loaded (any page other than the Dojo and the Counters page), they return
+    // empty objects and the counter question type simply has nothing to draw.
+    function dojoCounterSource() {
+      return (typeof COUNTER_DATA !== 'undefined' && COUNTER_DATA) ? COUNTER_DATA : null;
+    }
+
+    function dojoNumbersFrom() {
+      var D = dojoCounterSource();
+      return D ? D.NUM : {};
+    }
+
+    // Every reading 1-10 for one counter, irregulars included.
+    function dojoReadingsFrom(kanji) {
+      var D = dojoCounterSource();
+      if (!D) return {};
+      var c = D.COUNTERS.filter(function (x) { return x.k === kanji; })[0];
+      if (!c) return {};
+      var out = {};
+      for (var n = 1; n <= 10; n++) {
+        out[n] = c.all ? c.all[n] : ((c.irr && c.irr[n]) || (D.NUM[n] + c.base));
+      }
+      return out;
+    }
+
+    function dojoCountersFrom() {
+      var D = dojoCounterSource();
+      if (!D) return {};
+      var out = {};
+      D.COUNTERS.forEach(function (c) {
+        if (!c.dojo) return;
+        out[c.k] = {
+          base: c.base,
+          en: c.what.en,
+          example: c.dojo.noun,
+          exampleKana: c.dojo.nounKana,
+          exampleEn: c.dojo.nounEn,
+          animate: !!c.dojo.animate,
+          irr: c.irr || {}
+        };
+      });
+      return out;
+    }
+
     var dojoData = {
       dates: {
         1: 'ついたち', 2: 'ふつか', 3: 'みっか', 4: 'よっか', 5: 'いつか',
@@ -5411,34 +5457,20 @@ function generateNewQuestion() {
         50000: 'ごまん', 100000: 'じゅうまん', 1000000: 'ひゃくまん', 100000000: 'いちおく'
       },
       // ---- counters --------------------------------------------------------
-      // The sound changes ARE the lesson: 1本 is いっぽん, 3本 さんぼん, 6本 ろっぽん.
-      // Each counter lists only the readings that deviate; everything else is
-      // the plain number plus the counter's base reading.
-      counters: {
-        '本': { base: 'ほん', en: 'long thin things', example: '鉛筆', exampleKana: 'えんぴつ', exampleEn: 'pencils',
-          irr: { 1:'いっぽん', 3:'さんぼん', 6:'ろっぽん', 8:'はっぽん', 10:'じゅっぽん' } },
-        '個': { base: 'こ', en: 'small round things', example: 'りんご', exampleKana: 'りんご', exampleEn: 'apples',
-          irr: { 1:'いっこ', 6:'ろっこ', 8:'はっこ', 10:'じゅっこ' } },
-        '枚': { base: 'まい', en: 'flat things', example: '紙', exampleKana: 'かみ', exampleEn: 'sheets of paper',
-          irr: {} },
-        '人': { base: 'にん', en: 'people', example: '学生', exampleKana: 'がくせい', exampleEn: 'students', animate: true,
-          irr: { 1:'ひとり', 2:'ふたり', 4:'よにん', 7:'しちにん' } },
-        '匹': { base: 'ひき', en: 'small animals', example: '猫', exampleKana: 'ねこ', exampleEn: 'cats', animate: true,
-          irr: { 1:'いっぴき', 3:'さんびき', 6:'ろっぴき', 8:'はっぴき', 10:'じゅっぴき' } },
-        '冊': { base: 'さつ', en: 'bound things', example: '本', exampleKana: 'ほん', exampleEn: 'books',
-          irr: { 1:'いっさつ', 8:'はっさつ', 10:'じゅっさつ' } },
-        '台': { base: 'だい', en: 'machines and vehicles', example: '車', exampleKana: 'くるま', exampleEn: 'cars',
-          irr: {} },
-        '杯': { base: 'はい', en: 'cups and glasses', example: 'コーヒー', exampleKana: 'コーヒー', exampleEn: 'cups of coffee',
-          irr: { 1:'いっぱい', 3:'さんばい', 6:'ろっぱい', 8:'はっぱい', 10:'じゅっぱい' } }
-      },
+      // Derived from counters-data.js, which the Counters page also reads.
+      // These used to be a second copy living here, free to drift out of step
+      // with the reference page — fix a reading in one and the other silently
+      // went on teaching the old one. Now there is one source.
+      //
+      // Only the counters carrying a `dojo` field come through, because the
+      // Dojo needs a noun to build 鉛筆が三本あります around. Adding another is
+      // one `dojo:` line in counters-data.js.
+      counters: dojoCountersFrom(),
       // Counting 1-10 in the native series, used by 人 and as a fallback.
-      plainCount: { 1:'いち', 2:'に', 3:'さん', 4:'よん', 5:'ご',
-                    6:'ろく', 7:'なな', 8:'はち', 9:'きゅう', 10:'じゅう' },
+      plainCount: dojoNumbersFrom(),
       // 年 as a duration counter. Calendar years come from the number engine
       // and are perfectly regular; durations are not.
-      yearCount: { 1:'いちねん', 2:'にねん', 3:'さんねん', 4:'よねん', 5:'ごねん',
-                   6:'ろくねん', 7:'ななねん', 8:'はちねん', 9:'きゅうねん', 10:'じゅうねん' },
+      yearCount: dojoReadingsFrom('年'),
       // Japanese era years. The offset is the year BEFORE the era began, so
       // 2026 - 2018 = 令和8年. Year 1 of any era is 元年, never 一年.
       //
@@ -5451,11 +5483,15 @@ function generateNewQuestion() {
         { jp: '平成', en: 'Heisei', offset: 1988, from: 1990, to: 2018 },
         { jp: '昭和', en: 'Showa',  offset: 1925, from: 1927, to: 1988 }
       ],
-      hours: { 1:'いちじ', 2:'にじ', 3:'さんじ', 4:'よじ', 5:'ごじ', 6:'ろくじ',
-               7:'しちじ', 8:'はちじ', 9:'くじ', 10:'じゅうじ', 11:'じゅういちじ', 12:'じゅうにじ' },
+      // 時 goes to twelve on a clock; the shared data stops at ten, so the last
+      // two are appended. They are perfectly regular.
+      hours: (function () {
+        var h = dojoReadingsFrom('時');
+        h[11] = 'じゅういちじ'; h[12] = 'じゅうにじ';
+        return h;
+      })(),
       // 分 alternates between ふん and ぷん by the preceding sound.
-      minuteUnits: { 1:'いっぷん', 2:'にふん', 3:'さんぷん', 4:'よんぷん', 5:'ごふん',
-                     6:'ろっぷん', 7:'ななふん', 8:'はっぷん', 9:'きゅうふん', 10:'じゅっぷん' },
+      minuteUnits: dojoReadingsFrom('分'),
       questionTypes: {
         currentDate: { jp: '今日の日付', en: "Today's date" },
         currentMonth: { jp: '今の月', en: 'Current month' },
