@@ -1999,6 +1999,11 @@ function setLang(lang) {
     var bar = document.querySelector('.nav-links');
     if (!bar || bar.querySelector('.nav-group')) return;
     var painters = [];
+    // One reference shared by every group. Each dropdown used to know only how
+    // to close itself, on a click outside itself — and the click that opens a
+    // sibling is outside, but fires on the sibling, so the first menu stayed up
+    // and the two overlapped. Opening now shuts whatever was open first.
+    var openGroup = null;
 
     NAV_GROUPS.forEach(function (group) {
       var links = [];
@@ -2041,12 +2046,15 @@ function setLang(lang) {
       paint();
 
       function open()  {
+        if (openGroup && openGroup !== close) openGroup();   // shut the other one first
+        openGroup = close;
         wrap.classList.add('open');
         menu.classList.add('open');           // menu sits on <body>, so it toggles itself
         btn.setAttribute('aria-expanded', 'true');
         placeMenu(btn, menu);
       }
       function close() {
+        if (openGroup === close) openGroup = null;
         wrap.classList.remove('open');
         menu.classList.remove('open');
         btn.setAttribute('aria-expanded', 'false');
