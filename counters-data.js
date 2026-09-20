@@ -25,6 +25,7 @@ var COUNTER_DATA = (function () {
     { id: 'things',  label: T('Everyday things', 'Alltagsdinge', 'Objets du quotidien', '日常物品') },
     { id: 'living',  label: T('People and animals', 'Menschen und Tiere', 'Personnes et animaux', '人和动物') },
     { id: 'time',    label: T('Time and frequency', 'Zeit und Häufigkeit', 'Temps et fréquence', '时间和次数') },
+    { id: 'duration', label: T('How long it lasts', 'Wie lange etwas dauert', 'Combien de temps ça dure', '持续多久') },
     { id: 'order',   label: T('Places and order', 'Orte und Reihenfolge', 'Lieux et ordre', '位置和顺序') }
   ];
 
@@ -279,7 +280,7 @@ var COUNTER_DATA = (function () {
               '本页最不规则的量词：1、3、4、6、8、10 后 {ふ → ぷ}。只有 2、5、7、9 保持 {ふん}。')
     },
     {
-      k: '日', base: 'にち', group: 'time',
+      k: '日', base: 'にち', group: 'duration',
       what: T('days', 'Tage', 'jours', '天、日'),
       eg: [
         { jp: '{三日}かかる', g: T('it takes three days', 'es dauert drei Tage', 'cela prend trois jours', '要花三天') },
@@ -296,6 +297,84 @@ var COUNTER_DATA = (function () {
               '一日 ist ついたち für den Monatsersten, aber いちにち, wenn „ein Tag“ gemeint ist.',
               '一日 se lit ついたち pour le premier du mois, mais いちにち au sens de « une journée ».',
               '一日 指“一号”时读 ついたち，指“一天”时读 いちにち。')
+    },
+
+    {
+      k: '秒', base: 'びょう', group: 'duration',
+      what: T('seconds', 'Sekunden', 'secondes', '秒'),
+      eg: [
+        { jp: '{三十秒}待って', g: T('wait thirty seconds', 'warte dreißig Sekunden', 'attends trente secondes', '等三十秒') },
+        { jp: 'あと{十秒}', g: T('ten seconds to go', 'noch zehn Sekunden', 'encore dix secondes', '还有十秒') }
+      ],
+      irr: {}, ask: 'なんびょう',
+      rule: T('Regular all the way through — number + {びょう}. Rare among the time counters in having nothing to learn.',
+              'Durchgehend regelmäßig — Zahl + {びょう}. Unter den Zeitzählern selten: Es gibt nichts zu lernen.',
+              'Régulier de bout en bout — nombre + {びょう}. Rare parmi les compteurs de temps : rien à apprendre.',
+              '从头到尾都规则 — 数字 + {びょう}。在时间量词里少见地毫无例外。')
+    },
+    {
+      k: '時間', base: 'じかん', group: 'duration',
+      what: T('hours (how long)', 'Stunden (Dauer)', 'heures (durée)', '小时（时长）'),
+      eg: [
+        { jp: '{三時間}かかる', g: T('it takes three hours', 'es dauert drei Stunden', 'cela prend trois heures', '要三个小时') },
+        { jp: '{四時間}ねた', g: T('slept for four hours', 'vier Stunden geschlafen', 'j’ai dormi quatre heures', '睡了四个小时') }
+      ],
+      irr: { 4:'よじかん' }, ask: 'なんじかん',
+      rule: T('Almost regular — only 4 is fixed: {よじかん}, never よんじかん.',
+              'Fast regelmäßig — nur die 4 ist festgelegt: {よじかん}, niemals よんじかん.',
+              'Presque régulier — seul le 4 est fixe : {よじかん}, jamais よんじかん.',
+              '几乎规则 — 只有 4 是固定的：{よじかん}，绝不说 よんじかん。'),
+      note: T('Do not confuse it with 時 on its own, which is a point on the clock: 四時 is four o’clock, 四時間 is four hours long. 7 and 9 accept either しち／なな and く／きゅう.',
+              'Nicht mit dem bloßen 時 verwechseln, das einen Zeitpunkt angibt: 四時 ist vier Uhr, 四時間 sind vier Stunden. Bei 7 und 9 sind しち／なな bzw. く／きゅう beide möglich.',
+              'À ne pas confondre avec 時 seul, qui indique une heure précise : 四時 c’est quatre heures, 四時間 c’est une durée de quatre heures. À 7 et 9, しち／なな et く／きゅう sont tous deux admis.',
+              '不要与单独的 時 混淆：四時 是四点钟，四時間 是四个小时。7 和 9 可读 しち／なな、く／きゅう。')
+    },
+    {
+      k: '週間', base: 'しゅうかん', group: 'duration',
+      what: T('weeks', 'Wochen', 'semaines', '周'),
+      eg: [
+        { jp: '{一週間}に一回', g: T('once a week', 'einmal pro Woche', 'une fois par semaine', '一周一次') },
+        { jp: '{二週間}後', g: T('two weeks later', 'zwei Wochen später', 'deux semaines plus tard', '两周后') }
+      ],
+      irr: { 1:'いっしゅうかん', 8:'はっしゅうかん', 10:'じゅっしゅうかん' }, ask: 'なんしゅうかん',
+      rule: T('An s- counter like 冊: doubles after {1, 8, 10} and leaves 3 and 6 alone.',
+              'Ein s-Zähler wie 冊: verdoppelt nach {1, 8, 10}, 3 und 6 bleiben unverändert.',
+              'Compteur en s- comme 冊 : double après {1, 8, 10}, et laisse 3 et 6 tranquilles.',
+              '和 冊 一样是 s 开头：{1、8、10} 后变促音，3 和 6 不变。')
+    },
+    {
+      k: 'か月', base: 'かげつ', group: 'duration',
+      what: T('months', 'Monate', 'mois', '个月'),
+      eg: [
+        { jp: '{三か月}前', g: T('three months ago', 'vor drei Monaten', 'il y a trois mois', '三个月前') },
+        { jp: '{六か月}かかった', g: T('it took six months', 'es hat sechs Monate gedauert', 'cela a pris six mois', '花了六个月') }
+      ],
+      irr: { 1:'いっかげつ', 6:'ろっかげつ', 8:'はっかげつ', 10:'じゅっかげつ' }, ask: 'なんかげつ',
+      rule: T('A k- counter: doubles after {1, 6, 8, 10} — the same shape as 個 and 回.',
+              'Ein k-Zähler: verdoppelt nach {1, 6, 8, 10} — dasselbe Muster wie bei 個 und 回.',
+              'Compteur en k- : double après {1, 6, 8, 10} — le même schéma que 個 et 回.',
+              'k 开头：{1、6、8、10} 后变促音 — 与 個、回 同型。'),
+      note: T('Written か月, ヶ月 or 箇月 — all read かげつ. 何月 with no か is a different question: which month, not how many.',
+              'Geschrieben か月, ヶ月 oder 箇月 — alle werden かげつ gelesen. 何月 ohne か fragt etwas anderes: welcher Monat, nicht wie viele.',
+              'Écrit か月, ヶ月 ou 箇月 — tous se lisent かげつ. 何月 sans か pose une autre question : quel mois, et non combien.',
+              '写作 か月、ヶ月 或 箇月，都读 かげつ。不带 か 的 何月 问的是“几月”，不是“几个月”。')
+    },
+    {
+      k: '年', base: 'ねん', group: 'duration',
+      what: T('years', 'Jahre', 'ans, années', '年'),
+      eg: [
+        { jp: '{三年}住んだ', g: T('lived there three years', 'drei Jahre dort gewohnt', 'j’y ai vécu trois ans', '住了三年') },
+        { jp: '{四年}かかる', g: T('it takes four years', 'es dauert vier Jahre', 'cela prend quatre ans', '要四年') }
+      ],
+      irr: { 4:'よねん' }, ask: 'なんねん',
+      rule: T('Almost regular — 4 is {よねん}, never よんねん. The same trap as 時間 and 人.',
+              'Fast regelmäßig — die 4 ist {よねん}, niemals よんねん. Dieselbe Falle wie bei 時間 und 人.',
+              'Presque régulier — le 4 est {よねん}, jamais よんねん. Le même piège que 時間 et 人.',
+              '几乎规则 — 4 是 {よねん}，绝不说 よんねん。和 時間、人 是同一个陷阱。'),
+      note: T('For a stretch of time you can also say 年間 — 三年間, three years long. Calendar years are perfectly regular: 1995年 is せんきゅうひゃくきゅうじゅうごねん.',
+              'Für einen Zeitraum kann man auch 年間 sagen — 三年間, drei Jahre lang. Kalenderjahre sind völlig regelmäßig: 1995年 ist せんきゅうひゃくきゅうじゅうごねん.',
+              'Pour une durée on peut aussi dire 年間 — 三年間, pendant trois ans. Les années du calendrier sont parfaitement régulières : 1995年 se lit せんきゅうひゃくきゅうじゅうごねん.',
+              '表示时间跨度也可说 年間 — 三年間，长达三年。历法年份完全规则：1995年 读作 せんきゅうひゃくきゅうじゅうごねん。')
     },
 
     {

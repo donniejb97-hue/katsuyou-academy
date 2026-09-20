@@ -1825,14 +1825,22 @@ function setLang(lang) {
     /* "New" badge on a recently added page. Set isNew:false in EXTRA_LINKS
        above to retire it everywhere at once. */
     '.nav-link[data-nav-new]{position:relative;}',
+    /* The active-page underline is also an ::after on .nav-link, so on the
+       badged page itself its position/height/inset land on the badge and turn
+       it into a 2px bar across the row. Reset them explicitly — being more
+       specific only wins the properties actually declared here. */
     '.nav-link[data-nav-new]::after{content:var(--nav-new-label,"New");display:inline-block;margin-left:0.4rem;',
+    '  position:static;left:auto;right:auto;bottom:auto;height:auto;width:auto;',
     '  font-family:Outfit,sans-serif;font-size:0.58rem;font-weight:700;letter-spacing:0.08em;',
     '  text-transform:uppercase;vertical-align:0.35em;color:#2a2109;background:var(--gold,#c9a962);',
     '  padding:0.1rem 0.32rem;border-radius:4px;}',
     /* The rule above this one kills ::after inside a dropdown, because that is
        how the active underline is hidden there. It has to be undone by name or
-       the badge vanishes the moment Counters moves into the Learn menu. */
-    '.nav-group-menu a.nav-link[data-nav-new]::after{display:inline-block;vertical-align:0.15em;}',
+       the badge vanishes the moment Counters moves into the Learn menu.
+       The row also becomes a flex line: as an inline badge it wrapped onto a
+       second line and sat on top of the item underneath. */
+    '.nav-group-menu a.nav-link[data-nav-new]{display:flex;align-items:center;gap:0.5rem;white-space:nowrap;}',
+    '.nav-group-menu a.nav-link[data-nav-new]::after{display:inline-block;margin-left:auto;vertical-align:baseline;}',
     '@media (max-width:1400px){',
     '  .nav-links .lang-switch{margin-left:0.5rem;}',
     '}',
