@@ -107,12 +107,13 @@
         <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
         <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link active" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
         <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
           <option value="en">🌐 EN</option>
           <option value="de">🌐 DE</option>
           <option value="fr">🌐 FR</option>
           <option value="zh">🌐 中文</option>
+          <option value="ja">🌐 日本語</option>
         </select>
       </div>
     </div>
@@ -122,102 +123,102 @@
     <div class="pv-wrap" data-i18n-skip>
 
       <header class="pv-head">
-        <div class="pv-eyebrow">Privacy</div>
-        <h1 class="pv-title">What this site knows about you</h1>
-        <p class="pv-lede">Katsuyō Academy has no accounts and nothing to sign up for, so for most
+        <div class="pv-eyebrow" data-i18n-html="pv_eyebrow">Privacy</div>
+        <h1 class="pv-title" data-i18n-html="pv_title">What this site knows about you</h1>
+        <p class="pv-lede" data-i18n-html="pv_lede">Katsuyō Academy has no accounts and nothing to sign up for, so for most
           of what you do here the honest answer is <em>nothing</em>. But that isn't the whole answer,
           and the parts where it isn't are worth writing down plainly rather than burying.</p>
-        <p class="pv-date">Last updated 21 September 2026 · Brandon Gilmore, sole operator</p>
+        <p class="pv-date" data-i18n-html="pv_date">Last updated 21 September 2026 · Brandon Gilmore, sole operator</p>
       </header>
 
       <!-- ── the short version ─────────────────────────────────────────── -->
       <section class="pv-tldr">
-        <h2>The short version</h2>
+        <h2 data-i18n-html="pv_tldr_h">The short version</h2>
         <ul>
-          <li>There is no account, so there is no profile of you anywhere.</li>
-          <li>Your scores, streaks, drill history and settings are stored <strong>in your own
+          <li data-i18n-html="pv_tldr_1">There is no account, so there is no profile of you anywhere.</li>
+          <li data-i18n-html="pv_tldr_2">Your scores, streaks, drill history and settings are stored <strong>in your own
             browser</strong> and never sent to me.</li>
-          <li>Three features do send what you type to a server, because they cannot work otherwise:
+          <li data-i18n-html="pv_tldr_3">Three features do send what you type to a server, because they cannot work otherwise:
             <strong>Katsu</strong>, <strong>Talk</strong>, and the <strong>written-answer marking</strong>
             and <strong>story writing</strong> in Reading.</li>
-          <li>The site uses <strong>Google Analytics</strong> and <strong>Microsoft Clarity</strong>.
+          <li data-i18n-html="pv_tldr_4">The site uses <strong>Google Analytics</strong> and <strong data-i18n-html="pv_cl_h">Microsoft Clarity</strong>.
             Clarity records anonymised playback of how pages are used — where the cursor moves, what
             is clicked, how far you scroll. What you <em>type</em> is masked out.</li>
-          <li><strong>Both of those exist for one reason: to make the site better.</strong> I use them
+          <li data-i18n-html="pv_tldr_5"><strong>Both of those exist for one reason: to make the site better.</strong> I use them
             to find the pages people abandon and the drills that confuse them. They are not used for
             advertising, and there is no account to attach them to.</li>
-          <li>I don't sell anything, so there is nobody to sell your data to, and I have never done so.</li>
+          <li data-i18n-html="pv_tldr_6">I don't sell anything, so there is nobody to sell your data to, and I have never done so.</li>
         </ul>
       </section>
 
       <!-- ── stays in the browser ──────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">1</span> What stays on your own computer</h2>
-        <p>Everything the site remembers about your learning lives in your browser's local storage.
+        <h2><span class="pv-num" data-i18n-html="pv_s1_h">1</span> What stays on your own computer</h2>
+        <p data-i18n-html="pv_s1_p">Everything the site remembers about your learning lives in your browser's local storage.
           It never reaches a server, I cannot read it, and it does not follow you to another device.
           That includes:</p>
         <ul class="pv-list">
-          <li>Kana and kanji drill progress, scores, streaks and personal bests</li>
-          <li>Which characters and verbs you've missed, and your review queue</li>
-          <li>Conjugator statistics, saved mistakes and weak spots</li>
-          <li>Flashcard progress and which cards you've seen</li>
-          <li>Reading stories Katsu wrote for you, and your best score on each story</li>
-          <li>Your settings — interface language, romaji input, furigana display, voice choice, round length</li>
+          <li data-i18n-html="pv_s1_l1">Kana and kanji drill progress, scores, streaks and personal bests</li>
+          <li data-i18n-html="pv_s1_l2">Which characters and verbs you've missed, and your review queue</li>
+          <li data-i18n-html="pv_s1_l3">Conjugator statistics, saved mistakes and weak spots</li>
+          <li data-i18n-html="pv_s1_l4">Flashcard progress and which cards you've seen</li>
+          <li data-i18n-html="pv_s1_l5">Reading stories Katsu wrote for you, and your best score on each story</li>
+          <li data-i18n-html="pv_s1_l6">Your settings — interface language, romaji input, furigana display, voice choice, round length</li>
         </ul>
-        <p class="pv-note"><strong>The trade-off:</strong> clearing your browser data clears all of
+        <p class="pv-note" data-i18n-html="pv_s1_note"><strong>The trade-off:</strong> clearing your browser data clears all of
           it, permanently. There is no backup, because there is nowhere for a backup to live. Your
           phone will not know what your laptop has done.</p>
       </section>
 
       <!-- ── leaves the browser ────────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">2</span> What leaves your browser, and why</h2>
-        <p>Four things send data out. Each one is listed here with exactly what goes, where, and
+        <h2><span class="pv-num" data-i18n-html="pv_s2_h">2</span> What leaves your browser, and why</h2>
+        <p data-i18n-html="pv_s2_p">Four things send data out. Each one is listed here with exactly what goes, where, and
           what comes back.</p>
 
         <div class="pv-card">
-          <h3>Katsu, Talk, story writing and answer marking</h3>
-          <p class="pv-what"><b>What is sent:</b> the message or answer you typed, plus the context
+          <h3 data-i18n-html="pv_c1_h">Katsu, Talk, story writing and answer marking</h3>
+          <p class="pv-what" data-i18n-html="pv_c1_a"><b>What is sent:</b> the message or answer you typed, plus the context
             the feature needs to reply — which verb and form you were drilling, the story you are
             reading, the scenario you chose, and the recent turns of the current conversation.</p>
-          <p class="pv-what"><b>Where it goes:</b> a small proxy I run on
+          <p class="pv-what" data-i18n-html="pv_c1_b"><b>Where it goes:</b> a small proxy I run on
             <b>Vercel</b>, which forwards it to <b>Anthropic</b> (the Claude API) and returns the
             reply. The proxy exists so the API key never has to sit in the page.</p>
-          <p class="pv-what"><b>What I keep:</b> nothing. I don't log the contents of these
+          <p class="pv-what" data-i18n-html="pv_c1_c"><b>What I keep:</b> nothing. I don't log the contents of these
             requests. Vercel and Anthropic keep their own operational records under their own
             policies — see <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel's
             privacy policy</a> and <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">Anthropic's</a>.</p>
-          <p class="pv-what"><b>If you'd rather not:</b> simply don't use them. Every other tool on
+          <p class="pv-what" data-i18n-html="pv_c1_d"><b>If you'd rather not:</b> simply don't use them. Every other tool on
             the site — the drills, the charts, the dictionary, the flashcards, the reading library —
             works without ever contacting a server.</p>
         </div>
 
         <div class="pv-card">
-          <h3>Speaking and listening</h3>
-          <p class="pv-what"><b>What is sent:</b> when you press <b>Listen</b> or turn on read-aloud,
+          <h3 data-i18n-html="pv_c2_h">Speaking and listening</h3>
+          <p class="pv-what" data-i18n-html="pv_c2_a"><b>What is sent:</b> when you press <b>Listen</b> or turn on read-aloud,
             the Japanese text to be spoken. When you use the microphone in Talk, <b>a recording of
             what you said</b>, so it can be transcribed and scored for pronunciation.</p>
-          <p class="pv-what"><b>Where it goes:</b> the same proxy, then <b>Microsoft Azure
+          <p class="pv-what" data-i18n-html="pv_c2_b"><b>Where it goes:</b> the same proxy, then <b>Microsoft Azure
             Speech</b>. Audio is processed to produce the transcript and the accuracy and fluency
             scores; it is not stored by me.</p>
-          <p class="pv-what"><b>If you'd rather not:</b> the microphone only ever opens when you
+          <p class="pv-what" data-i18n-html="pv_c2_c"><b>If you'd rather not:</b> the microphone only ever opens when you
             press the button, and your browser will ask you first. Typing works everywhere the
             microphone does.</p>
         </div>
 
         <div class="pv-card">
-          <h3>The contact form</h3>
-          <p class="pv-what"><b>What is sent:</b> the name, email address, subject and message you
+          <h3 data-i18n-html="pv_c3_h">The contact form</h3>
+          <p class="pv-what" data-i18n-html="pv_c3_a"><b>What is sent:</b> the name, email address, subject and message you
             fill in.</p>
-          <p class="pv-what"><b>Where it goes:</b> <b>Web3Forms</b>, which turns it into an email to
+          <p class="pv-what" data-i18n-html="pv_c3_b"><b>Where it goes:</b> <b>Web3Forms</b>, which turns it into an email to
             me. I keep the email so I can reply to you and so I don't lose a bug report.</p>
-          <p class="pv-what"><b>If you'd rather not:</b> email me directly instead — same inbox,
+          <p class="pv-what" data-i18n-html="pv_c3_c"><b>If you'd rather not:</b> email me directly instead — same inbox,
             one fewer service in the middle.</p>
         </div>
 
         <div class="pv-card">
-          <h3>Loading the page at all</h3>
-          <p class="pv-what">Like any website, opening a page tells the servers that serve it your
+          <h3 data-i18n-html="pv_c4_h">Loading the page at all</h3>
+          <p class="pv-what" data-i18n-html="pv_c4_a">Like any website, opening a page tells the servers that serve it your
             IP address and browser. For this site that means <b>GitHub Pages</b> (hosting),
             <b>Google Fonts</b> (the two typefaces) and <b>Ko-fi</b> (the support button in the
             corner). Ko-fi only sees anything more than that if you actually click through and
@@ -227,49 +228,49 @@
 
       <!-- ── analytics ─────────────────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">3</span> Analytics — the part people don't expect</h2>
-        <p>Two measurement tools load on every page. I'd rather spell out what they do than let you
+        <h2><span class="pv-num" data-i18n-html="pv_s3_h">3</span> Analytics — the part people don't expect</h2>
+        <p data-i18n-html="pv_s3_p1">Two measurement tools load on every page. I'd rather spell out what they do than let you
           find out from a browser extension.</p>
-        <p>Both are here for one purpose: <b>working out what to fix next</b>. This site is built by
+        <p data-i18n-html="pv_s3_p2">Both are here for one purpose: <b>working out what to fix next</b>. This site is built by
           one person in his spare time, with no feedback loop other than the handful of people who
           use the contact form. Knowing that forty people opened the Conjugator and thirty-five left
           on the first question tells me something is wrong with that first question — which is the
           kind of thing nobody ever writes in to report.</p>
-        <p class="pv-note"><strong>What they are not for.</strong> No advertising, no ad networks, no
+        <p class="pv-note" data-i18n-html="pv_s3_note0"><strong>What they are not for.</strong> No advertising, no ad networks, no
           selling or sharing with data brokers, no profile of you built up over time, and no attempt
           to work out who you are. There is no account here to attach any of it to, and I have never
           used this data for anything other than deciding what to build and what to fix.</p>
 
         <div class="pv-card">
-          <h3>Google Analytics 4</h3>
-          <p class="pv-what">Counts visits. It records which pages are opened, roughly where in the
+          <h3 data-i18n-html="pv_ga_h">Google Analytics 4</h3>
+          <p class="pv-what" data-i18n-html="pv_ga_a">Counts visits. It records which pages are opened, roughly where in the
             world from (city level, from your IP — the IP itself is not stored by Google Analytics
             4), what device and browser, how long a page is open, and what site you arrived from.
             It sets cookies to tell a returning visitor from a new one.</p>
-          <p class="pv-what"><b>Why:</b> so I know which tools are actually used, and which pages
+          <p class="pv-what" data-i18n-html="pv_ga_b"><b>Why:</b> so I know which tools are actually used, and which pages
             people give up on. That is genuinely how this site gets its priorities.</p>
         </div>
 
         <div class="pv-card pv-card-warn">
           <h3>Microsoft Clarity</h3>
-          <p class="pv-what">Clarity does more than count. It records a <b>playback of the page</b>
+          <p class="pv-what" data-i18n-html="pv_cl_a">Clarity does more than count. It records a <b>playback of the page</b>
             — cursor movement, clicks, taps, scrolling, the layout you saw — and builds heatmaps
             from it. It is not video and it is not your screen; it is a reconstruction of the page
             from the site's own code.</p>
-          <p class="pv-what"><b>What it does not capture:</b> text you type. Clarity masks every
+          <p class="pv-what" data-i18n-html="pv_cl_b"><b>What it does not capture:</b> text you type. Clarity masks every
             input and dropdown on the site, which cannot be switched off. On top of that, the Talk
             conversation and the Katsu chat window are explicitly marked as masked in the site's own
             code, so your Japanese practice and your questions to Katsu are not in the recordings.</p>
-          <p class="pv-what"><b>Why:</b> the same reason. When a drill confuses people I can see
+          <p class="pv-what" data-i18n-html="pv_cl_c"><b>Why:</b> the same reason. When a drill confuses people I can see
             <em>where</em> they get stuck rather than guess.</p>
-          <p class="pv-what">Microsoft's own account of what Clarity collects is
+          <p class="pv-what" data-i18n-html="pv_cl_d">Microsoft's own account of what Clarity collects is
             <a href="https://learn.microsoft.com/en-us/clarity/setup-and-installation/faq" target="_blank" rel="noopener">in
             their documentation</a>, and their use of it falls under the
             <a href="https://privacy.microsoft.com/privacystatement" target="_blank" rel="noopener">Microsoft
             Privacy Statement</a>.</p>
         </div>
 
-        <p class="pv-note"><strong>Turning it off:</strong> both tools respect an ad or tracker
+        <p class="pv-note" data-i18n-html="pv_s3_note"><strong>Turning it off:</strong> both tools respect an ad or tracker
           blocker, and neither is needed for anything on the site to work — block them and every
           page behaves identically. Global Privacy Control and Do Not Track signals are honoured by
           the vendors where their own policies say so.</p>
@@ -277,38 +278,38 @@
 
       <!-- ── cookies ───────────────────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">4</span> Cookies</h2>
-        <p>The site itself sets none. It uses <b>local storage</b> for your progress, which is
+        <h2><span class="pv-num" data-i18n-html="pv_s4_h">4</span> Cookies</h2>
+        <p data-i18n-html="pv_s4_p1">The site itself sets none. It uses <b>local storage</b> for your progress, which is
           similar technology but stays on your machine and is never sent with a request.</p>
-        <p>Cookies that do get set come from Google Analytics, Microsoft Clarity and the Ko-fi
+        <p data-i18n-html="pv_s4_p2">Cookies that do get set come from Google Analytics, Microsoft Clarity and the Ko-fi
           widget, for the purposes described above. Clearing your site data removes them — along
           with your learning progress, since they live in the same place.</p>
       </section>
 
       <!-- ── retention ─────────────────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">5</span> How long anything is kept</h2>
+        <h2><span class="pv-num" data-i18n-html="pv_s5_h">5</span> How long anything is kept</h2>
         <ul class="pv-list">
-          <li><b>Your progress:</b> until you clear your browser data. Entirely your call.</li>
-          <li><b>Analytics:</b> Google Analytics is set to the shortest retention it offers.
+          <li data-i18n-html="pv_s5_l1"><b>Your progress:</b> until you clear your browser data. Entirely your call.</li>
+          <li data-i18n-html="pv_s5_l2"><b>Analytics:</b> Google Analytics is set to the shortest retention it offers.
             Clarity deletes recordings after 30 days on its own schedule.</li>
-          <li><b>Katsu, Talk, speech:</b> not retained by me at all.</li>
-          <li><b>Contact form messages:</b> kept in my email while the conversation is useful. Ask
+          <li data-i18n-html="pv_s5_l3"><b>Katsu, Talk, speech:</b> not retained by me at all.</li>
+          <li data-i18n-html="pv_s5_l4"><b>Contact form messages:</b> kept in my email while the conversation is useful. Ask
             me to delete one and I will.</li>
         </ul>
       </section>
 
       <!-- ── your rights ───────────────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">6</span> Your choices</h2>
-        <p>Because there's no account, most of what a privacy policy usually promises you can simply
+        <h2><span class="pv-num" data-i18n-html="pv_s6_h">6</span> Your choices</h2>
+        <p data-i18n-html="pv_s6_p">Because there's no account, most of what a privacy policy usually promises you can simply
           do yourself:</p>
         <ul class="pv-list">
-          <li><b>See everything stored about you:</b> it's in your browser's developer tools, under
+          <li data-i18n-html="pv_s6_l1"><b>See everything stored about you:</b> it's in your browser's developer tools, under
             Local Storage. Nothing is hidden from you.</li>
-          <li><b>Delete everything:</b> clear site data for katsuyoacademy.com.</li>
-          <li><b>Stop the analytics:</b> any tracker blocker, or private browsing.</li>
-          <li><b>Reach me:</b> if you're in the EU, the UK, California or anywhere else with data
+          <li data-i18n-html="pv_s6_l2"><b>Delete everything:</b> clear site data for katsuyoacademy.com.</li>
+          <li data-i18n-html="pv_s6_l3"><b>Stop the analytics:</b> any tracker blocker, or private browsing.</li>
+          <li data-i18n-html="pv_s6_l4"><b>Reach me:</b> if you're in the EU, the UK, California or anywhere else with data
             rights and you want something removed or want to know what I hold,
             <a href="/about">write to me</a>. It's one person and a short list, so this is a quick
             conversation rather than a legal process.</li>
@@ -317,28 +318,28 @@
 
       <!-- ── odds and ends ─────────────────────────────────────────────── -->
       <section class="pv-sec">
-        <h2><span class="pv-num">7</span> The rest</h2>
-        <p><b>Where the data goes.</b> The services above are run by companies in the United States,
+        <h2><span class="pv-num" data-i18n-html="pv_s7_h">7</span> The rest</h2>
+        <p data-i18n-html="pv_s7_p1"><b>Where the data goes.</b> The services above are run by companies in the United States,
           so if you're using the site from elsewhere, that is where the analytics and the AI requests
           are processed.</p>
-        <p><b>Children.</b> The site is open to anyone and collects no names or ages, but it isn't
+        <p data-i18n-html="pv_s7_p2"><b>Children.</b> The site is open to anyone and collects no names or ages, but it isn't
           designed or directed at children under 13, and I don't knowingly collect anything from
           them. If you believe a child has sent me something through the contact form, tell me and
           I'll delete it.</p>
-        <p><b>Security.</b> The site is served over HTTPS and holds no credentials, because there
+        <p data-i18n-html="pv_s7_p3"><b>Security.</b> The site is served over HTTPS and holds no credentials, because there
           are none to hold. The API keys for Katsu and speech live in server environment variables
           and are never in any page you download.</p>
-        <p><b>Changes.</b> If I add a feature that sends data somewhere new, it gets a section here
+        <p data-i18n-html="pv_s7_p4"><b>Changes.</b> If I add a feature that sends data somewhere new, it gets a section here
           and the date at the top changes. I won't quietly broaden this.</p>
-        <p><b>Not a lawyer.</b> This is an accurate description of what a small, free site actually
+        <p data-i18n-html="pv_s7_p5"><b>Not a lawyer.</b> This is an accurate description of what a small, free site actually
           does, written by the person who built it. It is not legal advice, and it isn't a
           substitute for one if you need certainty about a specific regulation.</p>
       </section>
 
       <section class="pv-contact">
-        <h2>Questions about any of this</h2>
-        <p>Ask. I'd rather explain than have you wonder.</p>
-        <a class="pv-btn" href="/about">Get in touch →</a>
+        <h2 data-i18n-html="pv_c_h">Questions about any of this</h2>
+        <p data-i18n-html="pv_c_p">Ask. I'd rather explain than have you wonder.</p>
+        <a class="pv-btn" href="/about" data-i18n-html="pv_c_btn">Get in touch →</a>
       </section>
 
       <p class="pv-copy">© 2025-2026 Brandon Gilmore</p>

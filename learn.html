@@ -48,6 +48,7 @@
           <option value="de">🌐 DE</option>
           <option value="fr">🌐 FR</option>
           <option value="zh">🌐 中文</option>
+          <option value="ja">🌐 日本語</option>
         </select>
       </div>
     </div>
@@ -70,10 +71,7 @@
           <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
             Why Conjugation Matters
           </h2>
-          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;">
-            In Japanese, verbs change their form to express time (past/present), politeness, negation, desire, ability, and more. 
-            Unlike English where we add helper words ("I <em>will</em> go", "I <em>can</em> go"), Japanese transforms the verb itself.
-          </p>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.8; margin-bottom: 1rem;" data-i18n-html="ln_why">In Japanese, verbs change their form to express time (past/present), politeness, negation, desire, ability, and more. Unlike English where we add helper words ("I <em>will</em> go", "I <em>can</em> go"), Japanese transforms the verb itself.</p>
           <div style="background: var(--paper-warm); padding: 1.5rem; border-radius: 4px; border-left: 4px solid var(--accent);">
             <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--ink);">Example:</div>
             <div style="color: var(--text); font-size: 1rem; line-height: 1.8;">
@@ -101,9 +99,7 @@
             <h3 style="font-size: 1.5rem; font-weight: 700; color: #4a90a4; margin-bottom: 0.5rem;" class="jp">
               五段 Godan
             </h3>
-            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
-              "Five-step" verbs that conjugate by shifting through <strong>5 vowel rows</strong>
-            </p>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;" data-i18n-html="ln_godan_tag">"Five-step" verbs that conjugate by shifting through <strong>5 vowel rows</strong></p>
             <div style="font-size: 0.9rem; color: var(--text);">
               Examples:<br>
               <span class="jp">行く、話す、飲む</span>
@@ -114,9 +110,7 @@
             <h3 style="font-size: 1.5rem; font-weight: 700; color: var(--sage); margin-bottom: 0.5rem;" class="jp">
               一段 Ichidan
             </h3>
-            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
-              "One-step" verbs with a <strong>stem that never changes</strong>
-            </p>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;" data-i18n-html="ln_ichidan_tag">"One-step" verbs with a <strong>stem that never changes</strong></p>
             <div style="font-size: 0.9rem; color: var(--text);">
               Examples:<br>
               <span class="jp">食べる、見る、寝る</span>
@@ -127,9 +121,7 @@
             <h3 style="font-size: 1.5rem; font-weight: 700; color: #7a5ba4; margin-bottom: 0.5rem;" class="jp">
               不規則 Irregular
             </h3>
-            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;">
-              Only <strong>two verbs in the entire language</strong> — they change their own vowel as well as their ending
-            </p>
+            <p style="color: var(--text); font-size: 0.95rem; margin-bottom: 1rem;" data-i18n-html="ln_irr_tag">Only <strong>two verbs in the entire language</strong> — they change their own vowel as well as their ending</p>
             <div style="font-size: 0.9rem; color: var(--text);">
               Examples:<br>
               <span class="jp">する</span> (to do)、<span class="jp">来る／くる</span> (to come)
@@ -156,7 +148,7 @@
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
               <div style="font-size: 2rem;">✓</div>
               <div>
-                <div style="font-weight: 600; color: var(--text);">YES → It's <strong style="color: #7a5ba4;">irregular</strong></div>
+                <div style="font-weight: 600; color: var(--text);" data-i18n-html="ln_yes_irr">YES → It's <strong style="color: #7a5ba4;">irregular</strong></div>
                 <div style="font-size: 0.9rem; color: var(--text-light);">
                   する、来る（くる）— and any noun + する: 勉強する、散歩する、料理する
                 </div>
@@ -246,9 +238,7 @@
           <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--ink); margin-bottom: 1rem;">
             Foundation: The Hiragana Sound System
           </h2>
-          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">
-            Japanese sounds are organized in <strong>rows</strong> and <strong>columns</strong>. Godan verbs work by shifting between these rows:
-          </p>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;" data-i18n-html="ln_rows">Japanese sounds are organized in <strong>rows</strong> and <strong>columns</strong>. Godan verbs work by shifting between these rows:</p>
 
           <div style="overflow-x: auto; margin-bottom: 2rem;">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
@@ -345,14 +335,7 @@
 
           <div style="background: #eef4f8; padding: 1.5rem; border-radius: 4px; border-left: 4px solid #4a90a4;">
             <div style="font-weight: 600; margin-bottom: 0.75rem; color: var(--ink);">💡 Key Insight:</div>
-            <div style="color: var(--text); line-height: 1.7;">
-              Notice how each column keeps the same consonant sound (k-, g-, s-, t-, n-, b-, m-, r-, w-), but the vowel changes (a, i, u, e, o).
-              When we conjugate godan verbs, we're moving <strong>up and down these columns</strong> to create different forms.
-              <div style="margin-top: 0.75rem;">
-                Every godan ending is somewhere in this grid: く／ぐ in the k- and g- columns, す in s-, つ in t-,
-                ぬ in n-, ぶ in b-, む in m-, る in r-, and う in w-. That last one has a catch — see below.
-              </div>
-            </div>
+            <div style="color: var(--text); line-height: 1.7;" data-i18n-html="ln_columns">Notice how each column keeps the same consonant sound (k-, g-, s-, t-, n-, b-, m-, r-, w-), but the vowel changes (a, i, u, e, o). When we conjugate godan verbs, we're moving <strong>up and down these columns</strong> to create different forms. <div style="margin-top: 0.75rem;"> Every godan ending is somewhere in this grid: く／ぐ in the k- and g- columns, す in s-, つ in t-, ぬ in n-, ぶ in b-, む in m-, る in r-, and う in w-. That last one has a catch — see below. </div></div>
           </div>
         </div>
       </section>
@@ -410,15 +393,9 @@
               <div style="margin-bottom: 1rem;">
                 <strong>1.</strong> Start with the dictionary form: <span class="jp" style="font-size: 1.25rem; color: #4a90a4;">話す</span> (hana<strong>su</strong>)
               </div>
-              <div style="margin-bottom: 1rem;">
-                <strong>2.</strong> Identify the final sound: <strong style="color: #4a90a4;">す (su)</strong> - this is in the <strong>う-row</strong>
-              </div>
-              <div style="margin-bottom: 1rem;">
-                <strong>3.</strong> Find it in the chart: Look in the <strong>s-column</strong>, <strong>う-row</strong> = す
-              </div>
-              <div style="margin-bottom: 1rem;">
-                <strong>4.</strong> To make negative: Move to the <strong style="color: #c45c4a;">あ-row</strong> in the same column: す → <strong style="color: #c45c4a;">さ</strong>
-              </div>
+              <div style="margin-bottom: 1rem;" data-i18n-html="ln_step2"><strong>2.</strong> Identify the final sound: <strong style="color: #4a90a4;">す (su)</strong> - this is in the <strong>う-row</strong></div>
+              <div style="margin-bottom: 1rem;" data-i18n-html="ln_step3"><strong>3.</strong> Find it in the chart: Look in the <strong>s-column</strong>, <strong>う-row</strong> = す</div>
+              <div style="margin-bottom: 1rem;" data-i18n-html="ln_step4"><strong>4.</strong> To make negative: Move to the <strong style="color: #c45c4a;">あ-row</strong> in the same column: す → <strong style="color: #c45c4a;">さ</strong></div>
               <div>
                 <strong>5.</strong> Add the ending: はな<strong style="color: #c45c4a;">さ</strong> + ない = <span class="jp">話さない</span>
               </div>
@@ -502,9 +479,7 @@
           <h2 style="font-size: 1.75rem; font-weight: 700; color: var(--sage); margin-bottom: 1rem;">
             Ichidan Verbs: The Simple Pattern
           </h2>
-          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
-            Ichidan verbs are called "one-step" because the stem <strong>never changes</strong>. You simply drop る and add endings.
-          </p>
+          <p style="color: var(--text); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;" data-i18n-html="ln_ichidan_stem">Ichidan verbs are called "one-step" because the stem <strong>never changes</strong>. You simply drop る and add endings.</p>
 
           <div style="text-align: center; margin-bottom: 2rem;">
             <div style="display: inline-block; background: var(--paper-warm); padding: 2rem 3rem; border-radius: 8px; border: 3px solid var(--sage);">
@@ -573,12 +548,7 @@
               With ichidan verbs, once you memorize the endings (ない, ます, た, たい, られる, よう),
               you can conjugate <strong>any</strong> ichidan verb. No row-shifting and no sound changes —
               the て-form and the past are as plain as everything else.
-              <div style="margin-top: 0.75rem;">
-                The only thing to stay alert to is <strong>which verbs are actually ichidan</strong>: 走る and 帰る look
-                the part and aren't (see Step 2). And in speech you'll hear the potential shortened —
-                <span class="jp">食べられる → 食べれる</span>. Both are understood; <span class="jp">られる</span> is the
-                safer choice in writing and on the JLPT.
-              </div>
+              <div style="margin-top: 0.75rem;" data-i18n-html="ln_ichidan_alert">The only thing to stay alert to is <strong>which verbs are actually ichidan</strong>: 走る and 帰る look the part and aren't (see Step 2). And in speech you'll hear the potential shortened — <span class="jp">食べられる → 食べれる</span>. Both are understood; <span class="jp">られる</span> is the safer choice in writing and on the JLPT.</div>
             </div>
           </div>
         </div>

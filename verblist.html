@@ -143,6 +143,7 @@
           <option value="de">🌐 DE</option>
           <option value="fr">🌐 FR</option>
           <option value="zh">🌐 中文</option>
+          <option value="ja">🌐 日本語</option>
         </select>
       </div>
     </div>
@@ -175,10 +176,7 @@
 
 <div id="vl-kuru" style="margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3f0 0%, #fef9f8 100%); border-radius: 8px; border-left: 4px solid var(--accent);">
           <h4 style="color: var(--ink); margin-bottom: 0.75rem; font-size: 1.1rem;">🔸 Why is <span class="jp">来る</span> irregular?</h4>
-          <p style="line-height: 1.8; color: var(--text); margin-bottom: 1rem;">
-            <strong><span class="jp">来る (kuru)</span></strong> is one of only two truly irregular verbs in Japanese (along with <span class="jp">する</span>). 
-            Unlike godan or ichidan verbs, its stem changes unpredictably across conjugations:
-          </p>
+          <p style="line-height: 1.8; color: var(--text); margin-bottom: 1rem;" data-i18n-html="vl2_kuru"><strong><span class="jp">来る (kuru)</span></strong> is one of only two truly irregular verbs in Japanese (along with <span class="jp">する</span>). Unlike godan or ichidan verbs, its stem changes unpredictably across conjugations:</p>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.75rem; font-size: 0.95rem;">
             <div style="background: white; padding: 0.75rem; border-radius: 4px;">
               <strong>Dictionary:</strong> <span class="jp">来る</span> (kuru)
@@ -286,17 +284,17 @@
       return kanji.slice(0, kanji.length - n) + out.slice(stem.length);
     }
 
-    function card(v, type) {
+    function card(v, group, conjType) {
       var rows = '';
       SHOW.forEach(function (f) {
         var F = formByKey(f[0]); if (!F) return;
         var r = '';
         try { r = conjugateVerb({ kanji: v.kanji, hiragana: v.hiragana, meaning: v.meaning,
-                                  jlpt: v.jlpt, type: type }, F); } catch (e) { r = ''; }
+                                  jlpt: v.jlpt, type: conjType }, F); } catch (e) { r = ''; }
         if (r) rows += '<div class="vl-fr"><span class="k">' + esc(f[1]) + '</span>' +
                        '<span class="val">' + esc(reKanji(v.kanji, v.hiragana, r)) + '</span></div>';
       });
-      return '<div class="verb-item" data-jlpt="' + esc(v.jlpt) + '" data-type="' + esc(type) +
+      return '<div class="verb-item" data-jlpt="' + esc(v.jlpt) + '" data-type="' + esc(group) +
         '" data-kanji="' + esc(v.kanji) + '" data-hiragana="' + esc(v.hiragana) +
         '" data-romaji="' + esc(v.romaji) + '" data-meaning="' + esc(v.meaning) + '">' +
         '<div class="vl-top"><span><span class="w jp">' + esc(v.kanji) + '</span>' +
@@ -314,7 +312,7 @@
                 '<span>ない <b>〜' + rule[1] + '</b></span>' +
                 '<span>可能 <b>〜' + rule[2] + '</b></span></div>' : '') +
         '</div><div class="vl-grid">' +
-        list.map(function (v) { return card(v, v.type || type); }).join('') + '</div></div>';
+        list.map(function (v) { return card(v, type, v.type || type); }).join('') + '</div></div>';
     }
 
     var html = '';
