@@ -4,9 +4,10 @@
 (function () {
   var S = {
     en: {
-      dj_tag:'Interactive Practice', dj_title:'The Deconjugator',
+      dj_tag:'Interactive Practice', dj_title:'Rewind',
+      dj_settings:'Settings', dj_lbl_form:'Form', dj_lbl_type:'Verb', dj_lbl_level:'Level', dj_lbl_layers:'Layers', dj_lbl_round:'Round', dj_l_all2:'All', dj_d1b:'One', dj_d2b:'Up to two', dj_d3b:'Up to three', dj_ddeepb:'Stacked only', dj_g0b:'No limit', dj_correct:'correct', dj_of:'asked', dj_qs:'questions',
       dj_desc:'The Conjugator, backwards. You are shown a conjugated verb and you give the dictionary form it came from. Every answer traces the derivation, one layer at a time.',
-      dj_reset:'↺ Reset', dj_streak:'Streak', dj_best:'best', dj_score:'Score',
+      dj_reset:'reset', dj_streak:'Streak', dj_best:'best', dj_score:'Score',
       dj_og_random:'🎲 Random Modes', dj_og_basic:'📚 Basic Forms (N5)',
       dj_og_inter:'🎯 Intermediate Forms (N4)', dj_og_adv:'🔥 Advanced Forms (N3+)',
       dj_f_random:'Random (all forms)', dj_f_rbasic:'Random (basic)',
@@ -38,9 +39,10 @@
       dj_round_done:'Round finished', dj_asked:'asked', dj_overall:'correct overall'
     },
     de: {
-      dj_tag:'Interaktives Üben', dj_title:'Der Dekonjugator',
+      dj_tag:'Interaktives Üben', dj_title:'Rückspulen',
+      dj_settings:'Einstellungen', dj_lbl_form:'Form', dj_lbl_type:'Verb', dj_lbl_level:'Niveau', dj_lbl_layers:'Schichten', dj_lbl_round:'Runde', dj_l_all2:'Alle', dj_d1b:'Eine', dj_d2b:'Bis zwei', dj_d3b:'Bis drei', dj_ddeepb:'Nur gestapelt', dj_g0b:'Ohne Limit', dj_correct:'richtig', dj_of:'gestellt', dj_qs:'Fragen',
       dj_desc:'Der Konjugator rückwärts. Sie sehen eine konjugierte Form und nennen die Wörterbuchform, aus der sie stammt. Jede Antwort zeigt die Herleitung, Schicht für Schicht.',
-      dj_reset:'↺ Zurücksetzen', dj_streak:'Serie', dj_best:'best', dj_score:'Punkte',
+      dj_reset:'zurücksetzen', dj_streak:'Serie', dj_best:'best', dj_score:'Punkte',
       dj_og_random:'🎲 Zufallsmodi', dj_og_basic:'📚 Grundformen (N5)',
       dj_og_inter:'🎯 Mittelstufe (N4)', dj_og_adv:'🔥 Fortgeschritten (N3+)',
       dj_f_random:'Zufällig (alle Formen)', dj_f_rbasic:'Zufällig (Grundformen)',
@@ -72,9 +74,10 @@
       dj_round_done:'Runde beendet', dj_asked:'gestellt', dj_overall:'insgesamt richtig'
     },
     fr: {
-      dj_tag:'Pratique interactive', dj_title:'Le Déconjugueur',
+      dj_tag:'Pratique interactive', dj_title:'Rembobiner',
+      dj_settings:'Réglages', dj_lbl_form:'Forme', dj_lbl_type:'Verbe', dj_lbl_level:'Niveau', dj_lbl_layers:'Couches', dj_lbl_round:'Série', dj_l_all2:'Tous', dj_d1b:'Une', dj_d2b:'Jusqu’à deux', dj_d3b:'Jusqu’à trois', dj_ddeepb:'Empilées', dj_g0b:'Sans limite', dj_correct:'correct', dj_of:'posées', dj_qs:'questions',
       dj_desc:'Le conjugueur à l’envers. On vous montre une forme conjuguée, vous donnez la forme du dictionnaire dont elle vient. Chaque réponse retrace la dérivation, couche par couche.',
-      dj_reset:'↺ Réinitialiser', dj_streak:'Série', dj_best:'record', dj_score:'Score',
+      dj_reset:'réinitialiser', dj_streak:'Série', dj_best:'record', dj_score:'Score',
       dj_og_random:'🎲 Modes aléatoires', dj_og_basic:'📚 Formes de base (N5)',
       dj_og_inter:'🎯 Intermédiaire (N4)', dj_og_adv:'🔥 Avancé (N3+)',
       dj_f_random:'Aléatoire (toutes)', dj_f_rbasic:'Aléatoire (base)',
@@ -106,9 +109,10 @@
       dj_round_done:'Série terminée', dj_asked:'posées', dj_overall:'de réussite'
     },
     zh: {
-      dj_tag:'互动练习', dj_title:'逆变位工具',
+      dj_tag:'互动练习', dj_title:'逆推',
+      dj_settings:'设置', dj_lbl_form:'形式', dj_lbl_type:'动词', dj_lbl_level:'级别', dj_lbl_layers:'层数', dj_lbl_round:'轮次', dj_l_all2:'全部', dj_d1b:'一层', dj_d2b:'最多两层', dj_d3b:'最多三层', dj_ddeepb:'仅叠加', dj_g0b:'不限', dj_correct:'正确', dj_of:'题', dj_qs:'题',
       dj_desc:'把变位工具反过来用。给你一个变化形，你说出它来自哪个词典形。每道题都会逐层显示还原过程。',
-      dj_reset:'↺ 重置', dj_streak:'连对', dj_best:'最佳', dj_score:'得分',
+      dj_reset:'重置', dj_streak:'连对', dj_best:'最佳', dj_score:'得分',
       dj_og_random:'🎲 随机模式', dj_og_basic:'📚 基础形式（N5）',
       dj_og_inter:'🎯 中级形式（N4）', dj_og_adv:'🔥 高级形式（N3+）',
       dj_f_random:'随机（全部）', dj_f_rbasic:'随机（基础）',

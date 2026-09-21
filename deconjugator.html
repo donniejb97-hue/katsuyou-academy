@@ -15,9 +15,52 @@
        .form-select, .score-box, .check-btn, .feedback — so the two read as a
        matched pair. Only what is genuinely new to this tool is styled here. */
 
-    .dj-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
-    .dj-filters .form-select { flex: 1 1 15rem; width: auto; min-width: 0;
-      margin-bottom: 0; padding: 0.7rem 0.8rem; font-size: 0.92rem; }
+    /* ---- the bar: what's set right now, plus the gear that opens it ---- */
+    .dj-bar { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap;
+      padding: .55rem .35rem .8rem; border-bottom: 1px solid rgba(0,0,0,.08); margin-bottom: 1.25rem; }
+    .dj-now { font-size: .86rem; color: var(--text-light); display: flex;
+      align-items: center; gap: .4rem; flex-wrap: wrap; min-width: 0; }
+    .dj-now b { color: var(--ink); font-weight: 600; }
+    .dj-now .sep { color: rgba(0,0,0,.2); }
+    .dj-gear { background: none; border: 1px solid rgba(0,0,0,.14); border-radius: 999px;
+      padding: .3rem .8rem; font-family: inherit; font-size: .82rem; color: var(--text);
+      cursor: pointer; display: inline-flex; align-items: center; gap: .35rem; transition: .15s; }
+    .dj-gear:hover { border-color: var(--accent); color: var(--accent); }
+    .dj-gear.open { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+    /* ---- the stats, as one quiet line rather than three boxes ---- */
+    .dj-stats { margin-left: auto; display: flex; align-items: baseline; gap: 1.1rem;
+      font-size: .84rem; color: var(--text-light); }
+    .dj-stats span b { font-size: 1.05rem; color: var(--ink); font-weight: 700;
+      font-variant-numeric: tabular-nums; margin-right: .18rem; }
+    .dj-stats .fire b { color: var(--gold); }
+    .dj-stats .best { font-size: .76rem; opacity: .7; }
+    .dj-reset-link { background: none; border: 0; padding: 0; font-family: inherit;
+      font-size: .78rem; color: var(--text-light); cursor: pointer; text-decoration: underline;
+      text-underline-offset: 2px; }
+    .dj-reset-link:hover { color: var(--accent); }
+
+    /* ---- the settings panel: chips, not a wall of dropdowns ---- */
+    .dj-panel { display: none; background: white; border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.07); padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; }
+    .dj-panel.open { display: block; }
+    .dj-row { display: flex; align-items: flex-start; gap: .85rem; padding: .5rem 0;
+      border-top: 1px solid rgba(0,0,0,.06); }
+    .dj-row:first-child { border-top: 0; padding-top: 0; }
+    .dj-row > label { flex: 0 0 5.5rem; font-size: .7rem; letter-spacing: .1em;
+      text-transform: uppercase; font-weight: 700; color: var(--text-light); padding-top: .38rem; }
+    .dj-chips { display: flex; gap: .35rem; flex-wrap: wrap; flex: 1; min-width: 0; }
+    .dj-chip { background: var(--paper); border: 1px solid rgba(0,0,0,.13); border-radius: 999px;
+      padding: .3rem .75rem; font-family: inherit; font-size: .84rem; color: var(--text);
+      cursor: pointer; transition: .12s; white-space: nowrap; }
+    .dj-chip:hover { border-color: var(--gold); }
+    .dj-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 600; }
+    .dj-row select.form-select { flex: 1; width: auto; min-width: 0; margin-bottom: 0;
+      padding: .35rem .6rem; font-size: .88rem; border-width: 1px; border-radius: 6px; }
+    .dj-toggles { display: flex; gap: 1.25rem; flex-wrap: wrap; padding-top: .7rem;
+      margin-top: .3rem; border-top: 1px solid rgba(0,0,0,.06); }
+    .dj-toggles label { display: flex; align-items: center; gap: .4rem;
+      font-size: .85rem; color: var(--text); cursor: pointer; }
 
     /* the conjugated form under examination */
     .dj-stage { background: white; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,.07);
@@ -101,109 +144,115 @@
   <div id="page-deconjugator" class="page active">
     <div class="conjugator-page">
 
-      <div class="conjugator-header">
+      <div class="conjugator-header" style="align-items:flex-start">
         <div>
           <div class="page-tag" data-i18n="dj_tag">Interactive Practice</div>
-          <h1 class="page-title" data-i18n="dj_title">The Deconjugator</h1>
-        </div>
-        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
-          <button type="button" id="dj-reset" class="reset-btn" data-i18n="dj_reset">↺ Reset</button>
-          <div class="score-box streak-box" title="Answers right in a row">
-            <div class="score-label" data-i18n="dj_streak">Streak</div>
-            <div class="score-value">🔥 <span id="dj-streak">0</span>
-              <span class="streak-best-wrap">(<span data-i18n="dj_best">best</span> <span id="dj-best">0</span>)</span></div>
-          </div>
-          <div class="score-box">
-            <div class="score-label" data-i18n="dj_score">Score</div>
-            <div class="score-value"><span id="dj-right">0</span> / <span id="dj-total">0</span></div>
-          </div>
+          <h1 class="page-title" data-i18n="dj_title">Rewind</h1>
+          <p class="dj-desc" style="color:var(--text-light);max-width:60ch;margin:.45rem 0 0" data-i18n="dj_desc">
+            The Conjugator, played backwards. You are shown a conjugated verb and you give the
+            dictionary form it came from — and every answer unwinds the derivation a layer at a time.
+          </p>
         </div>
       </div>
 
-      <p class="dj-desc" style="color:var(--text-light);max-width:64ch;margin:0 0 1.1rem" data-i18n="dj_desc">
-        The Conjugator, backwards. You are shown a conjugated verb and you give the dictionary form it came from.
-        Every answer traces the derivation, one layer at a time.
-      </p>
-
-      <!-- Filters -->
-      <div class="dj-filters">
-        <select id="dj-form" class="form-select" title="Which form the verb is in">
-          <optgroup label="🎲 Random Modes" data-i18n-label="dj_og_random">
-            <option value="random" data-i18n="dj_f_random">Random (all forms)</option>
-            <option value="random-basic" data-i18n="dj_f_rbasic">Random (basic)</option>
-            <option value="random-intermediate" data-i18n="dj_f_rint">Random (intermediate)</option>
-            <option value="random-advanced" data-i18n="dj_f_radv">Random (advanced)</option>
-          </optgroup>
-          <optgroup label="📚 Basic Forms (N5)" data-i18n-label="dj_og_basic">
-            <option value="masu" data-i18n="dj_f_masu">Polite (ます)</option>
-            <option value="negative" data-i18n="dj_f_neg">Negative (ない)</option>
-            <option value="past" data-i18n="dj_f_past">Past (た)</option>
-            <option value="te" data-i18n="dj_f_te">Te-form (て)</option>
-            <option value="masen" data-i18n="dj_f_masen">Polite Negative (ません)</option>
-            <option value="mashita" data-i18n="dj_f_mashita">Polite Past (ました)</option>
-            <option value="nakatta" data-i18n="dj_f_nakatta">Negative Past (なかった)</option>
-          </optgroup>
-          <optgroup label="🎯 Intermediate Forms (N4)" data-i18n-label="dj_og_inter">
-            <option value="tai" data-i18n="dj_f_tai">Want to (たい)</option>
-            <option value="potential" data-i18n="dj_f_pot">Potential (られる/える)</option>
-            <option value="volitional" data-i18n="dj_f_vol">Volitional (よう/おう)</option>
-            <option value="ba" data-i18n="dj_f_ba">Conditional (ば)</option>
-            <option value="tara" data-i18n="dj_f_tara">Conditional (たら)</option>
-            <option value="imperative" data-i18n="dj_f_imp">Imperative (命令形)</option>
-          </optgroup>
-          <optgroup label="🔥 Advanced Forms (N3+)" data-i18n-label="dj_og_adv">
-            <option value="passive" data-i18n="dj_f_pass">Passive (られる/あれる)</option>
-            <option value="causative" data-i18n="dj_f_caus">Causative (させる/あせる)</option>
-            <option value="causative-passive" data-i18n="dj_f_cp">Causative-Passive (させられる)</option>
-          </optgroup>
-        </select>
-
-        <select id="dj-type" class="form-select" title="Which kind of verb">
-          <option value="all" data-i18n="dj_t_all">All verb types</option>
-          <option value="godan" data-i18n="dj_t_godan">Godan only</option>
-          <option value="ichidan" data-i18n="dj_t_ichidan">Ichidan only</option>
-          <option value="suru" data-i18n="dj_t_suru">する verbs only</option>
-          <option value="irregular" data-i18n="dj_t_irr">来る only</option>
-        </select>
-
-        <select id="dj-level" class="form-select" title="JLPT level of the verb">
-          <option value="all" data-i18n="dj_l_all">All levels</option>
-          <option value="N5" data-i18n="dj_l_n5">N5 only</option>
-          <option value="N4" data-i18n="dj_l_n4">N4 only</option>
-          <option value="N3" data-i18n="dj_l_n3">N3 only</option>
-          <option value="N5,N4" data-i18n="dj_l_n54">N5 + N4</option>
-          <option value="N4,N3" data-i18n="dj_l_n43">N4 + N3</option>
-        </select>
-
-        <!-- The real difficulty axis for this tool: not which form, but how
-             many of them are stacked on top of each other. -->
-        <select id="dj-depth" class="form-select" title="How many forms are stacked">
-          <option value="1" data-i18n="dj_d1">One layer</option>
-          <option value="2" data-i18n="dj_d2">Up to two layers</option>
-          <option value="3" data-i18n="dj_d3">Up to three layers</option>
-          <option value="deep" data-i18n="dj_ddeep">Stacked only (2–3)</option>
-        </select>
-
-        <select id="dj-goal" class="form-select" title="How many questions in a round">
-          <option value="10" data-i18n="dj_g10">Round of 10</option>
-          <option value="20" data-i18n="dj_g20">Round of 20</option>
-          <option value="50" data-i18n="dj_g50">Round of 50</option>
-          <option value="0" selected data-i18n="dj_g0">No limit</option>
-        </select>
+      <!-- What is set right now, the gear that changes it, and the score.
+           One line instead of five dropdowns and three boxes. -->
+      <div class="dj-bar">
+        <button type="button" id="dj-gear" class="dj-gear" aria-expanded="false">
+          <span>⚙</span><span data-i18n="dj_settings">Settings</span>
+        </button>
+        <div class="dj-now" id="dj-now"></div>
+        <div class="dj-stats">
+          <span><b id="dj-right">0</b><span data-i18n="dj_correct">correct</span></span>
+          <span><b id="dj-total">0</b><span data-i18n="dj_of">asked</span></span>
+          <span class="fire">🔥 <b id="dj-streak">0</b><span data-i18n="dj_streak">streak</span>
+            <span class="best">(<span data-i18n="dj_best">best</span> <span id="dj-best">0</span>)</span></span>
+          <button type="button" id="dj-reset" class="dj-reset-link" data-i18n="dj_reset">reset</button>
+        </div>
       </div>
 
-      <div class="practice-options">
-        <label class="opt-toggle">
-          <input type="checkbox" id="dj-hideform">
-          <span data-i18n="dj_hide">Don't tell me which form it is</span>
-        </label>
-        <label class="opt-toggle">
-          <input type="checkbox" id="dj-kanji" checked>
-          <span data-i18n="dj_kanjiq">Show the question in kanji where possible</span>
-        </label>
-        <span class="options-right">
-          <span id="dj-progress" class="session-progress">0 / 10</span>
-        </span>
+      <div class="dj-panel" id="dj-panel">
+        <div class="dj-row">
+          <label data-i18n="dj_lbl_form">Form</label>
+          <select id="dj-form" class="form-select">
+            <optgroup label="🎲 Random Modes" data-i18n-label="dj_og_random">
+              <option value="random" data-i18n="dj_f_random">Random (all forms)</option>
+              <option value="random-basic" data-i18n="dj_f_rbasic">Random (basic)</option>
+              <option value="random-intermediate" data-i18n="dj_f_rint">Random (intermediate)</option>
+              <option value="random-advanced" data-i18n="dj_f_radv">Random (advanced)</option>
+            </optgroup>
+            <optgroup label="📚 Basic Forms (N5)" data-i18n-label="dj_og_basic">
+              <option value="masu" data-i18n="dj_f_masu">Polite (ます)</option>
+              <option value="negative" data-i18n="dj_f_neg">Negative (ない)</option>
+              <option value="past" data-i18n="dj_f_past">Past (た)</option>
+              <option value="te" data-i18n="dj_f_te">Te-form (て)</option>
+              <option value="masen" data-i18n="dj_f_masen">Polite Negative (ません)</option>
+              <option value="mashita" data-i18n="dj_f_mashita">Polite Past (ました)</option>
+              <option value="nakatta" data-i18n="dj_f_nakatta">Negative Past (なかった)</option>
+            </optgroup>
+            <optgroup label="🎯 Intermediate Forms (N4)" data-i18n-label="dj_og_inter">
+              <option value="tai" data-i18n="dj_f_tai">Want to (たい)</option>
+              <option value="potential" data-i18n="dj_f_pot">Potential (られる/える)</option>
+              <option value="volitional" data-i18n="dj_f_vol">Volitional (よう/おう)</option>
+              <option value="ba" data-i18n="dj_f_ba">Conditional (ば)</option>
+              <option value="tara" data-i18n="dj_f_tara">Conditional (たら)</option>
+              <option value="imperative" data-i18n="dj_f_imp">Imperative (命令形)</option>
+            </optgroup>
+            <optgroup label="🔥 Advanced Forms (N3+)" data-i18n-label="dj_og_adv">
+              <option value="passive" data-i18n="dj_f_pass">Passive (られる/あれる)</option>
+              <option value="causative" data-i18n="dj_f_caus">Causative (させる/あせる)</option>
+              <option value="causative-passive" data-i18n="dj_f_cp">Causative-Passive (させられる)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="dj-row">
+          <label data-i18n="dj_lbl_type">Verb</label>
+          <div class="dj-chips" id="dj-type" data-value="all">
+            <button type="button" class="dj-chip on" data-v="all" data-i18n="dj_t_all">All</button>
+            <button type="button" class="dj-chip" data-v="godan">Godan</button>
+            <button type="button" class="dj-chip" data-v="ichidan">Ichidan</button>
+            <button type="button" class="dj-chip" data-v="suru">する</button>
+            <button type="button" class="dj-chip" data-v="irregular">来る</button>
+          </div>
+        </div>
+        <div class="dj-row">
+          <label data-i18n="dj_lbl_level">Level</label>
+          <div class="dj-chips" id="dj-level" data-value="all">
+            <button type="button" class="dj-chip on" data-v="all" data-i18n="dj_l_all2">All</button>
+            <button type="button" class="dj-chip" data-v="N5">N5</button>
+            <button type="button" class="dj-chip" data-v="N4">N4</button>
+            <button type="button" class="dj-chip" data-v="N3">N3</button>
+            <button type="button" class="dj-chip" data-v="N5,N4">N5+N4</button>
+            <button type="button" class="dj-chip" data-v="N4,N3">N4+N3</button>
+          </div>
+        </div>
+        <div class="dj-row">
+          <label data-i18n="dj_lbl_layers">Layers</label>
+          <div class="dj-chips" id="dj-depth" data-value="1">
+            <button type="button" class="dj-chip on" data-v="1" data-i18n="dj_d1b">One</button>
+            <button type="button" class="dj-chip" data-v="2" data-i18n="dj_d2b">Up to two</button>
+            <button type="button" class="dj-chip" data-v="3" data-i18n="dj_d3b">Up to three</button>
+            <button type="button" class="dj-chip" data-v="deep" data-i18n="dj_ddeepb">Stacked only</button>
+          </div>
+        </div>
+        <div class="dj-row">
+          <label data-i18n="dj_lbl_round">Round</label>
+          <div class="dj-chips" id="dj-goal" data-value="0">
+            <button type="button" class="dj-chip on" data-v="0" data-i18n="dj_g0b">No limit</button>
+            <button type="button" class="dj-chip" data-v="10">10</button>
+            <button type="button" class="dj-chip" data-v="20">20</button>
+            <button type="button" class="dj-chip" data-v="50">50</button>
+          </div>
+        </div>
+        <div class="dj-toggles">
+          <label><input type="checkbox" id="dj-hideform">
+            <span data-i18n="dj_hide">Don’t tell me which form it is</span></label>
+          <label><input type="checkbox" id="dj-kanji" checked>
+            <span data-i18n="dj_kanjiq">Show the question in kanji where possible</span></label>
+          <span class="options-right" style="margin-left:auto">
+            <span id="dj-progress" class="session-progress">0</span>
+          </span>
+        </div>
       </div>
 
       <div id="dj-summary" class="session-summary" style="display:none"></div>
@@ -286,8 +335,15 @@
 
     function save(){ try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e){} }
 
+    // chip groups keep their choice in data-value; the form list is still a
+    // <select> because twenty options with optgroups genuinely want one
+    function val(id) {
+      var el = $(id);
+      return el.tagName === 'SELECT' ? el.value : el.getAttribute('data-value');
+    }
+
     function pool() {
-      var ty = $('dj-type').value, lv = $('dj-level').value;
+      var ty = val('dj-type'), lv = val('dj-level');
       var allow = lv === 'all' ? null : lv.split(',');
       var out = [];
       Object.keys(verbs).forEach(function (type) {
@@ -301,7 +357,7 @@
     }
 
     function wantedForms() {
-      var f = $('dj-form').value;
+      var f = val('dj-form');
       if (f === 'random') return ALL_FORMS;
       if (f === 'random-basic') return GROUPS.basic;
       if (f === 'random-intermediate') return GROUPS.intermediate;
@@ -314,7 +370,7 @@
     function build() {
       var p = pool();
       if (!p.length) return null;
-      var depth = $('dj-depth').value;
+      var depth = val('dj-depth');
       var keys = wantedForms();
       var useKanji = $('dj-kanji').checked;
 
@@ -499,10 +555,11 @@
       $('dj-hint').style.display = 'none';
     }
 
-    function goal(){ return parseInt($('dj-goal').value, 10) || 0; }
+    function goal(){ return parseInt(val('dj-goal'), 10) || 0; }
     function progress() {
       var g = goal();
-      $('dj-progress').textContent = g ? inRound + ' / ' + g : inRound + '';
+      $('dj-progress').style.display = g ? '' : 'none';
+      if (g) $('dj-progress').textContent = inRound + ' / ' + g;
     }
     function roundCheck() {
       var g = goal();
@@ -542,14 +599,49 @@
       e.preventDefault();
       if (answered) next(); else check();
     });
-    ['dj-form', 'dj-type', 'dj-level', 'dj-depth', 'dj-kanji'].forEach(function (id) {
-      $(id).onchange = function () { $('dj-summary').style.display = 'none'; next(); };
+    // --- the settings bar ---
+    function labelOf(id) {
+      var v = val(id), el = $(id);
+      if (el.tagName === 'SELECT') {
+        var o = el.options[el.selectedIndex];
+        return o ? o.textContent.replace(/\s*\(.*\)\s*$/, '') : v;
+      }
+      var c = el.querySelector('.dj-chip[data-v="' + v + '"]');
+      return c ? c.textContent.trim() : v;
+    }
+    function summary() {
+      var bits = [labelOf('dj-form'), labelOf('dj-type'), labelOf('dj-level'), labelOf('dj-depth')];
+      var g = goal();
+      if (g) bits.push(g + ' ' + tr('dj_qs', 'questions'));
+      $('dj-now').innerHTML = bits.map(function (b, i) {
+        return (i ? '<span class="sep">·</span>' : '') + '<b>' + esc(b) + '</b>';
+      }).join(' ');
+    }
+    $('dj-gear').onclick = function () {
+      var open = $('dj-panel').classList.toggle('open');
+      this.classList.toggle('open', open);
+      this.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    ['dj-type', 'dj-level', 'dj-depth', 'dj-goal'].forEach(function (id) {
+      $(id).addEventListener('click', function (e) {
+        var c = e.target.closest('.dj-chip');
+        if (!c) return;
+        this.setAttribute('data-value', c.dataset.v);
+        Array.prototype.forEach.call(this.querySelectorAll('.dj-chip'), function (x) {
+          x.classList.toggle('on', x === c);
+        });
+        $('dj-summary').style.display = 'none';
+        summary();
+        if (id === 'dj-goal') { inRound = 0; progress(); } else next();
+      });
     });
-    $('dj-goal').onchange = function () { inRound = 0; $('dj-summary').style.display = 'none'; progress(); };
+    ['dj-form', 'dj-kanji'].forEach(function (id) {
+      $(id).onchange = function () { $('dj-summary').style.display = 'none'; summary(); next(); };
+    });
     $('dj-hideform').onchange = function () { if (cur) $('dj-badges').innerHTML = badges(); };
     $('dj-reset').onclick = function () {
       S = { right: 0, total: 0, streak: 0, best: 0 }; weak = []; inRound = 0;
-      save(); paint(); $('dj-summary').style.display = 'none'; next();
+      save(); paint(); summary(); $('dj-summary').style.display = 'none'; next();
     };
 
     window.KatsuPageContext = function () {
@@ -561,7 +653,7 @@
         'built up and how to recognise each layer when unwinding it.';
     };
 
-    paint(); next();
+    paint(); summary(); progress(); next();
   })();
   </script>
 
