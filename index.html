@@ -11,6 +11,80 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ---- Homepage additions ------------------------------------------------
+       All light on purpose: the hero above and the "Where to Start" band below
+       are both dark, so another dark block here would make the page navy top
+       to bottom. Colour comes from the numbers and the card edges instead. */
+    .hm-alt { background: var(--paper-warm); }
+    .hm-lede { max-width: 64ch; margin: .6rem auto 0; color: var(--text-light); line-height: 1.75; }
+
+    .hm-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 1.8rem 1rem; text-align: center; margin-top: 2.4rem; }
+    .hm-nums b { display: block; font-size: 2.1rem; font-weight: 700; line-height: 1.05; }
+    .hm-nums span { display: block; font-size: .84rem; color: var(--text-light);
+      line-height: 1.45; margin-top: .15rem; }
+    .hm-nums .c1 { color: var(--accent); }  .hm-nums .c2 { color: #4a90a4; }
+    .hm-nums .c3 { color: var(--sage); }    .hm-nums .c4 { color: #7a5ba4; }
+    .hm-nums .c5 { color: #a07d28; }        .hm-nums .c6 { color: var(--ink); }
+
+    /* real samples from the site, so the page shows rather than claims */
+    .hm-peek { display: grid; grid-template-columns: repeat(auto-fit, minmax(198px, 1fr));
+      gap: 1rem; margin-top: 2.2rem; }
+    .hm-pk { display: flex; flex-direction: column; background: #fff;
+      border: 1px solid rgba(0,0,0,.09); border-radius: 12px; overflow: hidden;
+      text-decoration: none; color: inherit; transition: border-color .12s, box-shadow .12s; }
+    .hm-pk:hover { border-color: var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .hm-pk-h { background: var(--paper-warm); border-bottom: 1px solid rgba(0,0,0,.09);
+      padding: .5rem .95rem; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-light); font-weight: 700; }
+    .hm-lv { font-style: normal; background: rgba(122,158,126,.2); color: #46663f;
+      border-radius: 3px; padding: .1rem .4rem; font-size: .6rem; }
+    .hm-pk-b { padding: 1rem 1.1rem; flex: 1; display: flex; flex-direction: column; }
+    .hm-pk .rd { font-size: .8rem; color: var(--accent); }
+    .hm-pk .big { font-size: 1.7rem; color: var(--ink); line-height: 1.3; }
+    .hm-pk .ask { color: var(--accent); font-weight: 600; font-size: .86rem; margin-top: .35rem; }
+    .hm-pk .ln { font-size: .85rem; color: var(--text-light); margin-top: .35rem; line-height: 1.6; }
+    .hm-pk .story { font-size: 1rem; line-height: 2.05; color: var(--ink); }
+    .hm-pk .story rt { font-size: .5em; color: var(--accent); }
+    .hm-pk .rows { display: block; margin-top: .5rem; font-size: .84rem; }
+    .hm-pk .rows > span { display: flex; justify-content: space-between; gap: .8rem; padding: .14rem 0; }
+    .hm-pk .rows i { font-style: normal; color: var(--text-light); font-size: .75rem; }
+    .hm-pk .rows em { font-style: normal; color: var(--ink); }
+    .hm-pk .rows em.ok { color: var(--sage); }
+    .hm-pk .go { margin-top: auto; padding-top: .7rem; border-top: 1px solid rgba(0,0,0,.09);
+      font-size: .78rem; color: var(--accent); font-weight: 600; }
+
+    /* the spine reuses .tool-card, so it only needs the 2x2 */
+    .tool-grid.hm-four { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+
+    .hm-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.6rem; margin-top: 2.2rem; }
+    .hm-flow > div { text-align: center; }
+    .hm-num { width: 38px; height: 38px; border-radius: 50%; background: var(--accent);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-weight: 700; margin: 0 auto .7rem; }
+    .hm-flow strong { display: block; font-size: 1rem; color: var(--ink); margin-bottom: .35rem; }
+    .hm-flow span { font-size: .86rem; color: var(--text-light); line-height: 1.6; }
+
+    .hm-whogrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 1rem; margin-top: 2.2rem; }
+    .hm-wc { background: #fff; border: 1px solid rgba(0,0,0,.09); border-radius: 12px;
+      padding: 1.25rem 1.35rem; }
+    .hm-wc .ic { font-size: 1.5rem; color: var(--accent); line-height: 1; }
+    .hm-wc strong { display: block; font-size: 1rem; color: var(--ink); margin: .4rem 0; }
+    .hm-wc span { font-size: .87rem; color: var(--text-light); line-height: 1.65; }
+    .hm-wc.is-no { background: var(--paper-warm); border-style: dashed; }
+    .hm-wc.is-no .ic, .hm-wc.is-no strong { color: var(--text-light); }
+
+    .hm-qa { max-width: 780px; margin: 2rem auto 0; }
+    .hm-qa > div { border-bottom: 1px solid rgba(0,0,0,.09); padding: 1rem 0; }
+    .hm-qa > div:last-child { border-bottom: 0; }
+    .hm-qa strong { display: block; font-size: .98rem; color: var(--ink); margin-bottom: .3rem; }
+    .hm-qa span { font-size: .89rem; color: var(--text-light); line-height: 1.7; }
+
+    @media (max-width: 900px) { .tool-grid.hm-four { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body data-page="home">
 
@@ -198,6 +272,85 @@
       </section>
 
       <!-- THE TOOLKIT -->
+
+      <!-- ============ What it is, and how much of it ============ -->
+      <section class="home-section hm-scale">
+        <div class="home-panel" style="text-align:center">
+          <span class="section-mark" aria-hidden="true">全部</span>
+          <h2 class="home-h2" data-i18n="hm_scale_t">Everything for Japanese, in one place</h2>
+          <p class="hm-lede" data-i18n="hm_scale_d">Most people learning Japanese end up with a dictionary in one tab, a kanji app on their phone, a conjugation chart screenshotted from somewhere, and a textbook they've stopped opening. This is all of it in one place — and it's free because there's nothing here to sell you.</p>
+          <div class="hm-nums">
+            <div><b class="c1">30,000</b><span data-i18n="hm_n_dict">words in the dictionary, searchable in English</span></div>
+            <div><b class="c2">2,300</b><span data-i18n="hm_n_kanji">kanji, the full Kodansha course</span></div>
+            <div><b class="c3">941</b><span data-i18n="hm_n_vocab">vocabulary cards across 19 topics</span></div>
+            <div><b class="c4">75</b><span data-i18n="hm_n_read">graded reading stories, N5 to N1</span></div>
+            <div><b class="c5">16</b><span data-i18n="hm_n_forms">verb forms drilled in both directions</span></div>
+            <div><b class="c6" data-i18n="hm_n_free_b">Free</b><span data-i18n="hm_n_free">no account, no ads, nothing to install</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Look inside — real content from the site ============ -->
+      <section class="home-section hm-alt">
+        <div class="home-panel">
+          <div style="text-align:center">
+            <span class="section-mark" aria-hidden="true">中身</span>
+            <h2 class="home-h2" data-i18n="hm_peek_t">Have a look inside</h2>
+            <p class="hm-lede" data-i18n="hm_peek_d">Rather than describe it — this is real content from the site, exactly as it appears on the page.</p>
+          </div>
+          <div class="hm-peek">
+            <a class="hm-pk" href="/dictionary">
+              <span class="hm-pk-h" data-i18n="hm_pk1_h">From the dictionary</span>
+              <span class="hm-pk-b">
+                <span class="rd jp">たべる</span>
+                <span class="big jp">食べる</span>
+                <span class="ln" data-i18n-html="hm_pk1_g">一 to eat<br>二 to live on; to subsist on (e.g. a salary)</span>
+                <span class="rows">
+                  <span><i data-i18n="hm_f_polite">Polite</i><em class="jp">食べます</em></span>
+                  <span><i data-i18n="hm_f_te">Te-form</i><em class="jp">食べて</em></span>
+                  <span><i data-i18n="hm_f_pot">Potential</i><em class="jp">食べられる</em></span>
+                  <span><i data-i18n="hm_f_caus">Causative</i><em class="jp">食べさせる</em></span>
+                </span>
+                <span class="go" data-i18n="hm_pk1_c">Search 30,000 words →</span>
+              </span>
+            </a>
+            <a class="hm-pk" href="/reading">
+              <span class="hm-pk-h"><span data-i18n="hm_pk2_h">From a reading story</span> <i class="hm-lv">N5</i></span>
+              <span class="hm-pk-b">
+                <span class="story jp"><ruby>今日<rt>きょう</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>です。わたしは<ruby>傘<rt>かさ</rt></ruby>を<ruby>持<rt>も</rt></ruby>って、<ruby>駅<rt>えき</rt></ruby>まで<ruby>歩<rt>ある</rt></ruby>きました。</span>
+                <span class="ln" data-i18n="hm_pk2_d">Read it in kana, with furigana, or kanji only. Listen to it read aloud, then answer the questions — marked instantly, with the exact sentence holding the answer.</span>
+                <span class="go" data-i18n="hm_pk2_c">75 stories, N5 to N1 →</span>
+              </span>
+            </a>
+            <a class="hm-pk" href="/conjugator">
+              <span class="hm-pk-h" data-i18n="hm_pk3_h">From the Conjugator</span>
+              <span class="hm-pk-b">
+                <span class="ln" style="margin-top:0" data-i18n="hm_pk3_v">Godan verb · N5</span>
+                <span class="big jp">話す</span>
+                <span class="ask" data-i18n="hm_pk3_q">Causative-passive, please</span>
+                <span class="rows"><span><i data-i18n="hm_pk3_a">your answer</i><em class="jp ok">話させられる ✓</em></span></span>
+                <span class="ln" data-i18n="hm_pk3_d">Sixteen forms, five verb types, a hint when you want one — and a report at the end of everything you got wrong.</span>
+                <span class="go" data-i18n="hm_pk3_c">Start drilling →</span>
+              </span>
+            </a>
+            <a class="hm-pk" href="/vocabulary">
+              <span class="hm-pk-h"><span data-i18n="hm_pk4_h">From the vocabulary deck</span> <i class="hm-lv">N5</i></span>
+              <span class="hm-pk-b">
+                <span class="rd jp">うみ</span>
+                <span class="big jp">海</span>
+                <span class="ln" style="color:var(--ink);font-weight:600" data-i18n="hm_pk4_e">Sea</span>
+                <span class="rows">
+                  <span><i data-i18n="hm_pk4_k1">category</i><em data-i18n="hm_pk4_v1">noun</em></span>
+                  <span><i data-i18n="hm_pk4_k2">topic</i><em data-i18n="hm_pk4_v2">general</em></span>
+                </span>
+                <span class="ln" data-i18n="hm_pk4_d">941 cards across 19 topics — food, time, the body, school, transport. Study Japanese→English or the other way round, show or hide the reading, and let the shuffle push the ones you haven't seen to the front.</span>
+                <span class="go" data-i18n="hm_pk4_c">941 words →</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <section class="features" id="toolkit" style="background: var(--paper-warm); padding: 4rem 2rem;">
         <div class="features-inner" style="max-width: 1200px; margin: 0 auto;">
           <div class="features-header" style="text-align: center; margin-bottom: 3rem;">
@@ -330,7 +483,7 @@
               <span class="tool-card__glyph" aria-hidden="true">語</span>
               <h3 class="tool-card__title" data-i18n-html="card_vocab_t"><span class="jp">単語</span> — Vocabulary</h3>
               <p class="tool-card__desc" data-i18n-html="card_vocab_d">
-                Practice <strong>496 essential Japanese words</strong> with intelligent flashcards.
+                Practice <strong>941 essential Japanese words</strong> with intelligent flashcards.
                 Study with <strong>hiragana, kanji, and katakana</strong> across <strong>8 different learning modes</strong>.
                 Toggle between Japanese→English or English→Japanese practice, show or hide readings, and see both scripts side-by-side.
                 <strong>Smart shuffle prioritises unseen cards</strong>, and progress tracking shows how many you've studied.
@@ -385,6 +538,70 @@
       </section>
 
       <!-- WHERE TO START — the arc, in order -->
+
+      <!-- ============ 活用 — what the site is named after ============ -->
+      <section class="home-section hm-spine">
+        <div class="home-panel">
+          <div style="text-align:center;margin-bottom:2.2rem">
+            <span class="section-mark" aria-hidden="true">活用</span>
+            <h2 class="home-h2" data-i18n="hm_sp_t">The part this site is named after</h2>
+            <p class="hm-lede" data-i18n="hm_sp_d">Katsuyō means conjugation. It is the thing that stops most learners, and it is where four of these tools point at the same problem from different sides.</p>
+          </div>
+          <div class="tool-grid hm-four">
+            <div class="tool-card is-reference" onclick="location.href='/forms'" role="link" tabindex="0">
+              <span class="tool-card__cat" data-i18n="hm_sp1_c">Step one · Learn it</span>
+              <span class="tool-card__glyph" aria-hidden="true">形</span>
+              <h3 class="tool-card__title" data-i18n-html="hm_sp1_t"><span class="jp">形</span> — Forms</h3>
+              <p class="tool-card__desc" data-i18n-html="hm_sp1_d">Twelve verb forms and the adjectives, each with the rule for every verb class, worked examples, and the exceptions spelled out rather than left for you to trip over. The reference you come back to.</p>
+              <div class="tool-card__cta" data-i18n="hm_sp1_a">Read the forms →</div>
+            </div>
+            <div class="tool-card is-practice" onclick="location.href='/conjugator'" role="link" tabindex="0">
+              <span class="tool-card__cat" data-i18n="hm_sp2_c">Step two · Build it</span>
+              <span class="tool-card__glyph" aria-hidden="true">活</span>
+              <h3 class="tool-card__title" data-i18n-html="hm_sp2_t"><span class="jp">活用</span> — Conjugator</h3>
+              <p class="tool-card__desc" data-i18n-html="hm_sp2_d">You are given a verb and a target form; you produce it. <strong>Sixteen forms</strong>, five verb types, hints in three escalating steps, and a report at the end of exactly which forms keep catching you.</p>
+              <div class="tool-card__cta" data-i18n="hm_sp2_a">Start drilling →</div>
+            </div>
+            <div class="tool-card is-practice" onclick="location.href='/deconjugator'" role="link" tabindex="0">
+              <span class="tool-card__cat" data-i18n="hm_sp3_c">Step three · Undo it</span>
+              <span class="tool-card__glyph" aria-hidden="true">逆</span>
+              <h3 class="tool-card__title" data-i18n-html="hm_sp3_t"><span class="jp">逆引き</span> — Rewind</h3>
+              <p class="tool-card__desc" data-i18n-html="hm_sp3_d">Every conjugation drill goes one direction. This one goes the other: you are shown <strong>食べさせられた</strong> and you work out where it came from — which is what reading actually asks of you.</p>
+              <div class="tool-card__cta" data-i18n="hm_sp3_a">Work one backwards →</div>
+            </div>
+            <div class="tool-card is-reference" onclick="location.href='/dictionary'" role="link" tabindex="0">
+              <span class="tool-card__cat" data-i18n="hm_sp4_c">In the wild</span>
+              <span class="tool-card__glyph" aria-hidden="true">辞</span>
+              <h3 class="tool-card__title" data-i18n-html="hm_sp4_t"><span class="jp">辞書</span> — Dictionary</h3>
+              <p class="tool-card__desc" data-i18n-html="hm_sp4_d">When you meet a form you don't recognise in real Japanese, paste it in. <strong>食べさせられなかった</strong> walks back to 食べる, naming every layer it removes on the way.</p>
+              <div class="tool-card__cta" data-i18n="hm_sp4_a">Look something up →</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ how the tools hand you between them ============ -->
+      <section class="home-section hm-alt">
+        <div class="home-panel">
+          <div style="text-align:center">
+            <span class="section-mark" aria-hidden="true">流れ</span>
+            <h2 class="home-h2" data-i18n="hm_fl_t">How the pieces fit together</h2>
+            <p class="hm-lede" data-i18n="hm_fl_d">The tools aren't separate apps that happen to share a nav bar. They pass you between them.</p>
+          </div>
+          <div class="hm-flow">
+            <div><span class="hm-num">1</span>
+              <strong data-i18n="hm_fl1_t">You hit a word you don't know</strong>
+              <span data-i18n="hm_fl1_d">Reading a story, you meet 歩きました. Paste it into the dictionary and it walks back to 歩く, naming the polite past along the way.</span></div>
+            <div><span class="hm-num">2</span>
+              <strong data-i18n="hm_fl2_t">The entry shows you the pattern</strong>
+              <span data-i18n="hm_fl2_d">All sixteen forms are right there on the same screen, so you see 歩いて, 歩かない and 歩ける without going anywhere.</span></div>
+            <div><span class="hm-num">3</span>
+              <strong data-i18n="hm_fl3_t">Then you drill it until it sticks</strong>
+              <span data-i18n="hm_fl3_d">The Conjugator builds forms; Rewind takes them apart. Both remember what you got wrong and bring it back.</span></div>
+          </div>
+        </div>
+      </section>
+
       <section class="home-section is-band">
         <div class="home-panel">
           <div style="text-align: center;">
@@ -504,6 +721,52 @@
 
       <!-- CLOSING — the creator note, which used to be buried under nine
            buttons. Every one of those links is in the grid above. -->
+
+      <!-- ============ who it's for, and the honest answers ============ -->
+      <section class="home-section hm-who">
+        <div class="home-panel">
+          <div style="text-align:center">
+            <span class="section-mark" aria-hidden="true">誰に</span>
+            <h2 class="home-h2" data-i18n="hm_wh_t">Who it's for</h2>
+          </div>
+          <div class="hm-whogrid">
+            <div class="hm-wc"><span class="ic jp">初</span>
+              <strong data-i18n="hm_wh1_t">Starting from zero</strong>
+              <span data-i18n="hm_wh1_d">You don't know a single kana yet. Start at the chart, learn both alphabets in a fortnight, and everything after that already makes sense.</span></div>
+            <div class="hm-wc"><span class="ic jp">活</span>
+              <strong data-i18n="hm_wh2_t">Stuck on conjugation</strong>
+              <span data-i18n="hm_wh2_d">You can read, but 食べさせられる still stops you dead. This is the part the site was built for — forwards, backwards, every table explained.</span></div>
+            <div class="hm-wc"><span class="ic jp">試</span>
+              <strong data-i18n="hm_wh3_t">Studying for the JLPT</strong>
+              <span data-i18n="hm_wh3_d">Vocabulary, kanji, verbs and stories are all tagged N5 to N1, so you can work at your level and no higher.</span></div>
+            <div class="hm-wc is-no"><span class="ic jp">否</span>
+              <strong data-i18n="hm_wh4_t">What this isn't</strong>
+              <span data-i18n="hm_wh4_d">Not a textbook replacement and not a substitute for a teacher. No curriculum to complete, nothing keeping score of your streak.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="home-section hm-alt">
+        <div class="home-panel">
+          <div style="text-align:center">
+            <span class="section-mark" aria-hidden="true">質問</span>
+            <h2 class="home-h2" data-i18n="hm_qa_t">Before you ask</h2>
+          </div>
+          <div class="hm-qa">
+            <div><strong data-i18n="hm_q1_t">Is it really free?</strong>
+              <span data-i18n="hm_q1_d">Yes. No account, no trial, no paid tier. There's a tip jar if you ever feel like it, and that's the whole business model.</span></div>
+            <div><strong data-i18n="hm_q2_t">Where does my progress live?</strong>
+              <span data-i18n-html="hm_q2_d"><strong>In your browser, and nowhere else.</strong> Nothing is uploaded and there's nothing to log into — which also means clearing your browser data clears your progress, and your phone won't know what your laptop has done.</span></div>
+            <div><strong data-i18n="hm_q3_t">Where does the dictionary come from?</strong>
+              <span data-i18n-html="hm_q3_d">It's built from <strong>JMdict</strong>, the same open dataset Jisho uses, under a Creative Commons licence. The kanji follow the Kodansha Kanji Learner's Course ordering. The conjugation engine, the deconjugator and every explanation on the site are my own.</span></div>
+            <div><strong data-i18n="hm_q4_t">Does it work on a phone?</strong>
+              <span data-i18n="hm_q4_d">Every page is built for it. There's no app to install — it's a website, which is the point.</span></div>
+            <div><strong data-i18n="hm_q5_t">Do I have to study in English?</strong>
+              <span data-i18n-html="hm_q5_d">No. The whole interface is in <strong>English, German, French and Chinese</strong>, properly translated rather than machine-run.</span></div>
+          </div>
+        </div>
+      </section>
+
       <section class="home-close">
         <div class="home-close-inner">
           <span class="section-mark" aria-hidden="true">始</span>

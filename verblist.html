@@ -48,6 +48,9 @@
     .vl-chip.n5.on { background: var(--sage); border-color: var(--sage); }
     .vl-chip.n4.on { background: #a07d28; border-color: #a07d28; }
     .vl-chip.n3.on { background: var(--accent); border-color: var(--accent); }
+    .vl-note { max-width: 74ch; margin: -.4rem auto 1.5rem; text-align: center;
+      font-size: .86rem; color: var(--text-light); line-height: 1.65; }
+    .vl-note strong { color: var(--ink); }
     .vl-count { text-align: center; font-size: .76rem; letter-spacing: .1em; text-transform: uppercase;
       color: var(--text-light); margin: 1rem 0 1.2rem; }
 
@@ -156,6 +159,7 @@
       </div>
 
       <div class="vl-tiles" id="vl-tiles"></div>
+      <p class="vl-note">Japanese has exactly <strong>two</strong> irregular verbs, <span class="jp">する</span> and <span class="jp">来る</span>, and they have a group to themselves. The <span class="jp">する</span> group below holds the compounds — <span class="jp">勉強する</span>, <span class="jp">電話する</span> — which are する with a noun in front and conjugate exactly like it.</p>
 
       <div class="vl-tools">
         <input id="verb-search" class="vl-search" type="search" autocomplete="off"
@@ -240,7 +244,7 @@
       { k: 'godan',     n: 'Godan Verbs',   j: '五段' },
       { k: 'ichidan',   n: 'Ichidan Verbs', j: '一段' },
       { k: 'suru',      n: 'する Verbs',  j: 'する' },
-      { k: 'irregular', n: 'Irregular',     j: '不規則' }
+      { k: 'irregular', n: 'Irregular Verbs', j: '不規則' }
     ];
     // A godan verb's last kana IS the rule, so the groups are the patterns.
     var END = {
@@ -271,6 +275,9 @@
     // swapping the kana head back for the kanji head restores 開きます from あきます.
     function reKanji(kanji, kana, out) {
       if (!out || kanji === kana) return out;
+      // 来る's readings all shift (きます・こない・きて), so no shared tail to
+      // splice; the kanji simply replaces the first kana, as the Forms page writes it.
+      if (kanji === '来る') return '来' + out.slice(1);
       var n = 0;
       while (n < kanji.length && n < kana.length &&
              kanji[kanji.length - 1 - n] === kana[kana.length - 1 - n]) n++;
@@ -307,7 +314,7 @@
                 '<span>ない <b>〜' + rule[1] + '</b></span>' +
                 '<span>可能 <b>〜' + rule[2] + '</b></span></div>' : '') +
         '</div><div class="vl-grid">' +
-        list.map(function (v) { return card(v, type); }).join('') + '</div></div>';
+        list.map(function (v) { return card(v, v.type || type); }).join('') + '</div></div>';
     }
 
     var html = '';
@@ -318,11 +325,11 @@
     });
     var rest = [
       ['ichidan',  '〜る', 'Ichidan · drop る', ['て','ない','られる']],
-      ['suru',     'する',  'する verbs',        ['して','しない','できる']],
-      ['irregular','来る',  'the one irregular',         ['きて','こない','こられる']]
+      ['suru',     'する',  'compounds built on する', ['して','しない','できる']],
+      ['irregular','する・来る', 'the only two — each its own pattern', null]
     ];
     rest.forEach(function (t) {
-      var l = verbs[t[0]] || [];
+      var l = (verbs[t[0]] || []).slice();
       if (l.length) html += group(t[1], t[2] + ' · ' + l.length, t[3], l, t[0]);
     });
     $('vl-body').innerHTML = html;

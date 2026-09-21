@@ -109,6 +109,7 @@
         { kanji: '忘れる', hiragana: 'わすれる', romaji: 'wasureru', meaning: 'to forget', jlpt: 'N5' }
       ],
       irregular: [
+        { kanji: 'する', hiragana: 'する', romaji: 'suru', meaning: 'to do', jlpt: 'N5', type: 'suru' },
         { kanji: '来る', hiragana: 'くる', romaji: 'kuru', meaning: 'to come', jlpt: 'N5' }
       ],
       suru: [
@@ -131,7 +132,6 @@
         { kanji: '紹介する', hiragana: 'しょうかいする', romaji: 'shoukai suru', meaning: 'to introduce', jlpt: 'N4' },
         { kanji: '相談する', hiragana: 'そうだんする', romaji: 'soudan suru', meaning: 'to consult', jlpt: 'N4' },
         { kanji: '掃除する', hiragana: 'そうじする', romaji: 'souji suru', meaning: 'to clean', jlpt: 'N5' },
-        { kanji: 'する', hiragana: 'する', romaji: 'suru', meaning: 'to do', jlpt: 'N5' },
         { kanji: '運動する', hiragana: 'うんどうする', romaji: 'undou suru', meaning: 'to exercise', jlpt: 'N4' },
         { kanji: '運転する', hiragana: 'うんてんする', romaji: 'unten suru', meaning: 'to drive', jlpt: 'N4' },
         { kanji: '約束する', hiragana: 'やくそくする', romaji: 'yakusoku suru', meaning: 'to promise', jlpt: 'N4' },
@@ -3448,8 +3448,11 @@ function downloadPracticeReport() {
       // Pick a random prompt template
       const template = form.templates[Math.floor(Math.random() * form.templates.length)];
       
-      // Add to recently used list
-      const verbWithType = { ...verb, type };
+      // A verb may declare its own type and override the list it sits in.
+      // する is listed with 来る because the two of them are Japanese's only
+      // irregular verbs, but it conjugates on the する pattern, not 来る's.
+      const vType = verb.type || type;
+      const verbWithType = { ...verb, type: vType };
       recentlyUsedVerbs.push(verbWithType);
       
       // Keep only the last MAX_RECENT_VERBS
@@ -3457,7 +3460,7 @@ function downloadPracticeReport() {
         recentlyUsedVerbs.shift();
       }
       
-      return { ...verb, type, form, template };
+      return { ...verb, type: vType, form, template };
     }
 
     function conjugateVerb(verb, form) {
