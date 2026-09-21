@@ -403,6 +403,7 @@
         try { word = conjugateVerb(Object.assign({}, base, { type: choice.type }), f0); } catch (e) { word = ''; }
         if (!word) continue;
         layers.push(f0.name);
+        var mids = [word];          // the form after each layer, for the hints
 
         // each extra layer treats the previous result as an ichidan verb
         for (var n = 1; n < want && word; n++) {
@@ -411,7 +412,7 @@
           var nxt = '';
           try { nxt = conjugateVerb({ kanji: word, hiragana: word, meaning: '', jlpt: base.jlpt, type: 'ichidan' }, fn); } catch (e) { nxt = ''; }
           if (!nxt || nxt === word) break;
-          word = nxt; layers.push(fn.name);
+          word = nxt; layers.push(fn.name); mids.push(word);
         }
 
         if (!word || word === base.kanji || word === base.hiragana) continue;
@@ -424,7 +425,7 @@
         if (!solvable) continue;
 
         return { verb: choice.v, type: choice.type, word: word, layers: layers,
-                 formKey: k0, derivation: d, useKanji: useKanji };
+                 mids: mids, formKey: k0, derivation: d, useKanji: useKanji };
       }
       return null;
     }
@@ -449,6 +450,7 @@
       $('dj-feedback').style.display = 'none';
       $('dj-hintbox').style.display = 'none';
       $('dj-hint').style.display = 'inline-block';
+      hintLevel = 0;
       $('dj-input').value = '';
       $('dj-check').style.display = 'block';
       $('dj-skip').style.display = 'block';
@@ -540,18 +542,90 @@
       save(); paint(); reveal(false, ''); roundCheck();
     }
 
-    function hint() {
+    // Three steps, the way the Conjugator does it. The old single hint named
+    // the verb class outright, which is most of the work — that belongs at the
+    // bottom of the ladder, not the top.
+    var hintLevel = 0;
+    var LEVEL_NAME = ['', 'dj_h_l1', 'dj_h_l2', 'dj_h_l3'];
+
+    // How far the ladder goes depends on how much there is to give away. A
+    // single-layer question with the form badge showing has already told you
+    // the form, so naming it again would be a wasted rung: that question gets
+    // two levels, a stacked one gets three.
+    function maxHint() {
+      var stacked = cur.layers.length > 1;
+      var formShown = $('dj-hideform') && !$('dj-hideform').checked;
+      if (stacked) return 3;
+      return formShown ? 2 : 3;
+    }
+
+    function hintBody(level) {
       var names = { godan: 'Godan', ichidan: 'Ichidan', suru: 'する', irregular: '来る' };
-      $('dj-hintbox').style.display = 'block';
+      var outer = cur.layers[cur.layers.length - 1];
+      var n = cur.layers.length;
+
+      if (level === 1) {
+        // Orientation only: where to look, and how far you have to go.
+        var tail = cur.word.slice(-3);
+        return tr('dj_h1a', 'Work backwards from the end.') + ' <b class="jp">…' + esc(tail) +
+          '</b> ' + tr('dj_h1b', 'is the outermost layer — it tells you nothing about the ' +
+          'dictionary form yet, so take it off first.') +
+          (n > 1 ? ' ' + tr('dj_h1c', 'There are {n} layers to peel.').replace('{n}', n) : '');
+      }
+
+      if (level === 2 && level < maxHint()) {
+        // Name the top layer — unless the badge already did, in which case
+        // show what is left once it comes off, which the badge does not.
+        var formShown = $('dj-hideform') && !$('dj-hideform').checked;
+        if (formShown && n > 1 && cur.mids) {
+          return tr('dj_h2e', 'Take the outermost layer off and you are left with') +
+            ' <b class="jp">' + esc(cur.mids[n - 2]) + '</b>. ' +
+            tr('dj_h2f', 'That is still a conjugated form — keep going.');
+        }
+        return tr('dj_h2a', 'The outermost layer is the') + ' <b>' + esc(outer) + '</b> ' +
+          tr('dj_h2b', 'form.') + ' ' +
+          (n > 1
+            ? tr('dj_h2c', 'Strip that off and you are still not done — what is underneath is ' +
+                 'itself a conjugated form.')
+            : tr('dj_h2d', 'Undo it and you have the dictionary form.'));
+      }
+
+      // Level 3: the whole ladder with the last rung left blank, plus the class.
+      var chain = '<span class="node jp">' + esc(cur.word) + '</span>';
+      for (var i = cur.layers.length - 1; i >= 0; i--) {
+        chain += '<span class="arw">←</span><span class="via">' + esc(cur.layers[i]) + '</span>';
+        var prev = (i > 0 && cur.mids) ? cur.mids[i - 1] : null;
+        chain += '<span class="arw">←</span>' + (prev
+          ? '<span class="node jp">' + esc(prev) + '</span>'
+          : '<span class="node end">?</span>');
+      }
+      return '<div class="dj-path" style="margin-bottom:.6rem">' + chain + '</div>' +
+        tr('dj_h3a', 'Verb class') + ': <b>' + esc(names[cur.type] || cur.type) + '</b> (' +
+        esc(cur.verb.jlpt) + ').';
+    }
+
+    function paintHint() {
+      var more = hintLevel < maxHint()
+        ? '<button type="button" id="dj-hint-more" class="hint-btn" style="margin-top:.7rem">' +
+          tr('dj_h_more', '💡 Need more help?') + ' (' + tr('dj_h_level', 'Level') + ' ' +
+          (hintLevel + 1) + ')</button>'
+        : '<div class="dj-meta" style="margin-top:.7rem">' +
+          tr('dj_h_max', 'That is as far as I will go — the last step is yours.') + '</div>';
       $('dj-hintbox').innerHTML =
-        '<div class="hint-label">💡 ' + tr('dj_hint', 'Hint') + '</div>' +
-        '<div>' + tr('dj_hint_type', 'The answer is a') + ' <b>' +
-        esc(names[cur.type] || cur.type) + '</b> ' + tr('dj_hint_verb', 'verb') +
-        ' (' + esc(cur.verb.jlpt) + ')' +
-        (cur.layers.length > 1
-          ? ', ' + tr('dj_hint_layers', 'and the form is stacked') + ' ' + cur.layers.length +
-            ' ' + tr('dj_layers', 'layers') + ' ' + tr('dj_hint_deep', 'deep')
-          : '') + '.</div>';
+        '<div class="hint-label">💡 ' + tr('dj_hint', 'Hint') + ' · ' +
+        tr('dj_h_level', 'Level') + ' ' + hintLevel + ' — ' +
+        tr(LEVEL_NAME[hintLevel === maxHint() ? 3 : hintLevel],
+           ['', 'Where to start', 'The outer layer', 'The whole ladder'][hintLevel === maxHint() ? 3 : hintLevel]) +
+        '</div><div>' + hintBody(hintLevel) + '</div>' + more;
+      var b = $('dj-hint-more');
+      if (b) b.onclick = function () { hintLevel++; paintHint(); };
+    }
+
+    function hint() {
+      if (!cur) return;
+      hintLevel = 1;
+      $('dj-hintbox').style.display = 'block';
+      paintHint();
       $('dj-hint').style.display = 'none';
     }
 

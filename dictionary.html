@@ -90,6 +90,10 @@
     .dc-num { font-style: normal; color: #b9a17a; font-family: 'Noto Serif JP', serif;
       font-weight: 600; font-size: 1.02rem; min-width: 1.2rem; line-height: 1.5; flex: 0 0 auto; }
     .dc-gloss { flex: 1; }
+    .dc-reg { font-size: .68rem; letter-spacing: .04em; text-transform: uppercase;
+      font-weight: 700; color: #a5603f; background: rgba(196,92,74,.1);
+      border: 1px solid rgba(196,92,74,.25); border-radius: 3px;
+      padding: .02rem .35rem; margin-right: .4rem; vertical-align: .08em; white-space: nowrap; }
     .dc-links { margin-top: .9rem; display: flex; gap: 1.1rem; font-size: .82rem; flex-wrap: wrap; }
     .dc-links button { background: none; border: 0; padding: 0; font-family: inherit;
       font-size: inherit; color: var(--accent); cursor: pointer; }
@@ -393,6 +397,7 @@
         hasKanji: !!ks.length, senses: senses, rank: rank, labels: labels,
         verbClass: vc, type: vc ? VERB_TYPE[vc] : null,
         adjI: labels.indexOf('い-adj') >= 0, adjNa: labels.indexOf('な-adj') >= 0,
+        reg: ((senses[0] && senses[0][2]) || []).map(function (x) { return DATA.m[x]; }),
         gloss: senses.length ? senses[0][1][0] : ''
       };
     }
@@ -413,8 +418,14 @@
       if (tags) h += '<div class="dc-tags">' + tags + '</div>';
 
       d.senses.forEach(function (s, k) {
+        // Register belongs on the sense, not the word: 食う is blunt in sense 1
+        // and neutral in the rest. "to eat" with no warning that it is rough
+        // and masculine is the kind of thing that gets a learner in trouble.
+        var mk = (s[2] || []).map(function (x) {
+          return '<span class="dc-reg">' + esc(DATA.m[x]) + '</span>';
+        }).join('');
         h += '<div class="dc-sense"><span class="dc-num jp">' + (NUM[k] || (k + 1)) + '</span>' +
-             '<span class="dc-gloss">' + esc(s[1].join('; ')) + '</span></div>';
+             '<span class="dc-gloss">' + mk + esc(s[1].join('; ')) + '</span></div>';
       });
 
       h += '<div class="dc-links">' +
@@ -441,7 +452,7 @@
 
       var h = '<h2 class="jp">' + esc(d.head) + '</h2>' +
         (d.hasKanji ? '<div class="rd jp">' + esc(d.kana) + '</div>' : '') +
-        '<div class="cls">' + esc(d.labels.join(' · ')) + '</div>';
+        '<div class="cls">' + esc(d.labels.concat(d.reg).join(' · ')) + '</div>';
 
       if (rows.length) {
         h += '<div class="lbl">' + esc(label) + '</div><div class="dc-grid">';
