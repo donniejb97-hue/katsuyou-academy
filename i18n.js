@@ -4,7 +4,7 @@
 // ============================================================
 var I18N = {
   en: {
-    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_group_practice:'Practice', nav_counters:'Counters', nav_dictionary:'Dictionary', nav_new:'New', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
+    nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Vocabulary', nav_group_practice:'Practice', nav_counters:'Counters', nav_dictionary:'Dictionary', nav_deconjugator:'Reverse Drill', nav_new:'New', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
     nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk', nav_reading:'Reading',
     nav_dates:'Dates', nav_vocab:'Vocabulary',
     nav_vocab_quiz:'Vocab Quiz',
@@ -416,7 +416,7 @@ var I18N = {
     ],
   },
   de: {
-    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_group_practice:'Üben', nav_counters:'Zählwörter', nav_dictionary:'Wörterbuch', nav_new:'Neu', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
+    nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Vokabeln', nav_group_practice:'Üben', nav_counters:'Zählwörter', nav_dictionary:'Wörterbuch', nav_deconjugator:'Rückwärts', nav_new:'Neu', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
     nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch', nav_reading:'Lesen',
     nav_dates:'Datum', nav_vocab:'Vokabeln',
     nav_vocab_quiz:'Vokabelquiz',
@@ -819,7 +819,7 @@ var I18N = {
     ],
   },
   fr: {
-    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_group_practice:'Pratique', nav_counters:'Compteurs', nav_dictionary:'Dictionnaire', nav_new:'Nouveau', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
+    nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Apprendre', nav_group_vocab:'Vocabulaire', nav_group_practice:'Pratique', nav_counters:'Compteurs', nav_dictionary:'Dictionnaire', nav_deconjugator:'Inverse', nav_new:'Nouveau', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
     nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Parler', nav_reading:'Lecture',
     nav_dates:'Dates', nav_vocab:'Vocabulaire',
     nav_vocab_quiz:'Quiz de vocabulaire',
@@ -1222,7 +1222,7 @@ var I18N = {
     ],
   },
   zh: {
-    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_counters:'量词', nav_dictionary:'词典', nav_new:'新', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
+    nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_counters:'量词', nav_dictionary:'词典', nav_deconjugator:'逆向练习', nav_new:'新', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
     nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话', nav_reading:'阅读',
     nav_dates:'日期', nav_vocab:'词汇',
     nav_vocab_quiz:'词汇测验',
@@ -1992,7 +1992,7 @@ function setLang(lang) {
     // the last item was being clipped; these four collapse to one and leave
     // headroom for the longer German and French labels.
     { key: 'nav_group_practice', fallback: 'Practice',
-      pages: ['conjugator', 'kana-drill', 'kanji-drill', 'datedojo'] }
+      pages: ['conjugator', 'deconjugator', 'kana-drill', 'kanji-drill', 'datedojo'] }
   ];
 
   function buildNavGroups() {
@@ -2097,7 +2097,8 @@ function setLang(lang) {
   var EXTRA_LINKS = [
     { page: 'reading',  key: 'nav_reading',  href: '/reading',  after: 'talk' },
     { page: 'counters', key: 'nav_counters', href: '/counters', after: 'learn' },
-    { page: 'dictionary', key: 'nav_dictionary', href: '/dictionary', after: 'counters', isNew: true }
+    { page: 'dictionary', key: 'nav_dictionary', href: '/dictionary', after: 'counters', isNew: true },
+    { page: 'deconjugator', key: 'nav_deconjugator', href: '/deconjugator', after: 'conjugator', isNew: true }
   ];
 
   function addExtraLinks() {
