@@ -76,27 +76,9 @@ def short(p):
     for pat, s in SHORT:
         if re.match(pat, p): return s
     return p
-# The labels the site shows. JMdict's own abbreviations (v5, vt, adj-no) are
-# written for dictionary editors; these use the words the Forms and Learn pages
-# already teach. Interned in one table, so the longer text costs nothing.
-LABELS = {
-  'v5':'Godan','v1':'Ichidan','vs':'する verb','vk':'来る verb','vs-n':'noun + する',
-  'verb unspecified':'verb','su verb - precursor to the modern suru':'archaic す verb',
-  'irregular nu verb':'irregular ぬ verb',
-  'irregular ru verb, plain form ends with -ri':'irregular る verb',
-  'vt':'transitive','vi':'intransitive',
-  'adj-i':'い-adj','adj-na':'な-adj','adj-no':'の-adj','adj-pn':'prenominal',
-  "'taru' adjective":'たる-adj','noun or verb acting prenominally':'prenominal',
-  'n':'noun','n-suf':'noun suffix','n-pref':'noun prefix','adv':'adverb',
-  'exp':'expression','prt':'particle','suf':'suffix','pref':'prefix',
-  'int':'interjection','pn':'pronoun','ctr':'counter','conj':'conjunction',
-  'aux':'auxiliary','num':'number','copula':'copula'
-}
-
 POS, pos_ix = [], {}
 def pid(p):
     s = short(p)
-    s = LABELS.get(s, s)
     if not s: return None
     if s not in pos_ix: pos_ix[s] = len(POS); POS.append(s)
     return pos_ix[s]
