@@ -11,6 +11,66 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ---- Forms page layout ------------------------------------------------
+       The old page put thirteen tabs in one wrapping strip, which on a narrow
+       window became three rows of near-identical buttons with no sense of
+       which mattered. The rail groups them the way the page already thought
+       about them — Basic, Essential, Advanced, Reference — and stays put while
+       you read, so moving between forms no longer means scrolling back up. */
+    .forms-page { max-width: 1240px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .fm-head { max-width: 62ch; margin-bottom: 2rem; }
+    .fm-desc { color: var(--text-light); line-height: 1.7; }
+
+    .fm-cols { display: grid; grid-template-columns: 250px minmax(0, 1fr);
+      gap: 2.25rem; align-items: start; }
+
+    /* the site nav is fixed and 75px tall, so the rail has to clear it */
+    .fm-rail { position: sticky; top: calc(75px + 1rem);
+      max-height: calc(100vh - 75px - 2rem); overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin; scrollbar-color: rgba(0,0,0,.18) transparent; }
+    .fm-rail::-webkit-scrollbar { width: 8px; }
+    .fm-rail::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 4px; }
+
+    .fm-group { margin-bottom: 1.5rem; }
+    .fm-group-h { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase;
+      font-weight: 700; color: var(--accent); }
+    .fm-group-b { font-size: .74rem; color: var(--text-light); line-height: 1.45;
+      margin: .15rem 0 .6rem; }
+
+    /* showTab() keys off .tab[data-tab], so the rail items keep that class */
+    .fm-rail .tab { display: block; width: 100%; text-align: left;
+      background: none; border: 0; border-left: 2px solid rgba(0,0,0,.09);
+      border-radius: 0; padding: .45rem .85rem; margin: 0; cursor: pointer;
+      font-family: inherit; min-width: 0; transition: border-color .12s, background .12s; }
+    .fm-rail .tab:hover { background: var(--paper-warm); }
+    .fm-rail .tab .jp { display: block; font-family: 'Noto Serif JP', serif;
+      font-size: 1rem; color: var(--ink); line-height: 1.3; }
+    .fm-rail .tab .en { display: block; font-size: .74rem; color: var(--text-light); }
+    .fm-rail .tab.active { background: var(--paper-warm); border-left-color: var(--accent); }
+    .fm-rail .tab.active .jp { color: var(--accent); font-weight: 600; }
+    .fm-rail .tab.active::after { content: none; }
+
+    .fm-body .form-card { background: #fff; border: 1px solid rgba(0,0,0,.08);
+      border-radius: 10px; padding: 2.25rem 2.5rem; }
+
+    @media (max-width: 900px) {
+      .fm-cols { grid-template-columns: 1fr; gap: 1.25rem; }
+      .fm-rail { position: static; max-height: none; overflow: visible;
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: .75rem 1.25rem; }
+      .fm-group { margin-bottom: .5rem; }
+      .fm-body .form-card { padding: 1.5rem 1.25rem; }
+      .forms-page { padding: 1.5rem 1rem 2rem; }
+    }
+  </style>
+  <style>
+    /* 来る was missing from every formation table on this page. Its rows are
+       tinted so they read as an addition rather than something you overlooked. */
+    .conj-table tr.kuru-row td { background: rgba(196,92,74,.05); }
+    .conj-table tr.kuru-row td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  </style>
 </head>
 <body data-page="forms">
 
@@ -55,57 +115,53 @@
 
   <div id="page-forms" class="page active">
     <div class="forms-page">
-      <div class="page-header">
+
+      <div class="fm-head">
         <div class="page-tag" data-i18n="forms_tag">Quick Reference</div>
         <h1 class="page-title" data-i18n="forms_title">Verb Forms &amp; Adjectives</h1>
-        <p class="page-desc">
-          Comprehensive conjugation reference covering 16 verb forms from beginner through advanced levels. 
-          Essential patterns you'll use in everyday Japanese conversation, plus advanced forms for nuanced expression.
+        <p class="fm-desc">
+          Twelve verb forms and the adjectives &mdash; from the ones you need on day
+          one to the ones that carry nuance. Pick a form on the left; everything this
+          site knows about it is on the right.
         </p>
       </div>
 
-      <!-- Difficulty Legend -->
-      <div style="display: flex; justify-content: center; margin-bottom: 2rem;">
-        <div style="display: inline-flex; gap: 2rem; background: var(--paper-warm); padding: 0.75rem 2rem; border-radius: 50px; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 1.1rem;">📚</span>
-            <span style="font-size: 0.85rem; font-weight: 500; color: var(--text);">Basic</span>
+      <div class="fm-cols">
+        <aside class="fm-rail">
+          <div class="fm-group">
+            <div class="fm-group-h">Basic</div>
+            <div class="fm-group-b">The five you cannot do without</div>
+            <button class="tab active" data-tab="masu" onclick="showTab('masu')"><span class="jp">ます形</span><span class="en">Polite</span></button>
+            <button class="tab" data-tab="te" onclick="showTab('te')"><span class="jp">て形</span><span class="en">Connecting</span></button>
+            <button class="tab" data-tab="dict" onclick="showTab('dict')"><span class="jp">辞書形</span><span class="en">Dictionary</span></button>
+            <button class="tab" data-tab="ta" onclick="showTab('ta')"><span class="jp">た形</span><span class="en">Past</span></button>
+            <button class="tab" data-tab="negative" onclick="showTab('negative')"><span class="jp">ない形</span><span class="en">Negative</span></button>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 1.1rem;">🎯</span>
-            <span style="font-size: 0.85rem; font-weight: 500; color: var(--text);">Essential</span>
+          <div class="fm-group">
+            <div class="fm-group-h">Essential</div>
+            <div class="fm-group-b">What fluency actually needs</div>
+            <button class="tab" data-tab="tai" onclick="showTab('tai')"><span class="jp">たい形</span><span class="en">Want to</span></button>
+            <button class="tab" data-tab="potential" onclick="showTab('potential')"><span class="jp">可能形</span><span class="en">Potential</span></button>
+            <button class="tab" data-tab="volitional" onclick="showTab('volitional')"><span class="jp">意向形</span><span class="en">Volitional</span></button>
+            <button class="tab" data-tab="conditional" onclick="showTab('conditional')"><span class="jp">条件形</span><span class="en">Conditional</span></button>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span style="font-size: 1.1rem;">🔥</span>
-            <span style="font-size: 0.85rem; font-weight: 500; color: var(--text);">Advanced</span>
+          <div class="fm-group">
+            <div class="fm-group-h">Advanced</div>
+            <div class="fm-group-b">Nuance, politeness and blame</div>
+            <button class="tab" data-tab="passive" onclick="showTab('passive')"><span class="jp">受身形</span><span class="en">Passive</span></button>
+            <button class="tab" data-tab="causative" onclick="showTab('causative')"><span class="jp">使役形</span><span class="en">Causative</span></button>
+            <button class="tab" data-tab="imperative" onclick="showTab('imperative')"><span class="jp">命令形</span><span class="en">Imperative</span></button>
           </div>
-        </div>
-      </div>
+          <div class="fm-group">
+            <div class="fm-group-h">Reference</div>
+            <div class="fm-group-b">Not verbs, but they conjugate too</div>
+            <button class="tab" data-tab="adjectives" onclick="showTab('adjectives')"><span class="jp">形容詞</span><span class="en">Adjectives</span></button>
+          </div>
+        </aside>
 
-      <div style="margin-bottom: 2rem;">
-        <div class="tabs" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; max-width: 1100px; margin: 0 auto;">
-          <!-- Basic Forms -->
-          <button class="tab active" data-tab="masu" onclick="showTab('masu')" style="flex: 0 1 auto; min-width: 90px;">📚 ます</button>
-          <button class="tab" data-tab="te" onclick="showTab('te')" style="flex: 0 1 auto; min-width: 90px;">📚 て</button>
-          <button class="tab" data-tab="dict" onclick="showTab('dict')" style="flex: 0 1 auto; min-width: 90px;">📚 Dictionary</button>
-          <button class="tab" data-tab="ta" onclick="showTab('ta')" style="flex: 0 1 auto; min-width: 90px;">📚 た</button>
-          <button class="tab" data-tab="negative" onclick="showTab('negative')" style="flex: 0 1 auto; min-width: 90px;">📚 ない</button>
-          <!-- Essential Forms -->
-          <button class="tab" data-tab="tai" onclick="showTab('tai')" style="flex: 0 1 auto; min-width: 90px;">🎯 たい</button>
-          <button class="tab" data-tab="potential" onclick="showTab('potential')" style="flex: 0 1 auto; min-width: 90px;">🎯 Potential</button>
-          <button class="tab" data-tab="volitional" onclick="showTab('volitional')" style="flex: 0 1 auto; min-width: 90px;">🎯 Volitional</button>
-          <button class="tab" data-tab="conditional" onclick="showTab('conditional')" style="flex: 0 1 auto; min-width: 90px;">🎯 Conditional</button>
-          <!-- Advanced Forms -->
-          <button class="tab" data-tab="passive" onclick="showTab('passive')" style="flex: 0 1 auto; min-width: 90px;">🔥 Passive</button>
-          <button class="tab" data-tab="causative" onclick="showTab('causative')" style="flex: 0 1 auto; min-width: 90px;">🔥 Causative</button>
-          <button class="tab" data-tab="imperative" onclick="showTab('imperative')" style="flex: 0 1 auto; min-width: 90px;">🔥 Command</button>
-          <!-- Reference -->
-          <button class="tab" data-tab="adjectives" onclick="showTab('adjectives')" style="flex: 0 1 auto; min-width: 90px;">📚 Adjectives</button>
-        </div>
-      </div>
+        <div class="fm-body">
 
-      <!-- MASU FORM -->
-      <div id="tab-masu" class="form-card active">
+<div id="tab-masu" class="form-card active">
         <h2 class="form-card-title jp">ます形 — The Polite Form</h2>
         <p class="form-card-desc">
           The ます form is the cornerstone of polite Japanese speech. It's the default conjugation you'll use in most everyday situations—from casual conversations with acquaintances to formal business interactions. Understanding when and how to use ます correctly is essential for sounding respectful and natural in Japanese.
@@ -193,6 +249,8 @@
               <td class="highlight jp">勉強します (benkyoushimasu)</td>
               <td>する part becomes します</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → きます</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来ます (kimasu)</td><td>Irregular — the reading shifts from く to き</td></tr>
           </tbody>
         </table>
 
@@ -397,8 +455,7 @@
         </div>
       </div>
 
-      <!-- TE FORM -->
-      <div id="tab-te" class="form-card">
+<div id="tab-te" class="form-card">
         <h2 class="form-card-title jp">て形 — The Connecting Form</h2>
         <p class="form-card-desc">
           The て form is arguably the most versatile and essential verb form in Japanese. It functions as the connective tissue of the language, allowing you to link actions, make requests, describe ongoing states, give permissions, and express countless other nuances. Mastering the て form opens up a vast range of expressive possibilities.
@@ -470,7 +527,7 @@
               <td>す</td>
               <td>して</td>
               <td><span class="jp">話す → 話して (hanashite)</span></td>
-              <td>す naturally becomes し before て</td>
+              <td>No sound change — す-verbs use the ます-stem: 話す → 話し + て</td>
             </tr>
             <tr>
               <td>つ / る / う</td>
@@ -498,6 +555,8 @@
               <td><span class="jp">勉強する → 勉強して (benkyou shite)</span></td>
               <td>Irregular: する → して</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる</td><td>きて</td><td class="highlight jp">来る → 来て (kite)</td><td>Irregular: the reading shifts to き</td></tr>
           </tbody>
         </table>
 
@@ -707,8 +766,7 @@
         </div>
       </div>
 
-      <!-- DICTIONARY FORM -->
-      <div id="tab-dict" class="form-card">
+<div id="tab-dict" class="form-card">
         <h2 class="form-card-title jp">辞書形 — The Dictionary Form</h2>
         <p class="form-card-desc">
           The dictionary form—also called the plain form, casual form, or simply う-form—is the foundational, unconjugated form of Japanese verbs. It's how verbs appear in dictionaries, how they're listed in textbooks, and how friends speak to each other. Understanding the dictionary form is essential because it's the starting point for all other conjugations and the basis of casual Japanese conversation.
@@ -901,6 +959,8 @@
               <td>ryouri suru</td>
               <td>to cook</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる (one verb only)</td><td class="highlight jp">来る</td><td><span class="jp">くる</span></td><td>kuru</td><td>to come</td></tr>
           </tbody>
         </table>
 
@@ -1042,8 +1102,7 @@
         </div>
       </div>
 
-      <!-- TA FORM (PAST) -->
-      <div id="tab-ta" class="form-card">
+<div id="tab-ta" class="form-card">
         <h2 class="form-card-title jp">た形 — The Past Form</h2>
         <p class="form-card-desc">
           The た form expresses completed actions and events that have already occurred. As the casual/plain past tense, it's used among friends and family, in narrative writing, and as a grammatical building block for more complex expressions. Understanding た form is essential because it shares its conjugation pattern with the て form, making it a "two-for-one" learning opportunity.
@@ -1139,6 +1198,8 @@
               <td>して</td>
               <td><span class="jp">勉強する → 勉強した (benkyou shita)</span></td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる</td><td>きた</td><td>きて</td><td class="highlight jp">来る → 来た (kita)</td></tr>
           </tbody>
         </table>
 
@@ -1383,8 +1444,7 @@
         </div>
       </div>
 
-      <!-- NEGATIVE FORM TAB -->
-      <div id="tab-negative" class="form-card">
+<div id="tab-negative" class="form-card">
         <h2 class="form-card-title jp">ない形 — The Negative Form</h2>
         <p class="form-card-desc">
           The negative form (ない形) is one of the foundational conjugations in Japanese, expressing that an action does not happen, will not happen, or is not the case. Unlike English, which relies on helper words like "don't," "doesn't," or "won't," Japanese transforms the verb itself to create negation. Mastering the negative form is essential because it serves as the building block for numerous other grammar patterns and appears in virtually every conversation.
@@ -1474,6 +1534,8 @@
               <td class="highlight jp">勉強しない (benkyoushinai)</td>
               <td>Only する part becomes しない</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → こない</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来ない (konai)</td><td>Irregular — the reading shifts to こ</td></tr>
           </tbody>
         </table>
 
@@ -1686,8 +1748,7 @@
         </div>
       </div>
 
-      <!-- TAI FORM TAB -->
-      <div id="tab-tai" class="form-card">
+<div id="tab-tai" class="form-card">
         <h2 class="form-card-title jp">たい形 — The Desiderative Form (Want To)</h2>
         <p class="form-card-desc">
           The たい form (願望形 ganbōkei) is the Japanese desiderative form, expressing the speaker's personal desires, wishes, and wants. It's one of the most useful and frequently used forms for expressing what you want to do. Unlike English, which uses a separate word ("want"), Japanese attaches たい directly to the verb stem, creating a single word that means "want to [verb]." Understanding たい is essential for expressing your needs and preferences in Japanese conversation.
@@ -1782,6 +1843,8 @@
               <td class="highlight jp">旅行したい (ryokoushitai)</td>
               <td>Only する becomes したい</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → きたい</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来たい (kitai)</td><td>Built on the き stem, like ます</td></tr>
           </tbody>
         </table>
 
@@ -1972,8 +2035,7 @@
       </div>
       </div>
 
-      <!-- POTENTIAL FORM TAB -->
-      <div id="tab-potential" class="form-card">
+<div id="tab-potential" class="form-card">
         <h2 class="form-card-title jp">可能形 — The Potential Form (Can/Able To)</h2>
         <p class="form-card-desc">
           The potential form (可能形 kanōkei) expresses ability, possibility, or permission—essentially meaning "can do" or "is able to do" something. It's one of the most essential forms in Japanese for expressing capabilities, asking about possibilities, and describing what's feasible. Unlike English, which uses separate helper words like "can" or "able to," Japanese creates potential meaning by conjugating the verb itself into a new form that functions as an independent verb.
@@ -2008,6 +2070,25 @@
           </div>
           <p style="line-height: 1.8;">
             This is one of the most common mistakes learners make—using を with potential forms. Always remember: potential form + が (not を).
+          </p>
+        </div>
+
+        <div class="info-box yellow">
+          <div class="info-box-title">見える and 聞こえる — not potential forms, though they look like them</div>
+          <p class="info-box-text" style="line-height: 1.8;">
+            見る and 聞く have ordinary potential forms — <span class="jp">見られる</span> and
+            <span class="jp">聞ける</span> — but Japanese also has two separate verbs,
+            <span class="jp">見える</span> and <span class="jp">聞こえる</span>, and the difference is
+            worth getting right early.<br><br>
+            • <span class="jp">見える</span> / <span class="jp">聞こえる</span> — it reaches your eyes or
+            ears whether you meant it to or not. <span class="jp">山が見える</span> (the mountain is
+            visible from here), <span class="jp">音楽が聞こえる</span> (I can hear music).<br>
+            • <span class="jp">見られる</span> / <span class="jp">聞ける</span> — you are able to, because the
+            circumstances allow it. <span class="jp">チケットがあれば試合が見られる</span> (with a
+            ticket you can watch the match).<br><br>
+            The test is whether ability is involved. A mountain you can see from the window is
+            <span class="jp">見える</span>; a film you are able to go and watch is
+            <span class="jp">見られる</span>. Both take が, like the potential.
           </p>
         </div>
 
@@ -2064,6 +2145,8 @@
               <td class="highlight jp">料理できる (ryouridekiru)</td>
               <td>する becomes できる</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → こられる</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来られる (korareru)</td><td>Same shape as the passive — context tells them apart</td></tr>
           </tbody>
         </table>
 
@@ -2194,7 +2277,11 @@
         <div class="info-box yellow">
           <div class="info-box-title">💡 Mastery Tips</div>
           <p class="info-box-text" style="line-height: 1.8;">
-            <strong>1. Remember the particle change:</strong> Potential form always uses が, never を.<br><br>
+            <strong>1. Remember the particle change:</strong> The potential form takes が where the
+            plain verb would take を — <span class="jp">日本語が話せる</span>. This is the form to use in
+            writing and the one tested on the JLPT. In casual speech you will also hear を
+            (<span class="jp">日本語を話せる</span>), especially when the object is long or already the topic;
+            it is not an error, but が is the safer default.<br><br>
             <strong>2. Godan becomes -eru:</strong> All godan potential forms end in -eru and conjugate like ichidan.<br><br>
             <strong>3. できる is special:</strong> For する verbs, the potential is simply できる (can do).<br><br>
             <strong>4. Understand ら抜き:</strong> You'll hear it everywhere, but use the full form in writing.<br><br>
@@ -2203,8 +2290,7 @@
         </div>
       </div>
 
-      <!-- VOLITIONAL FORM TAB -->
-      <div id="tab-volitional" class="form-card">
+<div id="tab-volitional" class="form-card">
         <h2 class="form-card-title jp">意向形 — The Volitional Form (Let's/I Will)</h2>
         <p class="form-card-desc">
           The volitional form (意向形 ikōkei) expresses intention, suggestion, or volition. It's used to suggest doing something together ("let's..."), express determination ("I will..."), or make casual invitations. This form is essential for natural conversation in Japanese, as it's one of the primary ways to make suggestions and express future intentions informally.
@@ -2274,6 +2360,8 @@
               <td class="highlight jp">勉強しよう</td>
               <td>する becomes しよう</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → こよう</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来よう (koyou)</td><td>Irregular — the reading shifts to こ</td></tr>
           </tbody>
         </table>
 
@@ -2341,11 +2429,17 @@
         </div>
       </div>
 
-      <!-- CONDITIONAL FORM TAB -->
-      <div id="tab-conditional" class="form-card">
+<div id="tab-conditional" class="form-card">
         <h2 class="form-card-title jp">条件形 — Conditional Forms (If/When)</h2>
         <p class="form-card-desc">
-          Japanese has two primary conditional forms: the ば-conditional (hypothetical) and the たら-conditional (completed/temporal). Both express "if" or "when," but with important nuance differences. The ば-form tends toward hypothetical or habitual conditions, while たら expresses completed conditions or temporal sequences. Understanding when to use each is important for natural, nuanced Japanese expression.
+          Japanese has four conditionals — ば, たら, と and なら — and this section covers
+          the two you will reach for most. The ば-form tends toward hypothetical or habitual
+          conditions; たら expresses completed conditions or temporal sequences. Both translate
+          as "if" or "when," and the difference between them is nuance rather than grammar.
+          と is for automatic, always-true consequences (押すと開きます — press it and it opens),
+          and なら picks up something the other person has just said (行くなら、傘を持って —
+          if you're going, take an umbrella). Knowing which one a situation calls for is a large
+          part of sounding natural.
         </p>
 
         <div class="info-box blue">
@@ -2398,6 +2492,8 @@
               <td class="jp">勉強する</td>
               <td class="highlight jp">勉強すれば</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → くれば</td><td><span class="jp">来る</span></td><td class="highlight jp">来れば (kureba)</td></tr>
           </tbody>
         </table>
 
@@ -2444,8 +2540,7 @@
         </div>
       </div>
 
-      <!-- PASSIVE FORM TAB -->
-      <div id="tab-passive" class="form-card">
+<div id="tab-passive" class="form-card">
         <h2 class="form-card-title jp">受身形 — The Passive Form</h2>
         <p class="form-card-desc">
           The passive form (受身形 ukemikei) expresses that an action is done to someone or something rather than by them. Japanese passive has broader uses than English passive, including the unique "adversative passive" for expressing suffering from uncontrollable events, and honorific passive for showing respect. Understanding these different uses is essential for natural Japanese expression.
@@ -2506,6 +2601,8 @@
               <td class="jp">紹介する</td>
               <td class="highlight jp">紹介される</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → こられる</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来られる (korareru)</td></tr>
           </tbody>
         </table>
 
@@ -2533,8 +2630,7 @@
         </div>
       </div>
 
-      <!-- CAUSATIVE FORM TAB -->
-      <div id="tab-causative" class="form-card">
+<div id="tab-causative" class="form-card">
         <h2 class="form-card-title jp">使役形 — The Causative Form (Make/Let)</h2>
         <p class="form-card-desc">
           The causative form (使役形 shieki-kei) expresses making or letting someone do something. It has two main meanings—compulsion ("make someone do") and permission ("let someone do")—with context and particles helping to distinguish between them. This form is essential for expressing authority relationships, permissions, and obligations in Japanese.
@@ -2546,16 +2642,27 @@
             <strong>1. Compulsion (Make):</strong><br>
             　<span class="jp">母は私に部屋を掃除させた</span><br>
             　Mother made me clean my room<br>
-            　(に marks the person forced to act)<br><br>
+            　(掃除する is transitive and 部屋 already holds を, so the person takes に)<br><br>
             
             <strong>2. Permission (Let/Allow):</strong><br>
-            　<span class="jp">子供を自由に遊ばせる</span><br>
+            　<span class="jp">子供<strong>に</strong>自由に遊ばせる</span><br>
             　Let the child play freely<br>
-            　(を marks the person allowed to act)<br><br>
+            　(遊ぶ is intransitive, so either particle is possible — に is the one that
+            says you allowed it)<br><br>
             
-            <strong>Particle distinction:</strong><br>
-            • に = tends toward "make" (compulsion)<br>
-            • を = tends toward "let" (permission)
+            <strong>Which particle — and why:</strong><br>
+            The choice is decided first by the verb, not by the meaning.<br><br>
+            • <strong>Transitive verb → the person takes に.</strong> There is no choice here:
+            を is already spoken for by the direct object.<br>
+            　<span class="jp">母は私<strong>に</strong>部屋を掃除させた</span> — 部屋 has を, so 私 must take に.<br><br>
+            • <strong>Intransitive verb → either, and the choice carries meaning.</strong>
+            を leans toward making someone do it; に leans toward letting them, because に
+            implies the person had a will of their own.<br>
+            　<span class="jp">子供<strong>を</strong>遊ばせる</span> — closer to "make the child play"<br>
+            　<span class="jp">子供<strong>に</strong>遊ばせる</span> — closer to "let the child play"<br><br>
+            This is a tendency rather than a hard rule, and context and tone can override it.
+            What is not a tendency is the first point: with a transitive verb, に is the only
+            option.
           </p>
         </div>
 
@@ -2596,6 +2703,8 @@
               <td class="jp">勉強する</td>
               <td class="highlight jp">勉強させる</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → こさせる</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来させる (kosaseru)</td></tr>
           </tbody>
         </table>
 
@@ -2610,6 +2719,22 @@
             <span class="jp">待つ → 待たせる → 待たせられる</span> (be made to wait)<br>
             <span class="jp">3時間も待たせられた</span> — I was made to wait for 3 hours
           </div>
+
+          <div style="font-weight: 700; margin: 1.25rem 0 .5rem;">The short form — 待たされる</div>
+          <p style="line-height: 1.8; margin-bottom: .75rem;">
+            Godan verbs contract this ending, and the contracted form is the one you will
+            actually hear: <span class="jp">せられる</span> becomes <span class="jp">される</span>.
+          </p>
+          <div style="font-size: 0.95rem; line-height: 1.7;">
+            <span class="jp">待つ → 待たせられる → <strong>待たされる</strong></span><br>
+            <span class="jp">行く → 行かせられる → <strong>行かされる</strong></span><br>
+            <span class="jp">飲む → 飲ませられる → <strong>飲まされる</strong></span><br>
+            <span class="jp">3時間も<strong>待たされた</strong></span> — the same sentence, said naturally<br><br>
+            Two verbs do not contract. Ichidan verbs keep the long form
+            (<span class="jp">食べさせられる</span>, never 食べさされる), and so do godan verbs
+            ending in す — <span class="jp">話させられる</span> stays as it is, because
+            話さされる would stack two さ sounds.
+          </div>
         </div>
 
         <h3 class="section-title">Usage Examples</h3>
@@ -2619,7 +2744,7 @@
           • <span class="jp">先生は学生に本を読ませる</span> — The teacher makes students read books<br><br>
           
           <strong>Let/Allow:</strong><br>
-          • <span class="jp">子供を自由に遊ばせる</span> — Let the child play freely<br>
+          • <span class="jp">子供に自由に遊ばせる</span> — Let the child play freely<br>
           • <span class="jp">彼を先に行かせた</span> — I let him go first<br><br>
           
           <strong>Causative-Passive:</strong><br>
@@ -2627,8 +2752,7 @@
         </div>
       </div>
 
-      <!-- IMPERATIVE FORM TAB -->
-      <div id="tab-imperative" class="form-card">
+<div id="tab-imperative" class="form-card">
         <h2 class="form-card-title jp">命令形 — The Imperative Form (Commands)</h2>
         <p class="form-card-desc">
           The imperative form (命令形 meirei-kei) is the direct command form of Japanese verbs. It's extremely forceful, often perceived as rude or aggressive, and should be used with great caution. This form appears mainly in emergencies, military/sports contexts, between very close friends, or in written warnings. For polite requests, てください is almost always more appropriate.
@@ -2694,6 +2818,8 @@
               <td class="jp">勉強する</td>
               <td class="highlight jp">勉強しろ！</td>
             </tr>
+          
+            <tr class="kuru-row"><td><strong style="color:#c45c4a;">Kuru</strong></td><td>くる → こい</td><td><span class="jp">来る (kuru)</span></td><td class="highlight jp">来い (koi)</td></tr>
           </tbody>
         </table>
 
@@ -2743,8 +2869,8 @@
           </p>
         </div>
       </div>
-      <!-- ADJECTIVES TAB -->
-      <div id="tab-adjectives" class="form-card">
+
+<div id="tab-adjectives" class="form-card">
         <h2 class="form-card-title">形容詞 — Japanese Adjectives</h2>
         <p class="form-card-desc">
           Japanese adjectives are remarkably different from their English counterparts—they conjugate like verbs! There are two main types: い-adjectives (i-adjectives) and な-adjectives (na-adjectives). Understanding the fundamental difference between these types is essential: い-adjectives are true adjectives that conjugate independently, while な-adjectives are actually nouns that function adjectivally when paired with な or です.
@@ -3571,6 +3697,10 @@
           </p>
         </div>
       </div>
+
+        </div>
+      </div>
+
 
       <div class="forms-cta">
         <button class="btn btn-primary" onclick="showPage('conjugator')">Practice with The Conjugator →</button>
