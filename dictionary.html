@@ -58,9 +58,12 @@
     .dc-sense:first-of-type { border-top: 0; }
     .dc-num { color: var(--text-light); font-size: 0.85rem; min-width: 1.2rem; flex: 0 0 auto; padding-top: .12rem; }
     .dc-gloss { flex: 1; }
-    .dc-pos { display: inline-block; font-size: 0.66rem; letter-spacing: .05em; color: #7a5f1f;
-      background: rgba(201,169,98,.2); border: 1px solid rgba(201,169,98,.45);
-      border-radius: 3px; padding: .05rem .35rem; margin-right: .35rem; vertical-align: .08em; }
+    .dc-pos { display: inline-block; font-size: 0.68rem; letter-spacing: .02em; color: var(--text-light);
+      background: var(--paper-warm); border: 1px solid rgba(0,0,0,.09);
+      border-radius: 3px; padding: .05rem .4rem; margin-right: .35rem; vertical-align: .08em;
+      white-space: nowrap; }
+    .dc-pos.cls { color: #7a5f1f; background: rgba(201,169,98,.2);
+      border-color: rgba(201,169,98,.45); font-weight: 600; }
     .dc-links { margin-top: .7rem; padding-top: .6rem; border-top: 1px solid rgba(0,0,0,.06);
       font-size: 0.8rem; display: flex; gap: 1rem; flex-wrap: wrap; }
     .dc-links a { color: var(--accent); text-decoration: none; }
@@ -212,12 +215,15 @@
       $('dc-decon').innerHTML = '';
     }
 
+    var VERB_CLASS = /^(Godan|Ichidan|する verb|来る verb|noun \+ する|verb|archaic す verb|irregular [ぬる] verb)$/;
+
     function card(i) {
       var e = DATA.e[i], ks = e[0], ns = e[1], senses = e[2], rank = e[3];
       var head = ks.length ? ks[0] : ns[0];
       var alt = ks.slice(1).concat(ks.length ? [] : ns.slice(1));
+      // the verb-class labels, shared with the tag styling below
       var isVerb = senses.some(function (s) {
-        return s[0].some(function (p) { return /^v[15k]|^vs$/.test(DATA.p[p]); });
+        return s[0].some(function (p) { return VERB_CLASS.test(DATA.p[p]); });
       });
       var h = '<div class="dc-card"><div class="dc-head">' +
         '<span class="dc-word jp">' + esc(head) + '</span>' +
@@ -226,7 +232,11 @@
         (alt.length ? '<span class="dc-alt jp">also ' + esc(alt.join('、')) + '</span>' : '') +
         '</div>';
       senses.forEach(function (s, n) {
-        var tags = s[0].map(function (p) { return '<span class="dc-pos">' + esc(DATA.p[p]) + '</span>'; }).join('');
+        var tags = s[0].map(function (p) {
+          var label = DATA.p[p];
+          var isClass = VERB_CLASS.test(label);
+          return '<span class="dc-pos' + (isClass ? ' cls' : '') + '">' + esc(label) + '</span>';
+        }).join('');
         h += '<div class="dc-sense"><span class="dc-num">' + (n + 1) + '.</span>' +
              '<span class="dc-gloss">' + tags + esc(s[1].join('; ')) + '</span></div>';
       });
