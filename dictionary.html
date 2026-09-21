@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="analytics.js"></script>
+  <title>Japanese Dictionary — search words, and turn conjugated verbs back into dictionary form | Katsuyō Academy</title>
+  <meta name="description" content="Search 30,000 common Japanese words in Japanese or English. Type a conjugated verb like 食べさせられなかった and it works back to the dictionary form, showing every step.">
+  <link rel="canonical" href="https://katsuyoacademy.com/dictionary">
+  <link rel="icon" type="image/png" href="open_book.png">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .dc-page { max-width: 980px; margin: 0 auto; padding: 2rem; }
+    .dc-desc { color: var(--text-light); line-height: 1.7; max-width: 62ch; }
+
+    /* ---- search ---- */
+    .dc-search { position: sticky; top: 0; z-index: 20; background: var(--paper);
+      padding: 1rem 0 0.9rem; margin-bottom: 1.25rem; }
+    .dc-field { display: flex; gap: 0.6rem; align-items: stretch; }
+    .dc-input { flex: 1; font-family: 'Noto Serif JP', 'Outfit', serif; font-size: 1.25rem;
+      padding: 0.85rem 1.1rem; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px;
+      background: white; color: var(--ink); outline: none; transition: border-color .15s; min-width: 0; }
+    .dc-input:focus { border-color: var(--accent); }
+    .dc-input::placeholder { font-family: Outfit, sans-serif; font-size: 1rem; color: #b5b5b5; }
+    .dc-clear { background: var(--ink); color: var(--paper); border: 0; border-radius: 10px;
+      padding: 0 1.15rem; cursor: pointer; font-family: inherit; font-size: 0.9rem; font-weight: 600; }
+    .dc-clear:hover { background: var(--accent); }
+    .dc-hint { font-size: 0.8rem; color: var(--text-light); margin-top: 0.55rem; }
+    .dc-hint b { color: var(--accent); font-weight: 600; cursor: pointer; }
+    .dc-hint b:hover { text-decoration: underline; }
+
+    /* ---- deconjugation banner ---- */
+    .dc-decon { background: var(--ink); color: var(--paper); border-radius: 10px;
+      padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
+    .dc-decon-h { font-size: 0.72rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--gold); font-weight: 700; margin-bottom: 0.55rem; }
+    .dc-chain { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+      font-family: 'Noto Serif JP', serif; font-size: 1.15rem; }
+    .dc-chain .arw { color: var(--gold); font-family: Outfit, sans-serif; }
+    .dc-chain .step { background: rgba(255,255,255,.1); border-radius: 6px; padding: .15rem .6rem; }
+    .dc-chain .fin { background: var(--gold); color: var(--ink); font-weight: 600;
+      border-radius: 6px; padding: .15rem .7rem; }
+    .dc-steps { font-family: Outfit, sans-serif; font-size: 0.82rem;
+      color: rgba(250,249,247,.62); margin-top: 0.5rem; }
+
+    /* ---- results ---- */
+    .dc-count { font-size: 0.82rem; color: var(--text-light); margin-bottom: 0.9rem; }
+    .dc-card { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.06);
+      padding: 1.15rem 1.4rem; margin-bottom: 0.85rem; }
+    .dc-head { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+    .dc-word { font-family: 'Noto Serif JP', serif; font-size: 1.85rem; color: var(--ink); line-height: 1.25; }
+    .dc-read { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: var(--accent); }
+    .dc-alt { font-size: 0.8rem; color: var(--text-light); }
+    .dc-common { background: var(--sage); color: white; font-size: 0.62rem; font-weight: 700;
+      letter-spacing: .09em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 4px; }
+    .dc-sense { display: flex; gap: 0.7rem; padding: 0.4rem 0; border-top: 1px solid rgba(0,0,0,.06); }
+    .dc-sense:first-of-type { border-top: 0; }
+    .dc-num { color: var(--text-light); font-size: 0.85rem; min-width: 1.2rem; flex: 0 0 auto; padding-top: .12rem; }
+    .dc-gloss { flex: 1; }
+    .dc-pos { display: inline-block; font-size: 0.66rem; letter-spacing: .05em; color: #7a5f1f;
+      background: rgba(201,169,98,.2); border: 1px solid rgba(201,169,98,.45);
+      border-radius: 3px; padding: .05rem .35rem; margin-right: .35rem; vertical-align: .08em; }
+    .dc-links { margin-top: .7rem; padding-top: .6rem; border-top: 1px solid rgba(0,0,0,.06);
+      font-size: 0.8rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .dc-links a { color: var(--accent); text-decoration: none; }
+    .dc-links a:hover { text-decoration: underline; }
+
+    .dc-msg { text-align: center; color: var(--text-light); padding: 2.5rem 1rem; }
+    .dc-msg .big { font-family: 'Noto Serif JP', serif; font-size: 2rem; color: rgba(0,0,0,.12); display: block; margin-bottom: .6rem; }
+
+    /* ---- attribution: the licence requires this on every screen showing data ---- */
+    .dc-attr { margin-top: 2rem; padding: 0.9rem 1.15rem; background: var(--paper-warm);
+      border-left: 3px solid var(--text-light); border-radius: 6px;
+      font-size: 0.78rem; color: var(--text-light); line-height: 1.6; }
+    .dc-attr a { color: var(--text-light); }
+
+    @media (max-width: 640px) {
+      .dc-page { padding: 1.25rem 1rem; }
+      .dc-word { font-size: 1.5rem; }
+      .dc-input { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body data-page="dictionary">
+
+  <!-- NAVIGATION -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="logo" href="/" style="text-decoration: none;">
+        <span class="logo-kanji jp">活用</span>
+        <span class="logo-text">Katsuyō Academy</span>
+      </a>
+      <div class="nav-links">
+        <a class="nav-link" data-page="home" href="/" data-i18n="nav_home">Home</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="kana" href="/kana" data-i18n="nav_kana">Kana</a>
+        <a class="nav-link" data-page="learn" href="/learn" data-i18n="nav_learn">Learn</a>
+        <a class="nav-link" data-page="adjectives" href="/adjectives" data-i18n="nav_adjectives">Adjectives</a>
+        <a class="nav-link" data-page="reference" href="/reference" data-i18n="nav_reference">Reference</a>
+        <a class="nav-link" data-page="conjugation" href="/conjugation" data-i18n="nav_conjugation">Conjugation</a>
+        <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
+        <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
+        <a class="nav-link" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
+        <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
+        <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
+        <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
+        <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
+        <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
+          <option value="en">🌐 EN</option>
+          <option value="de">🌐 DE</option>
+          <option value="fr">🌐 FR</option>
+          <option value="zh">🌐 中文</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-dictionary" class="page active">
+    <div class="dc-page">
+
+      <div style="margin-bottom:0.5rem">
+        <div class="page-tag" data-i18n="dc_tag">Reference</div>
+        <h1 class="page-title"><span class="jp">辞書</span> — <span data-i18n="dc_title">Dictionary</span></h1>
+        <p class="dc-desc" data-i18n="dc_desc">Thirty thousand common words, searchable in Japanese or English.
+          Type a conjugated verb and it works backwards to the dictionary form, showing every step it took.</p>
+      </div>
+
+      <div class="dc-search">
+        <div class="dc-field">
+          <input id="dc-q" class="dc-input" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="食べる · たべる · to eat · 食べさせられなかった" aria-label="Search the dictionary">
+          <button id="dc-clear" class="dc-clear" type="button">Clear</button>
+        </div>
+        <div class="dc-hint">
+          Try <b data-try="食べさせられなかった">食べさせられなかった</b> ·
+          <b data-try="行きたくない">行きたくない</b> ·
+          <b data-try="美しかった">美しかった</b> ·
+          <b data-try="chopsticks">chopsticks</b>
+        </div>
+      </div>
+
+      <div id="dc-decon"></div>
+      <div id="dc-count" class="dc-count"></div>
+      <div id="dc-results"></div>
+
+      <!-- EDRDG's licence requires this acknowledgement on each screen that
+           displays the data, not just on a credits page. Do not remove. -->
+      <div class="dc-attr">
+        Dictionary data from <strong>JMdict</strong>, © the
+        <a href="https://www.edrdg.org/" target="_blank" rel="noopener">Electronic Dictionary Research and Development Group</a>,
+        used under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> licence.
+        See the <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict&#8211;EDICT Dictionary Project</a>.
+        Conjugation analysis is Katsuyō Academy's own.
+      </div>
+
+    </div>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="app.i18n.js"></script>
+  <script src="dictionary.i18n.js"></script>
+  <script src="app.js"></script>
+  <script src="ai.js"></script>
+  <script src="sensei.js"></script>
+  <script src="dict/deconjugate.js"></script>
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var DATA = null, JP = null, EN = null, loading = false, pending = null;
+
+    function esc(s) {
+      return String(s).replace(/[&<>"]/g, function (c) {
+        return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c];
+      });
+    }
+
+    // ---- data ----
+    // Three files, fetched in parallel, ~1.8 MB gzipped in total. Loaded only
+    // when someone actually searches, so the page itself stays light.
+    function load() {
+      if (DATA || loading) return Promise.resolve();
+      loading = true;
+      msg('Loading the dictionary…', '辞');
+      return Promise.all([
+        fetch('dict/dict-data.json').then(function (r) { return r.json(); }),
+        fetch('dict/dict-jp.json').then(function (r) { return r.json(); }),
+        fetch('dict/dict-en.json').then(function (r) { return r.json(); })
+      ]).then(function (res) {
+        DATA = res[0]; JP = res[1]; EN = res[2]; loading = false;
+        if (pending !== null) { var p = pending; pending = null; run(p); }
+      }).catch(function () {
+        loading = false;
+        msg('The dictionary could not be loaded. Check your connection and try again.', '×');
+      });
+    }
+
+    var exists = function (w) { return JP && Object.prototype.hasOwnProperty.call(JP, w); };
+
+    // ---- rendering ----
+    function msg(text, big) {
+      $('dc-results').innerHTML = '<div class="dc-msg">' +
+        (big ? '<span class="big jp">' + esc(big) + '</span>' : '') + esc(text) + '</div>';
+      $('dc-count').textContent = '';
+      $('dc-decon').innerHTML = '';
+    }
+
+    function card(i) {
+      var e = DATA.e[i], ks = e[0], ns = e[1], senses = e[2], rank = e[3];
+      var head = ks.length ? ks[0] : ns[0];
+      var alt = ks.slice(1).concat(ks.length ? [] : ns.slice(1));
+      var isVerb = senses.some(function (s) {
+        return s[0].some(function (p) { return /^v[15k]|^vs$/.test(DATA.p[p]); });
+      });
+      var h = '<div class="dc-card"><div class="dc-head">' +
+        '<span class="dc-word jp">' + esc(head) + '</span>' +
+        (ks.length ? '<span class="dc-read jp">【' + esc(ns.join('、')) + '】</span>' : '') +
+        (rank === 2 ? '<span class="dc-common">Common</span>' : '') +
+        (alt.length ? '<span class="dc-alt jp">also ' + esc(alt.join('、')) + '</span>' : '') +
+        '</div>';
+      senses.forEach(function (s, n) {
+        var tags = s[0].map(function (p) { return '<span class="dc-pos">' + esc(DATA.p[p]) + '</span>'; }).join('');
+        h += '<div class="dc-sense"><span class="dc-num">' + (n + 1) + '.</span>' +
+             '<span class="dc-gloss">' + tags + esc(s[1].join('; ')) + '</span></div>';
+      });
+      h += '<div class="dc-links">' +
+           (isVerb ? '<a href="/conjugator?v=' + encodeURIComponent(head) + '">Conjugate this verb →</a>' +
+                     '<a href="/forms">See all forms →</a>' : '') +
+           '<a href="/vocabulary?q=' + encodeURIComponent(head) + '">Find in vocabulary →</a>' +
+           '</div></div>';
+      return h;
+    }
+
+    function chain(result, original) {
+      if (!result) { $('dc-decon').innerHTML = ''; return; }
+      var steps = result.path.slice().reverse();
+      $('dc-decon').innerHTML =
+        '<div class="dc-decon"><div class="dc-decon-h">Conjugated form — traced back</div>' +
+        '<div class="dc-chain"><span class="step">' + esc(original) + '</span>' +
+        '<span class="arw">→</span><span class="fin">' + esc(result.word) + '</span></div>' +
+        '<div class="dc-steps">' + esc(steps.join(' · ')) + '</div></div>';
+    }
+
+    // ---- search ----
+    function run(q) {
+      q = (q || '').trim();
+      if (!q) { msg('Search for a word in Japanese or English.', '辞'); return; }
+      if (!DATA) { pending = q; load(); return; }
+
+      var ids = [], decon = null;
+
+      if (JP[q]) {
+        ids = JP[q].slice();
+      } else if (/[ぁ-ゖァ-ヺー一-龯々]/.test(q)) {
+        // Japanese but not a headword — try to work it back to one
+        var d = KA_Deconjugate.deconjugate(q, exists);
+        if (d.length) {
+          decon = d[0];
+          d.forEach(function (r) {
+            (JP[r.word] || []).forEach(function (i) { if (ids.indexOf(i) < 0) ids.push(i); });
+          });
+        } else {
+          // fall back to a prefix match so partial typing still finds things
+          var keys = Object.keys(JP), hit = 0;
+          for (var k = 0; k < keys.length && hit < 40; k++) {
+            if (keys[k].indexOf(q) === 0) {
+              hit++;
+              JP[keys[k]].forEach(function (i) { if (ids.indexOf(i) < 0) ids.push(i); });
+            }
+          }
+        }
+      } else {
+        var w = q.toLowerCase().replace(/^to\s+/, '');
+        ids = (EN[w] || EN[q.toLowerCase()] || []).slice();
+      }
+
+      chain(decon, q);
+
+      if (!ids.length) {
+        msg('Nothing found for “' + q + '”. The dictionary covers about 30,000 common words, ' +
+            'so rarer vocabulary may be missing.', '?');
+        return;
+      }
+      ids = ids.slice(0, 60);
+      $('dc-count').textContent = ids.length + (ids.length === 60 ? '+' : '') + ' result' + (ids.length === 1 ? '' : 's');
+      $('dc-results').innerHTML = ids.map(card).join('');
+    }
+
+    // ---- wiring ----
+    var timer = null;
+    function onInput() {
+      clearTimeout(timer);
+      var v = $('dc-q').value;
+      timer = setTimeout(function () { run(v); }, 180);
+    }
+    $('dc-q').addEventListener('input', onInput);
+    $('dc-q').addEventListener('focus', load, { once: true });
+    $('dc-clear').onclick = function () { $('dc-q').value = ''; run(''); $('dc-q').focus(); };
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-try]');
+      if (t) { $('dc-q').value = t.dataset.try; run(t.dataset.try); $('dc-q').focus(); }
+    });
+
+    // deep link: /dictionary?q=食べる
+    var qs = new URLSearchParams(location.search).get('q');
+    if (qs) { $('dc-q').value = qs; load().then(function () { run(qs); }); }
+    else msg('Search for a word in Japanese or English.', '辞');
+
+    // Katsu can answer questions about whatever is on screen
+    window.KatsuPageContext = function () {
+      var q = $('dc-q').value.trim();
+      return 'The student is on the Dictionary page' +
+        (q ? ' and has searched for 「' + q + '」.' : '.') +
+        ' Explain the word, its readings and its usage, and give example sentences.';
+    };
+  })();
+  </script>
+
+<script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+<script>
+  kofiWidgetOverlay.draw('katsuyo_academy', {
+    'type': 'floating-chat',
+    'floating-chat.donateButton.text': 'Support Us',
+    'floating-chat.donateButton.background-color': '#f45d22',
+    'floating-chat.donateButton.text-color': '#fff'
+  });
+</script>
+
+</body>
+</html>
