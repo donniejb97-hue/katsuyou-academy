@@ -5225,6 +5225,9 @@ function generateNewQuestion() {
     }
 
     function populateVerbLists() {
+      // The Verb List page draws itself now — grouped by ending, with each card
+      // opening to its forms — so the four old per-type containers are gone.
+      if (document.getElementById('vl-body')) return;
       const types = ['godan', 'ichidan', 'suru', 'irregular'];
       
       types.forEach(type => {

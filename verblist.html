@@ -11,6 +11,98 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ---- Verb list --------------------------------------------------------
+       The four coloured tiles are the ones this page always had; they are
+       filters now rather than decoration, which is what let the four type tabs
+       go — you can see every type at once again. Verbs sit under the ending
+       that decides their conjugation, with that group's rule stated once. */
+    .vl-page { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .vl-head { text-align: center; margin-bottom: 1.8rem; }
+    .vl-head p { max-width: 70ch; margin: .4rem auto 0; color: var(--text-light); }
+
+    .vl-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: .9rem; margin-bottom: 1.6rem; }
+    .vl-tile { border: 0; border-radius: 10px; padding: 1.05rem .9rem; text-align: center;
+      color: #fff; cursor: pointer; font-family: inherit; position: relative; opacity: .45;
+      transition: opacity .12s, transform .12s, box-shadow .12s; }
+    .vl-tile:hover { transform: translateY(-2px); }
+    .vl-tile.on { opacity: 1; box-shadow: 0 6px 18px rgba(0,0,0,.18); }
+    .vl-tile .n { font-size: 1.9rem; font-weight: 700; line-height: 1; }
+    .vl-tile .t { font-size: .82rem; font-weight: 600; }
+    .vl-tile .j { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; opacity: .85; }
+    .vl-tile .tick { position: absolute; top: .5rem; right: .6rem; font-size: .8rem; opacity: 0; }
+    .vl-tile.on .tick { opacity: .9; }
+    .vt-godan { background: #4a90a4; } .vt-ichidan { background: var(--sage); }
+    .vt-suru { background: #7a5ba4; } .vt-irregular { background: var(--accent); }
+
+    .vl-tools { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center;
+      justify-content: center; }
+    .vl-search { flex: 1; min-width: 240px; max-width: 520px; font-family: 'Noto Serif JP', serif;
+      font-size: 1rem; padding: .65rem 1rem; border: 1px solid rgba(0,0,0,.12);
+      border-radius: 999px; background: #fff; color: var(--ink); outline: none; }
+    .vl-search:focus { border-color: var(--accent); }
+    .vl-chip { background: #fff; border: 1px solid rgba(0,0,0,.12); border-radius: 999px;
+      padding: .34rem .85rem; font-family: inherit; font-size: .82rem; cursor: pointer; color: var(--text); }
+    .vl-chip.on { background: var(--ink); border-color: var(--ink); color: #fff; font-weight: 600; }
+    .vl-chip.n5.on { background: var(--sage); border-color: var(--sage); }
+    .vl-chip.n4.on { background: #a07d28; border-color: #a07d28; }
+    .vl-chip.n3.on { background: var(--accent); border-color: var(--accent); }
+    .vl-count { text-align: center; font-size: .76rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text-light); margin: 1rem 0 1.2rem; }
+
+    .vl-grp { margin-bottom: 1.6rem; }
+    .vl-grp-h { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; margin-bottom: .5rem; }
+    .vl-grp-h .e { font-family: 'Noto Serif JP', serif; font-size: 1.5rem; color: var(--ink); line-height: 1; }
+    .vl-grp-h .n { font-size: .78rem; color: var(--text-light); }
+    .vl-rule { display: flex; gap: 1.1rem; flex-wrap: wrap; background: var(--paper-warm);
+      border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: .5rem .85rem;
+      font-size: .82rem; color: var(--text-light); margin-left: auto; }
+    .vl-rule b { color: var(--ink); font-family: 'Noto Serif JP', serif; font-weight: 600; }
+
+    .vl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: .7rem; align-items: start; }
+    .verb-item { background: #fff; border: 1px solid rgba(0,0,0,.09); border-radius: 10px;
+      overflow: hidden; cursor: pointer; transition: border-color .12s, box-shadow .12s; }
+    .verb-item:hover { border-color: var(--accent); box-shadow: 0 3px 10px rgba(0,0,0,.05); }
+    .verb-item.open { border-color: var(--accent); }
+    .vl-top { padding: .75rem .9rem; display: flex; align-items: flex-start; gap: .6rem; }
+    .vl-top .w { font-family: 'Noto Serif JP', serif; font-size: 1.3rem; color: var(--ink); line-height: 1.25; }
+    .vl-top .r { font-family: 'Noto Serif JP', serif; font-size: .76rem; color: var(--accent);
+      display: block; line-height: 1.3; }
+    .vl-top .m { font-size: .82rem; color: var(--text-light); display: block; margin-top: .15rem; }
+    .vl-lv { margin-left: auto; font-size: .6rem; font-weight: 700; letter-spacing: .06em;
+      padding: .12rem .4rem; border-radius: 3px; white-space: nowrap; }
+    .lv-N5 { background: rgba(122,158,126,.2); color: #46663f; }
+    .lv-N4 { background: rgba(201,169,98,.28); color: #7a5f1f; }
+    .lv-N3 { background: rgba(196,92,74,.16); color: #8f3a2b; }
+    .vl-open { display: none; border-top: 1px solid rgba(0,0,0,.09); background: var(--paper-warm);
+      padding: .7rem .9rem; }
+    .verb-item.open .vl-open { display: block; }
+    .vl-fr { display: flex; justify-content: space-between; gap: .8rem; padding: .16rem 0; font-size: .84rem; }
+    .vl-fr .k { color: var(--text-light); font-size: .74rem; }
+    .vl-fr .val { font-family: 'Noto Serif JP', serif; color: var(--ink); }
+    .vl-say { margin-top: .6rem; background: none; border: 1px solid rgba(0,0,0,.12);
+      border-radius: 5px; padding: .28rem .6rem; font-family: inherit; font-size: .74rem;
+      color: var(--accent); cursor: pointer; }
+    .vl-say:hover { border-color: var(--accent); }
+
+    #vl-kuru { margin-top: 2rem; }
+    .vl-cta { margin-top: 3rem; text-align: center; background: var(--paper-warm);
+      border-radius: 10px; padding: 2.2rem 1.5rem; }
+    .vl-cta h3 { margin: 0 0 .4rem; font-size: 1.4rem; color: var(--ink); }
+    .vl-cta p { margin: 0 0 1.3rem; color: var(--text-light); }
+    .vl-cta-btns { display: flex; gap: .6rem; justify-content: center; flex-wrap: wrap; }
+    .vl-btn { background: var(--ink); color: #fff; text-decoration: none; padding: .7rem 1.5rem;
+      border-radius: 6px; font-weight: 600; font-size: .92rem; }
+    .vl-btn.ghost { background: transparent; color: var(--accent); border: 1px solid rgba(0,0,0,.12); }
+    .vl-btn:hover { filter: brightness(1.1); }
+
+    @media (max-width: 640px) {
+      .vl-page { padding: 1.5rem 1rem 2rem; }
+      .vl-rule { margin-left: 0; width: 100%; }
+    }
+  </style>
 </head>
 <body data-page="verblist">
 
@@ -54,110 +146,30 @@
   </nav>
 
   <div id="page-verblist" class="page active">
-    <div class="learn-page" style="max-width: 1200px;">
-      <!-- Header -->
-      <div class="page-header" style="text-align: center; margin-bottom: 3rem;">
+    <div class="vl-page">
+
+      <div class="vl-head">
         <div class="page-tag">The Database</div>
         <h1 class="page-title">129 Verbs</h1>
-        <p class="page-desc" style="max-width: 800px; margin: 0 auto; line-height: 1.8;">
-          This collection includes fundamental verbs for everyday conversation, along with verbs used in academic and formal contexts. 
-          The database covers verbs from beginner through intermediate levels, organized into three types—Godan, Ichidan, and Suru—to help 
-          you understand conjugation patterns. Each verb includes kanji, hiragana readings, romaji, and English meanings. 
-          You'll find essential verbs for daily life, emotions, actions, and social interactions.
-        </p>
-        <div style="margin-top: 1.5rem; padding: 1rem; background: var(--paper-warm); border-radius: 4px; border-left: 4px solid var(--accent);">
-          <strong style="color: var(--accent);">📚 This is a living database—new verbs may be added as the collection grows.</strong>
-        </div>
+        <p>Every verb the Conjugator drills, grouped by the ending that decides how it
+          conjugates. Tap a verb to open all of its forms; tap a tile to show or hide a type.</p>
       </div>
 
-      <!-- Verb Stats - Redesigned -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 3rem;">
-        <div style="background: #4a90a4; padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(74, 144, 164, 0.2);">
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">64</div>
-          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Godan Verbs</div>
-          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">五段</div>
-        </div>
-        <div style="background: var(--sage); padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(106, 138, 106, 0.2);">
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">40</div>
-          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Ichidan Verbs</div>
-          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">一段</div>
-        </div>
-        <div style="background: #7a5ba4; padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(122, 91, 164, 0.2);">
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">24</div>
-          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Suru Verbs</div>
-          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">する</div>
-        </div>
-        <div style="background: var(--accent); padding: 1.5rem; border-radius: 8px; text-align: center; color: white; box-shadow: 0 4px 12px rgba(196, 92, 74, 0.2);">
-          <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.25rem;">1</div>
-          <div style="font-size: 0.9rem; font-weight: 600; opacity: 0.95;">Irregular Verb</div>
-          <div class="jp" style="font-size: 1.25rem; margin-top: 0.25rem; opacity: 0.9;">不規則</div>
-        </div>
+      <div class="vl-tiles" id="vl-tiles"></div>
+
+      <div class="vl-tools">
+        <input id="verb-search" class="vl-search" type="search" autocomplete="off"
+               placeholder="開く · あく · aku · to open" aria-label="Search the verbs">
+        <button class="vl-chip on" data-lvl="all">All levels</button>
+        <button class="vl-chip n5" data-lvl="N5">N5</button>
+        <button class="vl-chip n4" data-lvl="N4">N4</button>
+        <button class="vl-chip n3" data-lvl="N3">N3</button>
       </div>
+      <div id="search-results-count" class="vl-count"></div>
 
-      <!-- Verb Type Tabs - Redesigned -->
-      <div style="margin-bottom: 2rem;">
-        <!-- Search Box -->
-        <div style="margin-bottom: 1.5rem;">
-          <div style="position: relative; max-width: 500px; margin: 0 auto;">
-            <input 
-              type="text" 
-              id="verb-search" 
-              data-i18n-placeholder="vl_search" placeholder="Search by kanji, hiragana, romaji, or meaning..." 
-              oninput="filterVerbs()"
-              style="width: 100%; padding: 1rem 1rem 1rem 3rem; font-size: 1rem; border: 2px solid #e5e5e0; border-radius: 8px; font-family: inherit; transition: border-color 0.2s; background: white;"
-            >
-            <svg style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-light);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
-          </div>
-          <div id="search-results-count" style="text-align: center; margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-light); display: none;"></div>
-        </div>
+      <div id="vl-body"></div>
 
-        <!-- JLPT Filter Buttons -->
-        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-          <button onclick="filterByJLPT('all')" id="jlpt-filter-all" class="jlpt-filter-btn active" style="padding: 0.5rem 1rem; border: 2px solid var(--ink); background: var(--ink); color: white; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">All Levels</button>
-          <button onclick="filterByJLPT('N5')" id="jlpt-filter-N5" class="jlpt-filter-btn" style="padding: 0.5rem 1rem; border: 2px solid #22c55e; background: white; color: #22c55e; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">N5</button>
-          <button onclick="filterByJLPT('N4')" id="jlpt-filter-N4" class="jlpt-filter-btn" style="padding: 0.5rem 1rem; border: 2px solid #f59e0b; background: white; color: #f59e0b; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">N4</button>
-          <button onclick="filterByJLPT('N3')" id="jlpt-filter-N3" class="jlpt-filter-btn" style="padding: 0.5rem 1rem; border: 2px solid #ef4444; background: white; color: #ef4444; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: inherit;">N3</button>
-        </div>
-
-        <div style="display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; background: var(--paper-warm); padding: 0.5rem; border-radius: 8px;">
-          <button onclick="showVerbList('godan')" id="verb-tab-godan" class="verb-list-tab active" style="flex: 1; min-width: 120px;">
-            <span style="font-size: 1.2rem; color: #4a90a4;">●</span> Godan <span class="jp">(五段)</span>
-          </button>
-          <button onclick="showVerbList('ichidan')" id="verb-tab-ichidan" class="verb-list-tab" style="flex: 1; min-width: 120px;">
-            <span style="font-size: 1.2rem; color: var(--sage);">●</span> Ichidan <span class="jp">(一段)</span>
-          </button>
-          <button onclick="showVerbList('suru')" id="verb-tab-suru" class="verb-list-tab" style="flex: 1; min-width: 120px;">
-            <span style="font-size: 1.2rem; color: #7a5ba4;">●</span> Suru <span class="jp">(する)</span>
-          </button>
-          <button onclick="showVerbList('irregular')" id="verb-tab-irregular" class="verb-list-tab" style="flex: 1; min-width: 120px;">
-            <span style="font-size: 1.2rem; color: var(--accent);">●</span> Irregular <span class="jp">(不規則)</span>
-          </button>
-        </div>
-
-        <!-- Godan Verb List -->
-        <div id="verb-list-godan" class="verb-list-content active" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
-          <!-- Will be populated by JavaScript -->
-        </div>
-
-        <!-- Ichidan Verb List -->
-        <div id="verb-list-ichidan" class="verb-list-content" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
-          <!-- Will be populated by JavaScript -->
-        </div>
-
-        <!-- Suru Verb List -->
-        <div id="verb-list-suru" class="verb-list-content" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
-          <!-- Will be populated by JavaScript -->
-        </div>
-
-        <!-- Irregular Verb List -->
-        <div id="verb-list-irregular" class="verb-list-content" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
-          <!-- Will be populated by JavaScript -->
-        </div>
-
-        <!-- Irregular Verb Explanation (shown when irregular tab is active) -->
-        <div id="irregular-explanation" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3f0 0%, #fef9f8 100%); border-radius: 8px; border-left: 4px solid var(--accent);">
+<div id="vl-kuru" style="margin-top: 1.5rem; padding: 1.5rem; background: linear-gradient(135deg, #fef3f0 0%, #fef9f8 100%); border-radius: 8px; border-left: 4px solid var(--accent);">
           <h4 style="color: var(--ink); margin-bottom: 0.75rem; font-size: 1.1rem;">🔸 Why is <span class="jp">来る</span> irregular?</h4>
           <p style="line-height: 1.8; color: var(--text); margin-bottom: 1rem;">
             <strong><span class="jp">来る (kuru)</span></strong> is one of only two truly irregular verbs in Japanese (along with <span class="jp">する</span>). 
@@ -181,41 +193,16 @@
             Notice how the reading changes: <strong>ku-ru → ki-masu → ki-te → ko-nai</strong>. This vowel shift (u → i → i → o) doesn't follow any standard pattern, which is why it must be memorized separately.
           </p>
         </div>
-      </div>
 
-      <!-- Coverage Info - Redesigned -->
-      <div style="background: linear-gradient(135deg, var(--ink) 0%, #2a3a4a 100%); padding: 2.5rem; border-radius: 8px; margin-top: 3rem; color: white;">
-        <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
-          📊 Complete JLPT Coverage
-        </h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-          <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 4px;">
-            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">✅ N5</div>
-            <div style="font-size: 0.95rem; opacity: 0.9;">All essential verbs covered</div>
-          </div>
-          <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 4px;">
-            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">✅ N4</div>
-            <div style="font-size: 0.95rem; opacity: 0.9;">Comprehensive coverage</div>
-          </div>
-          <div style="text-align: center; padding: 1.5rem; background: rgba(255,255,255,0.1); border-radius: 4px;">
-            <div style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">✅ N3</div>
-            <div style="font-size: 0.95rem; opacity: 0.9;">Strong foundation included</div>
-          </div>
+      <div class="vl-cta">
+        <h3>Ready to practise?</h3>
+        <p>Every verb above is one the Conjugator can drill — forwards, or backwards in Rewind.</p>
+        <div class="vl-cta-btns">
+          <a class="vl-btn" href="/conjugator">Conjugator →</a>
+          <a class="vl-btn ghost" href="/deconjugator">Rewind →</a>
         </div>
       </div>
 
-      <!-- Call to Action -->
-      <div style="text-align: center; margin-top: 3rem; padding: 3rem 2rem; background: var(--accent); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12);">
-        <h3 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 1rem;">
-          Ready to Practice?
-        </h3>
-        <p style="color: rgba(255,255,255,0.95); margin-bottom: 2rem; font-size: 1.05rem;">
-          Now that you've seen all 129 verbs, test your knowledge with the conjugator!
-        </p>
-        <button class="btn btn-primary" onclick="showPage('conjugator')" style="background: var(--ink); color: white; padding: 1.25rem 2.5rem; font-size: 1.1rem; font-weight: 600; border: none; cursor: pointer; font-family: inherit; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: all 0.2s;">
-          Start Practicing →
-        </button>
-      </div>
     </div>
   </div>
 
@@ -235,6 +222,178 @@
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
+
+  <script>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    if (!$('vl-body')) return;
+
+    // Everything here is drawn from `verbs` and conjugateVerb() in app.js, so
+    // this page and the Conjugator can never disagree about a form.
+    if (typeof verbs === 'undefined' || typeof conjugateVerb !== 'function') {
+      $('vl-body').innerHTML = '<p style="text-align:center;color:var(--text-light)">' +
+        'The verb list could not be loaded.</p>';
+      return;
+    }
+
+    var TYPES = [
+      { k: 'godan',     n: 'Godan Verbs',   j: '五段' },
+      { k: 'ichidan',   n: 'Ichidan Verbs', j: '一段' },
+      { k: 'suru',      n: 'する Verbs',  j: 'する' },
+      { k: 'irregular', n: 'Irregular',     j: '不規則' }
+    ];
+    // A godan verb's last kana IS the rule, so the groups are the patterns.
+    var END = {
+      'く': ['いて','かない','ける'],
+      'ぐ': ['いで','がない','げる'],
+      'す': ['して','さない','せる'],
+      'つ': ['って','たない','てる'],
+      'ぬ': ['んで','なない','ねる'],
+      'ぶ': ['んで','ばない','べる'],
+      'む': ['んで','まない','める'],
+      'る': ['って','らない','れる'],
+      'う': ['って','わない','える']
+    };
+    var ORDER = ['く','ぐ','す','つ','ぬ','ぶ','む','る','う'];
+    var SHOW = [['masu','Polite'], ['te','Te-form'], ['negative','Negative'],
+                ['past','Past'], ['potential','Potential'], ['volitional','Volitional']];
+
+    function esc(x) {
+      return String(x).replace(/[&<>"]/g, function (c) {
+        return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' })[c];
+      });
+    }
+    function formByKey(k) {
+      for (var i = 0; i < forms.length; i++) if (forms[i].key === k) return forms[i];
+      return null;
+    }
+    // conjugateVerb() works in kana; the kanji and the reading share a tail, so
+    // swapping the kana head back for the kanji head restores 開きます from あきます.
+    function reKanji(kanji, kana, out) {
+      if (!out || kanji === kana) return out;
+      var n = 0;
+      while (n < kanji.length && n < kana.length &&
+             kanji[kanji.length - 1 - n] === kana[kana.length - 1 - n]) n++;
+      var stem = kana.slice(0, kana.length - n);
+      if (!stem || out.indexOf(stem) !== 0) return out;
+      return kanji.slice(0, kanji.length - n) + out.slice(stem.length);
+    }
+
+    function card(v, type) {
+      var rows = '';
+      SHOW.forEach(function (f) {
+        var F = formByKey(f[0]); if (!F) return;
+        var r = '';
+        try { r = conjugateVerb({ kanji: v.kanji, hiragana: v.hiragana, meaning: v.meaning,
+                                  jlpt: v.jlpt, type: type }, F); } catch (e) { r = ''; }
+        if (r) rows += '<div class="vl-fr"><span class="k">' + esc(f[1]) + '</span>' +
+                       '<span class="val">' + esc(reKanji(v.kanji, v.hiragana, r)) + '</span></div>';
+      });
+      return '<div class="verb-item" data-jlpt="' + esc(v.jlpt) + '" data-type="' + esc(type) +
+        '" data-kanji="' + esc(v.kanji) + '" data-hiragana="' + esc(v.hiragana) +
+        '" data-romaji="' + esc(v.romaji) + '" data-meaning="' + esc(v.meaning) + '">' +
+        '<div class="vl-top"><span><span class="w jp">' + esc(v.kanji) + '</span>' +
+        '<span class="r jp">' + esc(v.hiragana) + '</span>' +
+        '<span class="m">' + esc(v.meaning) + '</span></span>' +
+        '<span class="vl-lv lv-' + esc(v.jlpt) + '">' + esc(v.jlpt) + '</span></div>' +
+        '<div class="vl-open">' + rows +
+        '<button type="button" class="vl-say">🔊 Hear it</button></div></div>';
+    }
+
+    function group(head, note, rule, list, type) {
+      return '<div class="vl-grp"><div class="vl-grp-h"><span class="e jp">' + esc(head) + '</span>' +
+        '<span class="n">' + esc(note) + '</span>' +
+        (rule ? '<div class="vl-rule"><span>て <b>〜' + rule[0] + '</b></span>' +
+                '<span>ない <b>〜' + rule[1] + '</b></span>' +
+                '<span>可能 <b>〜' + rule[2] + '</b></span></div>' : '') +
+        '</div><div class="vl-grid">' +
+        list.map(function (v) { return card(v, type); }).join('') + '</div></div>';
+    }
+
+    var html = '';
+    ORDER.forEach(function (e) {
+      var l = (verbs.godan || []).filter(function (v) { return v.hiragana.slice(-1) === e; });
+      if (l.length) html += group('〜' + e, 'Godan · ' + l.length +
+        ' verb' + (l.length > 1 ? 's' : ''), END[e], l, 'godan');
+    });
+    var rest = [
+      ['ichidan',  '〜る', 'Ichidan · drop る', ['て','ない','られる']],
+      ['suru',     'する',  'する verbs',        ['して','しない','できる']],
+      ['irregular','来る',  'the one irregular',         ['きて','こない','こられる']]
+    ];
+    rest.forEach(function (t) {
+      var l = verbs[t[0]] || [];
+      if (l.length) html += group(t[1], t[2] + ' · ' + l.length, t[3], l, t[0]);
+    });
+    $('vl-body').innerHTML = html;
+
+    // ---- the tiles, built from the real counts ----
+    $('vl-tiles').innerHTML = TYPES.map(function (t) {
+      return '<button type="button" class="vl-tile vt-' + t.k + ' on" data-type="' + t.k + '">' +
+        '<span class="tick">✓</span><div class="n">' + ((verbs[t.k] || []).length) + '</div>' +
+        '<div class="t">' + t.n + '</div><div class="j">' + t.j + '</div></button>';
+    }).join('');
+
+    // ---- filtering: search, level and type all narrow the same list ----
+    var term = '', level = 'all', off = {};
+    function apply() {
+      var shown = 0;
+      document.querySelectorAll('.verb-item').forEach(function (it) {
+        var d = it.dataset;
+        var ok = (level === 'all' || d.jlpt === level) && !off[d.type] &&
+          (term === '' || d.kanji.toLowerCase().indexOf(term) >= 0 ||
+           d.hiragana.toLowerCase().indexOf(term) >= 0 ||
+           d.romaji.toLowerCase().indexOf(term) >= 0 ||
+           d.meaning.toLowerCase().indexOf(term) >= 0);
+        it.style.display = ok ? '' : 'none';
+        if (ok) shown++;
+      });
+      // a group whose verbs are all filtered out should go too, heading and all
+      document.querySelectorAll('.vl-grp').forEach(function (g) {
+        var any = Array.prototype.some.call(g.querySelectorAll('.verb-item'),
+          function (it) { return it.style.display !== 'none'; });
+        g.style.display = any ? '' : 'none';
+      });
+      var k = $('vl-kuru');
+      if (k) k.style.display = off.irregular ? 'none' : '';
+      $('search-results-count').textContent = shown + (shown === 1 ? ' verb' : ' verbs');
+    }
+    apply();
+
+    $('verb-search').addEventListener('input', function () {
+      term = this.value.toLowerCase().trim(); apply();
+    });
+    document.querySelector('.vl-tools').addEventListener('click', function (e) {
+      var c = e.target.closest('[data-lvl]'); if (!c) return;
+      this.querySelectorAll('[data-lvl]').forEach(function (x) { x.classList.toggle('on', x === c); });
+      level = c.dataset.lvl; apply();
+    });
+    $('vl-tiles').addEventListener('click', function (e) {
+      var t = e.target.closest('[data-type]'); if (!t) return;
+      var k = t.dataset.type;
+      off[k] = !off[k];
+      t.classList.toggle('on', !off[k]);
+      apply();
+    });
+    $('vl-body').addEventListener('click', function (e) {
+      var say = e.target.closest('.vl-say');
+      if (say) {
+        e.stopPropagation();
+        var it = say.closest('.verb-item');
+        if (it && window.KA_Voice) { try { KA_Voice.speak(it.dataset.hiragana); } catch (err) {} }
+        return;
+      }
+      var it2 = e.target.closest('.verb-item');
+      if (it2) it2.classList.toggle('open');
+    });
+
+    // Katsu can answer questions about this page
+    window.KatsuPageContext = function () {
+      return 'The student is on the Verb List page, which shows all 129 verbs the ' +
+        'Conjugator drills, grouped by the ending that decides their conjugation.';
+    };
+  })();
+  </script>
 
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
 <script>
