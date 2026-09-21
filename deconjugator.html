@@ -4,67 +4,56 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="analytics.js"></script>
-  <title>Reverse Conjugation Drill — find the dictionary form | Katsuyō Academy</title>
-  <meta name="description" content="The Conjugator in reverse: you get 食べさせられました, you give 食べる. Every answer shows the derivation, step by step.">
+  <title>The Deconjugator — take a conjugated verb back to its dictionary form | Katsuyō Academy</title>
+  <meta name="description" content="The Conjugator in reverse. You get 食べさせられました, you give 食べる. Filter by verb type, form, level and how many layers deep the form is stacked.">
   <link rel="canonical" href="https://katsuyoacademy.com/deconjugator">
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .dj-page { max-width: 760px; margin: 0 auto; padding: 2rem; }
-    .dj-desc { color: var(--text-light); line-height: 1.7; max-width: 60ch; }
+    /* The page borrows the Conjugator's furniture — .conjugator-page,
+       .form-select, .score-box, .check-btn, .feedback — so the two read as a
+       matched pair. Only what is genuinely new to this tool is styled here. */
 
-    /* ---- settings ---- */
-    .dj-set { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
-      background: white; border-radius: 10px; padding: 0.8rem 1rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,.05); margin-bottom: 1.5rem; }
-    .dj-set label { font-size: 0.72rem; letter-spacing: .09em; text-transform: uppercase;
-      font-weight: 700; color: var(--text-light); }
-    .dj-set select { font-family: inherit; font-size: 0.9rem; padding: .35rem .5rem;
-      border: 1px solid rgba(0,0,0,.14); border-radius: 6px; background: var(--paper); color: var(--ink); }
-    .dj-hard { display: flex; align-items: center; gap: .4rem; font-size: 0.85rem;
-      color: var(--text); cursor: pointer; margin-left: auto; }
+    .dj-filters { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+    .dj-filters .form-select { flex: 1 1 15rem; width: auto; min-width: 0;
+      margin-bottom: 0; padding: 0.7rem 0.8rem; font-size: 0.92rem; }
 
-    /* ---- the question ---- */
-    .dj-card { background: white; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,.07);
-      padding: 2rem 1.75rem; text-align: center; margin-bottom: 1.25rem; }
-    .dj-formname { font-size: 0.72rem; letter-spacing: .12em; text-transform: uppercase;
-      font-weight: 700; color: var(--accent); margin-bottom: 0.9rem; min-height: 1em; }
-    .dj-q { font-family: 'Noto Serif JP', serif; font-size: 3rem; color: var(--ink);
-      line-height: 1.2; margin-bottom: 0.3rem; word-break: keep-all; }
-    .dj-ask { font-size: 0.9rem; color: var(--text-light); margin-bottom: 1.4rem; }
-    .dj-in { display: flex; gap: 0.6rem; max-width: 420px; margin: 0 auto; }
-    .dj-input { flex: 1; font-family: 'Noto Serif JP', serif; font-size: 1.5rem; text-align: center;
-      padding: .65rem .8rem; border: 2px solid rgba(0,0,0,.14); border-radius: 10px;
-      background: var(--paper); color: var(--ink); outline: none; min-width: 0; }
-    .dj-input:focus { border-color: var(--accent); }
-    .dj-go { background: var(--ink); color: var(--paper); border: 0; border-radius: 10px;
-      padding: 0 1.2rem; font-family: inherit; font-weight: 600; cursor: pointer; font-size: 0.95rem; }
-    .dj-go:hover { background: var(--accent); }
+    /* the conjugated form under examination */
+    .dj-stage { background: white; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,.07);
+      padding: 2.2rem 1.75rem 1.9rem; text-align: center; margin-bottom: 1.1rem; }
+    .dj-badges { display: flex; gap: .45rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem; min-height: 1.4rem; }
+    .dj-tag { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; font-weight: 700;
+      padding: .22rem .6rem; border-radius: 4px; }
+    .dj-tag.form { background: rgba(201,169,98,.22); color: #7a5f1f; border: 1px solid rgba(201,169,98,.5); }
+    .dj-tag.layers { background: var(--ink); color: var(--paper); }
+    .dj-tag.review { background: rgba(196,92,74,.14); color: var(--accent); border: 1px solid rgba(196,92,74,.35); }
+    .dj-word { font-family: 'Noto Serif JP', serif; font-size: 3.1rem; color: var(--ink);
+      line-height: 1.18; margin-bottom: .45rem; word-break: keep-all; }
+    .dj-prompt { font-size: .93rem; color: var(--text-light); margin-bottom: 1.35rem; }
 
-    /* ---- verdict ---- */
-    .dj-verdict { border-radius: 10px; padding: 1.1rem 1.35rem; margin-bottom: 1.25rem; }
-    .dj-verdict.right { background: #f2f7f2; border-left: 4px solid var(--sage); }
-    .dj-verdict.wrong { background: #fdf4f2; border-left: 4px solid var(--accent); }
-    .dj-vh { font-weight: 700; color: var(--ink); margin-bottom: .45rem; }
-    .dj-ans { font-family: 'Noto Serif JP', serif; font-size: 1.5rem; color: var(--ink); }
-    .dj-ans small { font-family: Outfit, sans-serif; font-size: .85rem; color: var(--text-light); margin-left: .5rem; }
-    .dj-chain { margin-top: .7rem; font-size: 0.86rem; color: var(--text); }
-    .dj-chain .lnk { font-family: 'Noto Serif JP', serif; }
-    .dj-chain .arw { color: var(--gold); margin: 0 .35rem; }
-    .dj-steps { font-size: .8rem; color: var(--text-light); margin-top: .3rem; }
+    .dj-answer { display: flex; gap: .55rem; max-width: 460px; margin: 0 auto 0.9rem; }
+    .dj-answer .answer-input { text-align: center; font-size: 1.5rem; }
 
-    /* ---- score ---- */
-    .dj-score { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;
-      font-size: 0.85rem; color: var(--text-light); }
-    .dj-score b { color: var(--ink); font-size: 1.15rem; display: block; text-align: center; font-weight: 700; }
-    .dj-score .st b { color: var(--gold); }
+    /* the derivation, which is the whole point of the exercise */
+    .dj-trace { margin-top: .85rem; padding-top: .75rem; border-top: 1px dashed rgba(0,0,0,.12); }
+    .dj-trace-h { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+      font-weight: 700; color: var(--text-light); margin-bottom: .45rem; }
+    .dj-path { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+      font-family: 'Noto Serif JP', serif; font-size: 1.15rem; }
+    .dj-path .node { background: var(--paper-warm); border-radius: 6px; padding: .12rem .55rem; }
+    .dj-path .node.end { background: var(--sage); color: white; font-weight: 600; }
+    .dj-path .via { font-family: Outfit, sans-serif; font-size: .74rem; color: var(--text-light);
+      letter-spacing: .04em; }
+    .dj-path .arw { color: var(--gold); }
+
+    .dj-meta { font-size: .85rem; color: var(--text-light); margin-top: .5rem; }
+    .dj-meta b { color: var(--ink); font-family: 'Noto Serif JP', serif; font-weight: 600; }
 
     @media (max-width: 640px) {
-      .dj-page { padding: 1.25rem 1rem; }
-      .dj-q { font-size: 2.1rem; }
-      .dj-card { padding: 1.5rem 1rem; }
-      .dj-hard { margin-left: 0; }
+      .dj-word { font-size: 2.05rem; }
+      .dj-stage { padding: 1.5rem 1rem 1.3rem; }
+      .dj-filters .form-select { flex: 1 1 46%; min-width: 0; }
     }
   </style>
 </head>
@@ -110,50 +99,137 @@
   </nav>
 
   <div id="page-deconjugator" class="page active">
-    <div class="dj-page">
+    <div class="conjugator-page">
 
-      <div style="margin-bottom:1.25rem">
-        <div class="page-tag" data-i18n="dj_tag">Practice</div>
-        <h1 class="page-title"><span class="jp">逆引き</span> — <span data-i18n="dj_title">Find the Dictionary Form</span></h1>
-        <p class="dj-desc" data-i18n="dj_desc">The Conjugator in reverse. You get a conjugated verb; you give the plain form it came from. Every answer shows the derivation, step by step.</p>
-      </div>
-
-      <div class="dj-set">
-        <label for="dj-level" data-i18n="dj_level">Level</label>
-        <select id="dj-level">
-          <option value="N5">N5</option>
-          <option value="N5,N4" selected>N5–N4</option>
-          <option value="N5,N4,N3">N5–N3</option>
-          <option value="all" data-i18n="dj_all">All</option>
-        </select>
-        <label for="dj-group" data-i18n="dj_forms">Forms</label>
-        <select id="dj-group">
-          <option value="basic" data-i18n="dj_basic">Basic</option>
-          <option value="intermediate" data-i18n="dj_inter">Intermediate</option>
-          <option value="advanced" data-i18n="dj_adv">Advanced</option>
-          <option value="all" selected data-i18n="dj_mixed">Mixed</option>
-        </select>
-        <label class="dj-hard"><input type="checkbox" id="dj-hard"> <span data-i18n="dj_hide">Hide the form name</span></label>
-      </div>
-
-      <div class="dj-card">
-        <div class="dj-formname" id="dj-formname"></div>
-        <div class="dj-q jp" id="dj-q">…</div>
-        <div class="dj-ask" id="dj-ask" data-i18n="dj_ask">What is the dictionary form?</div>
-        <div class="dj-in">
-          <input id="dj-input" class="dj-input" type="text" autocomplete="off" autocapitalize="off"
-                 spellcheck="false" aria-label="Your answer">
-          <button id="dj-go" class="dj-go" type="button" data-i18n="dj_check">Check</button>
+      <div class="conjugator-header">
+        <div>
+          <div class="page-tag" data-i18n="dj_tag">Interactive Practice</div>
+          <h1 class="page-title" data-i18n="dj_title">The Deconjugator</h1>
+        </div>
+        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+          <button type="button" id="dj-reset" class="reset-btn" data-i18n="dj_reset">↺ Reset</button>
+          <div class="score-box streak-box" title="Answers right in a row">
+            <div class="score-label" data-i18n="dj_streak">Streak</div>
+            <div class="score-value">🔥 <span id="dj-streak">0</span>
+              <span class="streak-best-wrap">(<span data-i18n="dj_best">best</span> <span id="dj-best">0</span>)</span></div>
+          </div>
+          <div class="score-box">
+            <div class="score-label" data-i18n="dj_score">Score</div>
+            <div class="score-value"><span id="dj-right">0</span> / <span id="dj-total">0</span></div>
+          </div>
         </div>
       </div>
 
-      <div id="dj-verdict"></div>
+      <p class="dj-desc" style="color:var(--text-light);max-width:64ch;margin:0 0 1.1rem" data-i18n="dj_desc">
+        The Conjugator, backwards. You are shown a conjugated verb and you give the dictionary form it came from.
+        Every answer traces the derivation, one layer at a time.
+      </p>
 
-      <div class="dj-score">
-        <div><b id="dj-right">0</b><span data-i18n="dj_correct">correct</span></div>
-        <div><b id="dj-total">0</b><span data-i18n="dj_asked">asked</span></div>
-        <div class="st"><b id="dj-streak">0</b><span data-i18n="dj_streak">streak</span></div>
+      <!-- Filters -->
+      <div class="dj-filters">
+        <select id="dj-form" class="form-select" title="Which form the verb is in">
+          <optgroup label="🎲 Random Modes" data-i18n-label="dj_og_random">
+            <option value="random" data-i18n="dj_f_random">Random (all forms)</option>
+            <option value="random-basic" data-i18n="dj_f_rbasic">Random (basic)</option>
+            <option value="random-intermediate" data-i18n="dj_f_rint">Random (intermediate)</option>
+            <option value="random-advanced" data-i18n="dj_f_radv">Random (advanced)</option>
+          </optgroup>
+          <optgroup label="📚 Basic Forms (N5)" data-i18n-label="dj_og_basic">
+            <option value="masu" data-i18n="dj_f_masu">Polite (ます)</option>
+            <option value="negative" data-i18n="dj_f_neg">Negative (ない)</option>
+            <option value="past" data-i18n="dj_f_past">Past (た)</option>
+            <option value="te" data-i18n="dj_f_te">Te-form (て)</option>
+            <option value="masen" data-i18n="dj_f_masen">Polite Negative (ません)</option>
+            <option value="mashita" data-i18n="dj_f_mashita">Polite Past (ました)</option>
+            <option value="nakatta" data-i18n="dj_f_nakatta">Negative Past (なかった)</option>
+          </optgroup>
+          <optgroup label="🎯 Intermediate Forms (N4)" data-i18n-label="dj_og_inter">
+            <option value="tai" data-i18n="dj_f_tai">Want to (たい)</option>
+            <option value="potential" data-i18n="dj_f_pot">Potential (られる/える)</option>
+            <option value="volitional" data-i18n="dj_f_vol">Volitional (よう/おう)</option>
+            <option value="ba" data-i18n="dj_f_ba">Conditional (ば)</option>
+            <option value="tara" data-i18n="dj_f_tara">Conditional (たら)</option>
+            <option value="imperative" data-i18n="dj_f_imp">Imperative (命令形)</option>
+          </optgroup>
+          <optgroup label="🔥 Advanced Forms (N3+)" data-i18n-label="dj_og_adv">
+            <option value="passive" data-i18n="dj_f_pass">Passive (られる/あれる)</option>
+            <option value="causative" data-i18n="dj_f_caus">Causative (させる/あせる)</option>
+            <option value="causative-passive" data-i18n="dj_f_cp">Causative-Passive (させられる)</option>
+          </optgroup>
+        </select>
+
+        <select id="dj-type" class="form-select" title="Which kind of verb">
+          <option value="all" data-i18n="dj_t_all">All verb types</option>
+          <option value="godan" data-i18n="dj_t_godan">Godan only</option>
+          <option value="ichidan" data-i18n="dj_t_ichidan">Ichidan only</option>
+          <option value="suru" data-i18n="dj_t_suru">する verbs only</option>
+          <option value="irregular" data-i18n="dj_t_irr">来る only</option>
+        </select>
+
+        <select id="dj-level" class="form-select" title="JLPT level of the verb">
+          <option value="all" data-i18n="dj_l_all">All levels</option>
+          <option value="N5" data-i18n="dj_l_n5">N5 only</option>
+          <option value="N4" data-i18n="dj_l_n4">N4 only</option>
+          <option value="N3" data-i18n="dj_l_n3">N3 only</option>
+          <option value="N5,N4" data-i18n="dj_l_n54">N5 + N4</option>
+          <option value="N4,N3" data-i18n="dj_l_n43">N4 + N3</option>
+        </select>
+
+        <!-- The real difficulty axis for this tool: not which form, but how
+             many of them are stacked on top of each other. -->
+        <select id="dj-depth" class="form-select" title="How many forms are stacked">
+          <option value="1" data-i18n="dj_d1">One layer</option>
+          <option value="2" data-i18n="dj_d2">Up to two layers</option>
+          <option value="3" data-i18n="dj_d3">Up to three layers</option>
+          <option value="deep" data-i18n="dj_ddeep">Stacked only (2–3)</option>
+        </select>
+
+        <select id="dj-goal" class="form-select" title="How many questions in a round">
+          <option value="10" data-i18n="dj_g10">Round of 10</option>
+          <option value="20" data-i18n="dj_g20">Round of 20</option>
+          <option value="50" data-i18n="dj_g50">Round of 50</option>
+          <option value="0" selected data-i18n="dj_g0">No limit</option>
+        </select>
       </div>
+
+      <div class="practice-options">
+        <label class="opt-toggle">
+          <input type="checkbox" id="dj-hideform">
+          <span data-i18n="dj_hide">Don't tell me which form it is</span>
+        </label>
+        <label class="opt-toggle">
+          <input type="checkbox" id="dj-kanji" checked>
+          <span data-i18n="dj_kanjiq">Show the question in kanji where possible</span>
+        </label>
+        <span class="options-right">
+          <span id="dj-progress" class="session-progress">0 / 10</span>
+        </span>
+      </div>
+
+      <div id="dj-summary" class="session-summary" style="display:none"></div>
+
+      <div id="dj-stage" class="dj-stage">
+        <div class="dj-badges" id="dj-badges"></div>
+        <div class="dj-word jp" id="dj-word">…</div>
+        <div class="dj-prompt" data-i18n="dj_ask">What is the dictionary form?</div>
+        <div class="dj-answer">
+          <input id="dj-input" class="answer-input jp" type="text" autocomplete="off"
+                 autocorrect="off" autocapitalize="off" spellcheck="false"
+                 placeholder="taberu → たべる" aria-label="Your answer">
+          <button type="button" id="dj-romaji" class="romaji-toggle"
+                  title="Romaji typing: type taberu, get たべる">あ</button>
+        </div>
+        <button type="button" id="dj-hint" class="hint-btn" style="margin-top:.2rem">
+          <span data-i18n="dj_showhint">💡 Show hint</span>
+        </button>
+        <div id="dj-hintbox" class="hint-box" style="display:none"></div>
+      </div>
+
+      <div id="dj-feedback" class="feedback" style="display:none"></div>
+
+      <button type="button" id="dj-check" class="check-btn primary" data-i18n="dj_check">Check Answer</button>
+      <button type="button" id="dj-skip" class="skip-btn" data-i18n="dj_skip">Show me the answer</button>
+      <button type="button" id="dj-next" class="check-btn next" style="display:none" data-i18n="dj_next">Next Question →</button>
 
     </div>
   </div>
@@ -172,12 +248,12 @@
       return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]; }); }
     function tr(k, f){ return (typeof t === 'function' && t(k) !== k) ? t(k) : f; }
 
-    // The question bank is generated from the Conjugator's own engine — the
-    // same `verbs`, `forms` and conjugateVerb() the forward drill uses — so the
-    // two pages can never disagree about what a form looks like.
+    // Questions come from the Conjugator's own engine — the same `verbs`,
+    // `forms` and conjugateVerb() — so the two pages can never disagree about
+    // what a form looks like.
     if (typeof verbs === 'undefined' || typeof conjugateVerb !== 'function') {
-      $('dj-q').textContent = '—';
-      $('dj-ask').textContent = 'The conjugation engine did not load.';
+      $('dj-word').textContent = '—';
+      $('dj-stage').querySelector('.dj-prompt').textContent = 'The conjugation engine did not load.';
       return;
     }
 
@@ -186,160 +262,306 @@
       intermediate: ['tai', 'potential', 'volitional', 'ba', 'tara', 'imperative'],
       advanced:     ['passive', 'causative', 'causative-passive']
     };
-    GROUPS.all = GROUPS.basic.concat(GROUPS.intermediate, GROUPS.advanced);
+    var ALL_FORMS = GROUPS.basic.concat(GROUPS.intermediate, GROUPS.advanced);
+
+    // Forms whose result is itself an ichidan verb, so another form can be
+    // stacked on top: 食べる → 食べさせる → 食べさせられる → 食べさせられました.
+    var STACKABLE = ['causative', 'passive', 'potential', 'causative-passive'];
+    // What can sit on top of one of those
+    var TOPPERS = ['masu', 'mashita', 'masen', 'past', 'negative', 'nakatta', 'te', 'tai', 'tara', 'ba'];
+
+    var FORM = function (k) { return forms.filter(function (f) { return f.key === k; })[0]; };
 
     // every dictionary form the drill can ask about, in both scripts
     var VOCAB = {};
-    Object.keys(verbs).forEach(function (type) {
-      verbs[type].forEach(function (v) { VOCAB[v.kanji] = 1; VOCAB[v.hiragana] = 1; });
+    Object.keys(verbs).forEach(function (ty) {
+      verbs[ty].forEach(function (v) { VOCAB[v.kanji] = 1; VOCAB[v.hiragana] = 1; });
     });
     var known = function (w) { return VOCAB[w] === 1; };
 
     var STORE = 'katsuyoDeconjugator';
-    var state = { right: 0, total: 0, streak: 0, best: 0 };
-    try { state = JSON.parse(localStorage.getItem(STORE)) || state; } catch (e) {}
-    // verbs missed recently, so they come back around
-    var weak = [];
+    var S = { right: 0, total: 0, streak: 0, best: 0 };
+    try { S = Object.assign(S, JSON.parse(localStorage.getItem(STORE)) || {}); } catch (e) {}
+    var weak = [], cur = null, answered = false, inRound = 0;
 
-    var cur = null, answered = false;
+    function save(){ try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e){} }
 
-    function levels() {
-      var v = $('dj-level').value;
-      return v === 'all' ? null : v.split(',');
-    }
-
-    function pick() {
-      var allow = levels(), keys = GROUPS[$('dj-group').value] || GROUPS.all;
-      var pool = [];
+    function pool() {
+      var ty = $('dj-type').value, lv = $('dj-level').value;
+      var allow = lv === 'all' ? null : lv.split(',');
+      var out = [];
       Object.keys(verbs).forEach(function (type) {
+        if (ty !== 'all' && ty !== type) return;
         verbs[type].forEach(function (v) {
           if (allow && allow.indexOf(v.jlpt) < 0) return;
-          pool.push({ v: v, type: type });
+          out.push({ v: v, type: type });
         });
       });
-      if (!pool.length) return null;
+      return out;
+    }
 
-      // one in four questions revisits something recently missed
-      var choice = null;
-      if (weak.length && Math.random() < 0.25) {
-        choice = weak[Math.floor(Math.random() * weak.length)];
-      } else {
-        choice = pool[Math.floor(Math.random() * pool.length)];
+    function wantedForms() {
+      var f = $('dj-form').value;
+      if (f === 'random') return ALL_FORMS;
+      if (f === 'random-basic') return GROUPS.basic;
+      if (f === 'random-intermediate') return GROUPS.intermediate;
+      if (f === 'random-advanced') return GROUPS.advanced;
+      return [f];
+    }
+
+    function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function build() {
+      var p = pool();
+      if (!p.length) return null;
+      var depth = $('dj-depth').value;
+      var keys = wantedForms();
+      var useKanji = $('dj-kanji').checked;
+
+      for (var attempt = 0; attempt < 30; attempt++) {
+        var choice = (weak.length && Math.random() < 0.22) ? pick(weak) : pick(p);
+        var base = { kanji: choice.v.kanji, hiragana: choice.v.hiragana,
+                     meaning: choice.v.meaning, jlpt: choice.v.jlpt };
+        var layers = [], word = '';
+
+        // how many forms to stack on this one
+        var want = 1;
+        if (depth === '2') want = 1 + Math.floor(Math.random() * 2);
+        else if (depth === '3') want = 1 + Math.floor(Math.random() * 3);
+        else if (depth === 'deep') want = 2 + Math.floor(Math.random() * 2);
+
+        // Only causative/passive/potential can carry another layer, so when a
+        // stack is wanted the bottom must be one of those. If the chosen form
+        // group has none — "basic forms", say — the requested form becomes the
+        // TOP layer instead and a stackable one goes underneath it. That keeps
+        // "stacked only + basic" meaningful (causative + polite past) rather
+        // than leaving it with nothing to ask.
+        var k0 = pick(keys), topFirst = null;
+        if (want > 1 && STACKABLE.indexOf(k0) < 0) {
+          var ok = keys.filter(function (k) { return STACKABLE.indexOf(k) >= 0; });
+          if (ok.length) { k0 = pick(ok); }
+          else { topFirst = k0; k0 = pick(STACKABLE); }
+        }
+        var f0 = FORM(k0);
+        if (!f0) continue;
+        try { word = conjugateVerb(Object.assign({}, base, { type: choice.type }), f0); } catch (e) { word = ''; }
+        if (!word) continue;
+        layers.push(f0.name);
+
+        // each extra layer treats the previous result as an ichidan verb
+        for (var n = 1; n < want && word; n++) {
+          var kn = (n === 1 && topFirst) ? topFirst : pick(TOPPERS), fn = FORM(kn);
+          if (!fn) break;
+          var nxt = '';
+          try { nxt = conjugateVerb({ kanji: word, hiragana: word, meaning: '', jlpt: base.jlpt, type: 'ichidan' }, fn); } catch (e) { nxt = ''; }
+          if (!nxt || nxt === word) break;
+          word = nxt; layers.push(fn.name);
+        }
+
+        if (!word || word === base.kanji || word === base.hiragana) continue;
+        if (depth === 'deep' && layers.length < 2) continue;
+
+        // never ask something the deconjugator itself cannot justify
+        var d = [];
+        try { d = KA_Deconjugate.deconjugate(word, known); } catch (e) {}
+        var solvable = d.some(function (r) { return r.word === base.kanji || r.word === base.hiragana; });
+        if (!solvable) continue;
+
+        return { verb: choice.v, type: choice.type, word: word, layers: layers,
+                 formKey: k0, derivation: d, useKanji: useKanji };
       }
-      var form = null, conj = '', tries = 0;
-      while (tries++ < 12) {
-        var fk = keys[Math.floor(Math.random() * keys.length)];
-        form = forms.filter(function (f) { return f.key === fk; })[0];
-        if (!form) continue;
-        try { conj = conjugateVerb({ v: 0, kanji: choice.v.kanji, hiragana: choice.v.hiragana,
-                                     meaning: choice.v.meaning, jlpt: choice.v.jlpt,
-                                     type: choice.type }, form); } catch (e) { conj = ''; }
-        // never ask a question whose answer is the question
-        if (conj && conj !== choice.v.kanji && conj !== choice.v.hiragana) break;
-        conj = '';
+      return null;
+    }
+
+    function badges() {
+      var b = '';
+      if (!$('dj-hideform').checked) {
+        b += '<span class="dj-tag form">' + esc(cur.layers.join(' + ')) + '</span>';
       }
-      if (!conj) return null;
-      return { verb: choice.v, type: choice.type, form: form, conj: conj };
+      if (cur.layers.length > 1) {
+        b += '<span class="dj-tag layers">' + cur.layers.length + ' ' + tr('dj_layers', 'layers') + '</span>';
+      }
+      if (weak.some(function (w) { return w.v.kanji === cur.verb.kanji; })) {
+        b += '<span class="dj-tag review">' + tr('dj_review', '🔁 Review') + '</span>';
+      }
+      return b;
     }
 
     function next() {
       answered = false;
-      cur = pick();
-      $('dj-verdict').innerHTML = '';
+      cur = build();
+      $('dj-feedback').style.display = 'none';
+      $('dj-hintbox').style.display = 'none';
+      $('dj-hint').style.display = 'inline-block';
       $('dj-input').value = '';
-      if (!cur) { $('dj-q').textContent = '—'; return; }
-      $('dj-q').textContent = cur.conj;
-      $('dj-formname').textContent = $('dj-hard').checked ? '' : cur.form.name;
-      $('dj-go').textContent = tr('dj_check', 'Check');
+      $('dj-check').style.display = 'block';
+      $('dj-skip').style.display = 'block';
+      $('dj-next').style.display = 'none';
+      if (!cur) {
+        $('dj-word').textContent = '—';
+        $('dj-badges').innerHTML = '<span class="dj-tag review">' +
+          tr('dj_nothing', 'No questions match these filters') + '</span>';
+        return;
+      }
+      $('dj-word').textContent = cur.word;
+      $('dj-badges').innerHTML = badges();
       $('dj-input').focus();
+      progress();
     }
 
     function accepted() {
-      // the verb itself, in either script, is always right; the deconjugator
-      // supplies any other form that legitimately produces the same string
       var ok = [cur.verb.kanji, cur.verb.hiragana];
-      try {
-        KA_Deconjugate.deconjugate(cur.conj, known).forEach(function (r) {
-          if (ok.indexOf(r.word) < 0) ok.push(r.word);
-        });
-      } catch (e) {}
+      cur.derivation.forEach(function (r) { if (ok.indexOf(r.word) < 0) ok.push(r.word); });
       return ok;
     }
 
+    function trace() {
+      var d = cur.derivation.filter(function (r) {
+        return r.word === cur.verb.kanji || r.word === cur.verb.hiragana;
+      })[0] || cur.derivation[0];
+      var steps = d ? d.path.slice().reverse() : cur.layers.slice();
+      var h = '<div class="dj-trace"><div class="dj-trace-h">' +
+              tr('dj_trace', 'How it was built') + '</div><div class="dj-path">' +
+              '<span class="node">' + esc(cur.word) + '</span>';
+      steps.forEach(function (s) {
+        h += '<span class="arw">←</span><span class="via">' + esc(s) + '</span>';
+      });
+      h += '<span class="arw">←</span><span class="node end">' + esc(cur.verb.kanji) + '</span></div></div>';
+      return h;
+    }
+
+    function reveal(right, given) {
+      answered = true;
+      $('dj-check').style.display = 'none';
+      $('dj-skip').style.display = 'none';
+      $('dj-next').style.display = 'block';
+      $('dj-hint').style.display = 'none';
+
+      var fb = $('dj-feedback');
+      fb.className = 'feedback ' + (right ? 'correct' : 'incorrect');
+      fb.style.display = 'block';
+      fb.innerHTML =
+        '<div class="feedback-title">' +
+          (right ? '✓ ' + tr('dj_right', 'Correct!')
+                 : '✗ ' + tr('dj_wrong', 'Not quite') +
+                   (given ? ' — <span class="jp">' + esc(given) + '</span>' : '')) +
+        '</div>' +
+        '<div class="feedback-answer jp">' + esc(cur.verb.kanji) +
+          '<span class="dj-meta" style="display:block">【' + esc(cur.verb.hiragana) + '】 ' +
+          esc(cur.verb.meaning) + ' · ' + esc(cur.type) + ' · ' + esc(cur.verb.jlpt) + '</span></div>' +
+        trace();
+      $('dj-next').focus();
+    }
+
     function check() {
-      if (!cur) return;
-      if (answered) { next(); return; }
+      if (!cur || answered) return;
       var given = ($('dj-input').value || '').trim();
       if (!given) return;
-      answered = true;
+      var right = accepted().indexOf(given) >= 0;
 
-      var ok = accepted();
-      var right = ok.indexOf(given) >= 0;
-
-      state.total++;
+      S.total++; inRound++;
       if (right) {
-        state.right++; state.streak++;
-        if (state.streak > state.best) state.best = state.streak;
+        S.right++; S.streak++;
+        if (S.streak > S.best) S.best = S.streak;
         weak = weak.filter(function (w) { return w.v.kanji !== cur.verb.kanji; });
       } else {
-        state.streak = 0;
+        S.streak = 0;
         if (!weak.some(function (w) { return w.v.kanji === cur.verb.kanji; })) {
           weak.push({ v: cur.verb, type: cur.type });
-          if (weak.length > 12) weak.shift();
+          if (weak.length > 14) weak.shift();
         }
       }
-      try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
-      paint();
+      save(); paint(); reveal(right, right ? '' : given);
+      roundCheck();
+    }
 
-      // the teaching moment: show how the form was built
-      var d = [];
-      try { d = KA_Deconjugate.deconjugate(cur.conj, known); } catch (e) {}
-      var steps = d.length ? d[0].path.slice().reverse().join(' · ') : cur.form.name;
+    function skip() {
+      if (!cur || answered) return;
+      S.total++; inRound++; S.streak = 0;
+      if (!weak.some(function (w) { return w.v.kanji === cur.verb.kanji; })) {
+        weak.push({ v: cur.verb, type: cur.type });
+      }
+      save(); paint(); reveal(false, ''); roundCheck();
+    }
 
-      $('dj-verdict').innerHTML =
-        '<div class="dj-verdict ' + (right ? 'right' : 'wrong') + '">' +
-          '<div class="dj-vh">' + (right ? '✓ ' + tr('dj_right', 'Correct')
-                                         : '✗ ' + tr('dj_wrong', 'Not quite')) + '</div>' +
-          '<div class="dj-ans jp">' + esc(cur.verb.kanji) +
-            '<small>' + esc(cur.verb.hiragana) + ' · ' + esc(cur.verb.meaning) +
-            ' · ' + esc(cur.type) + ' · ' + esc(cur.verb.jlpt) + '</small></div>' +
-          '<div class="dj-chain"><span class="lnk">' + esc(cur.conj) + '</span>' +
-            '<span class="arw">→</span><span class="lnk">' + esc(cur.verb.kanji) + '</span>' +
-            '<div class="dj-steps">' + esc(steps) + '</div></div>' +
-        '</div>';
-      $('dj-go').textContent = tr('dj_next', 'Next →');
-      $('dj-input').focus();
+    function hint() {
+      var names = { godan: 'Godan', ichidan: 'Ichidan', suru: 'する', irregular: '来る' };
+      $('dj-hintbox').style.display = 'block';
+      $('dj-hintbox').innerHTML =
+        '<div class="hint-label">💡 ' + tr('dj_hint', 'Hint') + '</div>' +
+        '<div>' + tr('dj_hint_type', 'The answer is a') + ' <b>' +
+        esc(names[cur.type] || cur.type) + '</b> ' + tr('dj_hint_verb', 'verb') +
+        ' (' + esc(cur.verb.jlpt) + ')' +
+        (cur.layers.length > 1
+          ? ', ' + tr('dj_hint_layers', 'and the form is stacked') + ' ' + cur.layers.length +
+            ' ' + tr('dj_layers', 'layers') + ' ' + tr('dj_hint_deep', 'deep')
+          : '') + '.</div>';
+      $('dj-hint').style.display = 'none';
+    }
+
+    function goal(){ return parseInt($('dj-goal').value, 10) || 0; }
+    function progress() {
+      var g = goal();
+      $('dj-progress').textContent = g ? inRound + ' / ' + g : inRound + '';
+    }
+    function roundCheck() {
+      var g = goal();
+      progress();
+      if (!g || inRound < g) return;
+      var pct = Math.round(100 * S.right / Math.max(1, S.total));
+      $('dj-summary').style.display = 'block';
+      $('dj-summary').innerHTML = '<strong>' + tr('dj_round_done', 'Round finished') + '</strong> — ' +
+        inRound + ' ' + tr('dj_asked', 'asked') + ', ' + pct + '% ' +
+        tr('dj_overall', 'correct overall') + '.';
+      inRound = 0;
     }
 
     function paint() {
-      $('dj-right').textContent = state.right;
-      $('dj-total').textContent = state.total;
-      $('dj-streak').textContent = state.streak;
+      $('dj-right').textContent = S.right;
+      $('dj-total').textContent = S.total;
+      $('dj-streak').textContent = S.streak;
+      $('dj-best').textContent = S.best;
     }
 
     // rōmaji → kana as you type, the same converter the rest of the site uses
-    if (window.KA_KanaInput) { try { KA_KanaInput.attach($('dj-input')); } catch (e) {} }
+    var kana = null;
+    if (window.KA_KanaInput) { try { kana = KA_KanaInput.attach($('dj-input')); } catch (e) {} }
+    $('dj-romaji').onclick = function () {
+      this.classList.toggle('off');
+      this.title = this.classList.contains('off') ? 'Romaji conversion off' : 'Romaji conversion on';
+      if (kana && kana.setEnabled) kana.setEnabled(!this.classList.contains('off'));
+      $('dj-input').focus();
+    };
 
-    $('dj-go').onclick = check;
+    $('dj-check').onclick = check;
+    $('dj-skip').onclick = skip;
+    $('dj-next').onclick = next;
+    $('dj-hint').onclick = hint;
     $('dj-input').addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { e.preventDefault(); check(); }
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      if (answered) next(); else check();
     });
-    ['dj-level', 'dj-group'].forEach(function (id) { $(id).onchange = next; });
-    $('dj-hard').onchange = function () {
-      $('dj-formname').textContent = this.checked || !cur ? '' : cur.form.name;
+    ['dj-form', 'dj-type', 'dj-level', 'dj-depth', 'dj-kanji'].forEach(function (id) {
+      $(id).onchange = function () { $('dj-summary').style.display = 'none'; next(); };
+    });
+    $('dj-goal').onchange = function () { inRound = 0; $('dj-summary').style.display = 'none'; progress(); };
+    $('dj-hideform').onchange = function () { if (cur) $('dj-badges').innerHTML = badges(); };
+    $('dj-reset').onclick = function () {
+      S = { right: 0, total: 0, streak: 0, best: 0 }; weak = []; inRound = 0;
+      save(); paint(); $('dj-summary').style.display = 'none'; next();
     };
 
     window.KatsuPageContext = function () {
-      if (!cur) return 'The student is on the reverse-conjugation drill.';
-      return 'The student is on the reverse-conjugation drill. They were shown 「' +
-        cur.conj + '」 (the ' + cur.form.name + ' of ' + cur.verb.kanji + '／' +
-        cur.verb.hiragana + ', ' + cur.verb.meaning + ', a ' + cur.type +
-        ' verb) and asked for the dictionary form. Explain how that form is built ' +
-        'and how to recognise it.';
+      if (!cur) return 'The student is on the Deconjugator.';
+      return 'The student is on the Deconjugator. They were shown 「' + cur.word +
+        '」 — the ' + cur.layers.join(' + ') + ' of ' + cur.verb.kanji + '／' +
+        cur.verb.hiragana + ' (' + cur.verb.meaning + ', a ' + cur.type +
+        ' verb) — and asked for the dictionary form. Explain how that form is ' +
+        'built up and how to recognise each layer when unwinding it.';
     };
 
-    paint();
-    next();
+    paint(); next();
   })();
   </script>
 
