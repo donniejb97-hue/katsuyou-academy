@@ -11,77 +11,147 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <style>
-    .dc-page { max-width: 980px; margin: 0 auto; padding: 2rem; }
-    .dc-desc { color: var(--text-light); line-height: 1.7; max-width: 62ch; }
-
-    /* ---- search ---- */
-    .dc-search { position: sticky; top: 0; z-index: 20; background: var(--paper);
-      padding: 1rem 0 0.9rem; margin-bottom: 1.25rem; }
-    .dc-field { display: flex; gap: 0.6rem; align-items: stretch; }
-    .dc-input { flex: 1; font-family: 'Noto Serif JP', 'Outfit', serif; font-size: 1.25rem;
-      padding: 0.85rem 1.1rem; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px;
-      background: white; color: var(--ink); outline: none; transition: border-color .15s; min-width: 0; }
-    .dc-input:focus { border-color: var(--accent); }
-    .dc-input::placeholder { font-family: Outfit, sans-serif; font-size: 1rem; color: #b5b5b5; }
-    .dc-clear { background: var(--ink); color: var(--paper); border: 0; border-radius: 10px;
-      padding: 0 1.15rem; cursor: pointer; font-family: inherit; font-size: 0.9rem; font-weight: 600; }
+    /* ---- masthead: the search is the only object on it ---- */
+    .dc-head { background: var(--ink); color: var(--paper);
+      padding: 2.5rem 1.5rem 2.25rem; text-align: center; }
+    .dc-head h1 { margin: 0; font-weight: 400; }
+    .dc-head .kan { display: block; font-family: 'Noto Serif JP', serif;
+      font-size: 2.6rem; color: var(--gold); line-height: 1; }
+    .dc-head .nm { display: block; font-size: 0.9rem; opacity: .6;
+      margin: .45rem 0 1.4rem; font-weight: 400; }
+    .dc-field { max-width: 620px; margin: 0 auto; position: relative; }
+    .dc-input { width: 100%; font-family: 'Noto Serif JP', 'Outfit', serif; font-size: 1.3rem;
+      padding: .9rem 9.2rem .9rem 1.2rem; border: 0; border-radius: 999px;
+      background: rgba(255,255,255,.96); color: var(--ink); outline: none;
+      box-shadow: 0 6px 24px rgba(0,0,0,.25); }
+    .dc-input::placeholder { font-family: Outfit, sans-serif; font-size: .95rem; color: #b0b0b0; }
+    .dc-input::-webkit-search-cancel-button { display: none; }
+    .dc-clear { position: absolute; right: .5rem; top: 50%; transform: translateY(-50%);
+      background: var(--ink); color: var(--paper); border: 0; border-radius: 999px;
+      padding: .45rem 1rem; cursor: pointer; font-family: inherit; font-size: .82rem; font-weight: 600; }
     .dc-clear:hover { background: var(--accent); }
-    .dc-hint { font-size: 0.8rem; color: var(--text-light); margin-top: 0.55rem; }
-    .dc-hint b { color: var(--accent); font-weight: 600; cursor: pointer; }
-    .dc-hint b:hover { text-decoration: underline; }
+    /* rōmaji → kana, the same toggle the Conjugator and Talk use */
+    .dc-kana { position: absolute; right: 5.1rem; top: 50%; transform: translateY(-50%);
+      width: 2.1rem; height: 2.1rem; border-radius: 50%; border: 1px solid rgba(0,0,0,.14);
+      background: var(--paper-warm); color: var(--ink); cursor: pointer;
+      font-family: 'Noto Serif JP', serif; font-size: 1rem; line-height: 1; padding: 0; }
+    .dc-kana:hover { border-color: var(--accent); color: var(--accent); }
+    .dc-kana.off { font-family: Outfit, sans-serif; font-weight: 600;
+      color: var(--text-light); background: transparent; }
+    .dc-tries { margin-top: .9rem; font-size: .8rem; opacity: .65;
+      display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+    .dc-tries b { font-weight: 400; border-bottom: 1px dotted rgba(255,255,255,.4); cursor: pointer; }
+    .dc-tries b:hover { opacity: 1; color: var(--gold); border-bottom-color: var(--gold); }
 
-    /* ---- deconjugation banner ---- */
-    .dc-decon { background: var(--ink); color: var(--paper); border-radius: 10px;
-      padding: 1rem 1.25rem; margin-bottom: 1.25rem; }
-    .dc-decon-h { font-size: 0.72rem; letter-spacing: .12em; text-transform: uppercase;
-      color: var(--gold); font-weight: 700; margin-bottom: 0.55rem; }
-    .dc-chain { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
-      font-family: 'Noto Serif JP', serif; font-size: 1.15rem; }
-    .dc-chain .arw { color: var(--gold); font-family: Outfit, sans-serif; }
-    .dc-chain .step { background: rgba(255,255,255,.1); border-radius: 6px; padding: .15rem .6rem; }
-    .dc-chain .fin { background: var(--gold); color: var(--ink); font-weight: 600;
-      border-radius: 6px; padding: .15rem .7rem; }
-    .dc-steps { font-family: Outfit, sans-serif; font-size: 0.82rem;
-      color: rgba(250,249,247,.62); margin-top: 0.5rem; }
+    /* ---- two columns: entries, and the panel pinned beside them ---- */
+    .dc-page { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .dc-cols { display: grid; grid-template-columns: minmax(0,1fr) 330px;
+      gap: 2.25rem; align-items: start; }
 
-    /* ---- results ---- */
-    .dc-count { font-size: 0.82rem; color: var(--text-light); margin-bottom: 0.9rem; }
-    .dc-card { background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,.06);
-      padding: 1.15rem 1.4rem; margin-bottom: 0.85rem; }
-    .dc-head { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
-    .dc-word { font-family: 'Noto Serif JP', serif; font-size: 1.85rem; color: var(--ink); line-height: 1.25; }
-    .dc-read { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: var(--accent); }
-    .dc-alt { font-size: 0.8rem; color: var(--text-light); }
-    .dc-common { background: var(--sage); color: white; font-size: 0.62rem; font-weight: 700;
-      letter-spacing: .09em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 4px; }
-    .dc-sense { display: flex; gap: 0.7rem; padding: 0.4rem 0; border-top: 1px solid rgba(0,0,0,.06); }
-    .dc-sense:first-of-type { border-top: 0; }
-    .dc-num { color: var(--text-light); font-size: 0.85rem; min-width: 1.2rem; flex: 0 0 auto; padding-top: .12rem; }
+    /* ---- deconjugation trace: about the query, so it sits above the results ---- */
+    .dc-decon { background: white; border: 1px solid rgba(0,0,0,.09);
+      border-left: 3px solid var(--gold); border-radius: 0 8px 8px 0;
+      padding: .9rem 1.1rem; margin-bottom: 1.6rem; }
+    .dc-decon-h { font-size: .7rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-light); font-weight: 700; margin-bottom: .45rem; }
+    .dc-chain { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; font-size: 1.02rem; }
+    .dc-chain b { font-family: 'Noto Serif JP', serif; font-weight: 400; color: var(--ink); }
+    .dc-chain .arw { color: var(--gold); }
+    .dc-chain .step { font-size: .74rem; color: var(--text-light);
+      background: var(--paper-warm); border-radius: 999px; padding: .1rem .55rem; }
+
+    .dc-count { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-light); margin-bottom: 1.4rem; }
+
+    /* ---- entries, set like a printed page ---- */
+    .dc-card { padding: 0 0 1.7rem 1.35rem; margin-bottom: 1.7rem;
+      border-left: 2px solid rgba(0,0,0,.09); position: relative; cursor: pointer; }
+    .dc-card:last-of-type { margin-bottom: 0; }
+    .dc-card::before { content: ''; position: absolute; left: -2px; top: 0;
+      width: 2px; height: 2.6rem; background: rgba(0,0,0,.09); transition: background .12s; }
+    .dc-card.on::before { background: var(--accent); }
+    .dc-card:not(.on) { opacity: .78; }
+    .dc-card:hover { opacity: 1; }
+    .dc-read { font-size: .85rem; color: var(--accent);
+      font-family: 'Noto Serif JP', serif; letter-spacing: .14em; }
+    .dc-word { font-family: 'Noto Serif JP', serif; font-size: 2.3rem; color: var(--ink);
+      line-height: 1.15; display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+    .dc-common { font-family: Outfit, sans-serif; font-size: .62rem; letter-spacing: .09em;
+      text-transform: uppercase; font-weight: 700; background: var(--sage); color: #fff;
+      padding: .18rem .5rem; border-radius: 3px; }
+    .dc-alt { font-size: .8rem; color: var(--text-light); margin-top: .2rem; }
+    .dc-tags { margin: .5rem 0 .7rem; display: flex; gap: .35rem; flex-wrap: wrap; }
+    .dc-pos { font-size: .66rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700;
+      padding: .22rem .6rem; border-radius: 999px; background: var(--paper-warm);
+      color: var(--text-light); border: 1px solid rgba(0,0,0,.09); white-space: nowrap; }
+    .dc-pos.cls { background: rgba(201,169,98,.22); color: #7a5f1f; border-color: rgba(201,169,98,.5); }
+    .dc-sense { display: flex; gap: .7rem; padding: .28rem 0; font-size: .97rem; }
+    /* 一二三 at low contrast read as dashes, so they carry a little weight and colour */
+    .dc-num { font-style: normal; color: #b9a17a; font-family: 'Noto Serif JP', serif;
+      font-weight: 600; font-size: 1.02rem; min-width: 1.2rem; line-height: 1.5; flex: 0 0 auto; }
     .dc-gloss { flex: 1; }
-    .dc-pos { display: inline-block; font-size: 0.68rem; letter-spacing: .02em; color: var(--text-light);
-      background: var(--paper-warm); border: 1px solid rgba(0,0,0,.09);
-      border-radius: 3px; padding: .05rem .4rem; margin-right: .35rem; vertical-align: .08em;
+    .dc-links { margin-top: .9rem; display: flex; gap: 1.1rem; font-size: .82rem; flex-wrap: wrap; }
+    .dc-links button { background: none; border: 0; padding: 0; font-family: inherit;
+      font-size: inherit; color: var(--accent); cursor: pointer; }
+    .dc-links button:hover { text-decoration: underline; }
+
+    /* ---- the pinned panel ---- */
+    .dc-side { background: var(--ink); color: var(--paper); border-radius: 10px;
+      padding: 1.3rem 1.4rem 3.2rem; position: sticky; top: 1rem; }
+    .dc-side h2 { margin: 0 0 .1rem; font-family: 'Noto Serif JP', serif;
+      font-size: 1.8rem; font-weight: 600; color: #fff; line-height: 1.2; }
+    .dc-side .rd { color: var(--gold); font-family: 'Noto Serif JP', serif; font-size: .95rem; }
+    .dc-side .cls { font-size: .78rem; opacity: .55; margin-top: .1rem; }
+    .dc-side .lbl { font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+      opacity: .5; margin: 1.25rem 0 .55rem; font-weight: 700; }
+    .dc-grid { display: grid; grid-template-columns: auto 1fr; gap: .32rem .8rem; font-size: .9rem; }
+    .dc-grid .k { opacity: .55; font-size: .78rem; white-space: nowrap; }
+    .dc-grid .cv { font-family: 'Noto Serif JP', serif; text-align: right; color: #fff; }
+    .dc-side .soft { font-size: .85rem; opacity: .72; }
+    .dc-more { display: block; width: 100%; margin-top: .8rem; background: none;
+      border: 0; padding: .2rem 0; font-family: inherit; font-size: .76rem; letter-spacing: .08em;
+      text-transform: uppercase; font-weight: 700; color: var(--gold); cursor: pointer; text-align: left; }
+    .dc-kin { display: flex; flex-direction: column; gap: .1rem; }
+    .dc-kin button { display: flex; align-items: baseline; gap: .6rem; width: 100%;
+      background: none; border: 0; border-bottom: 1px solid rgba(255,255,255,.08);
+      padding: .42rem 0; font-family: inherit; color: inherit; cursor: pointer; text-align: left; }
+    .dc-kin button:last-child { border-bottom: 0; }
+    .dc-kin button:hover .w { color: var(--gold); }
+    .dc-kin .w { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: #fff;
       white-space: nowrap; }
-    .dc-pos.cls { color: #7a5f1f; background: rgba(201,169,98,.2);
-      border-color: rgba(201,169,98,.45); font-weight: 600; }
-    .dc-links { margin-top: .7rem; padding-top: .6rem; border-top: 1px solid rgba(0,0,0,.06);
-      font-size: 0.8rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-    .dc-links a { color: var(--accent); text-decoration: none; }
-    .dc-links a:hover { text-decoration: underline; }
+    .dc-kin .g { font-size: .76rem; opacity: .6; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap; }
+
+    .dc-go { display: block; margin-top: 1.3rem; text-align: center; background: var(--gold);
+      color: var(--ink); border-radius: 6px; padding: .55rem; font-weight: 600;
+      font-size: .86rem; text-decoration: none; }
+    .dc-go:hover { filter: brightness(1.07); }
+    .dc-go.ghost { background: transparent; border: 1px solid rgba(255,255,255,.3);
+      color: var(--paper); margin-top: .5rem; }
+    .dc-go.ghost:hover { border-color: var(--gold); color: var(--gold); filter: none; }
 
     .dc-msg { text-align: center; color: var(--text-light); padding: 2.5rem 1rem; }
-    .dc-msg .big { font-family: 'Noto Serif JP', serif; font-size: 2rem; color: rgba(0,0,0,.12); display: block; margin-bottom: .6rem; }
+    .dc-msg .big { font-family: 'Noto Serif JP', serif; font-size: 2rem;
+      color: rgba(0,0,0,.12); display: block; margin-bottom: .6rem; }
 
     /* ---- attribution: the licence requires this on every screen showing data ---- */
-    .dc-attr { margin-top: 2rem; padding: 0.9rem 1.15rem; background: var(--paper-warm);
-      border-left: 3px solid var(--text-light); border-radius: 6px;
-      font-size: 0.78rem; color: var(--text-light); line-height: 1.6; }
+    .dc-attr { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem 3rem;
+      font-size: .78rem; color: var(--text-light); line-height: 1.6; }
     .dc-attr a { color: var(--text-light); }
 
+    @media (max-width: 940px) {
+      .dc-cols { grid-template-columns: 1fr; gap: 1.5rem; }
+      /* the panel is moved under the selected entry by script, so it must not be
+         sticky and must not sit above the results */
+      .dc-side { position: static; margin: 0 0 1.7rem; }
+      .dc-card:not(.on) { opacity: 1; }
+    }
     @media (max-width: 640px) {
-      .dc-page { padding: 1.25rem 1rem; }
-      .dc-word { font-size: 1.5rem; }
-      .dc-input { font-size: 1.1rem; }
+      .dc-head { padding: 2rem 1rem 1.75rem; }
+      .dc-page { padding: 1.5rem 1rem 2rem; }
+      .dc-attr { padding: 0 1rem 2rem; }
+      .dc-word { font-size: 1.95rem; }
+      .dc-input { font-size: 1.1rem; padding-right: 8.4rem; }
     }
   </style>
 </head>
@@ -127,44 +197,50 @@
   </nav>
 
   <div id="page-dictionary" class="page active">
-    <div class="dc-page">
 
-      <div style="margin-bottom:0.5rem">
-        <div class="page-tag" data-i18n="dc_tag">Reference</div>
-        <h1 class="page-title"><span class="jp">辞書</span> — <span data-i18n="dc_title">Dictionary</span></h1>
-        <p class="dc-desc" data-i18n="dc_desc">Thirty thousand common words, searchable in Japanese or English.
-          Type a conjugated verb and it works backwards to the dictionary form, showing every step it took.</p>
+    <div class="dc-head">
+      <h1>
+        <span class="kan jp">辞書</span>
+        <span class="nm" data-i18n="dc_sub">Thirty thousand words · Japanese or English · conjugated forms welcome</span>
+      </h1>
+      <div class="dc-field">
+        <input id="dc-q" class="dc-input" type="search" autocomplete="off" spellcheck="false"
+               data-i18n-placeholder="dc_placeholder"
+               placeholder="食べる · たべる · to eat · 食べさせられなかった"
+               aria-label="Search the dictionary">
+        <button id="dc-kana" class="dc-kana jp" type="button" aria-label="Input mode">あ</button>
+        <button id="dc-clear" class="dc-clear" type="button" data-i18n="dc_clear">Clear</button>
       </div>
-
-      <div class="dc-search">
-        <div class="dc-field">
-          <input id="dc-q" class="dc-input" type="search" autocomplete="off" spellcheck="false"
-                 placeholder="食べる · たべる · to eat · 食べさせられなかった" aria-label="Search the dictionary">
-          <button id="dc-clear" class="dc-clear" type="button">Clear</button>
-        </div>
-        <div class="dc-hint">
-          Try <b data-try="食べさせられなかった">食べさせられなかった</b> ·
-          <b data-try="行きたくない">行きたくない</b> ·
-          <b data-try="美しかった">美しかった</b> ·
-          <b data-try="chopsticks">chopsticks</b>
-        </div>
+      <div class="dc-tries">
+        <span data-i18n="dc_try">Try</span>
+        <b class="jp" data-try="食べさせられなかった">食べさせられなかった</b>
+        <b class="jp" data-try="行きたくない">行きたくない</b>
+        <b class="jp" data-try="美しかった">美しかった</b>
+        <b data-try="chopsticks">chopsticks</b>
       </div>
-
-      <div id="dc-decon"></div>
-      <div id="dc-count" class="dc-count"></div>
-      <div id="dc-results"></div>
-
-      <!-- EDRDG's licence requires this acknowledgement on each screen that
-           displays the data, not just on a credits page. Do not remove. -->
-      <div class="dc-attr">
-        Dictionary data from <strong>JMdict</strong>, © the
-        <a href="https://www.edrdg.org/" target="_blank" rel="noopener">Electronic Dictionary Research and Development Group</a>,
-        used under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> licence.
-        See the <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict&#8211;EDICT Dictionary Project</a>.
-        Conjugation analysis is Katsuyō Academy's own.
-      </div>
-
     </div>
+
+    <div class="dc-page">
+      <div class="dc-cols">
+        <div>
+          <div id="dc-decon"></div>
+          <div id="dc-count" class="dc-count"></div>
+          <div id="dc-results"></div>
+        </div>
+        <aside id="dc-side" class="dc-side" hidden></aside>
+      </div>
+    </div>
+
+    <!-- EDRDG's licence requires this acknowledgement on each screen that
+         displays the data, not just on a credits page. Do not remove. -->
+    <div class="dc-attr">
+      Dictionary data from <strong>JMdict</strong>, &copy; the
+      <a href="https://www.edrdg.org/" target="_blank" rel="noopener">Electronic Dictionary Research and Development Group</a>,
+      used under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> licence.
+      See the <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict&#8211;EDICT Dictionary Project</a>.
+      Conjugation analysis is Katsuyō Academy's own.
+    </div>
+
   </div>
 
   <script src="i18n.js"></script>
@@ -178,6 +254,9 @@
   (function () {
     var $ = function (id) { return document.getElementById(id); };
     var DATA = null, JP = null, EN = null, loading = false, pending = null;
+    var shown = [], sel = -1, expanded = false;
+
+    function tr(k, f) { return (typeof t === 'function' && t(k) !== k) ? t(k) : f; }
 
     function esc(s) {
       return String(s).replace(/[&<>"]/g, function (c) {
@@ -191,7 +270,7 @@
     function load() {
       if (DATA || loading) return Promise.resolve();
       loading = true;
-      msg('Loading the dictionary…', '辞');
+      msg(tr('dc_loading', 'Loading the dictionary…'), '辞');
       return Promise.all([
         fetch('dict/dict-data.json').then(function (r) { return r.json(); }),
         fetch('dict/dict-jp.json').then(function (r) { return r.json(); }),
@@ -201,67 +280,269 @@
         if (pending !== null) { var p = pending; pending = null; run(p); }
       }).catch(function () {
         loading = false;
-        msg('The dictionary could not be loaded. Check your connection and try again.', '×');
+        msg(tr('dc_failed', 'The dictionary could not be loaded. Check your connection and try again.'), '×');
       });
     }
 
     var exists = function (w) { return JP && Object.prototype.hasOwnProperty.call(JP, w); };
 
-    // ---- rendering ----
+    // ==================================================================
+    //  Word class
+    //  JMdict tells us what a word is; these maps turn its labels into
+    //  something the Conjugator's engine understands.
+    // ==================================================================
+    var VERB_CLASS = /^(Godan|Ichidan|する verb|来る verb|noun \+ する|verb|archaic す verb|irregular [ぬる] verb)$/;
+    var VERB_TYPE = {
+      'Ichidan': 'ichidan', 'Godan': 'godan',
+      'する verb': 'suru', 'noun + する': 'suru', '来る verb': 'irregular'
+    };
+
+    // Which forms the panel shows folded, and what "all forms" adds.
+    var CORE = ['masu', 'negative', 'past', 'te', 'tai', 'potential', 'volitional',
+                'passive', 'causative', 'imperative'];
+    var MORE = ['masen', 'mashita', 'nakatta', 'ba', 'tara', 'causative-passive'];
+
+    function formByKey(k) {
+      if (typeof forms === 'undefined') return null;
+      for (var i = 0; i < forms.length; i++) if (forms[i].key === k) return forms[i];
+      return null;
+    }
+
+    // conjugateVerb() works in kana, so it hands back たべます for 食べる. The
+    // kanji and the reading share a tail (食べる / たべる share べる); swapping
+    // the kana head for the kanji head puts the kanji back. When the two don't
+    // line up — 来る → きます, 為る → します — the kana form is the honest answer.
+    function reKanji(kanjiHead, kana, out) {
+      if (!out || kanjiHead === kana) return out;
+      var n = 0;
+      while (n < kanjiHead.length && n < kana.length &&
+             kanjiHead[kanjiHead.length - 1 - n] === kana[kana.length - 1 - n]) n++;
+      var kanaStem = kana.slice(0, kana.length - n);
+      if (!kanaStem || out.indexOf(kanaStem) !== 0) return out;
+      return kanjiHead.slice(0, kanjiHead.length - n) + out.slice(kanaStem.length);
+    }
+
+    function verbForms(kanjiHead, kana, type, keys) {
+      if (typeof conjugateVerb !== 'function') return [];
+      // A 'noun + する' headword is the bare noun; the drill needs the verb.
+      if (type === 'suru' && kana.slice(-2) !== 'する') { kana += 'する'; kanjiHead += 'する'; }
+      var v = { kanji: kanjiHead, hiragana: kana, meaning: '', jlpt: 'N5', type: type };
+      var out = [];
+      keys.forEach(function (k) {
+        var f = formByKey(k); if (!f) return;
+        var r = '';
+        try { r = conjugateVerb(v, f); } catch (e) { r = ''; }
+        if (r) out.push([tr('dcf_' + k.replace('-', '_'), f.name), reKanji(kanjiHead, kana, r)]);
+      });
+      return out;
+    }
+
+    // Adjectives have no engine in app.js, and they don't need much of one.
+    function adjForms(head, kana, na) {
+      var b = head.slice(0, -1), kb = kana.slice(0, -1);   // い-adj: drop the い
+      if (na) {
+        return [[tr('dca_plain', 'Plain'), head + 'だ'],
+                [tr('dca_polite', 'Polite'), head + 'です'],
+                [tr('dca_neg', 'Negative'), head + 'ではない'],
+                [tr('dca_past', 'Past'), head + 'だった'],
+                [tr('dca_negpast', 'Negative past'), head + 'ではなかった'],
+                [tr('dca_te', 'Te-form'), head + 'で'],
+                [tr('dca_noun', 'Before a noun'), head + 'な'],
+                [tr('dca_cond', 'Conditional'), head + 'なら']];
+      }
+      // いい is the one irregular: every form below the dictionary form uses よ-.
+      var y = (kana === 'いい' || kana === 'よい') ? 'よ' : b;
+      if (kana === 'いい') { b = 'よ'; }
+      return [[tr('dca_polite', 'Polite'), head + 'です'],
+              [tr('dca_neg', 'Negative'), b + 'くない'],
+              [tr('dca_past', 'Past'), b + 'かった'],
+              [tr('dca_negpast', 'Negative past'), b + 'くなかった'],
+              [tr('dca_te', 'Te-form'), b + 'くて'],
+              [tr('dca_adv', 'As an adverb'), b + 'く'],
+              [tr('dca_cond', 'Conditional (ば)'), b + 'ければ']];
+    }
+
+    // ==================================================================
+    //  Rendering
+    // ==================================================================
     function msg(text, big) {
       $('dc-results').innerHTML = '<div class="dc-msg">' +
         (big ? '<span class="big jp">' + esc(big) + '</span>' : '') + esc(text) + '</div>';
       $('dc-count').textContent = '';
       $('dc-decon').innerHTML = '';
+      shown = []; sel = -1;
+      $('dc-side').hidden = true;
     }
 
-    var VERB_CLASS = /^(Godan|Ichidan|する verb|来る verb|noun \+ する|verb|archaic す verb|irregular [ぬる] verb)$/;
+    var NUM = ['一','二','三','四','五','六','七','八','九','十'];
 
-    function card(i) {
+    // Everything the panel needs, worked out once per entry.
+    function describe(i) {
       var e = DATA.e[i], ks = e[0], ns = e[1], senses = e[2], rank = e[3];
-      var head = ks.length ? ks[0] : ns[0];
-      var alt = ks.slice(1).concat(ks.length ? [] : ns.slice(1));
-      // the verb-class labels, shared with the tag styling below
-      var isVerb = senses.some(function (s) {
-        return s[0].some(function (p) { return VERB_CLASS.test(DATA.p[p]); });
+      var labels = [];
+      senses.forEach(function (s) {
+        s[0].forEach(function (p) { if (labels.indexOf(DATA.p[p]) < 0) labels.push(DATA.p[p]); });
       });
-      var h = '<div class="dc-card"><div class="dc-head">' +
-        '<span class="dc-word jp">' + esc(head) + '</span>' +
-        (ks.length ? '<span class="dc-read jp">【' + esc(ns.join('、')) + '】</span>' : '') +
-        (rank === 2 ? '<span class="dc-common">Common</span>' : '') +
-        (alt.length ? '<span class="dc-alt jp">also ' + esc(alt.join('、')) + '</span>' : '') +
-        '</div>';
-      senses.forEach(function (s, n) {
-        var tags = s[0].map(function (p) {
-          var label = DATA.p[p];
-          var isClass = VERB_CLASS.test(label);
-          return '<span class="dc-pos' + (isClass ? ' cls' : '') + '">' + esc(label) + '</span>';
-        }).join('');
-        h += '<div class="dc-sense"><span class="dc-num">' + (n + 1) + '.</span>' +
-             '<span class="dc-gloss">' + tags + esc(s[1].join('; ')) + '</span></div>';
+      var vc = null;
+      for (var n = 0; n < labels.length; n++) {
+        if (VERB_TYPE[labels[n]]) { vc = labels[n]; break; }
+      }
+      return {
+        i: i, head: ks.length ? ks[0] : ns[0], kana: ns[0],
+        alt: ks.slice(1).concat(ks.length ? [] : ns.slice(1)),
+        hasKanji: !!ks.length, senses: senses, rank: rank, labels: labels,
+        verbClass: vc, type: vc ? VERB_TYPE[vc] : null,
+        adjI: labels.indexOf('い-adj') >= 0, adjNa: labels.indexOf('な-adj') >= 0,
+        gloss: senses.length ? senses[0][1][0] : ''
+      };
+    }
+
+    function card(d, n) {
+      var h = '<div class="dc-card' + (n === sel ? ' on' : '') + '" data-n="' + n + '">';
+      if (d.hasKanji) h += '<div class="dc-read jp">' + esc(d.kana) + '</div>';
+      h += '<div class="dc-word jp">' + esc(d.head) +
+           (d.rank === 2 ? '<span class="dc-common">' + esc(tr('dc_common', 'Common')) + '</span>' : '') +
+           '</div>';
+      if (d.alt.length) h += '<div class="dc-alt jp">' + esc(tr('dc_also', 'also')) + ' ' + esc(d.alt.join('、')) + '</div>';
+
+      var tags = '';
+      d.labels.forEach(function (l) {
+        var isClass = VERB_CLASS.test(l) || l === 'い-adj' || l === 'な-adj';
+        tags += '<span class="dc-pos' + (isClass ? ' cls' : '') + '">' + esc(l) + '</span>';
       });
+      if (tags) h += '<div class="dc-tags">' + tags + '</div>';
+
+      d.senses.forEach(function (s, k) {
+        h += '<div class="dc-sense"><span class="dc-num jp">' + (NUM[k] || (k + 1)) + '</span>' +
+             '<span class="dc-gloss">' + esc(s[1].join('; ')) + '</span></div>';
+      });
+
       h += '<div class="dc-links">' +
-           (isVerb ? '<a href="/conjugator?v=' + encodeURIComponent(head) + '">Conjugate this verb →</a>' +
-                     '<a href="/forms">See all forms →</a>' : '') +
-           '<a href="/vocabulary?q=' + encodeURIComponent(head) + '">Find in vocabulary →</a>' +
-           '</div></div>';
+        ((d.type || d.adjI || d.adjNa)
+          ? '<button type="button" data-all="' + n + '">' + esc(tr('dc_allforms', 'All forms →')) + '</button>' : '') +
+        '<button type="button" data-say="' + n + '">' + esc(tr('dc_hear', '🔊 Hear it')) + '</button>' +
+        '</div></div>';
       return h;
+    }
+
+    function panel(n) {
+      var d = shown[n], side = $('dc-side');
+      if (!d) { side.hidden = true; return; }
+      side.hidden = false;
+
+      var rows = [], label = '';
+      if (d.type) {
+        rows = verbForms(d.head, d.kana, d.type, expanded ? CORE.concat(MORE) : CORE);
+        label = tr('dc_everyform', 'Every form');
+      } else if (d.adjI || d.adjNa) {
+        rows = adjForms(d.head, d.kana, d.adjNa && !d.adjI);
+        label = tr('dc_everyform', 'Every form');
+      }
+
+      var h = '<h2 class="jp">' + esc(d.head) + '</h2>' +
+        (d.hasKanji ? '<div class="rd jp">' + esc(d.kana) + '</div>' : '') +
+        '<div class="cls">' + esc(d.labels.join(' · ')) + '</div>';
+
+      if (rows.length) {
+        h += '<div class="lbl">' + esc(label) + '</div><div class="dc-grid">';
+        rows.forEach(function (r) {
+          h += '<span class="k">' + esc(r[0]) + '</span><span class="cv jp">' + esc(r[1]) + '</span>';
+        });
+        h += '</div>';
+        if (d.type) {
+          h += '<button type="button" class="dc-more" id="dc-more">' +
+               esc(expanded ? tr('dc_fewer', '− Fewer forms') : tr('dc_showall', '+ All 16 forms')) + '</button>';
+        }
+      } else {
+        h += '<div class="lbl">' + esc(tr('dc_meaning', 'Meaning')) + '</div>' +
+             '<div class="soft">' + esc(d.senses.map(function (s) { return s[1].join('; '); }).join(' · ')) + '</div>';
+      }
+
+      // Nothing in the panel sends you off the page. The one thing worth
+      // having at the bottom is more dictionary: other words built from the
+      // same kanji, which search in place when you click one.
+      var kin = related(d);
+      if (kin.length) {
+        h += '<div class="lbl">' + esc(tr('dc_related', 'More with {k}').replace('{k}', kinKanji(d))) + '</div>';
+        h += '<div class="dc-kin">';
+        kin.forEach(function (k) {
+          h += '<button type="button" data-kin="' + esc(k[0]) + '">' +
+               '<span class="w jp">' + esc(k[0]) + '</span>' +
+               '<span class="g">' + esc(k[1]) + '</span></button>';
+        });
+        h += '</div>';
+      }
+
+      side.innerHTML = h;
+      var mb = $('dc-more');
+      if (mb) mb.onclick = function () { expanded = !expanded; panel(sel); };
+    }
+
+    // Other words built from the head's first kanji. The JP index is already
+    // in memory, so this is a scan of its keys — a few milliseconds — rather
+    // than anything that needs its own prebuilt file.
+    function kinKanji(d) {
+      var m = d.head.match(/[\u4e00-\u9fff\u3005]/);
+      return m ? m[0] : '';
+    }
+    var kinCache = {};
+    function related(d) {
+      var c = kinKanji(d);
+      if (!c || !JP || !DATA) return [];
+      if (kinCache[c]) return kinCache[c].filter(function (k) { return k[0] !== d.head; }).slice(0, 6);
+      var hits = [];
+      Object.keys(JP).forEach(function (w) {
+        if (w.length > 6 || w.indexOf(c) < 0) return;
+        var i = JP[w][0], e = DATA.e[i];
+        // only the entry's own headword, so 食べる doesn't show up under 喰べる
+        if (!e[0].length || e[0][0] !== w) return;
+        hits.push([w, e[2][0][1][0], e[3] === 2 ? 0 : 1, w.length]);
+      });
+      hits.sort(function (a, b) { return a[2] - b[2] || a[3] - b[3]; });
+      kinCache[c] = hits.slice(0, 12);
+      return kinCache[c].filter(function (k) { return k[0] !== d.head; }).slice(0, 6);
+    }
+
+    // On a narrow screen the panel can't be pinned, and parking it above the
+    // results would bury them. It travels instead: it sits directly under
+    // whichever entry is selected, which is where a phone reader is looking.
+    var narrow = window.matchMedia('(max-width: 940px)');
+    function place() {
+      var side = $('dc-side'), row = document.querySelector('.dc-card.on');
+      if (narrow.matches && row) row.after(side);
+      else document.querySelector('.dc-cols').append(side);
+    }
+    narrow.addEventListener('change', place);
+
+    function select(n, keepExpanded) {
+      if (n === sel && keepExpanded) return;
+      if (n !== sel) expanded = false;
+      sel = n;
+      document.querySelectorAll('.dc-card').forEach(function (c) {
+        c.classList.toggle('on', +c.dataset.n === n);
+      });
+      panel(n);
+      place();
     }
 
     function chain(result, original) {
       if (!result) { $('dc-decon').innerHTML = ''; return; }
-      var steps = result.path.slice().reverse();
+      var steps = result.path.slice().reverse().map(function (s) {
+        return '<span class="arw">→</span><span class="step">' + esc(s) + '</span>';
+      }).join('');
       $('dc-decon').innerHTML =
-        '<div class="dc-decon"><div class="dc-decon-h">Conjugated form — traced back</div>' +
-        '<div class="dc-chain"><span class="step">' + esc(original) + '</span>' +
-        '<span class="arw">→</span><span class="fin">' + esc(result.word) + '</span></div>' +
-        '<div class="dc-steps">' + esc(steps.join(' · ')) + '</div></div>';
+        '<div class="dc-decon"><div class="dc-decon-h">' +
+        esc(tr('dc_decon_h', 'Conjugated form — traced back')) + '</div>' +
+        '<div class="dc-chain"><b class="jp">' + esc(original) + '</b>' + steps +
+        '<span class="arw">→</span><b class="jp">' + esc(result.word) + '</b></div></div>';
     }
 
-    // ---- search ----
+    // ==================================================================
+    //  Search
+    // ==================================================================
     function run(q) {
       q = (q || '').trim();
-      if (!q) { msg('Search for a word in Japanese or English.', '辞'); return; }
+      if (!q) { msg(tr('dc_prompt', 'Search for a word in Japanese or English.'), '辞'); return; }
       if (!DATA) { pending = q; load(); return; }
 
       var ids = [], decon = null;
@@ -289,39 +570,155 @@
       } else {
         var w = q.toLowerCase().replace(/^to\s+/, '');
         ids = (EN[w] || EN[q.toLowerCase()] || []).slice();
+        // Nothing in English, but it might be rōmaji typed with the converter
+        // off — "taberu" is not a word we know, たべる is. Only ever a fallback,
+        // so a real English word is never hijacked.
+        if (!ids.length && window.KA_KanaInput && /^[a-z' -]+$/i.test(q)) {
+          var kana = KA_KanaInput.convert(q.toLowerCase(), true, 'kana');
+          if (kana !== q.toLowerCase() && !/[a-z]/i.test(kana)) {
+            if (JP[kana]) { ids = JP[kana].slice(); q = kana; }
+            else {
+              var dk = KA_Deconjugate.deconjugate(kana, exists);
+              if (dk.length) {
+                decon = dk[0]; q = kana;
+                dk.forEach(function (r) {
+                  (JP[r.word] || []).forEach(function (i) { if (ids.indexOf(i) < 0) ids.push(i); });
+                });
+              }
+            }
+          }
+        }
       }
-
-      chain(decon, q);
 
       if (!ids.length) {
-        msg('Nothing found for “' + q + '”. The dictionary covers about 30,000 common words, ' +
-            'so rarer vocabulary may be missing.', '?');
+        msg(tr('dc_none', 'Nothing found. The dictionary covers about 30,000 common words, ' +
+               'so rarer vocabulary may be missing.'), '?');
         return;
       }
+
       ids = ids.slice(0, 60);
-      $('dc-count').textContent = ids.length + (ids.length === 60 ? '+' : '') + ' result' + (ids.length === 1 ? '' : 's');
-      $('dc-results').innerHTML = ids.map(card).join('');
+      shown = ids.map(describe);
+      sel = 0; expanded = false;
+
+      chain(decon, q);
+      $('dc-count').textContent = ids.length === 1
+        ? tr('dc_results_one', '1 result')
+        : tr('dc_results_many', '{n} results').replace('{n}', ids.length + (ids.length === 60 ? '+' : ''));
+      $('dc-results').innerHTML = shown.map(card).join('');
+      panel(0);
+      $('dc-side').hidden = false;
+      place();
     }
 
-    // ---- wiring ----
-    var timer = null;
-    function onInput() {
+    // ==================================================================
+    //  Wiring
+    // ==================================================================
+    var timer = null, tail = null, last = null;
+    function search() {
       clearTimeout(timer);
-      var v = $('dc-q').value;
-      timer = setTimeout(function () { run(v); }, 180);
+      timer = setTimeout(function () {
+        var v = $('dc-q').value;
+        if (v === last) return;
+        last = v; run(v);
+      }, 180);
+      // The converter finishes a trailing "n" on its own a moment later
+      // (shin → しん) without firing another input event, so take one more
+      // look after that has had time to happen.
+      clearTimeout(tail);
+      tail = setTimeout(function () {
+        var v = $('dc-q').value;
+        if (v !== last) { last = v; run(v); }
+      }, (window.KA_KanaInput ? KA_KanaInput.delay : 300) + 120);
     }
-    $('dc-q').addEventListener('input', onInput);
+
+    // ---- rōmaji → kana -------------------------------------------------
+    // The same three-mode toggle as the Conjugator and Talk, but with its own
+    // setting. Every other box on the site wants Japanese; this one also takes
+    // English, and kana mode would turn "chopsticks" into ちょpｓちcｋｓ. So it
+    // starts off here, and someone typing Japanese flips it once.
+    var MODE_KEY = 'katsuyo-dict-input-mode';
+    var FACE = { kana: 'あ', katakana: 'ア', off: 'A' };
+    var NEXT = { kana: 'katakana', katakana: 'off', off: 'kana' };
+
+    function mode() {
+      try { return FACE[localStorage.getItem(MODE_KEY)] ? localStorage.getItem(MODE_KEY) : 'off'; }
+      catch (e) { return 'off'; }
+    }
+    function paintKana() {
+      var m = mode(), b = $('dc-kana');
+      b.textContent = FACE[m];
+      b.classList.toggle('off', m === 'off');
+      b.title = tr('dc_mode_' + m, {
+        kana: 'Hiragana — type taberu, get たべる',
+        katakana: 'Katakana — type ko-hi- for コーヒー',
+        off: 'Plain typing — English, or your own Japanese keyboard'
+      }[m]);
+    }
+    $('dc-kana').onclick = function () {
+      try { localStorage.setItem(MODE_KEY, NEXT[mode()]); } catch (e) {}
+      paintKana(); $('dc-q').focus();
+    };
+    paintKana();
+
+    if (window.KA_KanaInput) {
+      KA_KanaInput.attach($('dc-q'), {
+        enabled: function () { return mode() !== 'off'; },
+        convert: function (text, final) { return KA_KanaInput.convert(text, final, mode()); },
+        onInput: search
+      });
+    } else {
+      $('dc-q').addEventListener('input', search);
+      $('dc-kana').hidden = true;
+    }
+
     $('dc-q').addEventListener('focus', load, { once: true });
-    $('dc-clear').onclick = function () { $('dc-q').value = ''; run(''); $('dc-q').focus(); };
+    $('dc-clear').onclick = function () {
+      $('dc-q').value = ''; last = ''; run(''); $('dc-q').focus();
+    };
+
     document.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-try]');
-      if (t) { $('dc-q').value = t.dataset.try; run(t.dataset.try); $('dc-q').focus(); }
+      var tryer = e.target.closest('[data-try]');
+      if (tryer) { $('dc-q').value = tryer.dataset.try; last = tryer.dataset.try; run(tryer.dataset.try); return; }
+
+      var say = e.target.closest('[data-say]');
+      if (say) {
+        var d = shown[+say.dataset.say];
+        if (d && window.KA_Voice) { try { window.KA_Voice.speak(d.kana); } catch (err) {} }
+        return;
+      }
+
+      var all = e.target.closest('[data-all]');
+      if (all) { expanded = true; select(+all.dataset.all, true); panel(sel); return; }
+
+      var kin = e.target.closest('[data-kin]');
+      if (kin) {
+        var w = kin.dataset.kin;
+        $('dc-q').value = w; last = w; run(w);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
+      var card = e.target.closest('.dc-card');
+      if (card) select(+card.dataset.n);
     });
 
     // deep link: /dictionary?q=食べる
     var qs = new URLSearchParams(location.search).get('q');
     if (qs) { $('dc-q').value = qs; load().then(function () { run(qs); }); }
-    else msg('Search for a word in Japanese or English.', '辞');
+    else msg(tr('dc_prompt', 'Search for a word in Japanese or English.'), '辞');
+
+    // Everything above is rendered by script, so a language switch has to
+    // redraw it — the data-i18n attributes alone only reach the masthead.
+    window.refreshDictI18n = function () {
+      paintKana();
+      if (shown.length) {
+        var keep = sel;
+        $('dc-results').innerHTML = shown.map(card).join('');
+        sel = keep; panel(sel); place();
+      } else if (!$('dc-q').value.trim()) {
+        msg(tr('dc_prompt', 'Search for a word in Japanese or English.'), '\u8f9e');
+      }
+    };
 
     // Katsu can answer questions about whatever is on screen
     window.KatsuPageContext = function () {

@@ -295,6 +295,10 @@
 
     // ============ STATE ============
     let currentVerb = null;
+    // A verb handed over from the Dictionary via /conjugator?v=… — while it is
+    // set the drill stays on that one word. It is how the 30,000 words in the
+    // dictionary become practisable, not just the 129 on this page's own list.
+    let lockedVerb = null;
     let currentForm = null;
     let currentPrompt = null; // Track which prompt template we're using
     let showAnswer = false;
@@ -3376,8 +3380,9 @@ function downloadPracticeReport() {
     }
 
     function getRandomVerb() {
-      // Roughly a third of questions revisit something you've missed.
-      if (Math.random() < WEAK_REVISIT_CHANCE) {
+      // Roughly a third of questions revisit something you've missed — but not
+      // while a verb is locked, where the whole point is to stay on that word.
+      if (!lockedVerb && Math.random() < WEAK_REVISIT_CHANCE) {
         const weak = pickWeakSpot();
         if (weak) return weak;
       }
@@ -3385,7 +3390,8 @@ function downloadPracticeReport() {
       const types = ['godan', 'ichidan', 'irregular', 'suru'];
       const weights = [5, 3, 1, 2]; // irregular gets weight of 1 (rare but possible)
       const weightedTypes = types.flatMap((type, i) => Array(weights[i]).fill(type));
-      const type = weightedTypes[Math.floor(Math.random() * weightedTypes.length)];
+      let type = weightedTypes[Math.floor(Math.random() * weightedTypes.length)];
+      if (lockedVerb) type = lockedVerb.type;
       let verbList = verbs[type];
       
       // Apply JLPT filter
@@ -3418,7 +3424,7 @@ function downloadPracticeReport() {
         availableVerbs = verbList;
       }
       
-      const verb = availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
+      const verb = lockedVerb || availableVerbs[Math.floor(Math.random() * availableVerbs.length)];
       
       const selectedForm = document.getElementById('form-select').value;
       let form;
@@ -8244,6 +8250,21 @@ function generateNewQuestion() {
       wireVocabListen();
       wireVocabKeys();
       wireVocabSearch();
+      openVocabQuery();
+    }
+
+    // /vocabulary?q=食べる — the Dictionary links here, so the search should
+    // already be showing what it sent. One hit goes straight to the card.
+    function openVocabQuery() {
+      var q;
+      try { q = new URLSearchParams(location.search).get('q'); } catch (e) { return; }
+      if (!q) return;
+      var input = document.getElementById('vocab-search');
+      if (!input) return;
+      input.value = q;
+      vsRender(q);
+      if (vsHits.length === 1) vsGoTo(vsHits[0]);
+      else input.focus();
     }
 
     // Always speak the hiragana reading: it is the one field that is never
@@ -8712,7 +8733,49 @@ function generateNewQuestion() {
       restoreConjugatorOptions();
       updateScoreDisplay();
       updateReportButton();
+      readLockedVerb();     // /conjugator?v=… from the Dictionary
       generateNewQuestion();
+    }
+
+    // ---- a verb handed over from the Dictionary --------------------------
+    // The link carries the word, its reading, its class and its meaning,
+    // because the dictionary knows all four and this page's own verb list
+    // holds only 129 words. The engine never needed more than that.
+    function readLockedVerb() {
+      let q;
+      try { q = new URLSearchParams(location.search); } catch (e) { return; }
+      const kanji = q.get('v'), kana = q.get('k'), type = q.get('t');
+      const OK = { godan: 1, ichidan: 1, suru: 1, irregular: 1 };
+      if (!kanji || !kana || !OK[type]) return;
+      // A 'noun + する' headword is the bare noun; the drill needs the verb.
+      const isSuru = type === 'suru';
+      lockedVerb = {
+        kanji: isSuru && kanji.slice(-2) !== 'する' ? kanji + 'する' : kanji,
+        hiragana: isSuru && kana.slice(-2) !== 'する' ? kana + 'する' : kana,
+        meaning: (q.get('m') || '').slice(0, 80),
+        jlpt: 'N5',
+        type: type
+      };
+      paintLock();
+    }
+
+    function paintLock() {
+      const badge = document.getElementById('lock-badge');
+      if (!badge) return;
+      badge.style.display = lockedVerb ? 'inline-block' : 'none';
+      if (!lockedVerb) return;
+      const say = (typeof t === 'function' && t('conj_locked') !== 'conj_locked')
+        ? t('conj_locked') : 'Practising {w} only';
+      document.getElementById('lock-text').textContent = say.replace('{w}', lockedVerb.kanji);
+      const off = document.getElementById('lock-off');
+      off.textContent = (typeof t === 'function' && t('conj_unlock') !== 'conj_unlock')
+        ? t('conj_unlock') : 'Unlock';
+      off.onclick = function () {
+        lockedVerb = null;
+        paintLock();
+        try { history.replaceState(null, '', location.pathname); } catch (e) {}
+        generateNewQuestion();
+      };
     }
 
     // Put the practice options back the way the learner left them.

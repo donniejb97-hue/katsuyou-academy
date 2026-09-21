@@ -223,6 +223,8 @@ var I18N = {
     romaji_tip_off:'Romaji typing is switched off. Turn it back on with the <strong>\u3042/A</strong> button next to the answer box, or type with a Japanese keyboard.',
     opt_type_quiz:'Also ask me to name the verb type',
     badge_review:'\ud83d\udd01 Review \u2014 you missed this one before',
+    conj_locked:'Practising {w} only',
+    conj_unlock:'Unlock',
     badge_type_quiz:'First: which type of verb is this?',
     goal_10:'Round of 10', goal_20:'Round of 20', goal_50:'Round of 50', goal_none:'No limit',
     ai_thinking:'Conju is writing a fuller explanation\u2026',
@@ -626,6 +628,8 @@ var I18N = {
     romaji_tip_off:'Die Romaji-Eingabe ist ausgeschaltet. Schalten Sie sie mit der Schaltfläche <strong>\u3042/A</strong> neben dem Antwortfeld wieder ein, oder tippen Sie mit einer japanischen Tastatur.',
     opt_type_quiz:'Auch nach dem Verbtyp fragen',
     badge_review:'\ud83d\udd01 Wiederholung \u2014 das ging vorhin daneben',
+    conj_locked:'Nur {w} wird geübt',
+    conj_unlock:'Freigeben',
     badge_type_quiz:'Zuerst: Was für ein Verb ist das?',
     goal_10:'Runde mit 10', goal_20:'Runde mit 20', goal_50:'Runde mit 50', goal_none:'Ohne Limit',
     ai_thinking:'Conju schreibt gerade eine ausführlichere Erklärung\u2026',
@@ -1029,6 +1033,8 @@ var I18N = {
     romaji_tip_off:"La saisie en romaji est désactivée. Réactivez-la avec le bouton <strong>\u3042/A</strong> à côté du champ de réponse, ou tapez avec un clavier japonais.",
     opt_type_quiz:'Me demander aussi le type de verbe',
     badge_review:'\ud83d\udd01 Révision \u2014 vous vous étiez trompé ici',
+    conj_locked:'Entraînement sur {w} uniquement',
+    conj_unlock:'Débloquer',
     badge_type_quiz:'D\u2019abord : quel type de verbe est-ce ?',
     goal_10:'Manche de 10', goal_20:'Manche de 20', goal_50:'Manche de 50', goal_none:'Sans limite',
     ai_thinking:'Conju rédige une explication plus complète\u2026',
@@ -1433,6 +1439,8 @@ var I18N = {
     romaji_tip_off:'罗马字输入已关闭。可用答题框旁的 <strong>\u3042/A</strong> 按钮重新开启，或改用日语键盘输入。',
     opt_type_quiz:'也问我动词的类型',
     badge_review:'\ud83d\udd01 复习 \u2014 这道题您之前答错过',
+    conj_locked:'只练习 {w}',
+    conj_unlock:'解除',
     badge_type_quiz:'先回答：这是哪一类动词？',
     goal_10:'一轮 10 题', goal_20:'一轮 20 题', goal_50:'一轮 50 题', goal_none:'不限题数',
     ai_thinking:'Conju 正在写更详细的讲解\u2026',
@@ -1718,6 +1726,7 @@ function setLang(lang) {
   if (window.refreshSenseiI18n) window.refreshSenseiI18n();
   if (window.refreshTalkI18n) window.refreshTalkI18n();
   if (window.refreshReadingI18n) window.refreshReadingI18n();
+  if (window.refreshDictI18n) window.refreshDictI18n();
   if (window.refreshLangSwitch) window.refreshLangSwitch();
   if (window.refreshNavGroups) window.refreshNavGroups();
 }

@@ -156,6 +156,11 @@
       </div>
 
       <div class="question-badges">
+        <!-- shown when the Dictionary handed this page a verb to stay on -->
+        <span id="lock-badge" class="q-badge" style="display: none; background: rgba(201,169,98,.2); color: #7a5f1f; border: 1px solid rgba(201,169,98,.5);">
+          <span id="lock-text"></span>
+          <button type="button" id="lock-off" style="background: none; border: 0; padding: 0 0 0 .5rem; font: inherit; color: inherit; text-decoration: underline; cursor: pointer;"></button>
+        </span>
         <span id="review-badge" class="q-badge review" style="display: none;" data-i18n="badge_review">🔁 Review — you missed this one before</span>
         <span id="type-quiz-badge" class="q-badge quiz" style="display: none;" data-i18n="badge_type_quiz">First: which type of verb is this?</span>
       </div>
