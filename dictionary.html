@@ -44,9 +44,13 @@
     .dc-tries b:hover { opacity: 1; color: var(--gold); border-bottom-color: var(--gold); }
 
     /* ---- two columns: entries, and the panel pinned beside them ---- */
-    .dc-page { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .dc-page { max-width: 1180px; margin: 0 auto; padding: 2rem 1.5rem 1rem; }
     .dc-cols { display: grid; grid-template-columns: minmax(0,1fr) 330px;
       gap: 2.25rem; align-items: start; }
+    /* Hiding the panel does not remove its grid track, so the empty state was
+       centring inside the narrower left column — visibly left of the masthead
+       above it. With nothing to pin, the page is a single column. */
+    .dc-cols.solo { grid-template-columns: minmax(0,1fr); gap: 0; }
 
     /* ---- deconjugation trace: about the query, so it sits above the results ---- */
     .dc-decon { background: white; border: 1px solid rgba(0,0,0,.09);
@@ -100,8 +104,21 @@
     .dc-links button:hover { text-decoration: underline; }
 
     /* ---- the pinned panel ---- */
+    /* The site nav is position:fixed and 72px tall (plus its 3px rule), so the
+       panel has to start below it or its heading hides underneath. And once a
+       verb's sixteen forms and its related words are open the panel is taller
+       than the screen, which sticky alone cannot solve — it pins the top and
+       lets the bottom run off. Capping the height and letting it scroll inside
+       keeps the whole panel reachable at any scroll position. */
     .dc-side { background: var(--ink); color: var(--paper); border-radius: 10px;
-      padding: 1.3rem 1.4rem 3.2rem; position: sticky; top: 1rem; }
+      padding: 1.3rem 1.4rem 1.6rem; position: sticky; top: calc(75px + 1rem);
+      max-height: calc(100vh - 75px - 2rem); overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.28) transparent; }
+    .dc-side::-webkit-scrollbar { width: 8px; }
+    .dc-side::-webkit-scrollbar-track { background: transparent; }
+    .dc-side::-webkit-scrollbar-thumb { background: rgba(255,255,255,.22); border-radius: 4px; }
+    .dc-side::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.38); }
     .dc-side h2 { margin: 0 0 .1rem; font-family: 'Noto Serif JP', serif;
       font-size: 1.8rem; font-weight: 600; color: #fff; line-height: 1.2; }
     .dc-side .rd { color: var(--gold); font-family: 'Noto Serif JP', serif; font-size: .95rem; }
@@ -139,7 +156,8 @@
       color: rgba(0,0,0,.12); display: block; margin-bottom: .6rem; }
 
     /* ---- attribution: the licence requires this on every screen showing data ---- */
-    .dc-attr { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem 3rem;
+    .dc-attr { margin-top: 2.5rem; padding-top: 1rem;
+      border-top: 1px solid rgba(0,0,0,.09);
       font-size: .78rem; color: var(--text-light); line-height: 1.6; }
     .dc-attr a { color: var(--text-light); }
 
@@ -147,13 +165,13 @@
       .dc-cols { grid-template-columns: 1fr; gap: 1.5rem; }
       /* the panel is moved under the selected entry by script, so it must not be
          sticky and must not sit above the results */
-      .dc-side { position: static; margin: 0 0 1.7rem; }
+      .dc-side { position: static; margin: 0 0 1.7rem;
+        max-height: none; overflow-y: visible; }
       .dc-card:not(.on) { opacity: 1; }
     }
     @media (max-width: 640px) {
       .dc-head { padding: 2rem 1rem 1.75rem; }
-      .dc-page { padding: 1.5rem 1rem 2rem; }
-      .dc-attr { padding: 0 1rem 2rem; }
+      .dc-page { padding: 1.5rem 1rem 1rem; }
       .dc-word { font-size: 1.95rem; }
       .dc-input { font-size: 1.1rem; padding-right: 8.4rem; }
     }
@@ -230,19 +248,20 @@
           <div id="dc-decon"></div>
           <div id="dc-count" class="dc-count"></div>
           <div id="dc-results"></div>
-        </div>
-        <aside id="dc-side" class="dc-side" hidden></aside>
-      </div>
-    </div>
-
-    <!-- EDRDG's licence requires this acknowledgement on each screen that
-         displays the data, not just on a credits page. Do not remove. -->
-    <div class="dc-attr">
+          <!-- EDRDG's licence requires this acknowledgement on each screen
+               that displays the data, not just on a credits page. Do not
+               remove. It lives inside this column so the grid — and with it
+               the sticky panel's containing block — runs to the page bottom. -->
+          <div class="dc-attr">
       Dictionary data from <strong>JMdict</strong>, &copy; the
       <a href="https://www.edrdg.org/" target="_blank" rel="noopener">Electronic Dictionary Research and Development Group</a>,
       used under the <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a> licence.
       See the <a href="https://www.edrdg.org/wiki/index.php/JMdict-EDICT_Dictionary_Project" target="_blank" rel="noopener">JMdict&#8211;EDICT Dictionary Project</a>.
       Conjugation analysis is Katsuyō Academy's own.
+          </div>
+        </div>
+        <aside id="dc-side" class="dc-side" hidden></aside>
+      </div>
     </div>
 
   </div>
@@ -376,6 +395,7 @@
       $('dc-decon').innerHTML = '';
       shown = []; sel = -1;
       $('dc-side').hidden = true;
+      document.querySelector('.dc-cols').classList.add('solo');
     }
 
     var NUM = ['一','二','三','四','五','六','七','八','九','十'];
@@ -438,8 +458,9 @@
 
     function panel(n) {
       var d = shown[n], side = $('dc-side');
-      if (!d) { side.hidden = true; return; }
-      side.hidden = false;
+      var cols = document.querySelector('.dc-cols');
+      if (!d) { side.hidden = true; cols.classList.add('solo'); return; }
+      side.hidden = false; cols.classList.remove('solo');
 
       var rows = [], label = '';
       if (d.type) {
@@ -618,6 +639,7 @@
       $('dc-results').innerHTML = shown.map(card).join('');
       panel(0);
       $('dc-side').hidden = false;
+      document.querySelector('.dc-cols').classList.remove('solo');
       place();
     }
 
