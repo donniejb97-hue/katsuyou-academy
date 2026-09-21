@@ -67,7 +67,12 @@ var KA_Deconjugate = (function () {
     ['した', s => [s + 'す'], 'past'],
     ['った', s => [s + 'つ', s + 'る', s + 'う'], 'past'],
     ['んだ', s => [s + 'む', s + 'ぶ', s + 'ぬ'], 'past'],
-    ['たら', s => [s + 'る'], 'conditional (たら)', true],
+    ['いたら', s => [s + 'く'], 'conditional (たら)'],
+    ['いだら', s => [s + 'ぐ'], 'conditional (たら)'],
+    ['したら', s => [s + 'す'], 'conditional (たら)'],
+    ['ったら', s => [s + 'つ', s + 'る', s + 'う'], 'conditional (たら)'],
+    ['んだら', s => [s + 'む', s + 'ぶ', s + 'ぬ'], 'conditional (たら)'],
+    ['たら',   s => [s + 'る'], 'conditional (たら)', true],
     ['て',   s => [], 'て form', true],   // ichidan only: 食べて → 食べる
     ['た',   s => [], 'past', true],      // ichidan only: 食べた → 食べる
 
@@ -77,7 +82,7 @@ var KA_Deconjugate = (function () {
     ['させる',     s => shift(s, A2U), 'causative', true],
     ['される',     s => shift(s, A2U), 'causative-passive', false],
     ['せる',       s => shift(s, A2U), 'causative', true],
-    ['れる',       s => shift(s, A2U), 'passive', false],
+    ['れる',       s => shift(s, A2U).concat([s + 'る']), 'passive / potential', false],
 
     // --- potential, volitional, conditional, imperative ---
     ['よう',   s => [], 'volitional', true],
@@ -93,11 +98,18 @@ var KA_Deconjugate = (function () {
     ['れば',   s => shift(s + 'れ', E2U).concat([s + 'る']), 'conditional (ば)'],
     ['えば',   s => [s + 'う'], 'conditional (ば)'],
     ['けば',   s => [s + 'く'], 'conditional (ば)'],
+    ['げば',   s => [s + 'ぐ'], 'conditional (ば)'],
+    ['ねば',   s => [s + 'ぬ'], 'conditional (ば)'],
     ['せば',   s => [s + 'す'], 'conditional (ば)'],
     ['てば',   s => [s + 'つ'], 'conditional (ば)'],
     ['めば',   s => [s + 'む'], 'conditional (ば)'],
     ['べば',   s => [s + 'ぶ'], 'conditional (ば)'],
     ['ろ',     s => [], 'imperative', true],
+    ['け', s => [s + 'く'], 'imperative'], ['げ', s => [s + 'ぐ'], 'imperative'],
+    ['せ', s => [s + 'す'], 'imperative'], ['て', s => [s + 'つ'], 'imperative'],
+    ['ね', s => [s + 'ぬ'], 'imperative'], ['べ', s => [s + 'ぶ'], 'imperative'],
+    ['め', s => [s + 'む'], 'imperative'], ['れ', s => [s + 'る'], 'imperative'],
+    ['え', s => [s + 'う'], 'imperative'],
 
     // --- たい conjugates like an い-adjective ---
     ['たくなかった', s => shift(s, I2U), 'want to (past neg)', true],
@@ -110,6 +122,31 @@ var KA_Deconjugate = (function () {
     ['でいる', s => [s + 'る'], 'progressive', true],
     ['てる',   s => [s + 'る'], 'progressive (spoken)', true],
     ['でる',   s => [s + 'る'], 'progressive (spoken)', true],
+
+    // --- compound する verbs: 案内しない → 案内する ---
+    // Each rule offers the bare noun as well, because JMdict lists 勉強 tagged
+    // "vs" rather than carrying a separate 勉強する headword.
+    ['しませんでした', s => [s + 'する', s], 'polite past negative (する)'],
+    ['しましょう', s => [s + 'する', s], 'polite volitional (する)'],
+    ['しなかった', s => [s + 'する', s], 'past negative (する)'],
+    ['しません',   s => [s + 'する', s], 'polite negative (する)'],
+    ['しました',   s => [s + 'する', s], 'polite past (する)'],
+    ['させられる', s => [s + 'する', s], 'causative-passive (する)'],
+    ['しなければ', s => [s + 'する', s], 'negative conditional (する)'],
+    ['したくない', s => [s + 'する', s], 'want to, negative (する)'],
+    ['しています', s => [s + 'する', s], 'progressive (する)'],
+    ['できる',     s => [s + 'する', s], 'potential (する)'],
+    ['される',     s => [s + 'する', s], 'passive (する)'],
+    ['させる',     s => [s + 'する', s], 'causative (する)'],
+    ['すれば',     s => [s + 'する', s], 'conditional (する)'],
+    ['しよう',     s => [s + 'する', s], 'volitional (する)'],
+    ['したら',     s => [s + 'する', s], 'conditional たら (する)'],
+    ['したい',     s => [s + 'する', s], 'want to (する)'],
+    ['しない',     s => [s + 'する', s], 'negative (する)'],
+    ['します',     s => [s + 'する', s], 'polite (する)'],
+    ['しろ',       s => [s + 'する', s], 'imperative (する)'],
+    ['して',       s => [s + 'する', s], 'て form (する)'],
+    ['した',       s => [s + 'する', s], 'past (する)'],
 
     // --- い-adjectives ---
     ['くなかった', s => [s + 'い'], 'adj. past negative'],
@@ -124,12 +161,19 @@ var KA_Deconjugate = (function () {
   var IRREGULAR = {
     'する':'する','します':'する','した':'する','して':'する','しない':'する',
     'しよう':'する','しろ':'する','できる':'する','される':'する','させる':'する',
+    'したい':'する','したら':'する','しなかった':'する','しましょう':'する',
     'すれば':'する','しません':'する','しました':'する','しています':'する',
     '来る':'来る','来ます':'来る','来た':'来る','来て':'来る','来ない':'来る',
     '来よう':'来る','来い':'来る','来られる':'来る','来させる':'来る','来れば':'来る',
     'くる':'来る','きます':'来る','きた':'来る','きて':'来る','こない':'来る',
     'こよう':'来る','こい':'来る','こられる':'来る','こさせる':'来る','くれば':'来る',
     'ある':'ある','あります':'ある','あった':'ある','あって':'ある','ない':'ある',
+    '行って':'行く','行った':'行く','行ったら':'行く',
+    'いって':'いく','いった':'いく','いったら':'いく',
+    'きたい':'来る','きたら':'来る','きません':'来る','きました':'来る',
+    'きましょう':'来る','こなかった':'来る','きたくない':'来る','きています':'来る',
+    '来たい':'来る','来たら':'来る','来ません':'来る','来ました':'来る',
+    '来なかった':'来る','来ましょう':'来る',
     'いい':'いい','よい':'いい','よかった':'いい','よくない':'いい','よくて':'いい',
     'です':'です','でした':'です','だった':'だ','じゃない':'だ','ではない':'だ'
   };
@@ -170,6 +214,11 @@ var KA_Deconjugate = (function () {
           if (exists(c) && !seenOut[c]) {
             seenOut[c] = true;
             out.push({ word: c, path: path });
+          }
+          var irr = IRREGULAR[c];
+          if (irr && irr !== c && exists(irr) && !seenOut[irr]) {
+            seenOut[irr] = true;
+            out.push({ word: irr, path: path.concat(['irregular']) });
           }
           queue.push({ w: c, path: path, d: cur.d + 1 });
         }
