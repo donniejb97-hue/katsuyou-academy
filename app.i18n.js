@@ -5,262 +5,314 @@ I18N_addText({
 "Negative Form (ない)": [
 "Verneinungsform (ない)",
 "Forme négative (ない)",
-"否定形（ない）"
+"否定形（ない）",
+"\u5426\u5b9a\u5f62\uff08\u306a\u3044\uff09"
 ],
 "Polite Form (ます)": [
 "Höflichkeitsform (ます)",
 "Forme polie (ます)",
-"敬体（ます）"
+"敬体（ます）",
+"\u4e01\u5be7\u5f62\uff08\u307e\u3059\uff09"
 ],
 "Past Form (た)": [
 "Vergangenheitsform (た)",
 "Forme du passé (た)",
-"过去形（た）"
+"过去形（た）",
+"\u904e\u53bb\u5f62\uff08\u305f\uff09"
 ],
 "Want To (たい)": [
 "Wunschform (たい)",
 "Forme du désir (たい)",
-"愿望形（たい）"
+"愿望形（たい）",
+"\u9858\u671b\u5f62\uff08\u305f\u3044\uff09"
 ],
 "Potential Form": [
 "Potenzialform",
 "Forme potentielle",
-"可能形"
+"可能形",
+"\u53ef\u80fd\u5f62"
 ],
 "Volitional Form": [
 "Volitionalform",
 "Forme volitive",
-"意志形"
+"意志形",
+"\u610f\u5411\u5f62"
 ],
 "Te-form (て)": [
 "Te-Form (て)",
 "Forme en te (て)",
-"て形"
+"て形",
+"\u3066\u5f62\uff08\u3066\uff09"
 ],
 "Polite Negative (ません)": [
 "Höfliche Verneinung (ません)",
 "Négatif poli (ません)",
-"敬体否定（ません）"
+"敬体否定（ません）",
+"\u4e01\u5be7\u5426\u5b9a\u5f62\uff08\u307e\u305b\u3093\uff09"
 ],
 "Polite Past (ました)": [
 "Höfliche Vergangenheit (ました)",
 "Passé poli (ました)",
-"敬体过去（ました）"
+"敬体过去（ました）",
+"\u4e01\u5be7\u904e\u53bb\u5f62\uff08\u307e\u3057\u305f\uff09"
 ],
 "Negative Past (なかった)": [
 "Verneinte Vergangenheit (なかった)",
 "Passé négatif (なかった)",
-"否定过去（なかった）"
+"否定过去（なかった）",
+"\u5426\u5b9a\u904e\u53bb\u5f62\uff08\u306a\u304b\u3063\u305f\uff09"
 ],
 "Conditional (ば)": [
 "Konditional (ば)",
 "Conditionnel (ば)",
-"条件形（ば）"
+"条件形（ば）",
+"\u6761\u4ef6\u5f62\uff08\u3070\uff09"
 ],
 "Conditional (たら)": [
 "Konditional (たら)",
 "Conditionnel (たら)",
-"条件形（たら）"
+"条件形（たら）",
+"\u6761\u4ef6\u5f62\uff08\u305f\u3089\uff09"
 ],
 "Passive Form": [
 "Passivform",
 "Forme passive",
-"被动形"
+"被动形",
+"\u53d7\u8eab\u5f62"
 ],
 "Causative Form": [
 "Kausativform",
 "Forme causative",
-"使役形"
+"使役形",
+"\u4f7f\u5f79\u5f62"
 ],
 "Causative-Passive": [
 "Kausativ-Passiv",
 "Causatif-passif",
-"使役被动形"
+"使役被动形",
+"\u4f7f\u5f79\u53d7\u8eab\u5f62"
 ],
 "Imperative (Command)": [
 "Imperativ (Befehl)",
 "Impératif (ordre)",
-"命令形"
+"命令形",
+"\u547d\u4ee4\u5f62"
 ],
 "Godan Verb": [
 "Godan-Verb",
 "Verbe godan",
-"五段动词"
+"五段动词",
+"\u4e94\u6bb5\u52d5\u8a5e"
 ],
 "Ichidan Verb": [
 "Ichidan-Verb",
 "Verbe ichidan",
-"一段动词"
+"一段动词",
+"\u4e00\u6bb5\u52d5\u8a5e"
 ],
 "Suru Verb": [
 "Suru-Verb",
 "Verbe suru",
-"する动词"
+"する动词",
+"\u3059\u308b\u52d5\u8a5e"
 ],
 "Irregular Verb": [
 "Unregelmäßiges Verb",
 "Verbe irrégulier",
-"不规则动词"
+"不规则动词",
+"\u4e0d\u898f\u5247\u52d5\u8a5e"
 ],
 "💡 Show hint": [
 "💡 Hinweis zeigen",
 "💡 Afficher l'indice",
-"💡 显示提示"
+"💡 显示提示",
+"\ud83d\udca1 \u30d2\u30f3\u30c8\u3092\u898b\u308b"
 ],
 "🙈 Hide hint": [
 "🙈 Hinweis ausblenden",
 "🙈 Masquer l'indice",
-"🙈 隐藏提示"
+"🙈 隐藏提示",
+"\ud83d\ude48 \u30d2\u30f3\u30c8\u3092\u96a0\u3059"
 ],
 "💡 Need more help? (Level 2)": [
 "💡 Mehr Hilfe? (Stufe 2)",
 "💡 Besoin de plus d'aide ? (niveau 2)",
-"💡 需要更多帮助？（第 2 级）"
+"💡 需要更多帮助？（第 2 级）",
+"\ud83d\udca1 \u3082\u3046\u5c11\u3057\u30d2\u30f3\u30c8\u304c\u5fc5\u8981\u3067\u3059\u304b\uff08\u6bb5\u968e2\uff09"
 ],
 "💡 Need more help? (Level 3)": [
 "💡 Mehr Hilfe? (Stufe 3)",
 "💡 Besoin de plus d'aide ? (niveau 3)",
-"💡 需要更多帮助？（第 3 级）"
+"💡 需要更多帮助？（第 3 级）",
+"\ud83d\udca1 \u3082\u3046\u5c11\u3057\u30d2\u30f3\u30c8\u304c\u5fc5\u8981\u3067\u3059\u304b\uff08\u6bb5\u968e3\uff09"
 ],
 "🤔 Generating smart hint...": [
 "🤔 Hinweis wird erstellt …",
 "🤔 Génération de l'indice…",
-"🤔 正在生成提示…"
+"🤔 正在生成提示…",
+"\ud83e\udd14 \u30d2\u30f3\u30c8\u3092\u4f5c\u6210\u3057\u3066\u3044\u307e\u3059\u2026"
 ],
 "Check Answer": [
 "Antwort prüfen",
 "Vérifier la réponse",
-"检查答案"
+"检查答案",
+"\u7b54\u3048\u5408\u308f\u305b"
 ],
 "Think about what sound you need for negation. Which row of the hiragana chart will give you the right stem before adding the negative ending?": [
 "Überlegen Sie, welchen Laut Sie für die Verneinung brauchen. Welche Reihe der Hiragana-Tabelle liefert den richtigen Stamm, bevor die Verneinungsendung angehängt wird?",
 "Réfléchissez au son nécessaire pour la négation. Quelle rangée du tableau des hiragana donne le bon radical avant d'ajouter la terminaison négative ?",
-"想一想否定需要哪个音。平假名表中的哪一段能给出正确的词干，再接否定词尾？"
+"想一想否定需要哪个音。平假名表中的哪一段能给出正确的词干，再接否定词尾？",
+"\u5426\u5b9a\u306b\u306f\u3069\u306e\u97f3\u304c\u5fc5\u8981\u304b\u8003\u3048\u3066\u307f\u307e\u3057\u3087\u3046\u3002\u5426\u5b9a\u306e\u8a9e\u5c3e\u3092\u3064\u3051\u308b\u524d\u306b\u3001\u4e94\u5341\u97f3\u8868\u306e\u3069\u306e\u6bb5\u306b\u3059\u308c\u3070\u6b63\u3057\u3044\u8a9e\u5e79\u306b\u306a\u308a\u307e\u3059\u304b\u3002"
 ],
 "For polite speech, you need a stem that ends in an い sound. Think about how the verb ending needs to change before adding the polite marker.": [
 "Für die höfliche Sprache brauchen Sie einen Stamm, der auf einen い-Laut endet. Überlegen Sie, wie sich die Verbendung ändern muss, bevor der Höflichkeitsmarker angehängt wird.",
 "Pour le registre poli, il faut un radical se terminant par un son en い. Réfléchissez à la façon dont la terminaison du verbe doit changer avant d'ajouter le marqueur poli.",
-"敬体需要以い段音结尾的词干。想想在加上敬体词尾之前，动词词尾要怎么变。"
+"敬体需要以い段音结尾的词干。想想在加上敬体词尾之前，动词词尾要怎么变。",
+"\u4e01\u5be7\u306b\u8a00\u3046\u306b\u306f\u3001\u3044\u6bb5\u3067\u7d42\u308f\u308b\u8a9e\u5e79\u304c\u5fc5\u8981\u3067\u3059\u3002\u307e\u3059\u3092\u3064\u3051\u308b\u524d\u306b\u3001\u8a9e\u5c3e\u3092\u3069\u3046\u5909\u3048\u308c\u3070\u3088\u3044\u304b\u8003\u3048\u3066\u307f\u307e\u3057\u3087\u3046\u3002"
 ],
 "Past tense has different patterns depending on verb type. Consider what the final sound of the verb is—that determines which past ending pattern to use.": [
 "Die Vergangenheit folgt je nach Verbtyp unterschiedlichen Mustern. Achten Sie auf den Endlaut des Verbs — er bestimmt, welches Vergangenheitsmuster gilt.",
 "Le passé suit des schémas différents selon le type de verbe. Regardez le son final du verbe : c'est lui qui détermine la terminaison du passé.",
-"过去形根据动词类型有不同规律。注意动词的词尾读音——它决定使用哪种过去形词尾。"
+"过去形根据动词类型有不同规律。注意动词的词尾读音——它决定使用哪种过去形词尾。",
+"\u904e\u53bb\u5f62\u306f\u52d5\u8a5e\u306e\u7a2e\u985e\u306b\u3088\u3063\u3066\u578b\u304c\u5909\u308f\u308a\u307e\u3059\u3002\u8a9e\u5c3e\u306e\u97f3\u304c\u4f55\u304b\u3092\u898b\u3066\u304f\u3060\u3055\u3044 \u2014 \u305d\u308c\u3067\u3069\u306e\u904e\u53bb\u306e\u578b\u306b\u306a\u308b\u304b\u304c\u6c7a\u307e\u308a\u307e\u3059\u3002"
 ],
 "When expressing \"want to do,\" you need the ます-stem (い-row). What sound should come before たい?": [
 "Um „tun wollen“ auszudrücken, brauchen Sie den ます-Stamm (い-Reihe). Welcher Laut muss vor たい stehen?",
 "Pour exprimer « vouloir faire », il faut le radical en ます (rangée い). Quel son doit précéder たい ?",
-"表达“想做”时需要ます词干（い段）。たい 前面应该是哪个音？"
+"表达“想做”时需要ます词干（い段）。たい 前面应该是哪个音？",
+"\u300c\u301c\u3057\u305f\u3044\u300d\u3092\u8868\u3059\u306b\u306f\u3001\u307e\u3059\u5f62\u306e\u8a9e\u5e79\uff08\u3044\u6bb5\uff09\u304c\u5fc5\u8981\u3067\u3059\u3002\u305f\u3044\u306e\u524d\u306b\u306f\u3069\u306e\u97f3\u304c\u6765\u307e\u3059\u304b\u3002"
 ],
 "The potential form shows ability. Think about which sound before る will express \"can do.\" Consider the verb type carefully—each has its own pattern.": [
 "Die Potenzialform drückt Fähigkeit aus. Überlegen Sie, welcher Laut vor る „können“ ausdrückt. Achten Sie genau auf den Verbtyp — jeder hat sein eigenes Muster.",
 "La forme potentielle exprime la capacité. Réfléchissez au son placé avant る qui exprime « pouvoir faire ». Attention au type de verbe : chacun a son schéma.",
-"可能形表示能力。想想 る 前面用哪个音来表达“能做”。注意动词类型——每类都有各自的规律。"
+"可能形表示能力。想想 る 前面用哪个音来表达“能做”。注意动词类型——每类都有各自的规律。",
+"\u53ef\u80fd\u5f62\u306f\u300c\u301c\u3067\u304d\u308b\u300d\u3092\u8868\u3057\u307e\u3059\u3002\u308b\u306e\u524d\u304c\u3069\u306e\u97f3\u306b\u306a\u308c\u3070\u53ef\u80fd\u306e\u610f\u5473\u306b\u306a\u308b\u304b\u8003\u3048\u3066\u307f\u307e\u3057\u3087\u3046\u3002\u52d5\u8a5e\u306e\u7a2e\u985e\u306b\u3082\u6ce8\u610f\u3057\u3066\u304f\u3060\u3055\u3044 \u2014 \u305d\u308c\u305e\u308c\u578b\u304c\u9055\u3044\u307e\u3059\u3002"
 ],
 "To suggest doing something together, you need a stem with an お sound for some verbs. What makes sense for this verb type?": [
 "Um etwas gemeinsam vorzuschlagen, brauchen manche Verben einen Stamm mit einem お-Laut. Was passt zu diesem Verbtyp?",
 "Pour proposer de faire quelque chose ensemble, certains verbes exigent un radical avec un son お. Qu'est-ce qui convient à ce type de verbe ?",
-"提议一起做某事时，有些动词需要带お段音的词干。这个动词类型该怎么变？"
+"提议一起做某事时，有些动词需要带お段音的词干。这个动词类型该怎么变？",
+"\u4e00\u7dd2\u306b\u4f55\u304b\u3092\u3057\u3088\u3046\u3068\u8a98\u3046\u306b\u306f\u3001\u52d5\u8a5e\u306b\u3088\u3063\u3066\u306f\u304a\u6bb5\u306e\u8a9e\u5e79\u304c\u5fc5\u8981\u3067\u3059\u3002\u3053\u306e\u7a2e\u985e\u306e\u52d5\u8a5e\u3067\u306f\u3069\u3046\u306a\u308a\u307e\u3059\u304b\u3002"
 ],
 "The て form uses the same sound changes as the past tense, but ends with て/で instead of た/だ. Think about what happened to the verb ending in past tense.": [
 "Die て-Form nutzt dieselben Lautänderungen wie die Vergangenheit, endet aber auf て/で statt auf た/だ. Denken Sie daran, was in der Vergangenheitsform mit der Verbendung passiert ist.",
 "La forme en て utilise les mêmes changements de sons que le passé, mais se termine par て/で au lieu de た/だ. Repensez à ce qui arrive à la terminaison au passé.",
-"て形与过去形的音变完全相同，只是结尾用 て/で 而不是 た/だ。回想一下过去形中词尾发生了什么变化。"
+"て形与过去形的音变完全相同，只是结尾用 て/で 而不是 た/だ。回想一下过去形中词尾发生了什么变化。",
+"\u3066\u5f62\u306f\u904e\u53bb\u5f62\u3068\u307e\u3063\u305f\u304f\u540c\u3058\u97f3\u306e\u5909\u308f\u308a\u65b9\u3092\u3057\u3001\u305f\uff0f\u3060 \u306e\u304b\u308f\u308a\u306b \u3066\uff0f\u3067 \u3067\u7d42\u308f\u308a\u307e\u3059\u3002\u904e\u53bb\u5f62\u3067\u8a9e\u5c3e\u304c\u3069\u3046\u5909\u308f\u3063\u305f\u304b\u3092\u601d\u3044\u51fa\u3057\u3066\u304f\u3060\u3055\u3044\u3002"
 ],
 "For polite negative, you need the same stem as ます form, but with ません ending instead.": [
 "Für die höfliche Verneinung brauchen Sie denselben Stamm wie bei der ます-Form, aber mit der Endung ません.",
 "Pour le négatif poli, prenez le même radical que la forme en ます, mais avec la terminaison ません.",
-"敬体否定用与ます形相同的词干，只是词尾换成 ません。"
+"敬体否定用与ます形相同的词干，只是词尾换成 ません。",
+"\u4e01\u5be7\u5426\u5b9a\u5f62\u306f\u3001\u307e\u3059\u5f62\u3068\u540c\u3058\u8a9e\u5e79\u306b\u3001\u307e\u3059\u306e\u304b\u308f\u308a\u306b\u307e\u305b\u3093\u3092\u3064\u3051\u307e\u3059\u3002"
 ],
 "For polite past, use the same stem as ます form, but with ました ending instead.": [
 "Für die höfliche Vergangenheit nehmen Sie denselben Stamm wie bei der ます-Form, aber mit der Endung ました.",
 "Pour le passé poli, prenez le même radical que la forme en ます, mais avec la terminaison ました.",
-"敬体过去用与ます形相同的词干，只是词尾换成 ました。"
+"敬体过去用与ます形相同的词干，只是词尾换成 ました。",
+"\u4e01\u5be7\u904e\u53bb\u5f62\u306f\u3001\u307e\u3059\u5f62\u3068\u540c\u3058\u8a9e\u5e79\u306b\u3001\u307e\u3059\u306e\u304b\u308f\u308a\u306b\u307e\u3057\u305f\u3092\u3064\u3051\u307e\u3059\u3002"
 ],
 "For negative past, start with the negative form (ない), drop the い, and add かった.": [
 "Für die verneinte Vergangenheit gehen Sie von der Verneinungsform (ない) aus, lassen das い weg und hängen かった an.",
 "Pour le passé négatif, partez de la forme négative (ない), enlevez le い et ajoutez かった.",
-"否定过去从否定形（ない）出发，去掉 い，加上 かった。"
+"否定过去从否定形（ない）出发，去掉 い，加上 かった。",
+"\u5426\u5b9a\u904e\u53bb\u5f62\u306f\u3001\u5426\u5b9a\u5f62\uff08\u306a\u3044\uff09\u304b\u3089\u59cb\u3081\u3066\u3001\u3044\u3092\u53d6\u308a\u3001\u304b\u3063\u305f\u3092\u3064\u3051\u307e\u3059\u3002"
 ],
 "For ば conditional, Godan verbs shift to え-row + ば. Ichidan drops る + れば. する→すれば.": [
 "Beim ば-Konditional wechseln Godan-Verben zur え-Reihe + ば. Ichidan lässt る weg + れば. する→すれば.",
 "Pour le conditionnel en ば, les verbes godan passent à la rangée え + ば. Les ichidan perdent る + れば. する→すれば.",
-"ば条件形：五段动词变到え段 + ば；一段去掉 る + れば；する→すれば。"
+"ば条件形：五段动词变到え段 + ば；一段去掉 る + れば；する→すれば。",
+"\u3070\u6761\u4ef6\u5f62\u306f\u3001\u4e94\u6bb5\u52d5\u8a5e\u306f\u3048\u6bb5\uff0b\u3070\u3002\u4e00\u6bb5\u52d5\u8a5e\u306f\u308b\u3092\u53d6\u3063\u3066\uff0b\u308c\u3070\u3002\u3059\u308b\u2192\u3059\u308c\u3070\u3002"
 ],
 "For たら conditional, start with the past tense form and add ら.": [
 "Beim たら-Konditional gehen Sie von der Vergangenheitsform aus und hängen ら an.",
 "Pour le conditionnel en たら, partez de la forme du passé et ajoutez ら.",
-"たら条件形：从过去形出发，加上 ら。"
+"たら条件形：从过去形出发，加上 ら。",
+"\u305f\u3089\u6761\u4ef6\u5f62\u306f\u3001\u904e\u53bb\u5f62\u304b\u3089\u59cb\u3081\u3066\u3001\u3089\u3092\u3064\u3051\u307e\u3059\u3002"
 ],
 "For passive, Godan shifts to あ-row + れる. Ichidan drops る + られる. する→される.": [
 "Im Passiv wechseln Godan-Verben zur あ-Reihe + れる. Ichidan lässt る weg + られる. する→される.",
 "Au passif, les godan passent à la rangée あ + れる. Les ichidan perdent る + られる. する→される.",
-"被动形：五段变到あ段 + れる；一段去掉 る + られる；する→される。"
+"被动形：五段变到あ段 + れる；一段去掉 る + られる；する→される。",
+"\u53d7\u8eab\u5f62\u306f\u3001\u4e94\u6bb5\u52d5\u8a5e\u306f\u3042\u6bb5\uff0b\u308c\u308b\u3002\u4e00\u6bb5\u52d5\u8a5e\u306f\u308b\u3092\u53d6\u3063\u3066\uff0b\u3089\u308c\u308b\u3002\u3059\u308b\u2192\u3055\u308c\u308b\u3002"
 ],
 "For causative, Godan shifts to あ-row + せる. Ichidan drops る + させる. する→させる.": [
 "Im Kausativ wechseln Godan-Verben zur あ-Reihe + せる. Ichidan lässt る weg + させる. する→させる.",
 "Au causatif, les godan passent à la rangée あ + せる. Les ichidan perdent る + させる. する→させる.",
-"使役形：五段变到あ段 + せる；一段去掉 る + させる；する→させる。"
+"使役形：五段变到あ段 + せる；一段去掉 る + させる；する→させる。",
+"\u4f7f\u5f79\u5f62\u306f\u3001\u4e94\u6bb5\u52d5\u8a5e\u306f\u3042\u6bb5\uff0b\u305b\u308b\u3002\u4e00\u6bb5\u52d5\u8a5e\u306f\u308b\u3092\u53d6\u3063\u3066\uff0b\u3055\u305b\u308b\u3002\u3059\u308b\u2192\u3055\u305b\u308b\u3002"
 ],
 "For causative-passive, Godan: あ-row + される. Ichidan: drop る + させられる. する→させられる.": [
 "Im Kausativ-Passiv: Godan あ-Reihe + される. Ichidan: る weglassen + させられる. する→させられる.",
 "Au causatif-passif : godan あ-rangée + される. Ichidan : enlever る + させられる. する→させられる.",
-"使役被动：五段 あ段 + される；一段去掉 る + させられる；する→させられる。"
+"使役被动：五段 あ段 + される；一段去掉 る + させられる；する→させられる。",
+"\u4f7f\u5f79\u53d7\u8eab\u5f62\u306f\u3001\u4e94\u6bb5\u52d5\u8a5e\u306f\u3042\u6bb5\uff0b\u3055\u308c\u308b\u3002\u4e00\u6bb5\u52d5\u8a5e\u306f\u308b\u3092\u53d6\u3063\u3066\uff0b\u3055\u305b\u3089\u308c\u308b\u3002\u3059\u308b\u2192\u3055\u305b\u3089\u308c\u308b\u3002"
 ],
 "For commands, Godan shifts to え-row (書く→書け). Ichidan drops る + ろ/よ (食べる→食べろ). する→しろ.": [
 "Für Befehle wechseln Godan-Verben zur え-Reihe (書く→書け). Ichidan lässt る weg + ろ/よ (食べる→食べろ). する→しろ.",
 "Pour l'impératif, les godan passent à la rangée え (書く→書け). Les ichidan perdent る + ろ/よ (食べる→食べろ). する→しろ.",
-"命令形：五段变到え段（書く→書け）；一段去掉 る + ろ/よ（食べる→食べろ）；する→しろ。"
+"命令形：五段变到え段（書く→書け）；一段去掉 る + ろ/よ（食べる→食べろ）；する→しろ。",
+"\u547d\u4ee4\u5f62\u306f\u3001\u4e94\u6bb5\u52d5\u8a5e\u306f\u3048\u6bb5\uff08\u66f8\u304f\u2192\u66f8\u3051\uff09\u3002\u4e00\u6bb5\u52d5\u8a5e\u306f\u308b\u3092\u53d6\u3063\u3066\uff0b\u308d\uff0f\u3088\uff08\u98df\u3079\u308b\u2192\u98df\u3079\u308d\uff09\u3002\u3059\u308b\u2192\u3057\u308d\u3002"
 ],
 "For godan verbs, the ending changes based on the last sound. Think about what sound this verb ends with!": [
 "Bei Godan-Verben ändert sich die Endung je nach Endlaut. Überlegen Sie, auf welchen Laut dieses Verb endet!",
 "Pour les verbes godan, la terminaison change selon le son final. Réfléchissez au son sur lequel ce verbe se termine !",
-"五段动词的词尾变化取决于最后一个音。想想这个动词以哪个音结尾！"
+"五段动词的词尾变化取决于最后一个音。想想这个动词以哪个音结尾！",
+"\u4e94\u6bb5\u52d5\u8a5e\u306f\u3001\u6700\u5f8c\u306e\u97f3\u306b\u3088\u3063\u3066\u8a9e\u5c3e\u306e\u5909\u308f\u308a\u65b9\u304c\u6c7a\u307e\u308a\u307e\u3059\u3002\u3053\u306e\u52d5\u8a5e\u304c\u4f55\u306e\u97f3\u3067\u7d42\u308f\u308b\u304b\u898b\u3066\u307f\u307e\u3057\u3087\u3046\u3002"
 ],
 "For ichidan verbs, the stem never changes - you just swap the ending. Drop る and add the new ending!": [
 "Bei Ichidan-Verben ändert sich der Stamm nie — Sie tauschen nur die Endung. る weglassen und die neue Endung anhängen!",
 "Pour les verbes ichidan, le radical ne change jamais : il suffit de remplacer la terminaison. Enlevez る et ajoutez la nouvelle terminaison !",
-"一段动词的词干永不变化——只需替换词尾。去掉 る，加上新词尾！"
+"一段动词的词干永不变化——只需替换词尾。去掉 る，加上新词尾！",
+"\u4e00\u6bb5\u52d5\u8a5e\u306f\u8a9e\u5e79\u304c\u5909\u308f\u308a\u307e\u305b\u3093 \u2014 \u8a9e\u5c3e\u3092\u5165\u308c\u66ff\u3048\u308b\u3060\u3051\u3067\u3059\u3002\u308b\u3092\u53d6\u3063\u3066\u3001\u65b0\u3057\u3044\u8a9e\u5c3e\u3092\u3064\u3051\u307e\u3057\u3087\u3046\u3002"
 ],
 "する verbs follow a special pattern. The part before する stays the same!": [
 "する-Verben folgen einem besonderen Muster. Der Teil vor する bleibt gleich!",
 "Les verbes en する suivent un schéma particulier. La partie avant する ne change pas !",
-"する动词遵循特殊规律。する 前面的部分保持不变！"
+"する动词遵循特殊规律。する 前面的部分保持不变！",
+"\u3059\u308b\u52d5\u8a5e\u306f\u7279\u5225\u306a\u578b\u306b\u5f93\u3044\u307e\u3059\u3002\u3059\u308b\u306e\u524d\u306e\u90e8\u5206\u306f\u305d\u306e\u307e\u307e\u3067\u3059\u3002"
 ],
 "For godan verbs in this form, different endings have different sound changes. く→いて, す→して, う/つ/る→って. Check your verb's ending!": [
 "Bei Godan-Verben in dieser Form haben verschiedene Endungen verschiedene Lautänderungen: く→いて, す→して, う/つ/る→って. Prüfen Sie die Endung Ihres Verbs!",
 "Pour les verbes godan dans cette forme, chaque terminaison a son changement de son : く→いて, す→して, う/つ/る→って. Vérifiez la terminaison de votre verbe !",
-"这一形式下，五段动词不同词尾有不同音变：く→いて、す→して、う/つ/る→って。检查一下您这个动词的词尾！"
+"这一形式下，五段动词不同词尾有不同音变：く→いて、す→して、う/つ/る→って。检查一下您这个动词的词尾！",
+"\u3053\u306e\u5f62\u3067\u306f\u3001\u4e94\u6bb5\u52d5\u8a5e\u306f\u8a9e\u5c3e\u3054\u3068\u306b\u97f3\u306e\u5909\u308f\u308a\u65b9\u304c\u9055\u3044\u307e\u3059\u3002\u304f\u2192\u3044\u3066\u3001\u3059\u2192\u3057\u3066\u3001\u3046\uff0f\u3064\uff0f\u308b\u2192\u3063\u3066\u3002\u8a9e\u5c3e\u3092\u78ba\u304b\u3081\u3066\u304f\u3060\u3055\u3044\u3002"
 ],
 "Think about the conjugation pattern for this verb type!": [
 "Denken Sie an das Konjugationsmuster für diesen Verbtyp!",
 "Pensez au schéma de conjugaison de ce type de verbe !",
-"想一想这个动词类型的变形规律！"
+"想一想这个动词类型的变形规律！",
+"\u3053\u306e\u7a2e\u985e\u306e\u52d5\u8a5e\u306e\u6d3b\u7528\u306e\u578b\u3092\u601d\u3044\u51fa\u3057\u3066\u307f\u307e\u3057\u3087\u3046\u3002"
 ],
 "What type of verb is this?": [
 "Welcher Verbtyp ist das?",
 "Quel type de verbe est-ce ?",
-"这是哪种动词？"
+"这是哪种动词？",
+"\u3053\u306e\u52d5\u8a5e\u306f\u4f55\u306e\u7a2e\u985e\u3067\u3059\u304b\u3002"
 ],
 "Enter:": [
 "Eingeben:",
 "Saisissez :",
-"请输入："
+"请输入：",
+"\u5165\u529b\uff1a"
 ],
 "or": [
 "oder",
 "ou",
-"或"
+"或",
+"\u307e\u305f\u306f"
 ],
 "No Practice Data Yet": [
 "Noch keine Übungsdaten",
 "Pas encore de données",
-"暂无练习数据"
+"暂无练习数据",
+"\u307e\u3060\u7df4\u7fd2\u306e\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093"
 ],
 "Start practicing to see your statistics, mistake patterns, and personalized advice!": [
 "Fangen Sie an zu üben, um Ihre Statistiken, Fehlermuster und persönliche Tipps zu sehen!",
 "Commencez à pratiquer pour voir vos statistiques, vos erreurs récurrentes et des conseils personnalisés !",
-"开始练习后，即可查看您的统计数据、错误规律和个性化建议！"
+"开始练习后，即可查看您的统计数据、错误规律和个性化建议！",
+"\u7df4\u7fd2\u3092\u59cb\u3081\u308b\u3068\u3001\u6210\u7e3e\u30fb\u307e\u3061\u304c\u3044\u306e\u50be\u5411\u30fb\u3042\u306a\u305f\u5411\u3051\u306e\u52a9\u8a00\u304c\u898b\u3089\u308c\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3059\u3002"
 ]
 });
 
@@ -871,82 +923,98 @@ var KA_PHRASES = {
 "negative": [
 "„nicht {m}“ →",
 "« ne pas {m} » →",
-"「不{m}」→"
+"「不{m}」→",
+"\u300c{m}\u300d\u306e\u5426\u5b9a\u5f62 \u2192"
 ],
 "masu": [
 "„{m}“ (höflich) →",
 "« {m} » (poli) →",
-"「{m}」（敬体）→"
+"「{m}」（敬体）→",
+"\u300c{m}\u300d\u306e\u4e01\u5be7\u5f62 \u2192"
 ],
 "past": [
 "„{m}“ (Vergangenheit) →",
 "« {m} » (passé) →",
-"「{m}」（过去）→"
+"「{m}」（过去）→",
+"\u300c{m}\u300d\u306e\u904e\u53bb\u5f62 \u2192"
 ],
 "tai": [
 "„{m} wollen“ →",
 "« vouloir {m} » →",
-"「想{m}」→"
+"「想{m}」→",
+"\u300c{m}\u300d\u306e\u9858\u671b\u5f62 \u2192"
 ],
 "potential": [
 "„{m} können“ →",
 "« pouvoir {m} » →",
-"「能{m}」→"
+"「能{m}」→",
+"\u300c{m}\u300d\u306e\u53ef\u80fd\u5f62 \u2192"
 ],
 "volitional": [
 "„lass uns {m}“ →",
 "« allons {m} » →",
-"「{m}吧」→"
+"「{m}吧」→",
+"\u300c{m}\u300d\u306e\u610f\u5411\u5f62 \u2192"
 ],
 "te": [
 "„{m}“ (te-Form) →",
 "« {m} » (forme en te) →",
-"「{m}」（て形）→"
+"「{m}」（て形）→",
+"\u300c{m}\u300d\u306e\u3066\u5f62 \u2192"
 ],
 "masen": [
 "„nicht {m}“ (höflich) →",
 "« ne pas {m} » (poli) →",
-"「不{m}」（敬体）→"
+"「不{m}」（敬体）→",
+"\u300c{m}\u300d\u306e\u4e01\u5be7\u5426\u5b9a\u5f62 \u2192"
 ],
 "mashita": [
 "„{m}“ (höflich, Vergangenheit) →",
 "« {m} » (poli, passé) →",
-"「{m}」（敬体过去）→"
+"「{m}」（敬体过去）→",
+"\u300c{m}\u300d\u306e\u4e01\u5be7\u904e\u53bb\u5f62 \u2192"
 ],
 "nakatta": [
 "„nicht {m}“ (Vergangenheit) →",
 "« ne pas {m} » (passé) →",
-"「没{m}」→"
+"「没{m}」→",
+"\u300c{m}\u300d\u306e\u5426\u5b9a\u904e\u53bb\u5f62 \u2192"
 ],
 "ba": [
 "„wenn … {m}“ →",
 "« si … {m} » →",
-"「如果{m}」→"
+"「如果{m}」→",
+"\u300c{m}\u300d\u306e\u6761\u4ef6\u5f62\uff08\u3070\uff09\u2192"
 ],
 "tara": [
 "„wenn/sobald … {m}“ →",
 "« si/quand … {m} » →",
-"「{m}的话」→"
+"「{m}的话」→",
+"\u300c{m}\u300d\u306e\u6761\u4ef6\u5f62\uff08\u305f\u3089\uff09\u2192"
 ],
 "passive": [
 "„{m}“ (Passiv) →",
 "« {m} » (passif) →",
-"「被{m}」→"
+"「被{m}」→",
+"\u300c{m}\u300d\u306e\u53d7\u8eab\u5f62 \u2192"
 ],
 "causative": [
 "„(jemanden) {m} lassen“ →",
 "« faire {m} (à quelqu’un) » →",
-"「让（某人）{m}」→"
+"「让（某人）{m}」→",
+"\u300c{m}\u300d\u306e\u4f7f\u5f79\u5f62 \u2192"
 ],
 "causative-passive": [
 "„{m} müssen“ (Kausativ-Passiv) →",
 "« être obligé de {m} » →",
-"「被迫{m}」→"
+"「被迫{m}」→",
+"\u300c{m}\u300d\u306e\u4f7f\u5f79\u53d7\u8eab\u5f62 \u2192"
 ],
 "imperative": [
 "„{m}!“ →",
 "« {m} ! » →",
-"「{m}！」→"
+"「{m}！」→",
+"\u300c{m}\u300d\u306e\u547d\u4ee4\u5f62 \u2192"
 ]
 };
 

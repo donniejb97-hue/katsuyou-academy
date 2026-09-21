@@ -4,6 +4,7 @@
 // ============================================================
 var I18N = {
   en: {
+    nav_privacy:'Privacy', footer_tag:'Free, and built by one learner.',
     nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Words', nav_group_practice:'Practice', nav_counters:'Counters', nav_dictionary:'Dictionary', nav_deconjugator:'Rewind', nav_new:'New', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
     nav_conjugator:'Conjugator', nav_kana_drill:'Kana Drill', nav_kanji_drill:'Kanji Drill', nav_talk:'Talk', nav_reading:'Reading',
     nav_dates:'Dates', nav_vocab:'Vocabulary',
@@ -166,13 +167,13 @@ var I18N = {
     hm_q1_t:"Is it really free?",
     hm_q1_d:"Yes. No account, no trial, no paid tier. There's a tip jar if you ever feel like it, and that's the whole business model.",
     hm_q2_t:"Where does my progress live?",
-    hm_q2_d:"<strong>In your browser, and nowhere else.</strong> Nothing is uploaded and there's nothing to log into — which also means clearing your browser data clears your progress, and your phone won't know what your laptop has done.",
+    hm_q2_d:"<strong>In your browser, and nowhere else.</strong> Your progress is never uploaded and there’s nothing to log into — which also means clearing your browser data clears it, and your phone won’t know what your laptop has done. The few things that <em>do</em> leave your browser are listed on the <a href=\"/privacy\">privacy page</a>.",
     hm_q3_t:"Where does the dictionary come from?",
     hm_q3_d:"It's built from <strong>JMdict</strong>, the same open dataset Jisho uses, under a Creative Commons licence. The kanji follow the Kodansha Kanji Learner's Course ordering. The conjugation engine, the deconjugator and every explanation on the site are my own.",
     hm_q4_t:"Does it work on a phone?",
     hm_q4_d:"Every page is built for it. There's no app to install — it's a website, which is the point.",
     hm_q5_t:"Do I have to study in English?",
-    hm_q5_d:"No. The whole interface is in <strong>English, German, French and Chinese</strong>, properly translated rather than machine-run.",
+    hm_q5_d:"No. The whole interface is in <strong>English, German, French, Chinese and Japanese</strong>, properly translated rather than machine-run.",
     tour_sub:"New to Japanese? This is the order that works. About an hour a day gets you through it.",
     tour_1_t:"Learn the kana",
     tour_1_d:"Both alphabets, 104 characters. A week or two, and everything after this gets easier.",
@@ -384,8 +385,8 @@ var I18N = {
     why_feedback_d:"The Conjugator doesn't just say “wrong”—it shows the exact rule you needed and identifies your specific error, then brings that verb back later. Flashcards prioritise unseen cards, and the kana and kanji drills remember every character you've answered.",
     why_design_t:"Thoughtfully Designed",
     why_design_d:"Warm, aged-paper aesthetics with clean typography. It feels more like a well-crafted study journal than a typical language app. No ads, no clutter, no distractions.",
-    why_langs_t:"Four Languages",
-    why_langs_d:"The whole site—every page, every button, every explanation—reads in English, German, French or Simplified Chinese. Switch language from the menu at any time; your place is kept.",
+    why_langs_t:"Five Languages",
+    why_langs_d:"The whole site—every page, every button, every explanation—reads in English, German, French, Simplified Chinese or Japanese. Switch language from the menu at any time; your place is kept.",
     why_katsu_t:"Ask Katsu",
     why_katsu_d:"<span class=\"jp\">カツ先生</span>, an AI tutor, waits in the corner of every page. Ask why a conjugation works, what separates は from が, or anything that has you stuck—and get an answer in the language you're reading in. Katsu also notices the mistakes you make elsewhere on the site, and can talk you through them.",
     why_free_t:"Free Forever",
@@ -499,6 +500,7 @@ var I18N = {
     ],
   },
   de: {
+    nav_privacy:'Datenschutz', footer_tag:'Kostenlos, gebaut von einem Lernenden.',
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Wörter', nav_group_practice:'Üben', nav_counters:'Zählwörter', nav_dictionary:'Wörterbuch', nav_deconjugator:'Rückspulen', nav_new:'Neu', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
     nav_conjugator:'Konjugator', nav_kana_drill:'Kana-Drill', nav_kanji_drill:'Kanji-Drill', nav_talk:'Gespräch', nav_reading:'Lesen',
     nav_dates:'Datum', nav_vocab:'Vokabeln',
@@ -660,13 +662,13 @@ var I18N = {
     hm_q1_t:"Ist es wirklich kostenlos?",
     hm_q1_d:"Ja. Kein Konto, keine Testphase, keine Bezahlstufe. Es gibt ein Trinkgeldglas, falls Ihnen danach ist, und das ist das ganze Geschäftsmodell.",
     hm_q2_t:"Wo liegt mein Fortschritt?",
-    hm_q2_d:"<strong>In Ihrem Browser, und sonst nirgends.</strong> Nichts wird hochgeladen und es gibt nichts, wo man sich anmeldet — das heißt aber auch: Browserdaten löschen löscht Ihren Fortschritt, und Ihr Handy weiß nicht, was Ihr Laptop getan hat.",
+    hm_q2_d:"<strong>In Ihrem Browser, und sonst nirgends.</strong> Ihr Fortschritt wird nie hochgeladen, und es gibt nichts, wo Sie sich anmelden müssten — das heißt aber auch: Browserdaten löschen löscht ihn, und Ihr Telefon weiß nicht, was Ihr Laptop getan hat. Was den Browser tatsächlich verlässt, steht auf der <a href=\"/privacy\">Datenschutzseite</a>.",
     hm_q3_t:"Woher kommt das Wörterbuch?",
     hm_q3_d:"Es beruht auf <strong>JMdict</strong>, demselben offenen Datensatz, den auch Jisho nutzt, unter einer Creative-Commons-Lizenz. Die Kanji folgen der Reihenfolge des Kodansha Kanji Learner's Course. Die Konjugations-Engine, der Dekonjugator und jede Erklärung auf der Seite stammen von mir.",
     hm_q4_t:"Funktioniert es auf dem Handy?",
     hm_q4_d:"Jede Seite ist dafür gebaut. Es gibt keine App zu installieren — es ist eine Website, und das ist der Punkt.",
     hm_q5_t:"Muss ich auf Englisch lernen?",
-    hm_q5_d:"Nein. Die ganze Oberfläche gibt es auf <strong>Englisch, Deutsch, Französisch und Chinesisch</strong>, richtig übersetzt statt maschinell.",
+    hm_q5_d:"Nein. Die ganze Oberfläche gibt es auf <strong>Englisch, Deutsch, Französisch, Chinesisch und Japanisch</strong>, richtig übersetzt statt maschinell.",
     tour_sub:"Neu im Japanischen? Das ist die Reihenfolge, die funktioniert. Mit etwa einer Stunde am Tag kommen Sie durch.",
     tour_1_t:"Die Kana lernen",
     tour_1_d:"Beide Silbenschriften, 104 Zeichen. Ein bis zwei Wochen — danach wird alles Weitere leichter.",
@@ -870,8 +872,8 @@ var I18N = {
     why_feedback_d:"Der Konjugator sagt nicht einfach „falsch“ — er zeigt genau die Regel, die gefehlt hat, benennt Ihren konkreten Fehler und legt Ihnen dasselbe Verb später noch einmal vor. Karteikarten bevorzugen ungesehene Karten, und die Kana- und Kanji-Übungen merken sich jedes Zeichen, das Sie beantwortet haben.",
     why_design_t:"Mit Sorgfalt gestaltet",
     why_design_d:"Warme Optik wie gealtertes Papier, dazu klare Typografie. Das Ganze fühlt sich eher nach einem sorgfältig gemachten Lernjournal an als nach einer üblichen Sprach-App. Keine Werbung, kein Wirrwarr, keine Ablenkung.",
-    why_langs_t:"Vier Sprachen",
-    why_langs_d:"Die gesamte Seite — jede Unterseite, jede Schaltfläche, jede Erklärung — liest sich auf Englisch, Deutsch, Französisch oder Chinesisch (vereinfacht). Die Sprache lässt sich jederzeit im Menü wechseln; Ihre Stelle bleibt erhalten.",
+    why_langs_t:"Fünf Sprachen",
+    why_langs_d:"Die gesamte Seite — jede Unterseite, jede Schaltfläche, jede Erklärung — liest sich auf Englisch, Deutsch, Französisch, Chinesisch (vereinfacht) oder Japanisch. Die Sprache lässt sich jederzeit im Menü wechseln; Ihre Stelle bleibt erhalten.",
     why_katsu_t:"Fragen Sie Katsu",
     why_katsu_d:"<span class=\"jp\">カツ先生</span>, ein KI-Tutor, wartet in der Ecke jeder Seite. Fragen Sie, warum eine Konjugation so funktioniert, was は von が unterscheidet, oder was immer Sie gerade aufhält — und bekommen Sie die Antwort in der Sprache, in der Sie lesen. Katsu bemerkt außerdem die Fehler, die Sie anderswo auf der Seite machen, und geht sie mit Ihnen durch.",
     why_free_t:"Für immer kostenlos",
@@ -985,6 +987,7 @@ var I18N = {
     ],
   },
   fr: {
+    nav_privacy:'Confidentialité', footer_tag:'Gratuit, conçu par un apprenant.',
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Cours', nav_group_vocab:'Mots', nav_group_practice:'Pratique', nav_counters:'Compteurs', nav_dictionary:'Lexique', nav_deconjugator:'Rembobiner', nav_new:'Nouveau', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
     nav_conjugator:'Conjugueur', nav_kana_drill:'Drill kana', nav_kanji_drill:'Drill kanji', nav_talk:'Parler', nav_reading:'Lecture',
     nav_dates:'Dates', nav_vocab:'Vocabulaire',
@@ -1146,13 +1149,13 @@ var I18N = {
     hm_q1_t:"C'est vraiment gratuit ?",
     hm_q1_d:"Oui. Pas de compte, pas d'essai, pas de formule payante. Il y a une cagnotte si le cœur vous en dit, et c'est tout le modèle économique.",
     hm_q2_t:"Où sont gardés mes progrès ?",
-    hm_q2_d:"<strong>Dans votre navigateur, et nulle part ailleurs.</strong> Rien n'est envoyé et il n'y a nulle part où se connecter — ce qui veut dire aussi qu'effacer les données du navigateur efface vos progrès, et que votre téléphone ignore ce qu'a fait votre ordinateur.",
+    hm_q2_d:"<strong>Dans votre navigateur, et nulle part ailleurs.</strong> Votre progression n’est jamais envoyée et il n’y a rien où se connecter — ce qui veut dire aussi qu’effacer les données du navigateur l’efface, et que votre téléphone ignore ce qu’a fait votre ordinateur. Ce qui sort vraiment du navigateur est listé sur la <a href=\"/privacy\">page de confidentialité</a>.",
     hm_q3_t:"D'où vient le dictionnaire ?",
     hm_q3_d:"Il est construit à partir de <strong>JMdict</strong>, le jeu de données ouvert qu'utilise aussi Jisho, sous licence Creative Commons. Les kanji suivent l'ordre du Kodansha Kanji Learner's Course. Le moteur de conjugaison, le déconjugueur et chaque explication du site sont les miens.",
     hm_q4_t:"Est-ce que ça marche sur téléphone ?",
     hm_q4_d:"Chaque page est faite pour ça. Il n'y a aucune application à installer — c'est un site web, et c'est bien l'idée.",
     hm_q5_t:"Dois-je étudier en anglais ?",
-    hm_q5_d:"Non. Toute l'interface existe en <strong>anglais, allemand, français et chinois</strong>, vraiment traduite et non passée à la machine.",
+    hm_q5_d:"Non. Toute l'interface existe en <strong>anglais, allemand, français, chinois et japonais</strong>, vraiment traduite et non passée à la machine.",
     tour_sub:"Vous débutez en japonais ? Voici l'ordre qui fonctionne. Environ une heure par jour suffit.",
     tour_1_t:"Apprendre les kana",
     tour_1_d:"Les deux syllabaires, 104 caractères. Une ou deux semaines, et tout le reste devient plus simple.",
@@ -1356,8 +1359,8 @@ var I18N = {
     why_feedback_d:"Le Conjugateur ne se contente pas de dire « faux » : il montre la règle exacte qui manquait, nomme votre erreur précise, puis vous repropose ce verbe plus tard. Les cartes privilégient celles jamais vues, et les exercices de kana et de kanji retiennent chaque caractère auquel vous avez répondu.",
     why_design_t:"Conçu avec soin",
     why_design_d:"Une esthétique chaleureuse de papier vieilli et une typographie nette. On se croirait davantage devant un carnet d'étude soigné que devant une application de langues classique. Pas de publicité, pas d'encombrement, pas de distractions.",
-    why_langs_t:"Quatre langues",
-    why_langs_d:"Tout le site — chaque page, chaque bouton, chaque explication — se lit en anglais, allemand, français ou chinois simplifié. Changez de langue depuis le menu à tout moment ; vous ne perdez pas votre place.",
+    why_langs_t:"Cinq langues",
+    why_langs_d:"Tout le site — chaque page, chaque bouton, chaque explication — se lit en anglais, allemand, français, chinois simplifié ou japonais. Changez de langue depuis le menu à tout moment ; vous ne perdez pas votre place.",
     why_katsu_t:"Demandez à Katsu",
     why_katsu_d:"<span class=\"jp\">カツ先生</span>, un tuteur IA, attend dans un coin de chaque page. Demandez pourquoi une conjugaison fonctionne ainsi, ce qui distingue は de が, ou tout ce qui vous bloque — et recevez la réponse dans la langue que vous lisez. Katsu remarque aussi les erreurs que vous faites ailleurs sur le site et peut les reprendre avec vous.",
     why_free_t:"Gratuit pour toujours",
@@ -1471,6 +1474,7 @@ var I18N = {
     ],
   },
   zh: {
+    nav_privacy:'隐私', footer_tag:'免费，由一位学习者打造。',
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_counters:'量词', nav_dictionary:'词典', nav_deconjugator:'逆推', nav_new:'新', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
     nav_conjugator:'变形器', nav_kana_drill:'假名练习', nav_kanji_drill:'汉字练习', nav_talk:'对话', nav_reading:'阅读',
     nav_dates:'日期', nav_vocab:'词汇',
@@ -1632,13 +1636,13 @@ var I18N = {
     hm_q1_t:"真的免费吗？",
     hm_q1_d:"是。没有账号，没有试用期，没有付费档。如果你愿意，可以打赏，仅此而已 — 这就是全部的商业模式。",
     hm_q2_t:"我的进度存在哪里？",
-    hm_q2_d:"<strong>存在你的浏览器里，别无他处。</strong>什么都不会上传，也没有地方可以登录 — 但这也意味着清除浏览器数据就会清除你的进度，而且手机并不知道电脑做过什么。",
+    hm_q2_d:"<strong>就在您的浏览器里，别无他处。</strong>进度不会上传，也没有需要登录的地方——但这也意味着清除浏览器数据就会清除进度，而且手机不会知道电脑上做过什么。确实会离开浏览器的那几项，都列在<a href=\"/privacy\">隐私页</a>上。",
     hm_q3_t:"词典的数据从哪来？",
     hm_q3_d:"来自 <strong>JMdict</strong>，与 Jisho 使用的是同一套开放数据，遵循知识共享许可。汉字按讲谈社《Kanji Learner's Course》的顺序排列。变位引擎、逆推引擎以及站上每一条讲解，都是我自己写的。",
     hm_q4_t:"手机上能用吗？",
     hm_q4_d:"每个页面都是为手机做的。没有应用要装 — 它就是一个网站，这正是重点。",
     hm_q5_t:"一定要用英语学吗？",
-    hm_q5_d:"不用。整个界面都有<strong>英语、德语、法语和中文</strong>，是真正翻译过的，不是机器跑出来的。",
+    hm_q5_d:"不用。整个界面都有<strong>英语、德语、法语、中文和日语</strong>，是真正翻译过的，不是机器跑出来的。",
     tour_sub:"初学日语？这是行之有效的顺序。每天约一小时就能走完。",
     tour_1_t:"先学假名",
     tour_1_d:"两套假名，104 个字符。一两周拿下，后面的一切都会变容易。",
@@ -1843,8 +1847,8 @@ var I18N = {
     why_feedback_d:"变位练习不会只回一句「错了」——它会指出你当时缺的那条规则、说明你具体错在哪里，并在之后再次出这个动词。记忆卡会优先安排没见过的卡片，假名与汉字操练则会记住你答过的每一个字。",
     why_design_t:"用心的设计",
     why_design_d:"温暖的旧纸质感，配上干净的字体排印。它更像一本用心做出来的学习手账，而不是常见的语言应用。没有广告，不杂乱，也不分散注意力。",
-    why_langs_t:"四种语言",
-    why_langs_d:"整站内容——每个页面、每个按钮、每段讲解——都有英语、德语、法语和简体中文版本。可随时从菜单切换语言，进度不会丢失。",
+    why_langs_t:"五种语言",
+    why_langs_d:"整站内容——每个页面、每个按钮、每段讲解——都有英语、德语、法语、简体中文和日语版本。可随时从菜单切换语言，进度不会丢失。",
     why_katsu_t:"问问活先生",
     why_katsu_d:"<span class=\"jp\">カツ先生</span>（活先生）是一位 AI 导师，守在每个页面的角落。你可以问某个变位为什么这样、は 和 が 有什么区别，或任何卡住你的问题——回答会用你正在阅读的语言给出。活先生还会注意到你在站内其他地方犯的错，并带你一起回顾。",
     why_free_t:"永久免费",
@@ -1956,6 +1960,498 @@ var I18N = {
       ["语音","由哪个日语语音朗读。「试听」可播放示例 — 建议开始前就选好，因为第一句回复会立刻朗读。"],
       ["停止","结束对话，并提供一份书面评估。"],
     ],
+  },
+  ja: {
+    nav_privacy:'プライバシー', footer_tag:'無料です。学習者がひとりで作りました。',
+    nav_home:'ホーム', nav_kana:'かな', nav_learn:'学習', nav_group_learn:'学ぶ', nav_group_vocab:'単語', nav_group_practice:'練習', nav_counters:'助数詞', nav_dictionary:'辞書', nav_deconjugator:'逆引き', nav_new:'新', nav_adjectives:'形容詞', nav_reference:'資料', nav_conjugation:'活用', nav_forms:'活用形', nav_verbs:'動詞',
+    nav_conjugator:'活用練習', nav_kana_drill:'かな練習', nav_kanji_drill:'漢字練習', nav_talk:'会話', nav_reading:'読解',
+    nav_dates:'日付', nav_vocab:'単語帳',
+    nav_vocab_quiz:'単語クイズ',
+    vq_show:'答えを見る',
+    vq_counts_missed:'不正解として記録されます',
+    vq_ask_katakana:'カタカナで答える',
+    vq_mode_kana:'ひらがな — youka と打つと ようか',
+    vq_mode_katakana:'カタカナ — juusu と打つと ジュース',
+    vq_mode_off:'オフ — お使いの日本語入力で',
+    vq_row_deck:'デッキ',
+    vq_row_ask:'出題',
+    vq_row_serve:'出し方',
+    vq_all_levels:'すべてのレベル',
+    vq_no_level:'N3 より上／レベル未設定',
+    vq_in_round:'出題中',
+    vq_filters:'絞り込み',
+    vq_all_topics:'すべてのテーマ',
+    vq_filters_note:'このままにしておくと全範囲から出題され、間違えた単語がより多く出てきます。',
+    vocab_try_quiz:'この単語をクイズで試す →',
+    vocab_search_ph:'検索 — apple・ringo・りんご・林檎',
+    vocab_search_none:'一致するものがありません',
+    vocab_search_more:'件',
+    vq_page_sub:'単語クイズ — 意味・読み・自分で言ってみる',
+    vq_practise:'練習する',
+    vq_topics:'テーマ — 未選択ならすべて',
+    vq_check:'確認',
+    vq_skip:'とばす',
+    vq_next:'次へ →',
+    vq_to_cards:'← 単語カードに戻る', nav_kanji:'漢字', nav_contact:'お問い合わせ',
+    page_tag:'対話式の練習', page_title:'かな練習',
+    score:'得点', streak:'連続正解', best:'最高記録',
+    mode:'モード', script:'文字', sets:'出題範囲', charts:'一覧表',
+    mode_k2r:'かな → ローマ字', mode_r2k:'ローマ字 → かな', mixed:'混合',
+    set_basic:'基本（46）', set_dakuten:'濁音・半濁音（25）', set_combos:'拗音（33）',
+    sheet_h:'ひらがな一覧表', sheet_k:'カタカナ一覧表',
+    hold_h:'Alt+H を押している間だけ表示', hold_k:'Alt+K を押している間だけ表示',
+    tag_type_h:'ひらがな — 読みを入力してください', tag_type_k:'カタカナ — 読みを入力してください',
+    tag_pick_h:'ひらがなを選んでください', tag_pick_k:'カタカナを選んでください',
+    placeholder:'ローマ字で入力…',
+    check:'答え合わせ', next:'次の問題 →', skip:'答えを見る', reset:'↺ 得点をリセット',
+    fb_correct:'⭕ 正解！', fb_answer:'答え：', fb_wrong:'❌ おしい — 正解は：',
+    missed_title:'📝 今回まちがえた文字 — クリックで発音',
+    click_hear:'クリックで発音', hear_pron:'発音を聞く',
+    cheat_hint:'かなをタップすると発音が聞けます 🔊 &nbsp;·&nbsp; Alt+H／Alt+K を押している間だけ一覧表を表示',
+    cheat_title_h:'ひらがな', cheat_title_k:'カタカナ',
+    cheat_basic:'基本（46）', cheat_dakuten:'濁音・半濁音（25）', cheat_combos:'拗音（33）',
+    // ---- index ----
+    hero_badge:'日本語学習ツール集',
+    back_to_top:'ページ上部へ',
+    card_kana_t:'<span class="jp">仮名</span> — かな',
+    card_kana_d:'<strong>ひらがな・カタカナ104文字</strong>すべてを練習できます。二つの文字体系を並べて学べ、<strong>音声つき</strong>の一覧表で基本のかな・濁音・拗音を確認できます。どの文字もクリックすれば発音が聞けます。',
+    card_kana_cta:'かなを学ぶ →',
+    card_kdrill_t:'<span class="jp">仮名練習</span> — かな練習',
+    card_kdrill_d:'両方向から出題します。<strong>かな → ローマ字</strong>は入力で、<strong>ローマ字 → かな</strong>は選択で答えます。文字種と範囲で絞り込み、<strong>得点・連続正解・自己最高</strong>が伸びていくのを見守りましょう。詰まったら<strong>Alt+H または Alt+K を押しっぱなし</strong>にすれば、問題を離れずに一覧表をのぞけます。<strong>進捗グラフ</strong>には答えたかな全部と、それぞれ何回まちがえたかが出ます。',
+    card_kdrill_cta:'練習を始める →',
+    card_kjdrill_t:'<span class="jp">漢字練習</span> — 漢字練習',
+    card_kjdrill_d:'<strong>KLC の漢字2,300字</strong>すべてを、漢字 → キーワードでもキーワード → 漢字でも出題できます。<strong>範囲を指定</strong>すれば、コース全体ではなく今勉強している区間だけを練習できます。入力した答えには<strong>三段階の判定</strong>（正解・おしいのでもう一度・正解を表示）がつき、まちがえたものはページ下部の<strong>復習リスト</strong>にたまっていきます。',
+    card_kjdrill_cta:'練習を始める →',
+    card_learn_t:'<span class="jp">学習</span> — 学ぶ',
+    card_learn_d:'日本語の動詞活用が実際どう動いているのかを、図とことばでていねいに説明します。規則を覚えるだけでなく、その<em>理由</em>まで理解できます。動詞の種類の見分け方、ひらがなの音の仕組み、活用ごとの手順を一歩ずつたどれます。',
+    card_learn_cta:'学習を始める →',
+    card_forms_t:'<span class="jp">活用形</span> — 活用形',
+    card_forms_d:'五段・一段・する動詞の三種類すべてについて、16の活用形をまとめた早見表です。基本形（否定・丁寧・過去）から応用形（受身・使役・条件）まで、色分けされた表で作り方がひと目でわかります。さっと調べたいときにも、パターンを並べて比べたいときにも便利です。',
+    card_forms_cta:'活用形を見る →',
+    card_verbs_t:'<span class="jp">動詞</span> — 動詞一覧',
+    card_verbs_d:'データベース内の<strong>129の動詞</strong>を、種類別（五段・一段・する動詞）に漢字・ひらがな・意味つきで一覧できます。<strong>検索</strong>ですぐに目的の動詞を見つけたり、<strong>JLPT のレベル</strong>（N5・N4・N3）で絞り込んで自分の段階に合った語だけを見たりできます。',
+    card_verbs_cta:'動詞を見る →',
+    card_conj_t:'<span class="jp">活用</span> — 活用練習',
+    card_conj_d:'活用道場の中心となるツールです。<strong>16の活用形</strong>を即時判定つきで練習できます。<strong>日本語キーボードは不要</strong> — <em>ikanai</em> と打てば打ちながら いかない になり、漢字で答えても同じように正解になります。難易度や一つの形を選び、JLPT レベルで絞り込み、まとめの出る<strong>ラウンド</strong>形式で進められます。まちがえた動詞は二回正解するまで<strong>また出てきて</strong>、まちがえるたびに必要だった規則がそのまま示されます。',
+    card_conj_cta:'練習を始める →',
+    card_dojo_t:'<span class="jp">日付</span> — 日付と数',
+    card_dojo_d:'日付・曜日・月・数字を練習します。今日の日付、未来や過去の計算、相対的な日（<span class="jp">きのう</span>・<span class="jp">あした</span>）、大きな数などが出題されます。<strong>文で答える形式</strong>なので、です・でした を使った正しい言い方が身につきます。読みが難しい語のための<strong>早見表</strong>つきです。',
+    card_dojo_cta:'道場に入る →',
+    card_vocab_t:'<span class="jp">単語</span> — 単語帳',
+    card_vocab_d:'<strong>基本の941語</strong>を、賢い単語カードで練習します。<strong>ひらがな・漢字・カタカナ</strong>を<strong>8種類の学習モード</strong>で学べます。日本語→英語と英語→日本語を切り替え、読みを表示・非表示にし、両方の表記を並べて見ることもできます。<strong>シャッフルは未見のカードを優先</strong>し、進捗表示でこれまでに学んだ枚数がわかります。',
+    card_vocab_cta:'単語を学ぶ →',
+    card_kanji_t:'<span class="jp">漢字</span> — 漢字',
+    card_kanji_d:'定評ある<strong>講談社の漢字学習コース（KLC）</strong>から<strong>2,300字</strong>を練習できます。各カードには漢字・英語キーワード・<strong>音読み</strong>・<strong>訓読み</strong>に加え、意味つきの<strong>例語</strong>がのっています。レベルで絞り込み、<strong>カードをシャッフル</strong>したり、<strong>任意の KLC 番号へ移動</strong>したりできます。キーボード操作にも対応しています。',
+    card_kanji_cta:'漢字を学ぶ →',
+    btn_start_kana:'かなから始める', btn_explore_kanji:'漢字を見てみる',
+    btn_learn_basics:'基礎を学ぶ', btn_practice_conj:'活用を練習する',
+    // ---- home: where to start + live demo strip ----
+    tour_title:'どこから始めるか',
+    hm_scale_t:'日本語に必要なものを、ひとまとめに',
+    hm_scale_d:'日本語を学ぶ人の多くは、タブに辞書、スマホに漢字アプリ、どこかで撮った活用表のスクリーンショット、そして開かなくなった教科書、という状態になりがちです。ここにはそのすべてが一か所にあります。売るものが何もないので、無料です。',
+    hm_n_dict:'語を収録した辞書。英語でも引けます',
+    hm_n_kanji:'字の漢字。講談社コース全体',
+    hm_n_vocab:'枚の単語カード、19のテーマ',
+    hm_n_read:'編の読解教材、N5 から N1 まで',
+    hm_n_forms:'の活用形を、作る・戻すの両方向で練習',
+    hm_n_free_b:'無料',
+    hm_n_free:'登録も広告もインストールも不要',
+    hm_peek_t:'中をのぞいてみる',
+    hm_peek_d:'説明するより見たほうが早いので — これはサイト上の実際の内容を、そのまま載せたものです。',
+    hm_pk1_h:'辞書から',
+    hm_pk1_g:'一 to eat<br>二 to live on; to subsist on (e.g. a salary)',
+    hm_pk1_c:'30,000語を検索する →',
+    hm_f_polite:'丁寧形',
+    hm_f_te:'て形',
+    hm_f_pot:'可能形',
+    hm_f_caus:'使役形',
+    hm_pk2_h:'読解教材から',
+    hm_pk2_d:'かなだけ、ふりがなつき、漢字のみ — 好きな表記で読めます。音声で聞いてから設問に答えると、その場で採点され、答えの根拠となる一文まで示されます。',
+    hm_pk2_c:'75編、N5 から N1 まで →',
+    hm_pk3_h:'活用練習から',
+    hm_pk3_v:'五段動詞 · N5',
+    hm_pk3_q:'使役受身にしてください',
+    hm_pk3_a:'答えを入力',
+    hm_pk3_d:'16の活用形、5種類の動詞、必要なときだけ出るヒント — そして最後に、まちがえたところすべてのまとめが出ます。',
+    hm_pk3_c:'練習を始める →',
+    hm_pk4_h:'単語帳から',
+    hm_pk4_e:'Sea',
+    hm_pk4_k1:'品詞',
+    hm_pk4_v1:'名詞',
+    hm_pk4_k2:'テーマ',
+    hm_pk4_v2:'一般',
+    hm_pk4_d:'19のテーマにわたる941枚のカード — 食べ物、時間、体、学校、交通など。日本語→英語でも逆方向でも学べ、読みを出し入れでき、シャッフルはまだ見ていないカードを前に送ります。',
+    hm_pk4_c:'941語へ →',
+    hm_sp_t:'このサイトの名前の由来',
+    hm_sp_d:'活用（katsuyō）は conjugation のこと。多くの学習者がつまずくところであり、ここにある四つのツールが別々の角度から同じ問題に向き合っています。',
+    hm_sp1_c:'第一歩 · 学ぶ',
+    hm_sp1_t:'<span class="jp">形</span> — 活用形',
+    hm_sp1_d:'12の活用形と形容詞を、動詞の種類ごとの規則・例文つきで解説します。例外もあとで足をすくわれないよう、最初から書いてあります。何度でも戻ってくる資料です。',
+    hm_sp1_a:'活用形を読む →',
+    hm_sp2_c:'第二歩 · 作る',
+    hm_sp2_t:'<span class="jp">活用</span> — 活用練習',
+    hm_sp2_d:'動詞と目標の形が示され、自分で作ります。<strong>16の活用形</strong>、5種類の動詞、三段階のヒント、そして最後にどの形でつまずきやすいかのまとめが出ます。',
+    hm_sp2_a:'練習を始める →',
+    hm_sp3_c:'第三歩 · ほどく',
+    hm_sp3_t:'<span class="jp">逆引き</span> — 逆引き',
+    hm_sp3_d:'活用練習はいつも一方向です。こちらは逆方向 — <strong>食べさせられた</strong> を見せられて、元の形を考えます。読むときに実際に求められるのは、こちらの力です。',
+    hm_sp3_a:'逆から解いてみる →',
+    hm_sp4_c:'実戦で',
+    hm_sp4_t:'<span class="jp">辞書</span> — 辞書',
+    hm_sp4_d:'実際の日本語で見慣れない形に出会ったら、そのまま貼り付けてください。<strong>食べさせられなかった</strong> は 食べる まで戻り、途中で外した層をひとつずつ示します。',
+    hm_sp4_a:'調べてみる →',
+    hm_fl_t:'それぞれがどうつながるか',
+    hm_fl_d:'これらはナビを共有しているだけの別々のアプリではありません。互いに受け渡していきます。',
+    hm_fl1_t:'知らない語に出会う',
+    hm_fl1_d:'読解教材で 歩きました に出会ったとします。辞書に貼れば 歩く まで戻り、途中で丁寧形の過去だと教えてくれます。',
+    hm_fl2_t:'その項目がパターンを見せる',
+    hm_fl2_d:'16の活用形が同じ画面にそろっているので、どこへも行かずに 歩いて・歩かない・歩ける が見られます。',
+    hm_fl3_t:'あとは身につくまで練習する',
+    hm_fl3_d:'活用練習は形を作り、逆引きは形をほどきます。どちらもまちがえたところを覚えていて、また出してきます。',
+    hm_wh_t:'こんな方へ',
+    hm_wh1_t:'まったくの初心者',
+    hm_wh1_d:'かなをまだ一つも知らない方へ。一覧表から始めて二週間ほどで両方の文字を覚えれば、そのあとのすべてが読めるようになります。',
+    hm_wh2_t:'活用でつまずいている',
+    hm_wh2_d:'読めるけれど 食べさせられる でまだ止まってしまう方へ。このサイトがいちばん力を入れている部分です — 作る方向も戻す方向も、表もすべて解説つきで。',
+    hm_wh3_t:'JLPT の勉強中',
+    hm_wh3_d:'単語・漢字・動詞・読解のすべてに N5 から N1 のタグがついているので、自分のレベルに合わせて、それ以上に手を広げずに進められます。',
+    hm_wh4_t:'ここにないもの',
+    hm_wh4_d:'教科書の代わりでも、先生の代わりでもありません。終わらせるべきカリキュラムも、連続日数を数える仕組みもありません。',
+    hm_qa_t:'よくある質問',
+    hm_q1_t:'本当に無料ですか',
+    hm_q1_d:'はい。アカウントも体験期間も有料プランもありません。気が向いたときのための投げ銭窓口があるだけで、収益の仕組みはそれだけです。',
+    hm_q2_t:'学習の記録はどこに残りますか',
+    hm_q2_d:"<strong>お使いのブラウザの中だけです。</strong>学習の記録がアップロードされることはなく、ログインもありません — つまりブラウザのデータを消すと記録も消えますし、スマホとパソコンで記録は共有されません。実際にブラウザの外へ出るものは、<a href=\"/privacy\">プライバシーのページ</a>にまとめてあります。",
+    hm_q3_t:'辞書のデータはどこから来ていますか',
+    hm_q3_d:'Jisho と同じオープンデータである <strong>JMdict</strong> を、クリエイティブ・コモンズ・ライセンスのもとで使っています。漢字は講談社の漢字学習コースの並び順です。活用エンジン、逆引き、そしてサイト上の解説はすべて自作です。',
+    hm_q4_t:'スマホでも使えますか',
+    hm_q4_d:'どのページもスマホ向けに作ってあります。インストールするアプリはありません — ウェブサイトであること自体が狙いです。',
+    hm_q5_t:'英語で勉強しないといけませんか',
+    hm_q5_d:'いいえ。画面表示は<strong>英語・ドイツ語・フランス語・中国語・日本語</strong>に対応しており、機械翻訳ではなくきちんと訳してあります。',
+    tour_sub:'日本語を始めたばかりの方へ。この順番がうまくいきます。1日1時間ほどで一通り進められます。',
+    tour_1_t:'かなを覚える',
+    tour_1_d:'二つの文字、104字。1〜2週間で、そのあとがずっと楽になります。',
+    tour_2_t:'文法の基礎をつかむ',
+    tour_2_d:'助詞、語順、丁寧形 — 意図した文を組み立てられるところまで。',
+    tour_3_t:'活用を練習する',
+    tour_3_d:'すべての形を、すべての動詞の種類で、考えずに出てくるようになるまで。',
+    tour_4_t:'会話してみる',
+    tour_4_d:'食事を注文し、道をたずね、その場で直してもらう。ここまでのすべてはこのためにあります。',
+    demo_title:'動かしてみる',
+    demo_sub:'三つのツールを、このページ上でそのまま動かせます。インストールも登録も不要です。',
+    demo_tab_kana:'かな練習',
+    demo_tab_conj:'活用練習',
+    demo_tab_talk:'会話',
+    demo_kana_tag_hira:'ひらがな — 読みを入力',
+    demo_kana_tag_kata:'カタカナ — 読みを入力',
+    demo_kana_ph:'ローマ字で入力…',
+    demo_kana_right:'正解です。',
+    demo_kana_listen_hint:'答える前に聞いてみる',
+    demo_fix_show:'表示',
+    demo_fix_hide:'隠す',
+    demo_conj_ime:'ローマ字で入力すると、打ちながらかなになります。実際の練習でも同じです。',
+    demo_next:'次へ →',
+    demo_check:'確認',
+    demo_conj_ph:'答えを入力',
+    demo_conj_right:'正解です。漢字表記も受け付けます — 食べない でも試してみてください。',
+    demo_conj_kanji:'正解です — 漢字でも通ったことに注目。実際の練習では、正しい表記や異形はすべて受け付けます。',
+    demo_conj_wrong:'おしい。',
+    demo_conj_answer:'答え：',
+    demo_talk_note:'これは録画したやりとりです。実物はその場で応答し、役を保ち、声に出して話します。',
+    demo_chat_1:'いらっしゃいませ！ご注文はお決まりですか。',
+    demo_chat_2:'かしこまりました。少々お待ちください。',
+    demo_chat_fix:'お茶 でも通じますが、もう一語つけると自然になります：お茶をひとつお願いします。',
+    demo_cta_kana:'かな練習を開く →',
+    demo_cta_conj:'活用練習を開く →',
+    demo_cta_talk:'会話を開く →',
+    form_negative:'否定形（ない）',
+    form_past:'過去形（た）',
+    form_potential:'可能形（できる）',
+    toolkit_title:'ツール一覧',
+    toolkit_sub:'日本語の土台を支える、つながりあった10のツール',
+    // ---- kanji drill ----
+    kd_title:'漢字練習', mode_k2w:'漢字 → キーワード', mode_w2k:'キーワード → 漢字',
+    range:'範囲', kd_placeholder:'キーワードを英語で入力…', kd_missed:'📝 今回まちがえた漢字',
+    // ---- vocabulary ----
+    show_romaji:'ローマ字を表示', show_en_first:'訳を先に表示', show_kanji:'漢字を表示', show_katakana:'カタカナを表示',
+    prev_card:'← 前へ', next_card:'次へ →', shuffle:'🔀 シャッフル',
+    cards_studied:'学習済み', total_cards:'カード総数',
+    // ---- kanji browser ----
+    kanji_sub:'講談社の漢字学習コースから2,300字を練習',
+    filter_all:'すべて（2300）', filter_beginner:'初級（1〜500）',
+    filter_intermediate:'中級（501〜1200）', filter_advanced:'上級（1201〜2300）',
+    onyomi:'音読み', kunyomi:'訓読み',
+    kanji_prev:'◀ 前へ', kanji_next:'次へ ▶', goto_klc:'📍 KLC 番号へ移動',
+    goto_placeholder:'1〜2300 を入力', cancel:'キャンセル', go:'移動',
+    // ---- kana reference ----
+    quick_guide:'📖 早わかり', basic_kana_h:'基本のかな（五十音）',
+    dakuten_h:'濁点（濁音）', yoon_h:'拗音（組み合わせの音）',
+    // ---- learn / forms ----
+    learn_tag:'活用を理解する', learn_title:'日本語の動詞の仕組み',
+    forms_tag:'早見表', forms_title:'動詞の活用形と形容詞',
+    // ---- date dojo ----
+    dojo_sub:'日付と数の練習', today_q:'今日は何月何日ですか。', review_h:'📋 復習',
+    // ---- about ----
+    get_in_touch:'お問い合わせ',
+    proverb_tr:'「千里の道も一歩から」',
+    about_p1:'はじめまして、<strong style="color: #fff;">Brandon</strong> です。広告にも気晴らしにも邪魔されず、落ち着いて日本語を勉強できる場所がほしくて、このサイトを作りました。ここにあるものはすべて無料で、これからもずっと無料です。',
+    about_p2:'これは今も作り続けているプロジェクトで、みなさんの声が改善につながります。不具合を見つけた、内容の誤りに気づいた、こんな機能がほしい、あるいはただ感想を伝えたい — どれでもお知らせください。ひとことでも詳しいご意見でも、使ってくださっている方からのお便りは本当にうれしいです。',
+    send_message_h:'メッセージを送る',
+    your_name:'お名前', your_email:'メールアドレス', subject:'件名', message:'本文',
+    opt_general:'一般的な質問', opt_bug:'不具合の報告', opt_feature:'機能のご提案',
+    opt_correction:'内容の訂正', opt_other:'その他',
+    msg_placeholder:'ご用件をどうぞ…', send_btn:'送信する', or_email:'直接メールでも：',
+    // ---- conjugator ----
+    conj_title:'活用練習', view_report:'📊 まとめを見る', reset_short:'↺ リセット',
+    og_random:'🎲 ランダム', og_basic:'📚 基本の形（N5）',
+    og_intermediate:'🎯 中級の形（N4）', og_advanced:'🔥 上級の形（N3以上）',
+    f_random:'ランダム（すべての形）', f_random_basic:'ランダム（基本のみ）',
+    f_random_int:'ランダム（中級）', f_random_adv:'ランダム（上級）',
+    f_masu:'丁寧形（ます）', f_negative:'否定形（ない）', f_past:'過去形（た）', f_te:'て形（て）',
+    f_masen:'丁寧否定形（ません）', f_mashita:'丁寧過去形（ました）', f_nakatta:'否定過去形（なかった）',
+    f_tai:'願望形（たい）', f_potential:'可能形（られる／える）', f_volitional:'意向形（よう／おう）',
+    f_ba:'条件形（ば）', f_tara:'条件形（たら）', f_imperative:'命令形',
+    f_passive:'受身形（られる／あれる）', f_causative:'使役形（させる／あせる）',
+    f_caus_pass:'使役受身形（させられる）',
+    jlpt_all:'すべてのレベル', jlpt_n5:'N5 のみ', jlpt_n4:'N4 のみ', jlpt_n3:'N3 のみ', jlpt_n54:'N5 + N4',
+    show_hint:'💡 ヒントを見る', hint_label:'💡 ヒント',
+    warn_try_again:'⚠️ おしい — もう一度どうぞ', more_examples:'📚 例をもっと見る',
+    talk_title:'カツと話す',
+    talk_intro:'日本語で実際にやりとりしてみましょう。練習のしかたを選び、好きなだけカツと話して、いつでもやめて出来ばえの講評をもらえます。',
+    talk_step1:'1. 練習のしかたを選ぶ', talk_step2:'2. 細かい設定をする',
+    talk_mode_scenario_t:'場面ロールプレイ', talk_mode_scenario_d:'カツが役を演じます — 注文する、道をたずねる、ホテルにチェックインする。',
+    talk_mode_freechat_t:'自由会話', talk_mode_freechat_d:'あなたのレベルに合わせて、好きな話題で自由に話します。',
+    talk_mode_grammar_t:'文法をねらう', talk_mode_grammar_d:'特定の形が出てくるように、カツが会話を運びます。',
+    talk_scenario:'場面', talk_level:'レベル', talk_form:'活用形',
+    talk_pick_mode_hint:'上でモードを選ぶと、設定項目が出ます。',
+    talk_start:'会話を始める', talk_stop:'やめる',
+    talk_placeholder:'日本語で返信してください（カツに助けを求めても大丈夫です）…', talk_send:'送信',
+    talk_correction_hint:'カツは役を保ったまま、まちがいがあれば短い訂正メモを添えます。日本語の表示方法はいつでも変えられ、すぐに反映されます。',
+    talk_show:'表示', talk_english:'英語', talk_correction:'訂正',
+    talk_scenario_custom:'✏️ 自分で設定…', talk_custom:'説明',
+    talk_custom_placeholder:'例：デパートで、サイズの合わないシャツを返品する',
+    talk_ended:'この場面はここまでです。会話を続けますか。',
+    talk_keep_going:'続ける', talk_continuing:'— 続きます —',
+    talk_script_furigana:'ふりがな', talk_script_kanji:'漢字', talk_script_kana:'かな', talk_script_romaji:'ローマ字',
+    talk_stop_title:'この会話をやめますか', talk_stop_body:'今回の講評をもらうことも、別の練習方法を選ぶこともできます。',
+    talk_get_assessment:'講評をもらう', talk_choose_different:'別の練習を選ぶ', talk_keep_talking:'会話を続ける',
+    talk_assessment_title:'📊 今回の講評',
+    talk_download:'⬇ ダウンロード', talk_you:'あなた',
+    talk_assess_loading:'まとめを作成しています…',
+    talk_assess_empty:'講評するにはまだ会話が足りません — まず何か話してみてください。',
+    talk_assess_failed:'今は講評を作成できませんでした — 少し経ってからもう一度お試しください。',
+    talk_assess_summary:'まとめ', talk_assess_well:'よくできていたところ', talk_assess_improve:'これから直すところ',
+    talk_assess_words:'覚えておきたい語句', talk_assess_next:'次の一歩',
+    talk_assess_transcript:'会話全文', talk_report_title:'会話レポート',
+    sensei_placeholder:'「…」は日本語で何と言いますか。', sensei_send:'きく',
+    sensei_greeting:'こんにちは！カツです。日本語で何と言うか、文法のことなど、何でも聞いてください！',
+    sensei_error:'すみません — サーバーに接続できませんでした。', sensei_retry:'↻ もう一度',
+    sensei_proactive_label:'行き詰まっていそうなときはカツから声をかける', sensei_clear_history:'🗑 履歴を消す', sensei_restore_chat:'↩ 前の会話を表示', sensei_clear_mistakes:'🗑 記録したまちがいを消す',
+    // ---- Conjugator: input helper, streak, session, badges ----
+    best_short:'最高',
+    answer_placeholder_romaji:'ikanai → いかない',
+    answer_placeholder_kana:'ひらがなで入力...',
+    romaji_on_title:'ローマ字入力はオンです — ikanai と打つと いかない になります。クリックでオフ。',
+    romaji_off_title:'ローマ字入力はオフです — お使いの日本語キーボードで入力してください。クリックでオン。',
+    romaji_title:'⚠️ 変換されていません',
+    romaji_msg:'答えがローマ字のままなので、日本語として判定できません。',
+    romaji_tip_on:'ローマ字入力はオンなので、<strong>ikanai</strong> と打てば いかない になるはずです。一部が英字のまま残っているときは、つづりを確認してください — どの音にも母音が必要です。',
+    romaji_tip_off:'ローマ字入力はオフです。答え欄の横の <strong>あ/A</strong> ボタンでオンに戻すか、日本語キーボードで入力してください。',
+    opt_type_quiz:'動詞の種類も出題する',
+    badge_review:'🔁 復習 — 前にまちがえた問題です',
+    conj_locked:'{w} だけを練習中',
+    conj_unlock:'解除',
+    badge_type_quiz:'まず、この動詞は何の種類ですか。',
+    goal_10:'10問ラウンド', goal_20:'20問ラウンド', goal_50:'50問ラウンド', goal_none:'制限なし',
+    ai_thinking:'コンジュがくわしい解説を書いています…',
+    sess_done:'ラウンド終了', sess_accuracy:'正答率', sess_correct:'正解',
+    sess_best_streak:'最長連続正解', sess_skipped:'答えを見た数',
+    sess_weakest:'今回もっともまちがえたもの：', sess_queue:'次に出てくる復習：',
+    sess_queue_clear:'残っているものはありません — 復習リストは空です。',
+    sess_again:'もう一度 →',
+    ex_label:'例：',
+    answer_placeholder_type:'godan / ichidan / suru / irregular',
+    type_quiz_continue:'では活用してください — {n}秒後に続きます。',
+    continue_in:'続ける（{n}） →',
+    continue_now:'続ける →',
+    conj_info_title:'ショートカットと設定',
+    conj_info_sub:'キーボード操作と、このページの各設定の説明です。',
+    romaji_toast_on:'ローマ字入力オン — ikanai → いかない',
+    romaji_toast_off:'ローマ字入力オフ — お使いの日本語キーボードで',
+    conj_info_rows:[
+      ['Enter','答え合わせをします。もう一度押すと次の問題へ進みます。'],
+      ['Alt+R','ローマ字入力の切り替え — 答え欄の横の あ / A ボタンと同じです。'],
+      ['Alt+H','この問題のヒントを表示・非表示にします。'],
+      ['Alt+S','答えを表示します。減点はありませんが、連続正解は途切れます。'],
+      ['Alt+I（長押し）','押している間だけこの説明が開きます。離すと閉じます。ⓘ ボタンで開くと開いたままになり、Esc か外側のクリックで閉じます。'],
+      ['あ / A ボタン','ローマ字入力の切り替え。オンなら ikanai と打つと いかない になるので、日本語キーボードは不要です。すでにお持ちならオフにしてください。'],
+      ['答え方','かなでも漢字でも正解です — 行かない と いかない はどちらも正しく扱われます。食べれる のようなよくある別形も、教科書の形についての注記つきで受け付けます。'],
+      ['🔁 復習','前にまちがえた動詞と形です。二回正解すると出てこなくなります。'],
+      ['動詞の種類の問題','ときどき出る「この動詞は何の種類ですか」という問題です。活用だけを練習したいときはチェックを外してください。'],
+      ['ラウンド','まとめが出るまでの問題数です。制限なしにすれば、ずっと続けられます。']
+    ],
+    sensei_review_btn:'📝 さっきのまちがいを見直す',
+    sensei_review_q:'今何をまちがえましたか。理由をわかりやすく説明してください。',
+    sensei_nudge_1:'これは難しそうですね — ヒントはいかがですか。💡',
+    sensei_nudge_2:'続けてまちがいがありましたね — 一緒に考えたいときは声をかけてください。',
+    // ---- homepage ----
+    hero_desc:'無料の日本語学習サイトです。かな・漢字・単語・すべての活用形を学んで練習し、そのまま会話で使ってみる — 全部ここにそろっています。登録もインストールも不要です。',
+    // ---- home: hero + closing ----
+    hero_browse:'ツールを見る ↓',
+    hero_browse_short:'ツールを見る',
+    meta_kana:'かな（音声つき）',
+    meta_kanji:'KLC の漢字',
+    meta_vocab:'枚の単語カード',
+    meta_langs:'言語',
+    demo_eyebrow:'ここで試せます',
+    demo_kana_hear:'わからないときは、まず聞いてみましょう。',
+    creator_note_plain:'活用道場は、自分自身に必要だったから作りました。ばらばらの教科書の章、わかりにくいネットの情報、思いどおりに動かない単語アプリ — 全部を一か所に、自分がいちばん学びやすい形でまとめたかったのです。それがこのサイトです。あなたの役にも立つなら、役目を果たせたことになります。',
+    btn_practice_kana:'かなを練習',
+    btn_practice_kanji:'漢字を練習',
+    btn_practice_talk:'話す練習',
+    badge_new:'新着',
+    intro_title:'日本語の土台をひととおり',
+    intro_p1:'活用道場は、<strong>学習者が学習者のために作った個人プロジェクト</strong>です。教科書の代わりになろうとも、次の語学アプリになろうともしていません。かわりに、日本語の土台となる要素 — 何度も引き、何度も練習することになるもの — を扱う、つながりあった一式のツールをそろえています。',
+    intro_p2:'アカウントも、登録も、有料の壁もありません。得点・連続日数・単語カードの進捗はお使いのブラウザの中にあり、アップロードされません。サーバーとやりとりするのは、任意で使える AI の先生カツと、会話練習だけです。',
+    stat_kana_v:'かな104字',
+    stat_kana_n:'音声つき・練習つき',
+    stat_kanji_v:'漢字2,300字',
+    stat_kanji_n:'KLC コースと練習',
+    stat_vocab_v:'単語941語',
+    stat_vocab_n:'基本の語彙',
+    stat_forms_v:'活用形16種',
+    stat_forms_n:'動詞129語',
+    intro_quote:'「学習者が学習者のために作った無料の日本語学習セット。かな・漢字・単語・動詞の活用・会話練習を扱い、学んだことを記録する練習機能つきで、ひとつのまとまった美しい形にまとめました。」',
+    card_talk_t:'<span class="jp">会話</span> — 会話',
+    card_talk_d:'学んだことを実際に使ってみましょう。<strong>場面</strong>を選ぶか（食事の注文、病院、映画のチケット）、自分で設定を書くこともできます。もっとゆるくやりたいときは<strong>自由会話</strong>、あるいは<strong>ひとつの文法形</strong>を身につくまで練習できます。レベルを <strong>N5・N4・N3</strong> から選び、日本語を<strong>漢字・かな・ローマ字</strong>のどれで読むかも選べます。いつでもやめて<strong>文章による講評</strong>がもらえます — よかった点、直す点、会話全文、そして出てきた語句つきで。',
+    card_talk_cta:'話してみる →',
+    card_reading_t:'<span class="jp">読解</span> — 読解',
+    card_reading_d:'<strong>N5 から N1</strong> まで、レベル別の短い物語を各レベル5編から。<strong>かなだけ・ふりがなつき・漢字のみ</strong>で読み、音声を聞き、重要語を確認してから、<strong>その場で採点される設問</strong>に答えます。まちがえたら<strong>本文で見る</strong>で、答えのある一文がそのまま示されます。',
+    card_reading_cta:'読み始める →',
+    why_title:'ここが違うところ',
+    why_install_t:'インストール不要',
+    why_install_d:'ブラウザですぐ開ける、軽く整理されたページです。ダウンロードするアプリも、作るアカウントも、設定するものもありません — パソコンでもタブレットでもスマホでも。',
+    why_focus_t:'目的のはっきりしたツール',
+    why_focus_d:'ゲーム風のアプリでも、完結したカリキュラムでもありません。毎日使う土台の部分のための、つながりあった資料と練習ツールだけです。',
+    why_understand_t:'暗記より理解',
+    why_understand_d:'学習のページでは、なぜそのパターンになるのかという<em>理由</em>を説明します。仕組みがわかれば、活用は記憶力の試験ではなく、感覚でわかるものになります。',
+    why_feedback_t:'役に立つ判定',
+    why_feedback_d:'活用練習は「不正解」と言うだけではありません。必要だった規則を示し、どこをまちがえたのかを特定し、その動詞をあとでまた出してきます。単語カードは未見のものを優先し、かな・漢字の練習は答えた文字をすべて覚えています。',
+    why_design_t:'ていねいなデザイン',
+    why_design_d:'あたたかい和紙のような色合いと、読みやすい書体。よくある語学アプリというより、丁寧に作られた学習ノートのような手ざわりです。広告も、ごちゃごちゃしたものも、気を散らすものもありません。',
+    why_langs_t:'5つの言語',
+    why_langs_d:'サイト全体 — すべてのページ、すべてのボタン、すべての解説 — が英語・ドイツ語・フランス語・簡体字中国語・日本語で読めます。メニューからいつでも切り替えられ、見ていた場所はそのままです。',
+    why_katsu_t:'カツにきく',
+    why_katsu_d:'AI の先生 <span class="jp">カツ先生</span> が、どのページでも隅で待っています。なぜこの活用になるのか、は と が の違いは何か、詰まったことなら何でも聞けば、今読んでいる言語で答えが返ってきます。カツはサイトの他の場所でのまちがいにも気づいていて、一緒に見直すこともできます。',
+    why_free_t:'ずっと無料',
+    why_free_d:'自分が日本語で苦労した経験から生まれた個人プロジェクトです。有料の壁も、上位プランも、「続きは登録してから」もありません。学びたい人のための、ただの無料の資料です。',
+    start_title:'始めてみましょう',
+    start_desc:'かなを覚える、文字を練習する、動詞を学ぶ、語彙を増やす、はじめての会話をする — どこから始めるか、下から選んでください。',
+    start_kana:'かなを学ぶ',
+    start_learn:'基礎を学ぶ',
+    start_conj:'練習を始める',
+    start_talk:'話してみる',
+    start_kana_drill:'かなを練習',
+    start_forms:'活用表を見る',
+    start_verbs:'動詞を見る',
+    start_vocab:'単語帳',
+    start_kanji:'漢字を学ぶ',
+    start_dates:'日付と数',
+    start_kanji_drill:'漢字を練習',
+    creator_note:'<strong>作者から一言：</strong><br>活用道場は、自分自身に必要だったから作りました。ばらばらの教科書の章、わかりにくいネットの情報、思いどおりに動かない単語アプリ — 全部を一か所に、自分がいちばん学びやすい形でまとめたかったのです。それがこのサイトです。あなたの役にも立つなら、役目を果たせたことになります。<span class="jp">頑張ってください！</span>',
+    // ---- toolkit categories ----
+    cat_reference:'資料',
+    cat_practice:'練習',
+    cat_conversation:'会話',
+    legend_ref:'資料 — 読んで調べる',
+    legend_prac:'練習 — まちがえたところを記録します',
+    legend_conv:'会話 — 実際に使ってみる',
+    // ---- talk: speech + romaji input ----
+    talk_placeholder_romaji:'日本語で返信 — ローマ字で打つとかなになります',
+    talk_read_aloud:'読み上げ',
+    talk_read_aloud_hint:'カツの返信を自動で読み上げます',
+    talk_listen:'聞く',
+    // ---- talk: voice picker ----
+    talk_voice:'声',
+    talk_voice_preview:'▶ 試聴',
+    talk_mic_start:'話して答える（Alt+M）',
+    talk_mic_stop:'聞き取りを止める',
+    talk_mic_denied:'マイクの使用がブロックされています。声で答えるには、ブラウザのアドレスバーから許可してください。',
+    talk_mic_unavailable:'今は音声入力を利用できません。入力での返信は引き続き可能です。',
+    talk_mic_error:'マイクが予期せず停止しました。入力は引き続き可能です。',
+    talk_mic_reconnect:'再接続しています…',
+    talk_pron_label:'発音',
+    talk_pron_accuracy:'正確さ',
+    talk_pron_fluency:'なめらかさ',
+    talk_pron_hide:'隠す',
+    talk_pron_show:'表示',
+    dojo_practise:'練習する',
+    dojo_selected:'選択中',
+    dojo_scope_weak:'◎ 苦手なところ',
+    dojo_scope_counters:'助数詞',
+    dojo_scope_datetime:'日付と時間',
+    dojo_scope_numbers:'数と年',
+    dojo_answer_en:'英語で答える',
+    dojo_type_en:'答えを入力…',
+    dojo_weak_tracked:'件の苦手を記録中',
+    dojo_weak_none:'まだ苦手はありません — まちがえると出てきます',
+    dojo_weak_badge:'前に出た',
+    dojo_weak_added:'苦手に追加しました',
+    dojo_weak_cleared:'苦手から外しました',
+    voice_female:'女性',
+    voice_male:'男性',
+    voice_neutral:'中性',
+    voice_sample:'こんにちは。今日はいい天気ですね。',
+    talk_audio:'音声',
+    // ---- talk: input modes + folded corrections ----
+    talk_corrections:'訂正',
+    talk_corrections_hint:'訂正をたたまず、最初からすべて開いて表示します',
+    talk_placeholder_katakana:'カタカナ — juusu → ジュース',
+    input_mode_kana:'ひらがな — ikanai と打つと いかない。Alt+K でカタカナ。',
+    input_mode_katakana:'カタカナ — ju-su と打つと ジュース。ー は - で入力します。Alt+H でひらがな。',
+    input_mode_off:'オフ — お使いの日本語キーボードで入力してください。',
+    input_mode_toast_kana:'ひらがな — ひらがな入力',
+    input_mode_toast_katakana:'カタカナ — カタカナ入力',
+    input_mode_toast_off:'ローマ字入力オフ',
+    // ---- talk: letting time pass ----
+    talk_wait_idle:'時間を進める — 返すことがないときに先へ飛ばします（Alt+W）',
+    talk_wait_armed:'返すことがありません — 時間はひとりでに進みます。入力を始めればここに留まります。',
+    talk_time_passes:'— 数分後 —',
+    // ---- vocabulary: shortcuts dialog ----
+    vocab_info_title:'ショートカットと設定',
+    vocab_info_sub:'キーボード操作と、このページの各設定の説明です。',
+    vocab_info_rows:[
+      ['← / →','前のカードと次のカード。'],
+      ['Space','単語を読み上げます。'],
+      ['Alt+F（長押し）','押している間だけカードが裏返ります。離すと戻ります。カードをクリックすると裏返したままになります。'],
+      ['Alt+E','日本語ではなく、訳を先に表示します。'],
+      ['Alt+K','漢字表記を表示します。'],
+      ['Alt+T','カタカナ表記を表示します。'],
+      ['Alt+R','単語の下にローマ字を表示します。'],
+      ['Alt+S','デッキをシャッフルします。'],
+      ['Alt+V','「聞く」の横の音声設定を開きます。'],
+      ['Alt+I（長押し）','押している間だけこの説明が開きます。離すと閉じます。ⓘ ボタンで開くと開いたままになり、Esc か外側のクリックで閉じます。'],
+    ],
+    // ---- talk: shortcuts dialog ----
+    talk_info_title:'ショートカットと設定',
+    talk_info_sub:'キーボード操作と、このページの各設定の説明です。',
+    talk_info_rows:[
+      ['Enter','返信を送ります。'],
+      ['Alt+M','入力のかわりに声で答え、発音の採点を見ます。'],
+      ['Alt+H','ひらがな入力 — ikanai と打つと いかない。'],
+      ['Alt+K','カタカナ入力 — ju-su と打つと ジュース。ー は - で入力します。'],
+      ['Alt+L','ローマ字入力を切り、お使いの日本語キーボードを使います。'],
+      ['Alt+W','カツが席を外していて返すことがないとき、時間を進めます。'],
+      ['Alt+I（長押し）','押している間だけこの説明が開きます。離すと閉じます。ⓘ ボタンで開くと開いたままになり、Esc か外側のクリックで閉じます。'],
+      ['あ / ア / A ボタン','同じ三つの入力モードをマウスで切り替えます。今どれが有効かはボタンに出ます。'],
+      ['⏳ ボタン','同じ時間送りをマウスで。カツの番のあと返すことがないときに点灯してカウントダウンし、何か入力すると取り消されます。'],
+      ['ふりがな / 漢字 / かな / ローマ字','カツの日本語の書き方です。変えるとすぐに表示し直されます。'],
+      ['+ ローマ字 / + 英語','日本語の代わりではなく、その下に行を足します。'],
+      ['+ 訂正','訂正は会話を埋めないよう、たたまれた状態で始まります。これを入れると最初からすべて開きます。ひとつずつクリックして開くこともできます。'],
+      ['🔊 読み上げ','カツの返信を自動で読み上げます。メッセージの下の「聞く」はその一件だけを読みます。'],
+      ['声','どの日本語音声で話すか。試聴で見本が流れます。最初の返信はすぐ声になるので、始める前に決めておいてください。'],
+      ['やめる','会話を終え、文章による講評を出します。'],
+    ],
   }
 };
 
@@ -1974,7 +2470,8 @@ var EXPLAIN_LANGUAGE = {
   en: 'English',
   de: 'German',
   fr: 'French',
-  zh: 'Simplified Chinese'
+  zh: 'Simplified Chinese',
+  ja: 'Japanese'
 };
 function explainLanguage() {
   return EXPLAIN_LANGUAGE[LANG] || 'English';
@@ -2014,7 +2511,11 @@ function applyI18n() {
 // back and forth is lossless. Strings absent from the map stay English.
 var I18N_TEXT = {};
 function I18N_addText(map) { for (var k in map) I18N_TEXT[k] = map[k]; }
-var I18N_TEXT_IDX = { de: 0, fr: 1, zh: 2 };
+// ja is slot 3. Entries that stop at three elements simply have no Japanese
+// translation, and translateContent() falls back to the English original —
+// which is exactly right for the vocabulary glosses, where a Japanese
+// "translation" of a Japanese word would be the word itself.
+var I18N_TEXT_IDX = { de: 0, fr: 1, zh: 2, ja: 3 };
 
 function translateContent() {
   if (!document.body) return;
@@ -2024,6 +2525,10 @@ function translateContent() {
   while ((n = walker.nextNode())) {
     var p = n.parentNode;
     if (!p || p.nodeName === 'SCRIPT' || p.nodeName === 'STYLE') continue;
+    // Opt-out for text that must not be machine-substituted word by word —
+    // the privacy notice, for one, where a stray "and" in the map was turning
+    // into "und" in the middle of an English sentence.
+    if (p.closest && p.closest('[data-i18n-skip]')) continue;
     if (n.__i18nOrig === undefined) {
       var probe = n.nodeValue.replace(/\s+/g, ' ').trim();
       if (!probe || !I18N_TEXT[probe]) continue;
@@ -2206,7 +2711,8 @@ function setLang(lang) {
     { code: 'en', native: 'English',  label: 'EN' },
     { code: 'de', native: 'Deutsch',  label: 'DE' },
     { code: 'fr', native: 'Français', label: 'FR' },
-    { code: 'zh', native: '中文',      label: '中文' }
+    { code: 'zh', native: '中文',      label: '中文' },
+    { code: 'ja', native: '日本語',   label: '日本語' }
   ];
 
   function buildLangSwitch() {
@@ -2503,12 +3009,14 @@ I18N_addText({
 "A clear, visual guide to understanding Japanese verb conjugation patterns. Learn the logic behind the forms so you can conjugate any verb with confidence.": [
 "Ein klarer, visueller Leitfaden zu den japanischen Konjugationsmustern. Lernen Sie die Logik hinter den Formen, damit Sie jedes Verb sicher konjugieren können.",
 "Un guide clair et visuel pour comprendre les schémas de conjugaison japonais. Apprenez la logique derrière les formes pour conjuguer n'importe quel verbe avec assurance.",
-"清晰直观的日语动词变形指南。理解形式背后的逻辑，让您能自信地变形任何动词。"
+"清晰直观的日语动词变形指南。理解形式背后的逻辑，让您能自信地变形任何动词。",
+"\u65e5\u672c\u8a9e\u306e\u52d5\u8a5e\u6d3b\u7528\u306e\u578b\u3092\u3001\u56f3\u3068\u3053\u3068\u3070\u3067\u308f\u304b\u308a\u3084\u3059\u304f\u89e3\u8aac\u3057\u307e\u3059\u3002\u5f62\u306e\u88cf\u306b\u3042\u308b\u7406\u5c48\u3092\u5b66\u3079\u3070\u3001\u3069\u3093\u306a\u52d5\u8a5e\u3067\u3082\u81ea\u4fe1\u3092\u6301\u3063\u3066\u6d3b\u7528\u3067\u304d\u307e\u3059\u3002"
 ],
 "Every Japanese verb falls into one of three categories. Understanding which type you're working with is the first step.": [
 "Jedes japanische Verb gehört zu einer von drei Kategorien. Zu wissen, mit welchem Typ Sie es zu tun haben, ist der erste Schritt.",
 "Chaque verbe japonais appartient à l'une de trois catégories. Identifier le type auquel vous avez affaire est la première étape.",
-"每个日语动词都属于三种类型之一。判断动词类型是变形的第一步。"
+"每个日语动词都属于三种类型之一。判断动词类型是变形的第一步。",
+"\u65e5\u672c\u8a9e\u306e\u52d5\u8a5e\u306f\u3059\u3079\u3066\u4e09\u3064\u306e\u7a2e\u985e\u306e\u3069\u308c\u304b\u306b\u5165\u308a\u307e\u3059\u3002\u4eca\u3069\u306e\u7a2e\u985e\u3092\u6271\u3063\u3066\u3044\u308b\u306e\u304b\u3092\u898b\u5206\u3051\u308b\u3053\u3068\u304c\u7b2c\u4e00\u6b69\u3067\u3059\u3002"
 ],
 "In Japanese, verbs change their form to express time (past/present), politeness, negation, desire, ability, and more. Unlike English where we add helper words (\"I": [
 "Im Japanischen ändern Verben ihre Form, um Zeit (Vergangenheit/Gegenwart), Höflichkeit, Verneinung, Wunsch, Fähigkeit und mehr auszudrücken. Anders als im Englischen, wo Hilfswörter ergänzt werden („I",
@@ -2538,7 +3046,8 @@ I18N_addText({
 "Past tense is the one exception to the row-shift pattern. Instead, godan verbs use special endings based on the final sound:": [
 "Die Vergangenheitsform ist die einzige Ausnahme vom Reihenwechsel-Muster. Stattdessen verwenden Godan-Verben besondere Endungen je nach Endlaut:",
 "Le passé est la seule exception au schéma de changement de rangée. Les verbes godan utilisent des terminaisons spéciales selon leur son final :",
-"过去形是段位移动规律的唯一例外。五段动词根据词尾读音使用特殊的词尾："
+"过去形是段位移动规律的唯一例外。五段动词根据词尾读音使用特殊的词尾：",
+"\u904e\u53bb\u5f62\u3060\u3051\u306f\u3001\u6bb5\u3092\u79fb\u3059\u3068\u3044\u3046\u578b\u306e\u4f8b\u5916\u3067\u3059\u3002\u4e94\u6bb5\u52d5\u8a5e\u306f\u3001\u8a9e\u5c3e\u306e\u97f3\u306b\u5fdc\u3058\u305f\u7279\u5225\u306a\u5f62\u3092\u4f7f\u3044\u307e\u3059\uff1a"
 ],
 "instead of following the regular pattern. This is why suru verbs are considered \"irregular\" - they have their own special rules!": [
 "statt dem regulären Muster zu folgen. Deshalb gelten Suru-Verben als „unregelmäßig“ — sie haben ihre eigenen Regeln!",
@@ -2568,42 +3077,50 @@ I18N_addText({
 "(benkyou suru - to study)": [
 "(benkyou suru – lernen)",
 "(benkyou suru – étudier)",
-"(benkyou suru – 学习)"
+"(benkyou suru – 学习)",
+"\uff08\u52c9\u5f37\u3059\u308b\uff09"
 ],
 "(hanasu - to speak) as our example:": [
 "(hanasu – sprechen) als Beispiel:",
 "(hanasu – parler) comme exemple :",
-"（hanasu – 说话）为例："
+"（hanasu – 说话）为例：",
+"\uff08\u8a71\u3059\uff09\u3092\u4f8b\u306b\u3057\u307e\u3059\uff1a"
 ],
 "(tabemasu) = eat (polite)": [
 "(tabemasu) = essen (höflich)",
 "(tabemasu) = manger (poli)",
-"(tabemasu) = 吃（敬体）"
+"(tabemasu) = 吃（敬体）",
+"\uff08\u98df\u3079\u307e\u3059\uff09\uff1d \u4e01\u5be7"
 ],
 "(tabenai) = don't eat": [
 "(tabenai) = nicht essen",
 "(tabenai) = ne pas manger",
-"(tabenai) = 不吃"
+"(tabenai) = 不吃",
+"\uff08\u98df\u3079\u306a\u3044\uff09\uff1d \u5426\u5b9a"
 ],
 "(taberu - to eat)": [
 "(taberu – essen)",
 "(taberu – manger)",
-"(taberu – 吃)"
+"(taberu – 吃)",
+"\uff08\u98df\u3079\u308b\uff09"
 ],
 "(taberu) = to eat": [
 "(taberu) = essen",
 "(taberu) = manger",
-"(taberu) = 吃"
+"(taberu) = 吃",
+"\uff08\u98df\u3079\u308b\uff09\uff1d \u8f9e\u66f8\u5f62"
 ],
 "(tabeta) = ate": [
 "(tabeta) = aß",
 "(tabeta) = a mangé",
-"(tabeta) = 吃了"
+"(tabeta) = 吃了",
+"\uff08\u98df\u3079\u305f\uff09\uff1d \u904e\u53bb"
 ],
 "(tabetai) = want to eat": [
 "(tabetai) = essen wollen",
 "(tabetai) = vouloir manger",
-"(tabetai) = 想吃"
+"(tabetai) = 想吃",
+"\uff08\u98df\u3079\u305f\u3044\uff09\uff1d \u9858\u671b"
 ],
 "- this is in the": [
 "— es steht in der",
@@ -2638,47 +3155,56 @@ I18N_addText({
 "Add the ending: はな": [
 "Ergänzen Sie die Endung: はな",
 "Ajoutez la terminaison : はな",
-"加上词尾：はな"
+"加上词尾：はな",
+"\u8a9e\u5c3e\u3092\u3064\u3051\u307e\u3059\uff1a\u306f\u306a"
 ],
 "Apply the Pattern": [
 "Muster anwenden",
 "Appliquez le schéma",
-"应用规律"
+"应用规律",
+"\u578b\u3092\u5f53\u3066\u306f\u3081\u308b"
 ],
 "DICTIONARY (う)": [
 "WÖRTERBUCHFORM (う)",
 "FORME DU DICTIONNAIRE (う)",
-"辞书形 (う)"
+"辞书形 (う)",
+"\u8f9e\u66f8\u5f62\uff08\u3046\u6bb5\uff09"
 ],
 "Ends in: く、ぐ、す、つ、ぬ、ぶ、む、る、う": [
 "Endet auf: く、ぐ、す、つ、ぬ、ぶ、む、る、う",
 "Se termine par : く、ぐ、す、つ、ぬ、ぶ、む、る、う",
-"以 く、ぐ、す、つ、ぬ、ぶ、む、る、う 结尾"
+"以 く、ぐ、す、つ、ぬ、ぶ、む、る、う 结尾",
+"\u8a9e\u5c3e\uff1a\u304f\u3001\u3050\u3001\u3059\u3001\u3064\u3001\u306c\u3001\u3076\u3001\u3080\u3001\u308b\u3001\u3046"
 ],
 "Example:": [
 "Beispiel:",
 "Exemple :",
-"例："
+"例：",
+"\u4f8b\uff1a"
 ],
 "Examples:": [
 "Beispiele:",
 "Exemples :",
-"例："
+"例：",
+"\u4f8b\uff1a"
 ],
 "Examples: する、勉強する、散歩する": [
 "Beispiele: する、勉強する、散歩する",
 "Exemples : する、勉強する、散歩する",
-"例：する、勉強する、散歩する"
+"例：する、勉強する、散歩する",
+"\u4f8b\uff1a\u3059\u308b\u3001\u52c9\u5f37\u3059\u308b\u3001\u6563\u6b69\u3059\u308b"
 ],
 "Examples: 行く (iku), 話す (hanasu), 飲む (nomu), 買う (kau)": [
 "Beispiele: 行く (iku), 話す (hanasu), 飲む (nomu), 買う (kau)",
 "Exemples : 行く (iku), 話す (hanasu), 飲む (nomu), 買う (kau)",
-"例：行く (iku)、話す (hanasu)、飲む (nomu)、買う (kau)"
+"例：行く (iku)、話す (hanasu)、飲む (nomu)、買う (kau)",
+"\u4f8b\uff1a\u884c\u304f\u3001\u8a71\u3059\u3001\u98f2\u3080\u3001\u8cb7\u3046"
 ],
 "Examples: 食べる (taberu), 見る (miru), 起きる (okiru)": [
 "Beispiele: 食べる (taberu), 見る (miru), 起きる (okiru)",
 "Exemples : 食べる (taberu), 見る (miru), 起きる (okiru)",
-"例：食べる (taberu)、見る (miru)、起きる (okiru)"
+"例：食べる (taberu)、見る (miru)、起きる (okiru)",
+"\u4f8b\uff1a\u98df\u3079\u308b\u3001\u898b\u308b\u3001\u8d77\u304d\u308b"
 ],
 "Find it in the chart: Look in the": [
 "In der Tabelle finden: Schauen Sie in die",
@@ -2688,22 +3214,26 @@ I18N_addText({
 "First, figure out if your verb is godan, ichidan, or suru": [
 "Bestimmen Sie zuerst, ob Ihr Verb godan, ichidan oder suru ist",
 "Déterminez d'abord si votre verbe est godan, ichidan ou suru",
-"首先判断动词是五段、一段还是 する动词"
+"首先判断动词是五段、一段还是 する动词",
+"\u307e\u305a\u3001\u305d\u306e\u52d5\u8a5e\u304c\u4e94\u6bb5\u304b\u4e00\u6bb5\u304b\u3059\u308b\u52d5\u8a5e\u304b\u3092\u898b\u5206\u3051\u307e\u3059"
 ],
 "Form": [
 "Form",
 "Forme",
-"形式"
+"形式",
+"\u6d3b\u7528\u5f62"
 ],
 "Foundation: The Hiragana Sound System": [
 "Grundlage: das Hiragana-Lautsystem",
 "Fondation : le système sonore des hiragana",
-"基础：平假名音系"
+"基础：平假名音系",
+"\u571f\u53f0\uff1a\u3072\u3089\u304c\u306a\u306e\u97f3\u306e\u4ed5\u7d44\u307f"
 ],
 "Godan Verbs: The Five-Row System": [
 "Godan-Verben: das Fünf-Reihen-System",
 "Verbes godan : le système à cinq rangées",
-"五段动词：五段系统"
+"五段动词：五段系统",
+"\u4e94\u6bb5\u52d5\u8a5e\uff1a\u4e94\u3064\u306e\u6bb5\u306e\u4ed5\u7d44\u307f"
 ],
 "Godan verbs work by": [
 "Godan-Verben funktionieren durch",
@@ -2713,12 +3243,14 @@ I18N_addText({
 "How to Identify Verb Types": [
 "So erkennen Sie den Verbtyp",
 "Comment identifier le type de verbe",
-"如何判断动词类型"
+"如何判断动词类型",
+"\u52d5\u8a5e\u306e\u7a2e\u985e\u306e\u898b\u5206\u3051\u65b9"
 ],
 "Ichidan Verbs: The Simple Pattern": [
 "Ichidan-Verben: das einfache Muster",
 "Verbes ichidan : le schéma simple",
-"一段动词：简单的规律"
+"一段动词：简单的规律",
+"\u4e00\u6bb5\u52d5\u8a5e\uff1a\u3084\u3055\u3057\u3044\u578b"
 ],
 "Ichidan verbs are called \"one-step\" because the stem": [
 "Ichidan-Verben heißen „Ein-Stufen“-Verben, weil der Stamm",
@@ -2728,17 +3260,20 @@ I18N_addText({
 "Identify the Type": [
 "Typ bestimmen",
 "Identifiez le type",
-"判断类型"
+"判断类型",
+"\u7a2e\u985e\u3092\u898b\u5206\u3051\u308b"
 ],
 "Identify the final sound:": [
 "Endlaut bestimmen:",
 "Identifiez le son final :",
-"判断词尾读音："
+"判断词尾读音：",
+"\u8a9e\u5c3e\u306e\u97f3\u3092\u898b\u5206\u3051\u307e\u3059\uff1a"
 ],
 "Irregular verbs": [
 "Unregelmäßige Verben",
 "Verbes irréguliers",
-"不规则动词"
+"不规则动词",
+"\u4e0d\u898f\u5247\u52d5\u8a5e"
 ],
 "Japanese sounds are organized in": [
 "Japanische Laute sind organisiert in",
@@ -2748,17 +3283,20 @@ I18N_addText({
 "NEGATIVE (あ)": [
 "VERNEINUNG (あ)",
 "NÉGATIF (あ)",
-"否定形 (あ)"
+"否定形 (あ)",
+"\u5426\u5b9a\uff08\u3042\u6bb5\uff09"
 ],
 "NO → Continue to Step 2": [
 "NEIN → Weiter zu Schritt 2",
 "NON → Passez à l'étape 2",
-"否 → 进入第 2 步"
+"否 → 进入第 2 步",
+"\u3044\u3044\u3048 \u2192 \u624b\u98062\u3078"
 ],
 "Negative": [
 "Verneinung",
 "Négatif",
-"否定形"
+"否定形",
+"\u5426\u5b9a"
 ],
 "Notice that the potential form uses": [
 "Beachten Sie, dass die Potenzialform verwendet:",
@@ -2768,57 +3306,68 @@ I18N_addText({
 "Now that you understand the patterns, here's your strategy for success:": [
 "Jetzt, da Sie die Muster verstehen, hier Ihre Strategie zum Erfolg:",
 "Maintenant que vous comprenez les schémas, voici votre stratégie :",
-"理解了这些规律之后，您的成功策略如下："
+"理解了这些规律之后，您的成功策略如下：",
+"\u578b\u304c\u308f\u304b\u3063\u305f\u3068\u3053\u308d\u3067\u3001\u8eab\u306b\u3064\u3051\u308b\u305f\u3081\u306e\u9032\u3081\u65b9\u306f\u3053\u3046\u3067\u3059\uff1a"
 ],
 "POTENTIAL (え)": [
 "POTENZIAL (え)",
 "POTENTIEL (え)",
-"可能形 (え)"
+"可能形 (え)",
+"\u53ef\u80fd\uff08\u3048\u6bb5\uff09"
 ],
 "Past": [
 "Vergangenheit",
 "Passé",
-"过去形"
+"过去形",
+"\u904e\u53bb"
 ],
 "Polite": [
 "Höflichkeitsform",
 "Forme polie",
-"敬体"
+"敬体",
+"\u4e01\u5be7"
 ],
 "Potential": [
 "Potenzialform",
 "Potentiel",
-"可能形"
+"可能形",
+"\u53ef\u80fd"
 ],
 "Practice, Practice!": [
 "Üben, üben!",
 "Pratiquez, pratiquez !",
-"练习，练习！"
+"练习，练习！",
+"\u3068\u306b\u304b\u304f\u7df4\u7fd2"
 ],
 "Probably": [
 "Wahrscheinlich",
 "Probablement",
-"大概"
+"大概",
+"\u63a8\u91cf"
 ],
 "Process": [
 "Vorgehen",
 "Processus",
-"步骤"
+"步骤",
+"\u624b\u9806"
 ],
 "Putting It All Together": [
 "Alles zusammenfügen",
 "Récapitulons",
-"融会贯通"
+"融会贯通",
+"\u307e\u3068\u3081\u3066\u4f7f\u3063\u3066\u307f\u308b"
 ],
 "Result": [
 "Ergebnis",
 "Résultat",
-"结果"
+"结果",
+"\u7d50\u679c"
 ],
 "Row": [
 "Reihe",
 "Rangée",
-"段"
+"段",
+"\u6bb5"
 ],
 "Some verbs": [
 "Manche Verben",
@@ -2828,42 +3377,50 @@ I18N_addText({
 "Start Practicing with The Conjugator →": [
 "Jetzt üben mit dem Konjugator →",
 "Commencez à pratiquer avec le Conjugueur →",
-"用动词变形器开始练习 →"
+"用动词变形器开始练习 →",
+"\u6d3b\u7528\u7df4\u7fd2\u3092\u59cb\u3081\u308b \u2192"
 ],
 "Start with the dictionary form:": [
 "Beginnen Sie mit der Wörterbuchform:",
 "Partez de la forme du dictionnaire :",
-"从辞书形开始："
+"从辞书形开始：",
+"\u8f9e\u66f8\u5f62\u304b\u3089\u59cb\u3081\u307e\u3059\uff1a"
 ],
 "Stem": [
 "Stamm",
 "Radical",
-"词干"
+"词干",
+"\u8a9e\u5e79"
 ],
 "Step 1: Does it end in する?": [
 "Schritt 1: Endet es auf する?",
 "Étape 1 : se termine-t-il par する ?",
-"第 1 步：是否以 する 结尾？"
+"第 1 步：是否以 する 结尾？",
+"\u624b\u98061\uff1a\u3059\u308b\u3067\u7d42\u308f\u308a\u307e\u3059\u304b"
 ],
 "Step 2: Does it end in -eru (える) or -iru (いる)?": [
 "Schritt 2: Endet es auf -eru (える) oder -iru (いる)?",
 "Étape 2 : se termine-t-il par -eru (える) ou -iru (いる) ?",
-"第 2 步：是否以 -eru (える) 或 -iru (いる) 结尾？"
+"第 2 步：是否以 -eru (える) 或 -iru (いる) 结尾？",
+"\u624b\u98062\uff1a\u3048\u308b\uff0f\u3044\u308b \u3067\u7d42\u308f\u308a\u307e\u3059\u304b"
 ],
 "Step 3: Everything else": [
 "Schritt 3: Alles andere",
 "Étape 3 : tout le reste",
-"第 3 步：其余所有动词"
+"第 3 步：其余所有动词",
+"\u624b\u98063\uff1a\u305d\u308c\u4ee5\u5916\u306f\u3059\u3079\u3066"
 ],
 "Step-by-Step Process": [
 "Schritt-für-Schritt-Vorgehen",
 "Processus pas à pas",
-"分步流程"
+"分步流程",
+"\u9806\u3092\u8ffd\u3063\u305f\u624b\u9806"
 ],
 "Suru Verbs: The Irregular Pattern": [
 "Suru-Verben: das unregelmäßige Muster",
 "Verbes suru : le schéma irrégulier",
-"する动词：不规则的规律"
+"する动词：不规则的规律",
+"\u3059\u308b\u52d5\u8a5e\uff1a\u4e0d\u898f\u5247\u306a\u578b"
 ],
 "Suru verb": [
 "Suru-Verb",
@@ -2878,12 +3435,14 @@ I18N_addText({
 "The Formula": [
 "Die Formel",
 "La formule",
-"公式"
+"公式",
+"\u516c\u5f0f"
 ],
 "The Three Verb Types": [
 "Die drei Verbtypen",
 "Les trois types de verbes",
-"三种动词类型"
+"三种动词类型",
+"\u4e09\u3064\u306e\u52d5\u8a5e\u306e\u7a2e\u985e"
 ],
 "To make negative: Move to the": [
 "Für die Verneinung: Wechseln Sie zur",
@@ -2893,37 +3452,44 @@ I18N_addText({
 "Use The Conjugator to drill until it becomes automatic": [
 "Üben Sie mit dem Konjugator, bis es automatisch sitzt",
 "Entraînez-vous avec le Conjugueur jusqu'à l'automatisme",
-"用动词变形器反复练习，直到形成本能"
+"用动词变形器反复练习，直到形成本能",
+"\u6d3b\u7528\u7df4\u7fd2\u3067\u3001\u8003\u3048\u305a\u306b\u3067\u304d\u308b\u3088\u3046\u306b\u306a\u308b\u307e\u3067\u7e70\u308a\u8fd4\u3057\u307e\u3059"
 ],
 "Use the right conjugation method for that verb type": [
 "Verwenden Sie die passende Konjugationsmethode für diesen Verbtyp",
 "Utilisez la bonne méthode de conjugaison pour ce type de verbe",
-"对该动词类型使用正确的变形方法"
+"对该动词类型使用正确的变形方法",
+"\u305d\u306e\u7a2e\u985e\u306b\u5408\u3063\u305f\u6d3b\u7528\u306e\u3057\u304b\u305f\u3092\u4f7f\u3044\u307e\u3059"
 ],
 "VOLITIONAL (お)": [
 "VOLITIONAL (お)",
 "VOLITIF (お)",
-"意志形 (お)"
+"意志形 (お)",
+"\u610f\u5411\uff08\u304a\u6bb5\uff09"
 ],
 "Volitional": [
 "Volitionalform",
 "Volitif",
-"意志形"
+"意志形",
+"\u610f\u5411"
 ],
 "Want to": [
 "Wollen",
 "Vouloir",
-"想要"
+"想要",
+"\u9858\u671b"
 ],
 "Watch the Transformation": [
 "Verfolgen Sie die Umwandlung",
 "Observez la transformation",
-"观察变化过程"
+"观察变化过程",
+"\u5909\u5316\u3092\u898b\u3066\u307f\u308b"
 ],
 "Why Conjugation Matters": [
 "Warum Konjugation wichtig ist",
 "Pourquoi la conjugaison est importante",
-"为什么变形很重要"
+"为什么变形很重要",
+"\u6d3b\u7528\u304c\u306a\u305c\u5927\u5207\u304b"
 ],
 "With ichidan verbs, once you memorize the endings (ない, ます, た, たい, られる, よう), you can conjugate": [
 "Bei Ichidan-Verben gilt: Sobald Sie die Endungen (ない, ます, た, たい, られる, よう) auswendig können, konjugieren Sie",
@@ -2978,7 +3544,8 @@ I18N_addText({
 "formed by adding する to nouns": [
 "gebildet durch Anhängen von する an Nomen",
 "formés en ajoutant する à des noms",
-"由名词加 する 构成"
+"由名词加 する 构成",
+"\u540d\u8a5e\u306b\u3059\u308b\u3092\u3064\u3051\u3066\u4f5c\u308a\u307e\u3059"
 ],
 "ichidan verb. No row-shifting, no special rules, no exceptions!": [
 "Ichidan-Verb. Kein Reihenwechsel, keine Sonderregeln, keine Ausnahmen!",
@@ -3013,7 +3580,8 @@ I18N_addText({
 "s-column": [
 "s-Spalte",
 "colonne s",
-"s 列"
+"s 列",
+"\u3055\u884c"
 ],
 "to a different row. Let's use": [
 "zu einer anderen Reihe. Nehmen wir",
@@ -3033,47 +3601,56 @@ I18N_addText({
 "⚠️ Past Tense: Special Sound Changes": [
 "⚠️ Vergangenheit: besondere Lautänderungen",
 "⚠️ Passé : changements de sons particuliers",
-"⚠️ 过去形：特殊音变"
+"⚠️ 过去形：特殊音变",
+"\u26a0\ufe0f \u904e\u53bb\u5f62\uff1a\u7279\u5225\u306a\u97f3\u306e\u5909\u5316"
 ],
 "⚠️ Watch Out for Exceptions!": [
 "⚠️ Achtung, Ausnahmen!",
 "⚠️ Attention aux exceptions !",
-"⚠️ 小心例外！"
+"⚠️ 小心例外！",
+"\u26a0\ufe0f \u4f8b\u5916\u306b\u6ce8\u610f"
 ],
 "あ-row": [
 "あ-Reihe",
 "rangée あ",
-"あ段"
+"あ段",
+"\u3042\u6bb5"
 ],
 "う-row": [
 "う-Reihe",
 "rangée う",
-"う段"
+"う段",
+"\u3046\u6bb5"
 ],
 "する becomes...": [
 "する wird zu …",
 "する devient…",
-"する 变为…"
+"する 变为…",
+"\u3059\u308b\u306f\u2026\u306b\u306a\u308a\u307e\u3059"
 ],
 "ます-STEM (い)": [
 "ます-STAMM (い)",
 "RADICAL ます (い)",
-"ます词干 (い)"
+"ます词干 (い)",
+"\u307e\u3059\u5f62\u306e\u8a9e\u5e79\uff08\u3044\u6bb5\uff09"
 ],
 "💡 Key Insight:": [
 "💡 Kernidee:",
 "💡 Idée clé :",
-"💡 关键要点："
+"💡 关键要点：",
+"\ud83d\udca1 \u3053\u3053\u304c\u809d\u5fc3\uff1a"
 ],
 "💡 Special Note:": [
 "💡 Besonderer Hinweis:",
 "💡 Remarque particulière :",
-"💡 特别说明："
+"💡 特别说明：",
+"\ud83d\udca1 \u7279\u306b\u6ce8\u610f\uff1a"
 ],
 "💡 Why It's Easy:": [
 "💡 Warum es leicht ist:",
 "💡 Pourquoi c'est facile :",
-"💡 为什么很简单："
+"💡 为什么很简单：",
+"\ud83d\udca1 \u3084\u3055\u3057\u3044\u7406\u7531\uff1a"
 ],
 "(dakuten) to voice consonants (K→G, S→Z, T→D, H→B), or a circle": [
 "(Dakuten), um Konsonanten stimmhaft zu machen (K→G, S→Z, T→D, H→B), oder einen kleinen Kreis",
@@ -3083,102 +3660,122 @@ I18N_addText({
 "(handakuten) for H→P": [
 "(Handakuten) für H→P",
 "(handakuten) pour H→P",
-"（半浊点）表示 H→P"
+"（半浊点）表示 H→P",
+"\uff08\u534a\u6fc1\u70b9\uff09\u3067 H\u2192P"
 ],
 "(kōhī / coffee)": [
 "(kōhī / Kaffee)",
 "(kōhī / café)",
-"(kōhī / 咖啡)"
+"(kōhī / 咖啡)",
+"\uff08\u30b3\u30fc\u30d2\u30fc\uff09"
 ],
 "25 CHARACTERS": [
 "25 ZEICHEN",
 "25 CARACTÈRES",
-"25 个字符"
+"25 个字符",
+"25\u5b57"
 ],
 "33 CHARACTERS": [
 "33 ZEICHEN",
 "33 CARACTÈRES",
-"33 个字符"
+"33 个字符",
+"33\u5b57"
 ],
 "46 CHARACTERS": [
 "46 ZEICHEN",
 "46 CARACTÈRES",
-"46 个字符"
+"46 个字符",
+"46\u5b57"
 ],
 "Add two dots": [
 "Fügen Sie zwei Punkte hinzu",
 "Ajoutez deux points",
-"加上两点"
+"加上两点",
+"\u70b9\u3092\u4e8c\u3064\u3064\u3051\u3066"
 ],
 "Angular, sharp script for foreign words, emphasis, and technical terms. Example:": [
 "Eckige, markante Schrift für Fremdwörter, Betonung und Fachbegriffe. Beispiel:",
 "Écriture anguleuse et nette pour les mots étrangers, l'emphase et les termes techniques. Exemple :",
-"棱角分明的字体，用于外来词、强调和专业术语。例如："
+"棱角分明的字体，用于外来词、强调和专业术语。例如：",
+"\u89d2\u3070\u3063\u305f\u92ed\u3044\u5b57\u4f53\u3067\u3001\u5916\u6765\u8a9e\u30fb\u5f37\u8abf\u30fb\u5c02\u9580\u7528\u8a9e\u306b\u4f7f\u3044\u307e\u3059\u3002\u4f8b\uff1a"
 ],
 "Combine characters with small や, ゆ, よ to create new sounds like kya, shu, cho": [
 "Kombinieren Sie Zeichen mit kleinem や, ゆ, よ zu neuen Lauten wie kya, shu, cho",
 "Combinez les caractères avec un petit や, ゆ, よ pour créer de nouveaux sons comme kya, shu, cho",
-"将假名与小写的 や、ゆ、よ 组合，构成 kya、shu、cho 等新音"
+"将假名与小写的 や、ゆ、よ 组合，构成 kya、shu、cho 等新音",
+"\u5c0f\u3055\u3044 \u3084\u30fb\u3086\u30fb\u3088 \u3068\u7d44\u307f\u5408\u308f\u305b\u3066\u3001\u304d\u3083\u30fb\u3057\u3085\u30fb\u3061\u3087 \u306e\u3088\u3046\u306a\u97f3\u3092\u4f5c\u308a\u307e\u3059"
 ],
 "Curvy, flowing script for native Japanese words, particles, and verb endings. Example:": [
 "Runde, fließende Schrift für japanische Wörter, Partikeln und Verbendungen. Beispiel:",
 "Écriture ronde et fluide pour les mots japonais natifs, les particules et les terminaisons verbales. Exemple :",
-"圆润流畅的字体，用于日语固有词、助词和动词词尾。例如："
+"圆润流畅的字体，用于日语固有词、助词和动词词尾。例如：",
+"\u4e38\u307f\u306e\u3042\u308b\u6d41\u308c\u308b\u5b57\u4f53\u3067\u3001\u548c\u8a9e\u30fb\u52a9\u8a5e\u30fb\u52d5\u8a5e\u306e\u8a9e\u5c3e\u306b\u4f7f\u3044\u307e\u3059\u3002\u4f8b\uff1a"
 ],
 "Each row shares a consonant (k, s, t, etc.). Each column shares a vowel (a, i, u, e, o). Combine them: k + a = か/カ (ka)": [
 "Jede Reihe teilt einen Konsonanten (k, s, t usw.), jede Spalte einen Vokal (a, i, u, e, o). Kombiniert: k + a = か/カ (ka)",
 "Chaque rangée partage une consonne (k, s, t, etc.), chaque colonne une voyelle (a, i, u, e, o). Combinez-les : k + a = か/カ (ka)",
-"每一行共享一个辅音（k、s、t 等），每一列共享一个元音（a、i、u、e、o）。组合起来：k + a = か/カ (ka)"
+"每一行共享一个辅音（k、s、t 等），每一列共享一个元音（a、i、u、e、o）。组合起来：k + a = か/カ (ka)",
+"\u540c\u3058\u884c\u306f\u5b50\u97f3\uff08k\u30fbs\u30fbt \u306a\u3069\uff09\u3092\u5171\u6709\u3057\u3001\u540c\u3058\u6bb5\u306f\u6bcd\u97f3\uff08a\u30fbi\u30fbu\u30fbe\u30fbo\uff09\u3092\u5171\u6709\u3057\u307e\u3059\u3002\u7d44\u307f\u5408\u308f\u305b\u308b\u3068\u3001k + a = \u304b\uff0f\u30ab\uff08ka\uff09"
 ],
 "Hiragana (ひらがな)": [
 "Hiragana (ひらがな)",
 "Hiragana (ひらがな)",
-"平假名（ひらがな）"
+"平假名（ひらがな）",
+"\u3072\u3089\u304c\u306a"
 ],
 "Katakana (カタカナ)": [
 "Katakana (カタカナ)",
 "Katakana (カタカナ)",
-"片假名（カタカナ）"
+"片假名（カタカナ）",
+"\u30ab\u30bf\u30ab\u30ca"
 ],
 "LEGEND:": [
 "LEGENDE:",
 "LÉGENDE :",
-"图例："
+"图例：",
+"\u51e1\u4f8b\uff1a"
 ],
 "Practice with Flashcards →": [
 "Mit Karteikarten üben →",
 "Pratiquez avec les cartes →",
-"用记忆卡练习 →"
+"用记忆卡练习 →",
+"\u30ab\u30fc\u30c9\u3067\u7df4\u7fd2\u3059\u308b \u2192"
 ],
 "Pronunciation": [
 "Aussprache",
 "Prononciation",
-"发音"
+"发音",
+"\u767a\u97f3"
 ],
 "Reading the Charts": [
 "So lesen Sie die Tabellen",
 "Lire les tableaux",
-"如何阅读对照表"
+"如何阅读对照表",
+"\u8868\u306e\u8aad\u307f\u65b9"
 ],
 "Ready to practice reading Japanese?": [
 "Bereit, japanisches Lesen zu üben?",
 "Prêt à vous entraîner à lire le japonais ?",
-"准备好练习日语阅读了吗？"
+"准备好练习日语阅读了吗？",
+"\u65e5\u672c\u8a9e\u3092\u8aad\u3080\u7df4\u7fd2\u3092\u59cb\u3081\u307e\u3059\u304b"
 ],
 "The 46 fundamental sounds of Japanese. Practice these first!": [
 "Die 46 Grundlaute des Japanischen. Üben Sie diese zuerst!",
 "Les 46 sons fondamentaux du japonais. Commencez par ceux-ci !",
-"日语的 46 个基本音。请先练习这些！"
+"日语的 46 个基本音。请先练习这些！",
+"\u65e5\u672c\u8a9e\u306e\u57fa\u672c\u3068\u306a\u308b46\u306e\u97f3\u3067\u3059\u3002\u307e\u305a\u3053\u3053\u304b\u3089\u7df4\u7fd2\u3057\u307e\u3057\u3087\u3046\u3002"
 ],
 "romaji": [
 "Rōmaji",
 "rōmaji",
-"罗马音"
+"罗马音",
+"\u30ed\u30fc\u30de\u5b57"
 ],
 "vowels": [
 "Vokale",
 "voyelles",
-"元音"
+"元音",
+"\u6bcd\u97f3"
 ],
 "\"A free, offline-capable Japanese study suite built by a learner for learners—covering kana, kanji, vocabulary, and verb conjugation in one cohesive, beautifully designed package.\"": [
 "„Ein kostenloses, offline nutzbares Japanisch-Lernpaket, von einem Lernenden für Lernende gebaut — Kana, Kanji, Vokabeln und Konjugation in einem stimmigen, schön gestalteten Ganzen.“",
@@ -3193,32 +3790,38 @@ I18N_addText({
 "A free, self-contained Japanese learning platform. Practice kana, kanji, vocabulary, and verb conjugation—all in one beautifully designed toolkit.": [
 "Eine kostenlose, eigenständige Japanisch-Lernplattform. Üben Sie Kana, Kanji, Vokabeln und Konjugation — alles in einem schön gestalteten Werkzeugkasten.",
 "Une plateforme d'apprentissage du japonais gratuite et autonome. Pratiquez kana, kanji, vocabulaire et conjugaison — le tout dans une boîte à outils soigneusement conçue.",
-"一个免费、独立的日语学习平台。练习假名、汉字、词汇和动词变形——尽在一个精心设计的工具箱中。"
+"一个免费、独立的日语学习平台。练习假名、汉字、词汇和动词变形——尽在一个精心设计的工具箱中。",
+"\u7121\u6599\u3067\u3001\u3053\u308c\u3072\u3068\u3064\u3067\u5b8c\u7d50\u3059\u308b\u65e5\u672c\u8a9e\u5b66\u7fd2\u30b5\u30a4\u30c8\u3067\u3059\u3002\u304b\u306a\u30fb\u6f22\u5b57\u30fb\u5358\u8a9e\u30fb\u52d5\u8a5e\u306e\u6d3b\u7528\u3092\u3001\u7f8e\u3057\u304f\u307e\u3068\u307e\u3063\u305f\u3072\u3068\u305d\u308d\u3044\u306e\u30c4\u30fc\u30eb\u3067\u7df4\u7fd2\u3067\u304d\u307e\u3059\u3002"
 ],
 "A note from the creator:": [
 "Eine Notiz vom Entwickler:",
 "Un mot du créateur :",
-"来自开发者的话："
+"来自开发者的话：",
+"\u4f5c\u8005\u304b\u3089\u4e00\u8a00\uff1a"
 ],
 "A passion project born from my own struggles learning Japanese. No paywalls, no premium tiers, no \"sign up to continue.\" Just free resources for anyone who wants to learn.": [
 "Ein Herzensprojekt, entstanden aus meinen eigenen Mühen beim Japanischlernen. Keine Paywalls, keine Premium-Stufen, kein „Registrieren, um fortzufahren“. Nur freie Ressourcen für alle, die lernen möchten.",
 "Un projet passion né de mes propres difficultés à apprendre le japonais. Pas de paywall, pas d'offre premium, pas de « inscrivez-vous pour continuer ». Juste des ressources gratuites pour qui veut apprendre.",
-"一个源于我自己日语学习挫折的热情项目。没有付费墙，没有会员分级，没有\"注册后继续\"。只有献给所有学习者的免费资源。"
+"一个源于我自己日语学习挫折的热情项目。没有付费墙，没有会员分级，没有\"注册后继续\"。只有献给所有学习者的免费资源。",
+"\u81ea\u5206\u304c\u65e5\u672c\u8a9e\u3067\u82e6\u52b4\u3057\u305f\u7d4c\u9a13\u304b\u3089\u751f\u307e\u308c\u305f\u500b\u4eba\u30d7\u30ed\u30b8\u30a7\u30af\u30c8\u3067\u3059\u3002\u6709\u6599\u306e\u58c1\u3082\u3001\u4e0a\u4f4d\u30d7\u30e9\u30f3\u3082\u3001\u300c\u7d9a\u304d\u306f\u767b\u9332\u3057\u3066\u304b\u3089\u300d\u3082\u3042\u308a\u307e\u305b\u3093\u3002\u5b66\u3073\u305f\u3044\u4eba\u306e\u305f\u3081\u306e\u3001\u305f\u3060\u306e\u7121\u6599\u306e\u8cc7\u6599\u3067\u3059\u3002"
 ],
 "Everything runs locally in your browser. No accounts, no tracking, no servers. Just open it and learn.": [
 "Alles läuft lokal in Ihrem Browser. Keine Konten, kein Tracking, keine Server. Einfach öffnen und lernen.",
 "Tout fonctionne localement dans votre navigateur. Pas de compte, pas de suivi, pas de serveur. Ouvrez et apprenez.",
-"一切都在您的浏览器中本地运行。无需账号，没有跟踪，没有服务器。打开即学。"
+"一切都在您的浏览器中本地运行。无需账号，没有跟踪，没有服务器。打开即学。",
+"\u3059\u3079\u3066\u304a\u4f7f\u3044\u306e\u30d6\u30e9\u30a6\u30b6\u306e\u4e2d\u3067\u52d5\u304d\u307e\u3059\u3002\u30a2\u30ab\u30a6\u30f3\u30c8\u3082\u8ffd\u8de1\u3082\u30b5\u30fc\u30d0\u30fc\u3082\u3042\u308a\u307e\u305b\u3093\u3002\u958b\u3044\u3066\u5b66\u3076\u3060\u3051\u3067\u3059\u3002"
 ],
 "I built Katsuyō Academy because I needed it myself. Scattered textbook chapters, confusing online resources, flashcard apps that didn't quite work the way I wanted—I wanted everything in one place, designed the way I learn best. This is that place. If it helps you too, then it's done its job.": [
 "Ich habe die Katsuyō Academy gebaut, weil ich sie selbst brauchte. Verstreute Lehrbuchkapitel, verwirrende Online-Ressourcen, Karteikarten-Apps, die nie ganz so funktionierten, wie ich wollte — ich wollte alles an einem Ort, gestaltet so, wie ich am besten lerne. Das ist dieser Ort. Wenn er auch Ihnen hilft, hat er seinen Zweck erfüllt.",
 "J'ai créé Katsuyō Academy parce que j'en avais besoin moi-même. Des chapitres de manuels éparpillés, des ressources en ligne confuses, des applis de cartes qui ne fonctionnaient jamais tout à fait comme je le voulais — je voulais tout au même endroit, conçu comme j'apprends le mieux. C'est cet endroit. S'il vous aide aussi, il a rempli sa mission.",
-"我创建 Katsuyō Academy，是因为我自己需要它。零散的教材章节、混乱的网络资源、总是差点意思的记忆卡 App——我想要一个把一切集中在一处、按我最有效的学习方式设计的地方。这里就是那个地方。如果它也能帮到您，它就完成了使命。"
+"我创建 Katsuyō Academy，是因为我自己需要它。零散的教材章节、混乱的网络资源、总是差点意思的记忆卡 App——我想要一个把一切集中在一处、按我最有效的学习方式设计的地方。这里就是那个地方。如果它也能帮到您，它就完成了使命。",
+"\u6d3b\u7528\u9053\u5834\u306f\u3001\u81ea\u5206\u81ea\u8eab\u306b\u5fc5\u8981\u3060\u3063\u305f\u304b\u3089\u4f5c\u308a\u307e\u3057\u305f\u3002\u3070\u3089\u3070\u3089\u306e\u6559\u79d1\u66f8\u306e\u7ae0\u3001\u308f\u304b\u308a\u306b\u304f\u3044\u30cd\u30c3\u30c8\u306e\u60c5\u5831\u3001\u601d\u3044\u3069\u304a\u308a\u306b\u52d5\u304b\u306a\u3044\u5358\u8a9e\u30a2\u30d7\u30ea \u2014 \u5168\u90e8\u3092\u4e00\u304b\u6240\u306b\u3001\u81ea\u5206\u304c\u3044\u3061\u3070\u3093\u5b66\u3073\u3084\u3059\u3044\u5f62\u3067\u307e\u3068\u3081\u305f\u304b\u3063\u305f\u306e\u3067\u3059\u3002\u305d\u308c\u304c\u3053\u306e\u30b5\u30a4\u30c8\u3067\u3059\u3002\u3042\u306a\u305f\u306e\u5f79\u306b\u3082\u7acb\u3064\u306a\u3089\u3001\u5f79\u76ee\u3092\u679c\u305f\u305b\u305f\u3053\u3068\u306b\u306a\u308a\u307e\u3059\u3002"
 ],
 "Not a gamified app or a full curriculum. Just focused, interconnected reference and practice tools for the foundational building blocks you'll use every day.": [
 "Keine Gamification-App, kein vollständiger Lehrplan. Nur fokussierte, miteinander verbundene Nachschlage- und Übungswerkzeuge für die Grundbausteine, die Sie täglich brauchen.",
 "Ni appli gamifiée ni cursus complet. Juste des outils de référence et de pratique ciblés et interconnectés pour les fondamentaux dont vous vous servez chaque jour.",
-"不是游戏化 App，也不是完整课程。只是一套专注、相互衔接的参考与练习工具，服务于您每天都要用到的基础内容。"
+"不是游戏化 App，也不是完整课程。只是一套专注、相互衔接的参考与练习工具，服务于您每天都要用到的基础内容。",
+"\u30b2\u30fc\u30e0\u98a8\u306e\u30a2\u30d7\u30ea\u3067\u3082\u3001\u5b8c\u7d50\u3057\u305f\u30ab\u30ea\u30ad\u30e5\u30e9\u30e0\u3067\u3082\u3042\u308a\u307e\u305b\u3093\u3002\u6bce\u65e5\u4f7f\u3046\u571f\u53f0\u306e\u90e8\u5206\u306e\u305f\u3081\u306e\u3001\u3064\u306a\u304c\u308a\u3042\u3063\u305f\u8cc7\u6599\u3068\u7df4\u7fd2\u30c4\u30fc\u30eb\u3060\u3051\u3067\u3059\u3002"
 ],
 "One HTML file. No installation, no accounts, no internet required after loading. Save it locally and study anywhere—on a plane, in a café, wherever you learn best.": [
 "Eine HTML-Datei. Keine Installation, keine Konten, nach dem Laden kein Internet nötig. Speichern Sie sie lokal und lernen Sie überall — im Flugzeug, im Café, wo immer Sie am besten lernen.",
@@ -3238,17 +3841,20 @@ I18N_addText({
 "Warm, aged-paper aesthetics with clean typography. It feels more like a well-crafted study journal than a typical language app. No ads, no clutter, no distractions.": [
 "Warme Alt-Papier-Ästhetik mit klarer Typografie. Es fühlt sich eher wie ein liebevoll gestaltetes Studienjournal an als wie eine typische Sprach-App. Keine Werbung, kein Durcheinander, keine Ablenkung.",
 "Une esthétique chaleureuse de papier ancien avec une typographie soignée. On se croirait dans un beau journal d'étude plutôt que dans une appli de langues classique. Pas de pub, pas de fouillis, pas de distraction.",
-"温暖的复古纸张美学，搭配简洁的排版。它更像一本精心制作的学习手账，而非普通的语言 App。没有广告，没有杂乱，没有干扰。"
+"温暖的复古纸张美学，搭配简洁的排版。它更像一本精心制作的学习手账，而非普通的语言 App。没有广告，没有杂乱，没有干扰。",
+"\u3042\u305f\u305f\u304b\u3044\u548c\u7d19\u306e\u3088\u3046\u306a\u8272\u5408\u3044\u3068\u3001\u8aad\u307f\u3084\u3059\u3044\u66f8\u4f53\u3002\u3088\u304f\u3042\u308b\u8a9e\u5b66\u30a2\u30d7\u30ea\u3068\u3044\u3046\u3088\u308a\u3001\u4e01\u5be7\u306b\u4f5c\u3089\u308c\u305f\u5b66\u7fd2\u30ce\u30fc\u30c8\u306e\u3088\u3046\u306a\u624b\u3056\u308f\u308a\u3067\u3059\u3002\u5e83\u544a\u3082\u3001\u3054\u3061\u3083\u3054\u3061\u3083\u3057\u305f\u3082\u306e\u3082\u3001\u6c17\u3092\u6563\u3089\u3059\u3082\u306e\u3082\u3042\u308a\u307e\u305b\u3093\u3002"
 ],
 "Whether you're learning kana, mastering kanji, studying verbs, building vocabulary, or practicing dates—choose your path below.": [
 "Ob Sie Kana lernen, Kanji meistern, Verben studieren, Vokabeln aufbauen oder Datumsangaben üben — wählen Sie unten Ihren Weg.",
 "Que vous appreniez les kana, maîtrisiez les kanji, étudiiez les verbes, enrichissiez votre vocabulaire ou pratiquiez les dates — choisissez votre voie ci-dessous.",
-"无论您是在学假名、攻克汉字、研究动词、积累词汇，还是练习日期——请在下方选择您的路径。"
+"无论您是在学假名、攻克汉字、研究动词、积累词汇，还是练习日期——请在下方选择您的路径。",
+"\u304b\u306a\u3092\u899a\u3048\u308b\u3001\u6f22\u5b57\u3092\u8eab\u306b\u3064\u3051\u308b\u3001\u52d5\u8a5e\u3092\u5b66\u3076\u3001\u8a9e\u5f59\u3092\u5897\u3084\u3059\u3001\u65e5\u4ed8\u3092\u7df4\u7fd2\u3059\u308b \u2014 \u3069\u3053\u304b\u3089\u59cb\u3081\u308b\u304b\u3001\u4e0b\u304b\u3089\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002"
 ],
 "Your Complete Japanese Foundation": [
 "Ihr komplettes Japanisch-Fundament",
 "Votre base complète de japonais",
-"您完整的日语基础"
+"您完整的日语基础",
+"\u65e5\u672c\u8a9e\u306e\u571f\u53f0\u3092\u3072\u3068\u3068\u304a\u308a"
 ],
 "patterns work the way they do. When you understand the logic, conjugation becomes intuitive instead of a memory test.": [
 "Muster so funktionieren, wie sie es tun. Wenn Sie die Logik verstehen, wird Konjugation intuitiv statt zur Gedächtnisprüfung.",
@@ -3263,12 +3869,14 @@ I18N_addText({
 "What Makes This Different": [
 "Was diese Seite anders macht",
 "Ce qui rend ce site différent",
-"本站的与众不同之处"
+"本站的与众不同之处",
+"\u3053\u3053\u304c\u9055\u3046\u3068\u3053\u308d"
 ],
 "Ready to Get Started?": [
 "Bereit loszulegen?",
 "Prêt à commencer ?",
-"准备好开始了吗？"
+"准备好开始了吗？",
+"\u59cb\u3081\u3066\u307f\u307e\u3057\u3087\u3046"
 ],
 "Katsuyō Academy is a": [
 "Die Katsuyō Academy ist ein",
@@ -3283,197 +3891,236 @@ I18N_addText({
 "104 Kana": [
 "104 Kana",
 "104 kana",
-"104 个假名"
+"104 个假名",
+"\u304b\u306a104\u5b57"
 ],
 "129 verbs": [
 "129 Verben",
 "129 verbes",
-"129 个动词"
+"129 个动词",
+"\u52d5\u8a5e129\u8a9e"
 ],
 "16 Verb Forms": [
 "16 Verbformen",
 "16 formes verbales",
-"16 种动词形式"
+"16 种动词形式",
+"\u6d3b\u7528\u5f6216\u7a2e"
 ],
 "2,300 Kanji": [
 "2.300 Kanji",
 "2 300 kanji",
-"2300 个汉字"
+"2300 个汉字",
+"\u6f22\u5b572,300\u5b57"
 ],
 "941 Words": [
 "941 Wörter",
 "941 mots",
-"941 个单词"
+"941 个单词",
+"\u5358\u8a9e941\u8a9e"
 ],
 "KLC course": [
 "KLC-Kurs",
 "cours KLC",
-"KLC 课程"
+"KLC 课程",
+"KLC \u30b3\u30fc\u30b9"
 ],
 "essential vocab": [
 "Kernvokabular",
 "vocabulaire essentiel",
-"核心词汇"
+"核心词汇",
+"\u57fa\u672c\u306e\u8a9e\u5f59"
 ],
 "with audio": [
 "mit Audio",
 "avec audio",
-"带音频"
+"带音频",
+"\u97f3\u58f0\u3064\u304d"
 ],
 "✏️ Start Practicing": [
 "✏️ Jetzt üben",
 "✏️ Commencer à pratiquer",
-"✏️ 开始练习"
+"✏️ 开始练习",
+"\u270f\ufe0f \u7df4\u7fd2\u3092\u59cb\u3081\u308b"
 ],
 "あ Learn Kana": [
 "あ Kana lernen",
 "あ Apprendre les kana",
-"あ 学习假名"
+"あ 学习假名",
+"\u3042 \u304b\u306a\u3092\u5b66\u3076"
 ],
 "🆓 Free Forever": [
 "🆓 Für immer kostenlos",
 "🆓 Gratuit pour toujours",
-"🆓 永久免费"
+"🆓 永久免费",
+"\ud83c\udd93 \u305a\u3063\u3068\u7121\u6599"
 ],
 "🎨 Thoughtfully Designed": [
 "🎨 Durchdacht gestaltet",
 "🎨 Conçu avec soin",
-"🎨 用心设计"
+"🎨 用心设计",
+"\ud83c\udfa8 \u3066\u3044\u306d\u3044\u306a\u30c7\u30b6\u30a4\u30f3"
 ],
 "🎯 Focused Tools": [
 "🎯 Fokussierte Werkzeuge",
 "🎯 Outils ciblés",
-"🎯 专注的工具"
+"🎯 专注的工具",
+"\ud83c\udfaf \u76ee\u7684\u306e\u306f\u3063\u304d\u308a\u3057\u305f\u30c4\u30fc\u30eb"
 ],
 "🎴 Vocabulary": [
 "🎴 Vokabeln",
 "🎴 Vocabulaire",
-"🎴 词汇"
+"🎴 词汇",
+"\ud83c\udfb4 \u5358\u8a9e\u5e33"
 ],
 "💡 Helpful Feedback": [
 "💡 Hilfreiches Feedback",
 "💡 Retours utiles",
-"💡 有用的反馈"
+"💡 有用的反馈",
+"\ud83d\udca1 \u5f79\u306b\u7acb\u3064\u5224\u5b9a"
 ],
 "📅 Dates & Numbers": [
 "📅 Datum & Zahlen",
 "📅 Dates et nombres",
-"📅 日期与数字"
+"📅 日期与数字",
+"\ud83d\udcc5 \u65e5\u4ed8\u3068\u6570"
 ],
 "📋 Browse Verbs": [
 "📋 Verben durchsuchen",
 "📋 Parcourir les verbes",
-"📋 浏览动词"
+"📋 浏览动词",
+"\ud83d\udccb \u52d5\u8a5e\u3092\u898b\u308b"
 ],
 "📖 View Form Charts": [
 "📖 Formentabellen ansehen",
 "📖 Voir les tableaux",
-"📖 查看形式表"
+"📖 查看形式表",
+"\ud83d\udcd6 \u6d3b\u7528\u8868\u3092\u898b\u308b"
 ],
 "📚 Learn the Basics": [
 "📚 Grundlagen lernen",
 "📚 Apprendre les bases",
-"📚 学习基础"
+"📚 学习基础",
+"\ud83d\udcda \u57fa\u790e\u3092\u5b66\u3076"
 ],
 "📦 Self-Contained": [
 "📦 Eigenständig",
 "📦 Autonome",
-"📦 独立运行"
+"📦 独立运行",
+"\ud83d\udce6 \u3053\u308c\u3072\u3068\u3064\u3067\u5b8c\u7d50"
 ],
 "🧠 Understanding Over Memorization": [
 "🧠 Verstehen statt Auswendiglernen",
 "🧠 Comprendre plutôt que mémoriser",
-"🧠 理解胜于死记"
+"🧠 理解胜于死记",
+"\ud83e\udde0 \u6697\u8a18\u3088\u308a\u7406\u89e3"
 ],
 "Learn Kanji": [
 "Kanji lernen",
 "Apprendre les kanji",
-"学习汉字"
+"学习汉字",
+"\u6f22\u5b57\u3092\u5b66\u3076"
 ],
 "数字 — Numbers": [
 "数字 — Zahlen",
 "数字 — Nombres",
-"数字"
+"数字",
+"\u6570\u5b57"
 ],
 "日付 — Dates (1-10)": [
 "日付 — Datum (1–10)",
 "日付 — Dates (1-10)",
-"日付 — 日期 (1-10)"
+"日付 — 日期 (1-10)",
+"\u65e5\u4ed8\uff081\u301c10\uff09"
 ],
 "曜日 — Weekdays": [
 "曜日 — Wochentage",
 "曜日 — Jours de la semaine",
-"曜日 — 星期"
+"曜日 — 星期",
+"\u66dc\u65e5"
 ],
 "相対的な日 — Relative Days": [
 "相対的な日 — Relative Tage",
 "相対的な日 — Jours relatifs",
-"相対的な日 — 相对日期"
+"相対的な日 — 相对日期",
+"\u76f8\u5bfe\u7684\u306a\u65e5"
 ],
 "📚 参考表 (Reference Chart)": [
 "📚 参考表 (Referenztabelle)",
 "📚 参考表 (Tableau de référence)",
-"📚 参考表（对照表）"
+"📚 参考表（对照表）",
+"\ud83d\udcda \u53c2\u8003\u8868"
 ],
 "Click to flip back": [
 "Zum Zurückdrehen klicken",
 "Cliquez pour retourner",
-"点击翻回"
+"点击翻回",
+"\u30af\u30ea\u30c3\u30af\u3067\u88cf\u8fd4\u3057\u307e\u3059"
 ],
 "Vocabulary Flashcards": [
 "Vokabel-Karteikarten",
 "Cartes de vocabulaire",
-"词汇记忆卡"
+"词汇记忆卡",
+"\u5358\u8a9e\u30ab\u30fc\u30c9"
 ],
 "Click or press Space to reveal": [
 "Klicken oder Leertaste drücken zum Aufdecken",
 "Cliquez ou appuyez sur Espace pour révéler",
-"点击或按空格键显示"
+"点击或按空格键显示",
+"\u30af\u30ea\u30c3\u30af\u307e\u305f\u306f\u30b9\u30da\u30fc\u30b9\u30ad\u30fc\u3067\u8868\u793a"
 ],
 "Example Vocabulary": [
 "Beispielvokabeln",
 "Vocabulaire d'exemple",
-"例词"
+"例词",
+"\u4f8b\u8a9e"
 ],
 "Go to KLC Number": [
 "Zu KLC-Nummer springen",
 "Aller au numéro KLC",
-"跳转到 KLC 编号"
+"跳转到 KLC 编号",
+"KLC \u756a\u53f7\u3078\u79fb\u52d5"
 ],
 "Kanji Flashcards": [
 "Kanji-Karteikarten",
 "Cartes de kanji",
-"汉字记忆卡"
+"汉字记忆卡",
+"\u6f22\u5b57\u30ab\u30fc\u30c9"
 ],
 "SUN ・ DAY ・ JAPAN": [
 "SONNE ・ TAG ・ JAPAN",
 "SOLEIL ・ JOUR ・ JAPON",
-"太阳・日・日本"
+"太阳・日・日本",
+"\u65e5 \u30fb \u3072 \u30fb \u306b\u3061"
 ],
 "🎯 Quiz yourself — Kanji Drill →": [
 "🎯 Testen Sie sich — Kanji-Drill →",
 "🎯 Testez-vous — Drill kanji →",
-"🎯 自我测验 — 汉字练习 →"
+"🎯 自我测验 — 汉字练习 →",
+"\ud83c\udfaf \u529b\u3060\u3081\u3057 \u2014 \u6f22\u5b57\u7df4\u7fd2 \u2192"
 ],
 "Download": [
 "Herunterladen",
 "Télécharger",
-"下载"
+"下载",
+"\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9"
 ],
 "Godan Verb": [
 "Godan-Verb",
 "Verbe godan",
-"五段动词"
+"五段动词",
+"\u4e94\u6bb5\u52d5\u8a5e"
 ],
 "📊 Your Practice Report": [
 "📊 Ihr Übungsbericht",
 "📊 Votre rapport d'entraînement",
-"📊 您的练习报告"
+"📊 您的练习报告",
+"\ud83d\udcca \u3042\u306a\u305f\u306e\u7df4\u7fd2\u30ec\u30dd\u30fc\u30c8"
 ],
 "What is the keyword?": [
 "Wie lautet das Schlüsselwort?",
 "Quel est le mot-clé ?",
-"关键词是什么？"
+"关键词是什么？",
+"\u30ad\u30fc\u30ef\u30fc\u30c9\u306f\u4f55\u3067\u3059\u304b\u3002"
 ]
 });
 
@@ -3482,132 +4129,158 @@ I18N_addText({
 "Start practicing to see your statistics, mistake patterns, and personalized advice from Conju!": [
 "Fangen Sie an zu üben, um Ihre Statistiken, Fehlermuster und persönliche Tipps von Conju zu sehen!",
 "Commencez à pratiquer pour voir vos statistiques, vos erreurs récurrentes et les conseils personnalisés de Conju !",
-"开始练习后，即可查看您的统计数据、错误规律，以及来自 Conju 的个性化建议！"
+"开始练习后，即可查看您的统计数据、错误规律，以及来自 Conju 的个性化建议！",
+"\u7df4\u7fd2\u3092\u59cb\u3081\u308b\u3068\u3001\u6210\u7e3e\u30fb\u307e\u3061\u304c\u3044\u306e\u50be\u5411\u30fb\u30b3\u30f3\u30b8\u30e5\u304b\u3089\u306e\u3042\u306a\u305f\u5411\u3051\u306e\u52a9\u8a00\u304c\u898b\u3089\u308c\u308b\u3088\u3046\u306b\u306a\u308a\u307e\u3059\u3002"
 ],
 "Start Practicing →": [
 "Jetzt üben →",
 "Commencer à pratiquer →",
-"开始练习 →"
+"开始练习 →",
+"\u7df4\u7fd2\u3092\u59cb\u3081\u308b \u2192"
 ],
 "noun": [
 "Substantiv",
 "nom",
-"名词"
+"名词",
+"\u540d\u8a5e"
 ],
 "NOUN": [
 "SUBSTANTIV",
 "NOM",
-"名词"
+"名词",
+"\u540d\u8a5e"
 ],
 "verb": [
 "Verb",
 "verbe",
-"动词"
+"动词",
+"\u52d5\u8a5e"
 ],
 "VERB": [
 "VERB",
 "VERBE",
-"动词"
+"动词",
+"\u52d5\u8a5e"
 ],
 "adjective": [
 "Adjektiv",
 "adjectif",
-"形容词"
+"形容词",
+"\u5f62\u5bb9\u8a5e"
 ],
 "ADJECTIVE": [
 "ADJEKTIV",
 "ADJECTIF",
-"形容词"
+"形容词",
+"\u5f62\u5bb9\u8a5e"
 ],
 "adverb": [
 "Adverb",
 "adverbe",
-"副词"
+"副词",
+"\u526f\u8a5e"
 ],
 "ADVERB": [
 "ADVERB",
 "ADVERBE",
-"副词"
+"副词",
+"\u526f\u8a5e"
 ],
 "particle": [
 "Partikel",
 "particule",
-"助词"
+"助词",
+"\u52a9\u8a5e"
 ],
 "PARTICLE": [
 "PARTIKEL",
 "PARTICULE",
-"助词"
+"助词",
+"\u52a9\u8a5e"
 ],
 "phrase": [
 "Wendung",
 "expression",
-"短语"
+"短语",
+"\u53e5"
 ],
 "PHRASE": [
 "WENDUNG",
 "EXPRESSION",
-"短语"
+"短语",
+"\u53e5"
 ],
 "pronoun": [
 "Pronomen",
 "pronom",
-"代词"
+"代词",
+"\u4ee3\u540d\u8a5e"
 ],
 "PRONOUN": [
 "PRONOMEN",
 "PRONOM",
-"代词"
+"代词",
+"\u4ee3\u540d\u8a5e"
 ],
 "number": [
 "Zahlwort",
 "numéral",
-"数词"
+"数词",
+"\u6570\u8a5e"
 ],
 "NUMBER": [
 "ZAHLWORT",
 "NUMÉRAL",
-"数词"
+"数词",
+"\u6570\u8a5e"
 ],
 "counter": [
 "Zählwort",
 "spécificatif",
-"量词"
+"量词",
+"\u52a9\u6570\u8a5e"
 ],
 "COUNTER": [
 "ZÄHLWORT",
 "SPÉCIFICATIF",
-"量词"
+"量词",
+"\u52a9\u6570\u8a5e"
 ],
 "expression": [
 "Ausdruck",
 "expression",
-"表达"
+"表达",
+"\u8868\u73fe"
 ],
 "EXPRESSION": [
 "AUSDRUCK",
 "EXPRESSION",
-"表达"
+"表达",
+"\u8868\u73fe"
 ],
 "conjunction": [
 "Konjunktion",
 "conjonction",
-"连词"
+"连词",
+"\u63a5\u7d9a\u8a5e"
 ],
 "CONJUNCTION": [
 "KONJUNKTION",
 "CONJONCTION",
-"连词"
+"连词",
+"\u63a5\u7d9a\u8a5e"
 ],
 "interjection": [
 "Interjektion",
 "interjection",
-"感叹词"
+"感叹词",
+"\u611f\u52d5\u8a5e"
 ],
 "INTERJECTION": [
 "INTERJEKTION",
 "INTERJECTION",
-"感叹词"
+"感叹词",
+"\u611f\u52d5\u8a5e"
 ]
 });
 
@@ -3616,27 +4289,32 @@ I18N_addText({
 "A free Japanese learning platform. Learn and drill kana, kanji, vocabulary, dates, and verb conjugation\u2014all in one beautifully designed toolkit.": [
 "Eine kostenlose Japanisch-Lernplattform. Lernen und \u00fcben Sie Kana, Kanji, Vokabeln, Datumsangaben und Verbkonjugation \u2014 alles in einem sch\u00f6n gestalteten Werkzeugkasten.",
 "Une plateforme gratuite d'apprentissage du japonais. Apprenez et travaillez les kana, les kanji, le vocabulaire, les dates et la conjugaison des verbes \u2014 le tout dans une bo\u00eete \u00e0 outils au design soign\u00e9.",
-"\u514d\u8d39\u7684\u65e5\u8bed\u5b66\u4e60\u5e73\u53f0\u3002\u5b66\u4e60\u5e76\u7ec3\u4e60\u5047\u540d\u3001\u6c49\u5b57\u3001\u8bcd\u6c47\u3001\u65e5\u671f\u548c\u52a8\u8bcd\u53d8\u4f4d \u2014 \u5168\u90e8\u96c6\u4e2d\u5728\u4e00\u4e2a\u7cbe\u5fc3\u8bbe\u8ba1\u7684\u5de5\u5177\u5305\u91cc\u3002"
+"\u514d\u8d39\u7684\u65e5\u8bed\u5b66\u4e60\u5e73\u53f0\u3002\u5b66\u4e60\u5e76\u7ec3\u4e60\u5047\u540d\u3001\u6c49\u5b57\u3001\u8bcd\u6c47\u3001\u65e5\u671f\u548c\u52a8\u8bcd\u53d8\u4f4d \u2014 \u5168\u90e8\u96c6\u4e2d\u5728\u4e00\u4e2a\u7cbe\u5fc3\u8bbe\u8ba1\u7684\u5de5\u5177\u5305\u91cc\u3002",
+"\u7121\u6599\u306e\u65e5\u672c\u8a9e\u5b66\u7fd2\u30b5\u30a4\u30c8\u3067\u3059\u3002\u304b\u306a\u30fb\u6f22\u5b57\u30fb\u5358\u8a9e\u30fb\u65e5\u4ed8\u30fb\u52d5\u8a5e\u306e\u6d3b\u7528\u3092\u3001\u7f8e\u3057\u304f\u307e\u3068\u307e\u3063\u305f\u3072\u3068\u305d\u308d\u3044\u306e\u30c4\u30fc\u30eb\u3067\u5b66\u3073\u3001\u7df4\u7fd2\u3067\u304d\u307e\u3059\u3002"
 ],
 "Practice Kana": [
 "Kana \u00fcben",
 "S'exercer aux kana",
-"\u7ec3\u4e60\u5047\u540d"
+"\u7ec3\u4e60\u5047\u540d",
+"\u304b\u306a\u3092\u7df4\u7fd2"
 ],
 "Practice Kanji": [
 "Kanji \u00fcben",
 "S'exercer aux kanji",
-"\u7ec3\u4e60\u6c49\u5b57"
+"\u7ec3\u4e60\u6c49\u5b57",
+"\u6f22\u5b57\u3092\u7df4\u7fd2"
 ],
 "\u270d\ufe0f Practice Kana": [
 "\u270d\ufe0f Kana \u00fcben",
 "\u270d\ufe0f S'exercer aux kana",
-"\u270d\ufe0f \u7ec3\u4e60\u5047\u540d"
+"\u270d\ufe0f \u7ec3\u4e60\u5047\u540d",
+"\u270d\ufe0f \u304b\u306a\u3092\u7df4\u7fd2"
 ],
 "\ud83c\udfaf Practice Kanji": [
 "\ud83c\udfaf Kanji \u00fcben",
 "\ud83c\udfaf S'exercer aux kanji",
-"\ud83c\udfaf \u7ec3\u4e60\u6c49\u5b57"
+"\ud83c\udfaf \u7ec3\u4e60\u6c49\u5b57",
+"\ud83c\udfaf \u6f22\u5b57\u3092\u7df4\u7fd2"
 ],
 "No accounts, no sign-ups, no paywalls. Your scores, streaks, and flashcard progress live in your own browser and are never uploaded\u2014the only feature that reaches a server is Katsu, the optional AI tutor.": [
 "Keine Konten, keine Anmeldung, keine Bezahlschranken. Ihre Punktzahlen, Serien und Karteikarten-Fortschritte bleiben in Ihrem eigenen Browser und werden nie hochgeladen \u2014 die einzige Funktion, die einen Server erreicht, ist Katsu, der optionale KI-Tutor.",
@@ -3646,12 +4324,14 @@ I18N_addText({
 "audio + drills": [
 "Audio + \u00dcbungen",
 "audio + exercices",
-"\u8bed\u97f3 + \u7ec3\u4e60"
+"\u8bed\u97f3 + \u7ec3\u4e60",
+"\u97f3\u58f0\u3064\u304d\u30fb\u7df4\u7fd2\u3064\u304d"
 ],
 "KLC course + drill": [
 "KLC-Kurs + \u00dcbung",
 "cours KLC + exercice",
-"KLC \u8bfe\u7a0b + \u7ec3\u4e60"
+"KLC \u8bfe\u7a0b + \u7ec3\u4e60",
+"KLC \u30b3\u30fc\u30b9\u3068\u7df4\u7fd2"
 ],
 "\"A free Japanese study suite built by a learner for learners\u2014covering kana, kanji, vocabulary, dates and verb conjugation, with drills that track what you've learned, in one cohesive, beautifully designed package.\"": [
 "\u201eEine kostenlose Japanisch-Lernsuite, gebaut von einem Lernenden f\u00fcr Lernende \u2014 Kana, Kanji, Vokabeln, Datumsangaben und Verbkonjugation, mit \u00dcbungen, die mitverfolgen, was Sie gelernt haben, in einem stimmigen, sch\u00f6n gestalteten Paket.\u201c",
@@ -3661,12 +4341,14 @@ I18N_addText({
 "\ud83d\udce6 Nothing to Install": [
 "\ud83d\udce6 Nichts zu installieren",
 "\ud83d\udce6 Rien \u00e0 installer",
-"\ud83d\udce6 \u65e0\u9700\u5b89\u88c5"
+"\ud83d\udce6 \u65e0\u9700\u5b89\u88c5",
+"\ud83d\udce6 \u30a4\u30f3\u30b9\u30c8\u30fc\u30eb\u4e0d\u8981"
 ],
 "Ten fast, focused pages that open straight in your browser. No app to download, no account to create, nothing to configure\u2014on your desktop, your tablet or your phone.": [
 "Zehn schnelle, fokussierte Seiten, die direkt im Browser \u00f6ffnen. Keine App zum Herunterladen, kein Konto zum Anlegen, nichts zu konfigurieren \u2014 auf dem Desktop, dem Tablet oder dem Handy.",
 "Dix pages rapides et cibl\u00e9es qui s'ouvrent directement dans votre navigateur. Aucune application \u00e0 t\u00e9l\u00e9charger, aucun compte \u00e0 cr\u00e9er, rien \u00e0 configurer \u2014 sur votre ordinateur, votre tablette ou votre t\u00e9l\u00e9phone.",
-"\u5341\u4e2a\u5feb\u901f\u3001\u4e13\u6ce8\u7684\u9875\u9762\uff0c\u76f4\u63a5\u5728\u6d4f\u89c8\u5668\u4e2d\u6253\u5f00\u3002\u65e0\u9700\u4e0b\u8f7d\u5e94\u7528\u3001\u65e0\u9700\u521b\u5efa\u8d26\u53f7\u3001\u65e0\u9700\u914d\u7f6e \u2014 \u5728\u7535\u8111\u3001\u5e73\u677f\u6216\u624b\u673a\u4e0a\u90fd\u4e00\u6837\u3002"
+"\u5341\u4e2a\u5feb\u901f\u3001\u4e13\u6ce8\u7684\u9875\u9762\uff0c\u76f4\u63a5\u5728\u6d4f\u89c8\u5668\u4e2d\u6253\u5f00\u3002\u65e0\u9700\u4e0b\u8f7d\u5e94\u7528\u3001\u65e0\u9700\u521b\u5efa\u8d26\u53f7\u3001\u65e0\u9700\u914d\u7f6e \u2014 \u5728\u7535\u8111\u3001\u5e73\u677f\u6216\u624b\u673a\u4e0a\u90fd\u4e00\u6837\u3002",
+"\u30d6\u30e9\u30a6\u30b6\u3067\u3059\u3050\u958b\u3051\u308b\u3001\u8efd\u304f\u6574\u7406\u3055\u308c\u305f10\u306e\u30da\u30fc\u30b8\u3067\u3059\u3002\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3059\u308b\u30a2\u30d7\u30ea\u3082\u3001\u4f5c\u308b\u30a2\u30ab\u30a6\u30f3\u30c8\u3082\u3001\u8a2d\u5b9a\u3059\u308b\u3082\u306e\u3082\u3042\u308a\u307e\u305b\u3093 \u2014 \u30d1\u30bd\u30b3\u30f3\u3067\u3082\u30bf\u30d6\u30ec\u30c3\u30c8\u3067\u3082\u30b9\u30de\u30db\u3067\u3082\u3002"
 ],
 "The Conjugator doesn't just say \"wrong\"\u2014it shows the exact rule you needed and identifies your specific error. Flashcards prioritise unseen cards, and the kana and kanji drills remember every character you've answered so you can see exactly what's left to learn.": [
 "Der Konjugator sagt nicht einfach \u201efalsch\u201c \u2014 er zeigt genau die Regel, die Sie gebraucht h\u00e4tten, und benennt Ihren konkreten Fehler. Karteikarten bevorzugen ungesehene Karten, und die Kana- und Kanji-Drills merken sich jedes beantwortete Zeichen, sodass Sie genau sehen, was noch zu lernen bleibt.",
@@ -3674,19 +4356,22 @@ I18N_addText({
 "\u53d8\u4f4d\u5668\u4e0d\u53ea\u662f\u8bf4\u201c\u9519\u4e86\u201d \u2014 \u5b83\u4f1a\u5c55\u793a\u4f60\u9700\u8981\u7684\u90a3\u6761\u89c4\u5219\uff0c\u5e76\u6307\u51fa\u4f60\u5177\u4f53\u9519\u5728\u54ea\u91cc\u3002\u5361\u7247\u4f1a\u4f18\u5148\u5b89\u6392\u672a\u89c1\u8fc7\u7684\uff0c\u5047\u540d\u548c\u6c49\u5b57\u7ec3\u4e60\u4f1a\u8bb0\u4f4f\u4f60\u7b54\u8fc7\u7684\u6bcf\u4e2a\u5b57\u7b26\uff0c\u8ba9\u4f60\u6e05\u695a\u770b\u5230\u8fd8\u5269\u4ec0\u4e48\u8981\u5b66\u3002"
 ],
 "\ud83c\udf10 Four Languages": [
-"\ud83c\udf10 Vier Sprachen",
-"\ud83c\udf10 Quatre langues",
-"\ud83c\udf10 \u56db\u79cd\u8bed\u8a00"
+"\ud83c\udf10 F\u00fcnf Sprachen",
+"\ud83c\udf10 Cinq langues",
+"\ud83c\udf10 \u4e94\u79cd\u8bed\u8a00",
+"\ud83c\udf10 5\u3064\u306e\u8a00\u8a9e"
 ],
-"The whole site\u2014every page, every button, every explanation\u2014reads in English, German, French or Simplified Chinese. Switch language from the menu at any time; your place is kept.": [
+"The whole site\u2014every page, every button, every explanation\u2014reads in English, German, French, Simplified Chinese or Japanese. Switch language from the menu at any time; your place is kept.": [
 "Die ganze Website \u2014 jede Seite, jede Schaltfl\u00e4che, jede Erkl\u00e4rung \u2014 liest sich auf Englisch, Deutsch, Franz\u00f6sisch oder in vereinfachtem Chinesisch. Wechseln Sie die Sprache jederzeit \u00fcber das Men\u00fc; Ihre Stelle bleibt erhalten.",
 "Tout le site \u2014 chaque page, chaque bouton, chaque explication \u2014 se lit en anglais, allemand, fran\u00e7ais ou chinois simplifi\u00e9. Changez de langue depuis le menu \u00e0 tout moment ; votre position est conserv\u00e9e.",
-"\u6574\u4e2a\u7f51\u7ad9 \u2014 \u6bcf\u4e00\u9875\u3001\u6bcf\u4e2a\u6309\u94ae\u3001\u6bcf\u6bb5\u8bf4\u660e \u2014 \u90fd\u53ef\u4ee5\u7528\u82f1\u8bed\u3001\u5fb7\u8bed\u3001\u6cd5\u8bed\u6216\u7b80\u4f53\u4e2d\u6587\u9605\u8bfb\u3002\u968f\u65f6\u4ece\u83dc\u5355\u5207\u6362\u8bed\u8a00\uff0c\u4f60\u6240\u5728\u7684\u4f4d\u7f6e\u4f1a\u4fdd\u7559\u3002"
+"\u6574\u4e2a\u7f51\u7ad9 \u2014 \u6bcf\u4e00\u9875\u3001\u6bcf\u4e2a\u6309\u94ae\u3001\u6bcf\u6bb5\u8bf4\u660e \u2014 \u90fd\u53ef\u4ee5\u7528\u82f1\u8bed\u3001\u5fb7\u8bed\u3001\u6cd5\u8bed\u6216\u7b80\u4f53\u4e2d\u6587\u9605\u8bfb\u3002\u968f\u65f6\u4ece\u83dc\u5355\u5207\u6362\u8bed\u8a00\uff0c\u4f60\u6240\u5728\u7684\u4f4d\u7f6e\u4f1a\u4fdd\u7559\u3002",
+"\u30b5\u30a4\u30c8\u5168\u4f53 \u2014 \u3059\u3079\u3066\u306e\u30da\u30fc\u30b8\u3001\u3059\u3079\u3066\u306e\u30dc\u30bf\u30f3\u3001\u3059\u3079\u3066\u306e\u89e3\u8aac \u2014 \u304c\u82f1\u8a9e\u30fb\u30c9\u30a4\u30c4\u8a9e\u30fb\u30d5\u30e9\u30f3\u30b9\u8a9e\u30fb\u7c21\u4f53\u5b57\u4e2d\u56fd\u8a9e\u30fb\u65e5\u672c\u8a9e\u3067\u8aad\u3081\u307e\u3059\u3002\u30e1\u30cb\u30e5\u30fc\u304b\u3089\u3044\u3064\u3067\u3082\u5207\u308a\u66ff\u3048\u3089\u308c\u3001\u898b\u3066\u3044\u305f\u5834\u6240\u306f\u305d\u306e\u307e\u307e\u3067\u3059\u3002"
 ],
 "\ud83e\udd16 Ask Katsu": [
 "\ud83e\udd16 Katsu fragen",
 "\ud83e\udd16 Demandez \u00e0 Katsu",
-"\ud83e\udd16 \u95ee\u95ee Katsu"
+"\ud83e\udd16 \u95ee\u95ee Katsu",
+"\ud83e\udd16 \u30ab\u30c4\u306b\u304d\u304f"
 ],
 ", an AI tutor, waits in the corner of every page. Ask why a conjugation works, what separates \u306f from \u304c, or anything that has you stuck\u2014and get an answer in the language you're reading in.": [
 ", ein KI-Tutor, wartet in der Ecke jeder Seite. Fragen Sie, warum eine Konjugation funktioniert, was \u306f von \u304c unterscheidet, oder was immer Sie gerade aufh\u00e4lt \u2014 und erhalten Sie die Antwort in der Sprache, in der Sie gerade lesen.",
@@ -3696,6 +4381,7 @@ I18N_addText({
 "Whether you're learning kana, drilling characters, studying verbs, or building vocabulary\u2014choose your path below.": [
 "Ob Sie Kana lernen, Zeichen \u00fcben, Verben studieren oder Vokabeln aufbauen \u2014 w\u00e4hlen Sie unten Ihren Weg.",
 "Que vous appreniez les kana, travailliez les caract\u00e8res, \u00e9tudiiez les verbes ou construisiez votre vocabulaire \u2014 choisissez votre parcours ci-dessous.",
-"\u65e0\u8bba\u4f60\u662f\u5728\u5b66\u5047\u540d\u3001\u7ec3\u5b57\u7b26\u3001\u5b66\u52a8\u8bcd\u8fd8\u662f\u79ef\u7d2f\u8bcd\u6c47 \u2014 \u5728\u4e0b\u9762\u9009\u62e9\u4f60\u7684\u8def\u5f84\u3002"
+"\u65e0\u8bba\u4f60\u662f\u5728\u5b66\u5047\u540d\u3001\u7ec3\u5b57\u7b26\u3001\u5b66\u52a8\u8bcd\u8fd8\u662f\u79ef\u7d2f\u8bcd\u6c47 \u2014 \u5728\u4e0b\u9762\u9009\u62e9\u4f60\u7684\u8def\u5f84\u3002",
+"\u304b\u306a\u3092\u899a\u3048\u308b\u3001\u6587\u5b57\u3092\u7df4\u7fd2\u3059\u308b\u3001\u52d5\u8a5e\u3092\u5b66\u3076\u3001\u8a9e\u5f59\u3092\u5897\u3084\u3059 \u2014 \u3069\u3053\u304b\u3089\u59cb\u3081\u308b\u304b\u3001\u4e0b\u304b\u3089\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002"
 ]
 });

@@ -3,112 +3,134 @@ I18N_addText({
 "The Database": [
 "Die Datenbank",
 "La base de données",
-"数据库"
+"数据库",
+"\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9"
 ],
 "129 Verbs": [
 "129 Verben",
 "129 verbes",
-"129 个动词"
+"129 个动词",
+"129\u306e\u52d5\u8a5e"
 ],
 "This collection includes fundamental verbs for everyday conversation, along with verbs used in academic and formal contexts. The database covers verbs from beginner through intermediate levels, organized into three types—Godan, Ichidan, and Suru—to help you understand conjugation patterns. Each verb includes kanji, hiragana readings, romaji, and English meanings. You'll find essential verbs for daily life, emotions, actions, and social interactions.": [
 "Diese Sammlung enthält grundlegende Verben für den Alltag sowie Verben aus akademischen und formellen Zusammenhängen. Die Datenbank deckt Verben von der Anfänger- bis zur Mittelstufe ab, geordnet nach den drei Typen Godan, Ichidan und Suru, damit Sie die Konjugationsmuster verstehen. Zu jedem Verb gehören Kanji, Hiragana-Lesung, Rōmaji und die Bedeutung. Sie finden hier wichtige Verben für Alltag, Gefühle, Handlungen und soziale Situationen.",
 "Cette collection réunit les verbes fondamentaux de la conversation quotidienne ainsi que des verbes employés dans des contextes universitaires et formels. La base couvre les niveaux débutant à intermédiaire, répartis en trois types — godan, ichidan et suru — pour vous aider à comprendre les schémas de conjugaison. Chaque verbe comprend le kanji, la lecture en hiragana, le rōmaji et le sens. Vous y trouverez les verbes essentiels de la vie quotidienne, des émotions, des actions et des relations sociales.",
-"本词表收录了日常会话的基础动词，以及学术和正式场合使用的动词。数据库涵盖从初级到中级的动词，按五段、一段、する三类整理，帮助您理解变形规律。每个动词都附有汉字、平假名读法、罗马音和释义。您可以在这里找到日常生活、情感、动作和社交场景的核心动词。"
+"本词表收录了日常会话的基础动词，以及学术和正式场合使用的动词。数据库涵盖从初级到中级的动词，按五段、一段、する三类整理，帮助您理解变形规律。每个动词都附有汉字、平假名读法、罗马音和释义。您可以在这里找到日常生活、情感、动作和社交场景的核心动词。",
+"\u3053\u3053\u306b\u306f\u65e5\u5e38\u4f1a\u8a71\u306e\u57fa\u672c\u3068\u306a\u308b\u52d5\u8a5e\u306b\u52a0\u3048\u3001\u5b66\u8853\u7684\u30fb\u3042\u3089\u305f\u307e\u3063\u305f\u5834\u9762\u3067\u4f7f\u3046\u52d5\u8a5e\u3082\u53ce\u3081\u3066\u3044\u307e\u3059\u3002\u521d\u7d1a\u304b\u3089\u4e2d\u7d1a\u307e\u3067\u3092\u6271\u3044\u3001\u6d3b\u7528\u306e\u578b\u304c\u3064\u304b\u3081\u308b\u3088\u3046\u4e94\u6bb5\u30fb\u4e00\u6bb5\u30fb\u3059\u308b\u52d5\u8a5e\u306e\u4e09\u7a2e\u985e\u306b\u5206\u3051\u3066\u3042\u308a\u307e\u3059\u3002\u3069\u306e\u52d5\u8a5e\u306b\u3082\u6f22\u5b57\u30fb\u3072\u3089\u304c\u306a\u306e\u8aad\u307f\u30fb\u30ed\u30fc\u30de\u5b57\u30fb\u82f1\u8a9e\u306e\u610f\u5473\u304c\u3064\u3044\u3066\u3044\u307e\u3059\u3002\u66ae\u3089\u3057\u3001\u6c17\u6301\u3061\u3001\u52d5\u4f5c\u3001\u4eba\u3065\u304d\u3042\u3044\u306b\u6b20\u304b\u305b\u306a\u3044\u52d5\u8a5e\u304c\u305d\u308d\u3063\u3066\u3044\u307e\u3059\u3002"
 ],
 "📚 This is a living database—new verbs may be added as the collection grows.": [
 "📚 Diese Datenbank wächst — mit dem Ausbau der Sammlung kommen neue Verben hinzu.",
 "📚 Cette base évolue : de nouveaux verbes s'ajouteront au fil du temps.",
-"📚 这是一个持续更新的数据库——随着收录扩充，会不断加入新动词。"
+"📚 这是一个持续更新的数据库——随着收录扩充，会不断加入新动词。",
+"\ud83d\udcda \u3053\u308c\u306f\u80b2\u3061\u7d9a\u3051\u308b\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u3067\u3059 \u2014 \u4eca\u5f8c\u3082\u52d5\u8a5e\u304c\u8ffd\u52a0\u3055\u308c\u308b\u3053\u3068\u304c\u3042\u308a\u307e\u3059\u3002"
 ],
 "Godan Verbs": [
 "Godan-Verben",
 "Verbes godan",
-"五段动词"
+"五段动词",
+"\u4e94\u6bb5\u52d5\u8a5e"
 ],
 "Ichidan Verbs": [
 "Ichidan-Verben",
 "Verbes ichidan",
-"一段动词"
+"一段动词",
+"\u4e00\u6bb5\u52d5\u8a5e"
 ],
 "Suru Verbs": [
 "Suru-Verben",
 "Verbes suru",
-"する动词"
+"する动词",
+"\u3059\u308b\u52d5\u8a5e"
 ],
 "Irregular Verb": [
 "Unregelmäßiges Verb",
 "Verbe irrégulier",
-"不规则动词"
+"不规则动词",
+"\u4e0d\u898f\u5247\u52d5\u8a5e"
 ],
 "Godan": [
 "Godan",
 "Godan",
-"五段"
+"五段",
+"\u4e94\u6bb5"
 ],
 "Ichidan": [
 "Ichidan",
 "Ichidan",
-"一段"
+"一段",
+"\u4e00\u6bb5"
 ],
 "Suru": [
 "Suru",
 "Suru",
-"する"
+"する",
+"\u3059\u308b"
 ],
 "Irregular": [
 "Unregelmäßig",
 "Irrégulier",
-"不规则"
+"不规则",
+"\u4e0d\u898f\u5247"
 ],
 "All Levels": [
 "Alle Stufen",
 "Tous les niveaux",
-"所有级别"
+"所有级别",
+"\u3059\u3079\u3066\u306e\u30ec\u30d9\u30eb"
 ],
 "📊 Complete JLPT Coverage": [
 "📊 Vollständige JLPT-Abdeckung",
 "📊 Couverture JLPT complète",
-"📊 完整覆盖 JLPT"
+"📊 完整覆盖 JLPT",
+"\ud83d\udcca JLPT \u3092\u7db2\u7f85"
 ],
 "All essential verbs covered": [
 "Alle wichtigen Verben enthalten",
 "Tous les verbes essentiels",
-"涵盖所有必备动词"
+"涵盖所有必备动词",
+"\u5fc5\u4fee\u306e\u52d5\u8a5e\u3092\u3059\u3079\u3066\u53ce\u9332"
 ],
 "Comprehensive coverage": [
 "Umfassende Abdeckung",
 "Couverture complète",
-"全面覆盖"
+"全面覆盖",
+"\u5e45\u5e83\u304f\u53ce\u9332"
 ],
 "Strong foundation included": [
 "Solide Grundlage enthalten",
 "Base solide incluse",
-"打好坚实基础"
+"打好坚实基础",
+"\u3057\u3063\u304b\u308a\u3057\u305f\u571f\u53f0\u3064\u304d"
 ],
 "Ready to Practice?": [
 "Bereit zum Üben?",
 "Prêt à pratiquer ?",
-"准备好练习了吗？"
+"准备好练习了吗？",
+"\u7df4\u7fd2\u3057\u3066\u307f\u307e\u3059\u304b"
 ],
 "Now that you've seen all 129 verbs, test your knowledge with the conjugator!": [
 "Jetzt, da Sie alle 129 Verben gesehen haben: Testen Sie Ihr Wissen mit dem Konjugator!",
 "Maintenant que vous avez vu les 129 verbes, testez vos connaissances avec le Conjugueur !",
-"看完全部 129 个动词后，用动词变形器检验一下您的掌握程度吧！"
+"看完全部 129 个动词后，用动词变形器检验一下您的掌握程度吧！",
+"129\u306e\u52d5\u8a5e\u3092\u3072\u3068\u3068\u304a\u308a\u898b\u305f\u3068\u3053\u308d\u3067\u3001\u6d3b\u7528\u7df4\u7fd2\u3067\u305f\u3081\u3057\u3066\u307f\u307e\u3057\u3087\u3046\u3002"
 ],
 "Start Practicing →": [
 "Jetzt üben →",
 "Commencer à pratiquer →",
-"开始练习 →"
+"开始练习 →",
+"\u7df4\u7fd2\u3092\u59cb\u3081\u308b \u2192"
 ],
 "🔸 Why is": [
 "🔸 Warum ist",
 "🔸 Pourquoi",
-"🔸 为什么"
+"🔸 为什么",
+"\ud83d\udd38 \u306a\u305c"
 ],
 "irregular?": [
 "unregelmäßig?",
 "est-il irrégulier ?",
-"是不规则动词？"
+"是不规则动词？",
+"\u304c\u4e0d\u898f\u5247\u306a\u306e\u304b"
 ],
 "is one of only two truly irregular verbs in Japanese (along with": [
 "ist eines von nur zwei wirklich unregelmäßigen Verben im Japanischen (neben",
@@ -123,7 +145,8 @@ I18N_addText({
 "Notice how the reading changes:": [
 "Beachten Sie, wie sich die Lesung ändert:",
 "Observez comment la lecture change :",
-"注意读音的变化："
+"注意读音的变化：",
+"\u8aad\u307f\u304c\u3069\u3046\u5909\u308f\u308b\u304b\u306b\u6ce8\u76ee\u3057\u3066\u304f\u3060\u3055\u3044\uff1a"
 ],
 ". This vowel shift (u → i → i → o) doesn't follow any standard pattern, which is why it must be memorized separately.": [
 ". Dieser Vokalwechsel (u → i → i → o) folgt keinem Standardmuster — deshalb muss er gesondert gelernt werden.",
@@ -133,22 +156,26 @@ I18N_addText({
 "Dictionary:": [
 "Wörterbuchform:",
 "Forme du dictionnaire :",
-"辞书形："
+"辞书形：",
+"\u8f9e\u66f8\u5f62\uff1a"
 ],
 "ます form:": [
 "ます-Form:",
 "Forme en ます :",
-"ます形："
+"ます形：",
+"\u307e\u3059\u5f62\uff1a"
 ],
 "て form:": [
 "て-Form:",
 "Forme en て :",
-"て形："
+"て形：",
+"\u3066\u5f62\uff1a"
 ],
 "Negative:": [
 "Verneinung:",
 "Négatif :",
-"否定形："
+"否定形：",
+"\u5426\u5b9a\u5f62\uff1a"
 ],
 "to answer": [
 "antworten",
@@ -759,4 +786,5 @@ if (typeof I18N !== 'undefined') {
   I18N.de.vl_search = 'Nach Kanji, Hiragana, Rōmaji oder Bedeutung suchen …';
   I18N.fr.vl_search = 'Rechercher par kanji, hiragana, rōmaji ou sens…';
   I18N.zh.vl_search = '按汉字、平假名、罗马音或释义搜索…';
+  I18N.ja.vl_search = '漢字・ひらがな・ローマ字・意味で検索…';
 }

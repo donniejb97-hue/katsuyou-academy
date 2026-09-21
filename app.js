@@ -10165,3 +10165,57 @@ function generateNewQuestion() {
         populateDojoReference();
       }
     });
+
+
+// ============================================================
+// SITE FOOTER
+// ------------------------------------------------------------
+// The site never had one, so the privacy notice had nowhere to be linked from
+// and the nav bar is already at its width limit. Injected here because app.js
+// is the one script every page loads — adding a <footer> to twenty-two files
+// by hand is how the Google tag ended up pasted into all of them.
+//
+// Skipped on the privacy page itself, which ends with its own sign-off.
+// ============================================================
+(function () {
+  'use strict';
+
+  function build() {
+    if (document.querySelector('.site-footer')) return;
+    if (document.body && document.body.getAttribute('data-page') === 'privacy') return;
+
+    var css = document.createElement('style');
+    css.textContent =
+      '.site-footer{border-top:1px solid rgba(0,0,0,.08);background:var(--paper-warm,#f5f3ef);' +
+      'padding:1.6rem 1.5rem;margin-top:3rem;text-align:center;font-family:Outfit,sans-serif;}' +
+      '.site-footer nav{display:flex;flex-wrap:wrap;gap:.35rem 1.1rem;justify-content:center;' +
+      'margin-bottom:.7rem;}' +
+      '.site-footer a{color:var(--text-light,#6b6b6b);text-decoration:none;font-size:.85rem;' +
+      'transition:color .16s ease;}' +
+      '.site-footer a:hover{color:var(--accent,#c45c4a);}' +
+      '.site-footer p{margin:0;font-size:.78rem;color:var(--text-light,#6b6b6b);opacity:.75;}';
+    document.head.appendChild(css);
+
+    var f = document.createElement('footer');
+    f.className = 'site-footer';
+    f.innerHTML =
+      '<nav>' +
+        '<a href="/" data-i18n="nav_home">Home</a>' +
+        '<a href="/about" data-i18n="nav_contact">Contact</a>' +
+        '<a href="/privacy" data-i18n="nav_privacy">Privacy</a>' +
+      '</nav>' +
+      '<p>© 2025-2026 Brandon Gilmore · <span data-i18n="footer_tag">' +
+      'Free, and built by one learner.</span></p>';
+
+    // Before the back-to-top button and the toast, so neither ends up inside it.
+    var anchor = document.getElementById('back-to-top');
+    if (anchor && anchor.parentNode === document.body) document.body.insertBefore(f, anchor);
+    else document.body.appendChild(f);
+
+    if (typeof applyI18n === 'function') applyI18n();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', build);
+  } else build();
+})();
