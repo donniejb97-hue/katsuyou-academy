@@ -1134,8 +1134,15 @@
     }
     // Deliberately NOT scrollIntoView: on a horizontally scrolling strip it drags
     // the whole page vertically, which is what made every click jump to the top.
+    // And don't centre it either: the strip stays put unless the block you
+    // picked is actually off the edge, and then it moves only far enough to
+    // show it. Blocks 1–19 fit on a laptop, so nothing shifts until ~20.
     var on = wrap.querySelector('.kw-blk.is-on');
-    if (on) wrap.scrollLeft = Math.max(0, on.offsetLeft - wrap.clientWidth / 2);
+    if (on) {
+      var pad = 12, left = on.offsetLeft, right = left + on.offsetWidth;
+      if (left < wrap.scrollLeft + pad) wrap.scrollLeft = Math.max(0, left - pad);
+      else if (right > wrap.scrollLeft + wrap.clientWidth - pad) wrap.scrollLeft = right - wrap.clientWidth + pad;
+    }
   }
 
   /* ---------- the grid ---------- */
