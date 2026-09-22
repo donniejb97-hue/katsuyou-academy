@@ -645,6 +645,174 @@
           font-size: 0.75rem;
         }
       }
+    
+      /* ============================================================
+         THE WALL — kanji.html's default view.
+
+         The page used to be a dark purple nothing else on the site uses.
+         It is now the warm ground, and the old flashcard is re-skinned to
+         match rather than rewritten — it survives as the "One at a time" tab.
+         ============================================================ */
+
+      #page-kanji { background: #f7f0e6; color: #2b2320; }
+      .kanji-container { max-width: 1180px; padding: 2rem 1.5rem 3rem; }
+      .kanji-header { margin-bottom: 1.4rem; }
+      .kanji-title { display: flex; flex-direction: column; gap: 0.1rem; align-items: center; }
+      .kanji-japanese-title { display: none; }          /* the lone 漢字 decoration */
+      .kanji-romaji-title { letter-spacing: -0.01em; color: #2b2320; font-weight: 700; }
+      .kanji-subtitle { color: #6b615a; }
+
+      .kw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      .kw-eyebrow { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.13em;
+        text-transform: uppercase; color: #8a7f76; }
+
+      .kw-tabs { display: flex; gap: 0.45rem; justify-content: center; margin-bottom: 1.3rem; }
+      .kw-tab { padding: 0.55rem 1.1rem; border-radius: 999px; border: 1px solid rgba(0,0,0,0.12);
+        background: #fff; color: #4a423c; font-family: inherit; font-size: 0.86rem; cursor: pointer;
+        text-decoration: none; display: inline-flex; align-items: center; }
+      .kw-tab.is-on { background: #2b2320; color: #fdfbf7; border-color: #2b2320; font-weight: 600; }
+
+      /* ---- top strip ---- */
+      .kw-top { display: flex; gap: 0.8rem; align-items: stretch; margin-bottom: 0.8rem; flex-wrap: wrap; }
+      .kw-total { background: #2b2320; border-radius: 14px; padding: 0.85rem 1.1rem; color: #fdfbf7;
+        display: flex; flex-direction: column; justify-content: center; min-width: 118px; }
+      .kw-total-num { font-size: 1.6rem; font-weight: 700; line-height: 1; }
+      .kw-total-lbl { font-size: 0.72rem; opacity: 0.62; margin-top: 0.15rem; }
+      .kw-total-bar { flex: 1 1 260px; background: #2b2320; border-radius: 14px;
+        padding: 0.85rem 1.1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.45rem; }
+      .kw-bar { height: 9px; border-radius: 999px; background: rgba(255,255,255,0.13);
+        overflow: hidden; display: flex; }
+      .kw-bar i { display: block; height: 100%; }
+      #kw-bar-solid { background: #c45c4a; }
+      #kw-bar-shaky { background: #e8b4a8; }
+      .kw-total-legend { display: flex; gap: 1rem; font-size: 0.72rem; color: rgba(253,251,247,0.68); }
+      .kw-search { flex: 0 1 280px; display: flex; align-items: center; gap: 0.6rem;
+        background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 14px; padding: 0 1rem; }
+      .kw-search svg { width: 17px; height: 17px; color: #a49a92; flex: none; }
+      .kw-search input { flex: 1; border: 0; outline: 0; background: transparent; padding: 0.8rem 0;
+        font-family: inherit; font-size: 0.87rem; color: #2b2320; }
+
+      /* ---- blocks ---- */
+      .kw-blocks-wrap { background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 14px;
+        padding: 0.8rem 1rem; margin-bottom: 0.8rem; }
+      .kw-blocks-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
+      .kw-blocks-sub { font-size: 0.76rem; color: #6b615a; }
+      .kw-resume { margin-left: auto; padding: 0.45rem 0.9rem; border-radius: 999px; border: 0;
+        background: #fbeee6; color: #a8442f; font-family: inherit; font-size: 0.76rem;
+        font-weight: 600; cursor: pointer; }
+      .kw-blocks { display: flex; gap: 0.55rem; overflow-x: auto; padding-bottom: 0.2rem; }
+      .kw-blk { flex: none; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+        background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+      .kw-blk-ring { width: 40px; height: 40px; border-radius: 50%; display: flex;
+        align-items: center; justify-content: center; font-size: 0.66rem; font-weight: 700;
+        border: 2px solid transparent; }
+      .kw-blk.is-on .kw-blk-ring { border-color: #2b2320; }
+      .kw-blk-lbl { font-size: 0.62rem; color: #6b615a; white-space: nowrap; }
+
+      /* ---- filters ---- */
+      .kw-filters { display: flex; gap: 0.45rem; align-items: center; margin-bottom: 0.7rem; flex-wrap: wrap; }
+      .kw-chip { padding: 0.42rem 0.85rem; border-radius: 999px; border: 1px solid rgba(0,0,0,0.12);
+        background: #fff; color: #4a423c; font-family: inherit; font-size: 0.78rem; cursor: pointer; }
+      .kw-chip b { font-weight: 700; opacity: 0.6; margin-left: 0.15rem; }
+      .kw-chip.is-on { background: #2b2320; color: #fdfbf7; border-color: #2b2320; font-weight: 600; }
+      .kw-chip.is-on b { opacity: 0.75; }
+      .kw-legend { margin-left: auto; display: flex; gap: 0.85rem; font-size: 0.72rem; color: #6b615a; }
+      .kw-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+      .kw-sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+      .kw-sw-solid { background: #2b2320; }
+      .kw-sw-shaky { background: #e8b4a8; }
+      .kw-sw-new { background: #fff; border: 1px solid rgba(0,0,0,0.16); }
+
+      /* ---- the grid ---- */
+      .kw-grid { background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 18px;
+        padding: 0.9rem; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr));
+        gap: 0.35rem; margin-bottom: 0.8rem; }
+      .kw-cell { aspect-ratio: 1; border-radius: 8px; border: 1px solid transparent;
+        font-family: 'Noto Serif JP', serif; font-size: 1.28rem; line-height: 1; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; padding: 0;
+        transition: transform 0.12s ease; position: relative; }
+      .kw-cell:hover { transform: scale(1.14); z-index: 2; }
+      .kw-cell:focus-visible { outline: 2px solid #c45c4a; outline-offset: 2px; z-index: 2; }
+      .kw-cell.s-solid { background: #2b2320; color: #fdfbf7; }
+      .kw-cell.s-shaky { background: #e8b4a8; color: #2b2320; }
+      .kw-cell.s-new   { background: #fff; border-color: rgba(0,0,0,0.12); color: #9a9089; }
+      .kw-cell.is-open { outline: 2px solid #c45c4a; outline-offset: 2px; z-index: 2; }
+      .kw-cell.is-dim  { opacity: 0.18; pointer-events: none; }
+
+      .kw-drillbar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
+        margin-bottom: 0.8rem; }
+      .kw-go { padding: 0.65rem 1.25rem; border-radius: 999px; border: 0; background: #c45c4a;
+        color: #fff; font-family: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer;
+        box-shadow: 0 2px 9px rgba(196,92,74,0.28); }
+      .kw-go.is-ghost { background: #fff; color: #4a423c; border: 1px solid rgba(0,0,0,0.12);
+        box-shadow: none; font-weight: 500; }
+      .kw-go:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+      /* ---- the opened card ---- */
+      /* `display:flex` beats the UA stylesheet's [hidden]{display:none}, so the
+         empty panel stayed on screen until this rule was added. */
+      .kw-detail[hidden] { display: none; }
+      .kw-detail { background: #fff; border: 2px solid #c45c4a; border-radius: 18px;
+        padding: 1.15rem 1.35rem; display: flex; gap: 1.5rem;
+        box-shadow: 0 5px 20px rgba(120,80,60,0.12); }
+      .kw-d-left { flex: none; width: 132px; display: flex; flex-direction: column;
+        align-items: center; gap: 0.5rem; }
+      .kw-d-char { font-family: 'Noto Serif JP', serif; font-size: 5.6rem; line-height: 1; color: #2b2320; }
+      .kw-d-id { font-size: 0.7rem; font-weight: 700; color: #a8442f; background: #fbeee6;
+        padding: 0.28rem 0.7rem; border-radius: 999px; }
+      .kw-d-body { flex: 1; display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
+      .kw-d-head { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+      .kw-d-kw { font-size: 1.3rem; font-weight: 700; color: #2b2320; }
+      .kw-d-state { font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: 999px; }
+      .kw-d-state.s-solid { background: #e8f0e8; color: #3f6344; }
+      .kw-d-state.s-shaky { background: #fbeee6; color: #a8442f; }
+      .kw-d-state.s-new   { background: #f4efe8; color: #6b615a; }
+      .kw-d-readings { display: flex; gap: 1.6rem; flex-wrap: wrap; }
+      .kw-d-readings b { display: block; font-size: 0.6rem; letter-spacing: 0.1em;
+        text-transform: uppercase; margin-bottom: 0.15rem; }
+      .kw-d-on b { color: #a8442f; } .kw-d-kun b { color: #4f7454; }
+      .kw-d-readings span.jp { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: #2b2320; }
+      .kw-d-vocab { border-top: 1px solid rgba(0,0,0,0.07); padding-top: 0.6rem;
+        display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem 1rem; }
+      .kw-d-vocab li { list-style: none; font-size: 0.8rem; color: #6b615a; }
+      .kw-d-vocab .jp { font-family: 'Noto Serif JP', serif; font-size: 1rem; color: #2b2320; margin-right: 0.3rem; }
+      .kw-d-acts { display: flex; gap: 0.45rem; margin-top: auto; align-items: center; flex-wrap: wrap; }
+      .kw-d-hint { margin-left: auto; font-size: 0.7rem; color: #a49a92; }
+      .kw-d-close { background: none; border: 0; color: #a49a92; font-size: 1.1rem; cursor: pointer;
+        font-family: inherit; padding: 0 0.2rem; }
+
+      @media (max-width: 900px) {
+        .kw-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+        .kw-detail { flex-direction: column; gap: 0.9rem; }
+        .kw-d-left { width: auto; flex-direction: row; justify-content: center; }
+        .kw-d-vocab { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .kw-legend { margin-left: 0; width: 100%; }
+      }
+      @media (max-width: 560px) {
+        .kw-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+        .kw-d-vocab { grid-template-columns: 1fr; }
+      }
+
+      /* ---- re-skin the old flashcard so the two tabs match ---- */
+      .kanji-flashcard-area { display: none; }
+      .kanji-flashcard-front, .kanji-flashcard-back {
+        background: #fff !important; color: #2b2320 !important;
+        border: 1px solid rgba(0,0,0,0.09) !important; border-radius: 18px !important;
+        box-shadow: 0 3px 14px rgba(120,80,60,0.09) !important;
+      }
+      .kanji-flashcard-front::before, .kanji-flashcard-front::after,
+      .kanji-flashcard-back::after { display: none !important; }
+      .kanji-character { color: #2b2320 !important; }
+      .kanji-keyword { color: #2b2320 !important; }
+      .kanji-btn { background: #fff !important; color: #4a423c !important;
+        border: 1px solid rgba(0,0,0,0.12) !important; border-radius: 999px !important; }
+      .kanji-btn:hover:not(:disabled) { background: #fbeee6 !important; color: #a8442f !important; }
+      .kanji-filters { display: none; }
+      .kanji-stats, .kanji-progress { color: #6b615a !important; }
+      .kanji-stat { background: #fff !important; border: 1px solid rgba(0,0,0,0.07) !important;
+        border-radius: 14px !important; }
+      .kanji-stat-value { color: #2b2320 !important; }
+
     </style>
 
     <div class="kanji-container">
@@ -665,6 +833,60 @@
         <button class="kanji-filter-btn" onclick="filterKanjiLevel('advanced')" data-i18n="filter_advanced">Advanced (1201-2300)</button>
       </div>
       
+      <!-- ============ THE WALL ============ -->
+      <div class="kw-tabs" role="tablist">
+        <button type="button" class="kw-tab is-on" id="kw-tab-wall" role="tab" aria-selected="true" data-i18n="kw_tab_wall">Wall</button>
+        <button type="button" class="kw-tab" id="kw-tab-card" role="tab" aria-selected="false" data-i18n="kw_tab_card">One at a time</button>
+        <a class="kw-tab kw-tab-link" href="/kanji-drill" data-i18n="kw_tab_drill">Drill</a>
+      </div>
+
+      <section class="kw-wall" id="kw-wall">
+
+        <div class="kw-top">
+          <div class="kw-total">
+            <div class="kw-total-num"><span id="kw-seen">0</span></div>
+            <div class="kw-total-lbl"><span data-i18n="kw_of_total">of 2,300 seen</span></div>
+          </div>
+          <div class="kw-total-bar">
+            <div class="kw-bar"><i id="kw-bar-solid"></i><i id="kw-bar-shaky"></i></div>
+            <div class="kw-total-legend" id="kw-counts"></div>
+          </div>
+          <div class="kw-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.6-3.6"></path></svg>
+            <label class="kw-sr" for="kw-search-input" data-i18n="kw_search_label">Search kanji</label>
+            <input id="kw-search-input" type="text" data-i18n-placeholder="kw_search_ph" placeholder="日, “sun”, or #330…" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="kw-blocks-wrap">
+          <div class="kw-blocks-head">
+            <span class="kw-eyebrow" data-i18n="kw_blocks_h">23 blocks of 100</span>
+            <span class="kw-blocks-sub" data-i18n="kw_blocks_sub">— the course in order, so you always know what's next</span>
+            <button type="button" class="kw-resume" id="kw-resume" data-i18n="kw_resume">Jump to where I left off</button>
+          </div>
+          <div class="kw-blocks" id="kw-blocks"></div>
+        </div>
+
+        <div class="kw-filters" id="kw-filters">
+          <button type="button" class="kw-chip is-on" data-f="all"><span data-i18n="kw_f_all">All</span> <b id="kw-n-all">0</b></button>
+          <button type="button" class="kw-chip" data-f="shaky"><span data-i18n="kw_f_shaky">Shaky</span> <b id="kw-n-shaky">0</b></button>
+          <button type="button" class="kw-chip" data-f="new"><span data-i18n="kw_f_new">Not started</span> <b id="kw-n-new">0</b></button>
+          <button type="button" class="kw-chip" data-f="solid"><span data-i18n="kw_f_solid">Solid</span> <b id="kw-n-solid">0</b></button>
+          <span class="kw-legend">
+            <span><i class="kw-sw kw-sw-solid"></i><span data-i18n="kw_l_solid">Solid</span></span>
+            <span><i class="kw-sw kw-sw-shaky"></i><span data-i18n="kw_l_shaky">Shaky</span></span>
+            <span><i class="kw-sw kw-sw-new"></i><span data-i18n="kw_l_new">Not yet</span></span>
+          </span>
+        </div>
+
+        <div class="kw-grid" id="kw-grid"></div>
+
+        <div class="kw-drillbar" id="kw-drillbar"></div>
+
+        <div class="kw-detail" id="kw-detail" hidden></div>
+
+      </section>
+
       <!-- Flashcard Area -->
       <div class="kanji-flashcard-area">
         <div class="kanji-flashcard" id="kanji-flashcard" onclick="flipKanjiCard()">
@@ -768,6 +990,7 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="kanji-progress.js"></script>
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="app.js"></script>
@@ -783,6 +1006,334 @@
     'floating-chat.donateButton.background-color': '#f45d22',
     'floating-chat.donateButton.text-color': '#fff'
   });
+</script>
+
+
+<script>
+/* ============================================================
+   THE WALL — kanji.html
+
+   Reads KA_Kanji for every tile's colour, and hands the drill a queue when
+   you press one of the "Drill …" buttons. The drill writes back to the same
+   store, so coming back here the tiles have moved on their own.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var BLOCK = 100, TOTAL = 2300;
+  var state = { block: 0, filter: 'all', open: null, search: '' };
+
+  function $(id) { return document.getElementById(id); }
+  function t(k, fb) { return (typeof window.t === 'function' && window.t(k) !== k) ? window.t(k) : fb; }
+  function lo() { return state.block * BLOCK + 1; }
+  function hi() { return Math.min(lo() + BLOCK - 1, TOTAL); }
+  function byId(id) {
+    if (typeof kanjiDataList === 'undefined') return null;
+    return kanjiDataList[id - 1] && kanjiDataList[id - 1].id === id
+      ? kanjiDataList[id - 1]
+      : kanjiDataList.filter(function (k) { return k.id === id; })[0] || null;
+  }
+
+  /* ---------- top strip ---------- */
+  function paintTotals() {
+    var c = KA_Kanji.counts(1, TOTAL);
+    var seen = c.solid + c.shaky;
+    $('kw-seen').textContent = seen.toLocaleString();
+    $('kw-bar-solid').style.width = (100 * c.solid / TOTAL) + '%';
+    $('kw-bar-shaky').style.width = (100 * c.shaky / TOTAL) + '%';
+    $('kw-counts').innerHTML =
+      '<span>' + c.solid.toLocaleString() + ' ' + t('kw_l_solid', 'solid').toLowerCase() + '</span>' +
+      '<span>' + c.shaky.toLocaleString() + ' ' + t('kw_l_shaky', 'shaky').toLowerCase() + '</span>' +
+      '<span>' + c['new'].toLocaleString() + ' ' + t('kw_not_started', 'not started') + '</span>';
+  }
+
+  /* ---------- block strip ---------- */
+  function ringColour(pct) {
+    if (pct >= 80) return ['#c45c4a', '#fff'];
+    if (pct >= 55) return ['#d4786a', '#fff'];
+    if (pct >= 30) return ['#e8b4a8', '#2b2320'];
+    if (pct >= 10) return ['#f2d8ce', '#2b2320'];
+    if (pct > 0)   return ['#eee5d8', '#6b615a'];
+    return ['#f4efe8', '#a49a92'];
+  }
+  function paintBlocks() {
+    var wrap = $('kw-blocks');
+    wrap.innerHTML = '';
+    for (var b = 0; b * BLOCK < TOTAL; b++) {
+      var a = b * BLOCK + 1, z = Math.min(a + BLOCK - 1, TOTAL);
+      var c = KA_Kanji.counts(a, z);
+      var pct = Math.round(100 * c.solid / c.total);
+      var col = ringColour(pct);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'kw-blk' + (b === state.block ? ' is-on' : '');
+      btn.innerHTML = '<span class="kw-blk-ring" style="background:' + col[0] + ';color:' + col[1] + '">' +
+                      pct + '%</span><span class="kw-blk-lbl">' + a + '–' + z + '</span>';
+      btn.setAttribute('aria-label', a + '–' + z + ', ' + pct + '%');
+      (function (n) { btn.addEventListener('click', function () { go(n); }); })(b);
+      wrap.appendChild(btn);
+    }
+    var on = wrap.querySelector('.kw-blk.is-on');
+    if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+  }
+
+  /* ---------- the grid ---------- */
+  function paintGrid() {
+    var grid = $('kw-grid');
+    grid.innerHTML = '';
+    var a = lo(), z = hi(), n = { all: 0, solid: 0, shaky: 0, 'new': 0 };
+    var q = state.search.trim().toLowerCase();
+
+    for (var id = a; id <= z; id++) {
+      var item = byId(id);
+      if (!item) continue;
+      var st = KA_Kanji.status(id);
+      n[st]++; n.all++;
+
+      var cell = document.createElement('button');
+      cell.type = 'button';
+      cell.className = 'kw-cell s-' + st;
+      cell.textContent = item.kanji;
+      cell.title = item.keyword + ' · #' + id;
+      cell.setAttribute('aria-label', item.kanji + ' — ' + item.keyword);
+      cell.dataset.id = id;
+
+      var hidden = (state.filter !== 'all' && state.filter !== st);
+      if (!hidden && q) {
+        hidden = !(item.kanji === q ||
+                   String(id) === q.replace('#', '') ||
+                   item.keyword.toLowerCase().indexOf(q) >= 0);
+      }
+      if (hidden) cell.classList.add('is-dim');
+      if (state.open === id) cell.classList.add('is-open');
+
+      (function (i) { cell.addEventListener('click', function () { openCard(i); }); })(id);
+      grid.appendChild(cell);
+    }
+
+    $('kw-n-all').textContent = n.all;
+    $('kw-n-shaky').textContent = n.shaky;
+    $('kw-n-new').textContent = n['new'];
+    $('kw-n-solid').textContent = n.solid;
+    paintDrillBar(n);
+  }
+
+  /* ---------- what you can drill from here ---------- */
+  function paintDrillBar(n) {
+    var bar = $('kw-drillbar');
+    bar.innerHTML = '';
+    var a = lo(), z = hi();
+
+    function add(label, ids, ghost) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'kw-go' + (ghost ? ' is-ghost' : '');
+      b.textContent = label;
+      if (!ids.length) { b.disabled = true; }
+      else b.addEventListener('click', function () { sendToDrill(ids, label); });
+      bar.appendChild(b);
+    }
+
+    var shaky = KA_Kanji.idsWithStatus(a, z, 'shaky');
+    var fresh = KA_Kanji.idsWithStatus(a, z, 'new');
+    var all = [];
+    for (var i = a; i <= z; i++) if (byId(i)) all.push(i);
+
+    add(t('kw_drill_shaky', 'Drill the shaky') + ' · ' + shaky.length, shaky, false);
+    add(t('kw_drill_new', 'Drill what I haven’t started') + ' · ' + fresh.length, fresh, true);
+    add(t('kw_drill_block', 'Drill all of') + ' ' + a + '–' + z, all, true);
+
+    var allShaky = KA_Kanji.idsWithStatus(1, TOTAL, 'shaky');
+    if (allShaky.length) {
+      add(t('kw_drill_everything', 'Drill every shaky one') + ' · ' + allShaky.length, allShaky, true);
+    }
+  }
+
+  function sendToDrill(ids, label) {
+    // Shuffle here rather than in the drill: the wall knows the selection, and
+    // a fixed order would make the same round feel identical every time.
+    var a = ids.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    if (!KA_Kanji.setQueue(a, label)) {
+      alert(t('kw_no_storage', 'Your browser is blocking storage, so the drill cannot be handed this list.'));
+      return;
+    }
+    window.location.href = '/kanji-drill?from=wall';
+  }
+
+  /* ---------- the opened card ---------- */
+  function openCard(id) {
+    var item = byId(id);
+    if (!item) return;
+    state.open = id;
+    var d = KA_Kanji.detail(id);
+    var box = $('kw-detail');
+
+    var stateLabel = d.status === 'solid'
+      ? t('kw_s_solid', 'Solid — right twice running')
+      : d.status === 'shaky'
+        ? t('kw_s_shaky', 'Shaky') + ' — ' + d.wrong + '/' + d.seen + ' ' + t('kw_s_missed', 'missed')
+        : t('kw_s_new', 'Not started yet');
+
+    var vocab = (item.vocabulary || []).slice(0, 6).map(function (v) {
+      return '<li><span class="jp">' + stripFuri(v.word) + '</span>' +
+             (v.meaning || '').replace(/;,?\s*/g, ', ') + '</li>';
+    }).join('');
+
+    box.hidden = false;
+    box.innerHTML =
+      '<div class="kw-d-left">' +
+        '<span class="kw-d-char">' + item.kanji + '</span>' +
+        '<span class="kw-d-id">KLC #' + item.id + '</span>' +
+      '</div>' +
+      '<div class="kw-d-body">' +
+        '<div class="kw-d-head">' +
+          '<span class="kw-d-kw">' + item.keyword.replace(/・/g, ' · ').toLowerCase() + '</span>' +
+          '<span class="kw-d-state s-' + d.status + '">' + stateLabel + '</span>' +
+          '<button type="button" class="kw-d-close" aria-label="Close">✕</button>' +
+        '</div>' +
+        '<div class="kw-d-readings">' +
+          '<span class="kw-d-on"><b>' + t('onyomi', "On'yomi") + '</b><span class="jp">' +
+            ((item.onyomi || []).join(' ・ ') || '—') + '</span></span>' +
+          '<span class="kw-d-kun"><b>' + t('kunyomi', "Kun'yomi") + '</b><span class="jp">' +
+            (item.kunyomi || '—') + '</span></span>' +
+        '</div>' +
+        (vocab ? '<ul class="kw-d-vocab">' + vocab + '</ul>' : '') +
+        '<div class="kw-d-acts">' +
+          '<button type="button" class="kw-go" data-act="drill">' + t('kw_drill_this', 'Drill this one') + '</button>' +
+          '<button type="button" class="kw-go is-ghost" data-act="solid">' + t('kw_mark_solid', 'Mark as solid') + '</button>' +
+          '<a class="kw-go is-ghost" href="/dictionary?q=' + encodeURIComponent(item.kanji) + '">' +
+            t('kw_lookup', 'Look it up') + '</a>' +
+          '<span class="kw-d-hint">' + t('kw_keys', '← → to move · Esc to close') + '</span>' +
+        '</div>' +
+      '</div>';
+
+    box.querySelector('.kw-d-close').addEventListener('click', closeCard);
+    box.querySelector('[data-act="drill"]').addEventListener('click', function () {
+      sendToDrill([id], item.kanji);
+    });
+    box.querySelector('[data-act="solid"]').addEventListener('click', function () {
+      // Two notes, because "solid" is defined as two in a row — this keeps the
+      // button honest rather than writing a special-case flag.
+      KA_Kanji.note(id, true); KA_Kanji.note(id, true);
+      refresh(); openCard(id);
+    });
+    paintGrid();
+    box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
+  // "日[ひ]にち" → "日にち" — the bracketed readings are furigana hints.
+  function stripFuri(w) { return String(w).replace(/\[[^\]]*\]/g, ''); }
+
+  function closeCard() {
+    state.open = null;
+    $('kw-detail').hidden = true;
+    paintGrid();
+  }
+
+  function step(delta) {
+    if (state.open == null) return;
+    var next = state.open + delta;
+    if (next < lo() || next > hi()) return;
+    openCard(next);
+  }
+
+  /* ---------- wiring ---------- */
+  function go(block) {
+    state.block = block;
+    state.open = null;
+    $('kw-detail').hidden = true;
+    paintBlocks(); paintGrid();
+  }
+
+  function refresh() { paintTotals(); paintBlocks(); paintGrid(); }
+
+  function showTab(which) {
+    var wall = which === 'wall';
+    $('kw-wall').style.display = wall ? '' : 'none';
+    // Everything belonging to the one-at-a-time card. There are two .kanji-nav
+    // rows and an audio strip, so this has to be querySelectorAll, not
+    // querySelector — the first pass left Shuffle and the voice picker on screen.
+    var cardBits = document.querySelectorAll(
+      '.kanji-flashcard-area, .kanji-nav, .kanji-stats, .ka-split, .ka-audio-panel, .kanji-audio-row');
+    cardBits.forEach(function (el) {
+      if (wall) { el.dataset.kwPrev = el.style.display; el.style.display = 'none'; }
+      else { el.style.display = el.dataset.kwPrev || ''; }
+    });
+    $('kw-tab-wall').classList.toggle('is-on', wall);
+    $('kw-tab-card').classList.toggle('is-on', !wall);
+    $('kw-tab-wall').setAttribute('aria-selected', String(wall));
+    $('kw-tab-card').setAttribute('aria-selected', String(!wall));
+    try { localStorage.setItem('katsuyo-kanji-view', which); } catch (e) {}
+  }
+
+  function init() {
+    if (typeof kanjiDataList === 'undefined' || !kanjiDataList.length) return;
+
+    $('kw-tab-wall').addEventListener('click', function () { showTab('wall'); });
+    $('kw-tab-card').addEventListener('click', function () { showTab('card'); });
+
+    $('kw-filters').addEventListener('click', function (e) {
+      var chip = e.target.closest('.kw-chip');
+      if (!chip) return;
+      state.filter = chip.dataset.f;
+      $('kw-filters').querySelectorAll('.kw-chip').forEach(function (c) {
+        c.classList.toggle('is-on', c === chip);
+      });
+      paintGrid();
+    });
+
+    var search = $('kw-search-input');
+    search.addEventListener('input', function () {
+      state.search = search.value;
+      // A bare number or a single character jumps straight to its block.
+      var q = search.value.trim().replace('#', '');
+      var id = /^\d+$/.test(q) ? parseInt(q, 10) : null;
+      if (!id && q.length === 1) {
+        var hit = kanjiDataList.filter(function (k) { return k.kanji === q; })[0];
+        if (hit) id = hit.id;
+      }
+      if (id && id >= 1 && id <= TOTAL) {
+        var b = Math.floor((id - 1) / BLOCK);
+        if (b !== state.block) { state.block = b; paintBlocks(); }
+        paintGrid(); openCard(id); return;
+      }
+      paintGrid();
+    });
+
+    $('kw-resume').addEventListener('click', function () {
+      // Where you left off = the first block that isn't finished.
+      for (var b = 0; b * BLOCK < TOTAL; b++) {
+        var a = b * BLOCK + 1, z = Math.min(a + BLOCK - 1, TOTAL);
+        var c = KA_Kanji.counts(a, z);
+        if (c.solid < c.total) { go(b); return; }
+      }
+      go(0);
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if ($('kw-wall').style.display === 'none') return;
+      if (e.target.tagName === 'INPUT') return;
+      if (e.key === 'Escape') closeCard();
+      else if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
+      else if (e.key === 'ArrowLeft')  { step(-1); e.preventDefault(); }
+    });
+
+    refresh();
+    var saved = 'wall';
+    try { saved = localStorage.getItem('katsuyo-kanji-view') || 'wall'; } catch (e) {}
+    showTab(saved === 'card' ? 'card' : 'wall');
+
+    // Coming back from a round: re-read the store and land on what changed.
+    window.addEventListener('pageshow', refresh);
+    if (window.refreshKanjiWall === undefined) window.refreshKanjiWall = refresh;
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
 </script>
 
 </body>

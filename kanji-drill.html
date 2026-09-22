@@ -93,6 +93,43 @@
       .drill-question.keyword-q { font-size: 1.6rem; }
       .drill-choices { grid-template-columns: repeat(2, 1fr); }
     }
+  
+    /* ---- handed a list by the wall ---- */
+    .kd-round[hidden], .kd-done[hidden] { display: none; }
+    .kd-round { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px;
+      padding: 0.8rem 1rem; margin-bottom: 1rem; }
+    .kd-round-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;
+      flex-wrap: wrap; }
+    .kd-back { color: #a8442f; text-decoration: none; font-size: 0.82rem; font-weight: 600; }
+    .kd-back:hover { text-decoration: underline; }
+    .kd-round-label { font-size: 0.82rem; color: #2b2320; font-weight: 600; }
+    .kd-round-count { margin-left: auto; font-size: 0.78rem; color: #6b615a; }
+    .kd-strip { display: grid; gap: 3px; grid-auto-flow: column; grid-auto-columns: 1fr; }
+    .kd-pip { height: 9px; border-radius: 3px; background: #e3d8c6; }
+    .kd-pip.is-right { background: #4f7454; }
+    .kd-pip.is-wrong { background: #c45c4a; }
+    .kd-pip.is-now   { background: #2b2320; }
+
+    .kd-done { background: #2b2320; border-radius: 16px; padding: 1.3rem 1.5rem; margin: 1rem 0;
+      color: #fdfbf7; }
+    .kd-done h3 { margin: 0 0 0.3rem; font-size: 1.35rem; font-weight: 700; color: #fdfbf7; }
+    .kd-done p { margin: 0 0 0.9rem; font-size: 0.88rem; color: rgba(253,251,247,0.7); line-height: 1.6; }
+    .kd-done-tiles { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+    .kd-tile { font-family: 'Noto Serif JP', serif; font-size: 1.3rem; border-radius: 8px;
+      padding: 0.35rem 0.6rem; }
+    .kd-tile.t-solid { background: rgba(255,255,255,0.14); color: #fdfbf7; }
+    .kd-tile.t-shaky { background: #e8b4a8; color: #2b2320; }
+    .kd-done-acts { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .kd-done-acts a, .kd-done-acts button { padding: 0.7rem 1.3rem; border-radius: 999px;
+      font-family: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; border: 0; }
+    .kd-go { background: #c45c4a; color: #fff; }
+    .kd-ghost { background: rgba(255,255,255,0.1); color: #fdfbf7; }
+
+    /* the primary action was a washed-out pink that read as disabled */
+    .drill-btn.primary:not(:disabled) { background: #c45c4a; color: #fff;
+      box-shadow: 0 2px 9px rgba(196,92,74,0.28); }
+
   </style>
 </head>
 <body data-page="kanji-drill">
@@ -175,6 +212,17 @@
         </div>
       </div>
 
+      <!-- Only present when the wall handed this page a list. -->
+      <div class="kd-round" id="kd-round" hidden>
+        <div class="kd-round-head">
+          <a class="kd-back" href="/kanji" data-i18n="kd_back_wall">← Back to the wall</a>
+          <span class="kd-round-label" id="kd-round-label"></span>
+          <span class="kd-round-count" id="kd-round-count"></span>
+        </div>
+        <div class="kd-strip" id="kd-strip"></div>
+      </div>
+
+      <div id="drill-card-wrap">
       <div class="drill-card">
         <span class="drill-klc-id" id="drill-klc-id"></span>
         <div class="drill-question-tag" id="drill-tag">What is the keyword?</div>
@@ -196,6 +244,9 @@
         <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()" data-i18n="skip">Skip (show answer)</button>
         <button class="drill-btn ghost" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
       </div>
+      </div><!-- /drill-card-wrap -->
+
+      <div class="kd-done" id="kd-done" hidden></div>
 
       <div class="drill-missed" id="drill-missed">
         <h2 data-i18n="kd_missed">📝 Missed this session</h2>
@@ -213,6 +264,7 @@
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
 
+  <script src="kanji-progress.js"></script>
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="app.js"></script>
@@ -234,7 +286,14 @@
       current: null,
       answered: false,
       retried: false,
-      missed: {}          // key: kanji char → item
+      missed: {},         // key: kanji char → item
+
+      // Set only when the wall handed this page a list. When it is null the
+      // drill behaves exactly as it always did: endless, range-driven.
+      queue: null,        // [klc id, …] in the order the wall shuffled them
+      qLabel: '',
+      qIdx: 0,
+      qResult: []         // true / false per answered question, for the strip
     };
 
     var RANGES = { r1: [1, 500], r2: [501, 1200], r3: [1201, 2300] };
@@ -317,11 +376,21 @@
     // ---------- question generation ----------
     function newQuestion() {
       if (!dataReady()) return;
-      var p = pool();
-      var item = p[Math.floor(Math.random() * p.length)];
-      if (state.current && p.length > 3) {
-        while (item.kanji === state.current.item.kanji) {
-          item = p[Math.floor(Math.random() * p.length)];
+      var item;
+      if (state.queue) {
+        // A handed-over round is finite and in a fixed order, so the strip at
+        // the top means something and the round actually ends.
+        if (state.qIdx >= state.queue.length) { finishRound(); return; }
+        item = byKlcId(state.queue[state.qIdx]);
+        if (!item) { state.qIdx++; newQuestion(); return; }
+        paintStrip();
+      } else {
+        var p = pool();
+        item = p[Math.floor(Math.random() * p.length)];
+        if (state.current && p.length > 3) {
+          while (item.kanji === state.current.item.kanji) {
+            item = p[Math.floor(Math.random() * p.length)];
+          }
         }
       }
       state.current = { item: item };
@@ -462,6 +531,18 @@
 
     function record(right) {
       state.total++;
+
+      // The one line that makes the wall mean anything: every answer here
+      // moves that character's tile over there.
+      if (state.current && state.current.item && window.KA_Kanji) {
+        KA_Kanji.note(state.current.item.id, right);
+      }
+      if (state.queue) {
+        state.qResult[state.qIdx] = right;
+        state.qIdx++;
+        paintStrip();
+      }
+
       if (right) {
         state.correct++;
         state.streak++;
@@ -533,6 +614,91 @@
       });
     }
 
+
+    /* ---------- the handed-over round ---------- */
+
+    function byKlcId(id) {
+      var k = kanjiDataList[id - 1];
+      if (k && k.id === id) return k;                 // the list is id-ordered
+      for (var i = 0; i < kanjiDataList.length; i++) {
+        if (kanjiDataList[i].id === id) return kanjiDataList[i];
+      }
+      return null;
+    }
+
+    function paintStrip() {
+      if (!state.queue) return;
+      var strip = $('kd-strip');
+      strip.innerHTML = '';
+      for (var i = 0; i < state.queue.length; i++) {
+        var pip = document.createElement('span');
+        pip.className = 'kd-pip' +
+          (i < state.qIdx ? (state.qResult[i] ? ' is-right' : ' is-wrong')
+                          : (i === state.qIdx ? ' is-now' : ''));
+        strip.appendChild(pip);
+      }
+      var right = state.qResult.filter(Boolean).length;
+      $('kd-round-count').textContent =
+        Math.min(state.qIdx + 1, state.queue.length) + ' / ' + state.queue.length +
+        '  ·  ' + right + ' ' + tt('kd_right', 'right');
+    }
+
+    function tt(key, fallback) {
+      return (typeof window.t === 'function' && window.t(key) !== key) ? window.t(key) : fallback;
+    }
+
+    function finishRound() {
+      var ids = state.queue, right = state.qResult.filter(Boolean).length;
+      var nowSolid = [], stillShaky = [];
+      ids.forEach(function (id) {
+        var item = byKlcId(id);
+        if (!item) return;
+        (KA_Kanji.status(id) === 'solid' ? nowSolid : stillShaky).push(item);
+      });
+
+      // Where the block now stands, so the number means something.
+      var lo = (Math.floor((ids[0] - 1) / 100)) * 100 + 1, hi = Math.min(lo + 99, 2300);
+      var c = KA_Kanji.counts(lo, hi);
+      var pct = Math.round(100 * c.solid / c.total);
+
+      var tiles = nowSolid.map(function (k) {
+        return '<span class="kd-tile t-solid">' + k.kanji + '</span>';
+      }).concat(stillShaky.map(function (k) {
+        return '<span class="kd-tile t-shaky">' + k.kanji + '</span>';
+      })).join('');
+
+      var done = $('kd-done');
+      done.hidden = false;
+      done.innerHTML =
+        '<h3>' + right + ' / ' + ids.length + ' ' + tt('kd_right', 'right') + '</h3>' +
+        '<p>' + nowSolid.length + ' ' + tt('kd_turned_solid', 'turned solid') +
+          '. ' + tt('kd_block_now', 'Block') + ' ' + lo + '\u2013' + hi + ' ' +
+          tt('kd_is_now', 'is now') + ' ' + pct + '% \u2014 ' + (c.total - c.solid) + ' ' +
+          tt('kd_left', 'left') + '.</p>' +
+        '<div class="kd-done-tiles">' + tiles + '</div>' +
+        '<div class="kd-done-acts">' +
+          '<a class="kd-go" href="/kanji">' + tt('kd_back_wall_btn', 'Back to the wall') + '</a>' +
+          (stillShaky.length
+            ? '<button type="button" class="kd-ghost" id="kd-again">' +
+              tt('kd_again', 'Drill the') + ' ' + stillShaky.length + ' ' +
+              tt('kd_again2', 'again') + '</button>'
+            : '') +
+        '</div>';
+
+      $('drill-card-wrap').style.display = 'none';
+      var again = $('kd-again');
+      if (again) {
+        again.addEventListener('click', function () {
+          state.queue = stillShaky.map(function (k) { return k.id; });
+          state.qIdx = 0; state.qResult = [];
+          done.hidden = true;
+          $('drill-card-wrap').style.display = '';
+          paintStrip(); newQuestion();
+        });
+      }
+      done.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+
     // ---------- controls ----------
     window.setMode = function (mode) {
       state.mode = mode;
@@ -593,6 +759,20 @@
       $('drill-check').addEventListener('click', function () {
         if (state.answered) newQuestion();
       });
+      // If the wall sent us here, drill exactly what it chose.
+      if (window.KA_Kanji) {
+        var q = KA_Kanji.takeQueue();
+        if (q && q.ids && q.ids.length) {
+          state.queue = q.ids;
+          state.qLabel = q.label || '';
+          $('kd-round').hidden = false;
+          $('kd-round-label').textContent = state.qLabel;
+          var picker = document.querySelector('.drill-controls');
+          if (picker) picker.style.display = 'none';   // the wall already chose
+          paintStrip();
+        }
+      }
+
       renderScores();
       newQuestion();
     }
