@@ -752,6 +752,33 @@
       .kw-sw-shaky { background: #fff; border: 1.5px solid var(--wok-red); }
       .kw-sw-new { background: var(--wok-paper-2); border: 1px solid var(--wok-line); }
 
+      /* ---- colours panel ---- */
+      .kw-colours-btn { margin-left: 0.4rem; gap: 0.35rem; }
+      .kw-colours-btn svg { width: 14px; height: 14px; }
+      .kw-colours[hidden] { display: none; }
+      .kw-colours { background: #fff; border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 4px 4px 0 var(--wok-ink);
+        padding: 0.8rem 1rem; margin-bottom: 0.9rem; display: flex; flex-direction: column; gap: 0.7rem; }
+      .kw-colours-row { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+      .kw-seg { display: inline-flex; border: 1.5px solid var(--wok-ink); border-radius: 999px; overflow: hidden; background: #fff; }
+      .kw-seg-btn { border: 0; background: none; padding: 0.42rem 0.85rem; font-family: inherit; font-size: 0.78rem;
+        font-weight: 700; color: var(--wok-ink); cursor: pointer; white-space: nowrap; }
+      .kw-seg-btn + .kw-seg-btn { border-left: 1.5px solid var(--wok-ink); }
+      .kw-seg-btn.is-on { background: var(--wok-ink); color: var(--wok-paper); }
+      .kw-colours-pick { display: inline-flex; align-items: center; gap: 0.5rem; margin-left: 0.4rem; }
+      .kw-colours-pick.is-off { opacity: 0.35; pointer-events: none; }
+      .kw-swatches { display: inline-flex; gap: 0.35rem; }
+      .kw-swatch { width: 26px; height: 26px; border-radius: 7px; border: 2px solid transparent; cursor: pointer;
+        padding: 0; box-sizing: border-box; display: inline-flex; align-items: center; justify-content: center; }
+      .kw-swatch.is-on { border-color: var(--wok-ink); box-shadow: var(--wok-shadow); }
+      .kw-swatch-custom { border: 1.5px dashed var(--wok-ink); position: relative; overflow: hidden; color: #fff;
+        font-weight: 800; font-size: 0.95rem; text-shadow: 0 0 2px #000;
+        background: conic-gradient(#c8392b, #e0a030, #3aa17e, #2d6a9f, #7b4fa0, #c8392b); }
+      .kw-swatch-custom input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+      .kw-ramp { display: inline-flex; gap: 0.3rem; align-items: center; font-size: 0.7rem; color: var(--wok-mute); }
+      .kw-ramp i { width: 18px; height: 18px; border-radius: 5px; display: inline-block; box-sizing: border-box; }
+      .kw-ramp b { font-weight: 700; color: var(--wok-ink-soft); margin: 0 0.35rem 0 0.1rem; }
+      .kw-colours-hint { font-size: 0.74rem; color: var(--wok-mute); line-height: 1.5; flex: 1 1 260px; }
+
       /* ---- the wall itself ---- */
       .kw-grid { background: #fff; border: 2px solid var(--wok-ink); border-radius: 18px;
         box-shadow: var(--wok-shadow-lg);
@@ -763,7 +790,7 @@
         transition: transform 0.12s ease; position: relative; background: var(--wok-paper-2); color: var(--wok-faint); }
       .kw-cell:hover { transform: scale(1.14) rotate(0deg); z-index: 2; }
       .kw-cell:focus-visible { outline: 2px solid var(--wok-red); outline-offset: 2px; z-index: 2; }
-      .kw-cell.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff;
+      .kw-cell.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: var(--stamp-fg, #fff);
         box-shadow: var(--wok-shadow); transform: rotate(var(--tilt, -2deg)); }
       .kw-cell.s-solid:hover { transform: scale(1.14) rotate(var(--tilt, -2deg)); }
       .kw-cell.s-shaky { background: #fff; border: 2px solid var(--wok-red); color: var(--wok-red); box-shadow: var(--wok-shadow); }
@@ -799,7 +826,7 @@
       .kw-d-head { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
       .kw-d-kw { font-size: 1.3rem; font-weight: 700; color: var(--wok-ink); }
       .kw-d-state { font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 999px; border: 1.5px solid; }
-      .kw-d-state.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff; }
+      .kw-d-state.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: var(--stamp-fg, #fff); }
       .kw-d-state.s-shaky { background: #fff; border-color: var(--wok-red); color: var(--wok-red); }
       .kw-d-state.s-new   { background: var(--wok-paper-2); border-color: var(--wok-line); color: var(--wok-mute); }
       .kw-d-readings { display: flex; gap: 1.6rem; flex-wrap: wrap; }
@@ -962,10 +989,37 @@
           <button type="button" class="kw-chip" data-f="new"><span data-i18n="kw_f_new">Not started</span> <b id="kw-n-new">0</b></button>
           <button type="button" class="kw-chip" data-f="solid"><span data-i18n="kw_f_solid">Solid</span> <b id="kw-n-solid">0</b></button>
           <span class="kw-legend">
-            <span><i class="kw-sw kw-sw-solid"></i><span data-i18n="kw_l_solid">Solid</span></span>
+            <span id="kw-legend-solid"><i class="kw-sw kw-sw-solid"></i><span data-i18n="kw_l_solid">Solid</span></span>
             <span><i class="kw-sw kw-sw-shaky"></i><span data-i18n="kw_l_shaky">Shaky</span></span>
             <span><i class="kw-sw kw-sw-new"></i><span data-i18n="kw_l_new">Not yet</span></span>
+            <button type="button" class="kw-chip kw-colours-btn" id="kw-colours-btn" aria-expanded="false" aria-controls="kw-colours">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="8.5" cy="10" r="1.2" fill="currentColor"></circle><circle cx="12" cy="7.5" r="1.2" fill="currentColor"></circle><circle cx="15.5" cy="10" r="1.2" fill="currentColor"></circle><path d="M12 21a2.5 2.5 0 0 0 0-5h-1a1.5 1.5 0 0 1 0-3h1"></path></svg>
+              <span data-i18n="kw_colours">Colours</span>
+            </button>
           </span>
+        </div>
+
+        <!-- What a stamp's colour means. Saved in the browser; the Kitchen reads it too. -->
+        <div class="kw-colours" id="kw-colours" hidden>
+          <div class="kw-colours-row">
+            <span class="kw-eyebrow" data-i18n="kw_cm_label">Stamp colour</span>
+            <div class="kw-seg" role="group">
+              <button type="button" class="kw-seg-btn" data-cm="mosaic" data-i18n="kw_cm_mosaic">Mosaic</button>
+              <button type="button" class="kw-seg-btn" data-cm="ink" data-i18n="kw_cm_ink">Ink</button>
+              <button type="button" class="kw-seg-btn" data-cm="rainbow" data-i18n="kw_cm_rainbow">Rainbow</button>
+            </div>
+            <span class="kw-colours-pick" id="kw-colours-pick">
+              <span class="kw-eyebrow" data-i18n="kw_cm_colour">Colour</span>
+              <span class="kw-swatches" id="kw-swatches"></span>
+              <label class="kw-swatch kw-swatch-custom" title="Any colour">
+                <input type="color" id="kw-colour-input" aria-label="Custom colour">+
+              </label>
+            </span>
+          </div>
+          <div class="kw-colours-row">
+            <span class="kw-ramp" id="kw-ramp"></span>
+            <span class="kw-colours-hint" id="kw-colours-hint"></span>
+          </div>
         </div>
 
         <div class="kw-grid" id="kw-grid"></div>
@@ -1151,7 +1205,7 @@
       btn.type = 'button';
       btn.className = 'kw-blk' + (b === state.block ? ' is-on' : '');
       btn.innerHTML = '<span class="kw-blk-ring' + (pct >= 100 ? ' is-full' : '') +
-                      '" style="--pct:' + pct + '%;--blk:' + KA_Kanji.colour(b + 1) + '">' +
+                      '" style="--pct:' + pct + '%;--blk:' + KA_Kanji.blockColour(b) + '">' +
                       (b + 1) + '</span><span class="kw-blk-lbl">' + a + '–' + z + '</span>';
       btn.setAttribute('aria-label', a + '–' + z + ', ' + pct + '%');
       (function (n) { btn.addEventListener('click', function () { go(n); }); })(b);
@@ -1188,6 +1242,7 @@
       cell.className = 'kw-cell s-' + st;
       if (st === 'solid') {
         cell.style.setProperty('--stamp', KA_Kanji.colour(id));
+        cell.style.setProperty('--stamp-fg', KA_Kanji.textOn(id));
         cell.style.setProperty('--tilt', KA_Kanji.tilt(id) + 'deg');
         if (state.fresh && state.fresh[id]) cell.classList.add('is-fresh');
       }
@@ -1315,7 +1370,7 @@
       '<div class="kw-d-body">' +
         '<div class="kw-d-head">' +
           '<span class="kw-d-kw">' + item.keyword.replace(/・/g, ' · ').toLowerCase() + '</span>' +
-          '<span class="kw-d-state s-' + d.status + '" style="--stamp:' + KA_Kanji.colour(id) + '">' + stateLabel + '</span>' +
+          '<span class="kw-d-state s-' + d.status + '" style="--stamp:' + KA_Kanji.colour(id) + ';--stamp-fg:' + KA_Kanji.textOn(id) + '">' + stateLabel + '</span>' +
           '<button type="button" class="kw-d-close" aria-label="Close">✕</button>' +
         '</div>' +
         '<div class="kw-d-readings">' +
@@ -1396,7 +1451,64 @@
     paintBlocks(); paintGrid();
   }
 
-  function refresh() { paintTotals(); paintBlocks(); paintGrid(); }
+  function refresh() { paintTotals(); paintBlocks(); paintGrid(); paintColours(); }
+
+  /* ---------- the colours panel ---------- */
+  var SWATCHES = ['#c8392b', '#e0a030', '#3aa17e', '#2d6a9f', '#7b4fa0', '#2b2320'];
+  function paintColours() {
+    var pr = KA_Kanji.prefs();
+    document.querySelectorAll('#kw-colours .kw-seg-btn').forEach(function (b) {
+      b.classList.toggle('is-on', b.dataset.cm === pr.mode);
+    });
+    // Swatches: presets plus "custom"; only ink mode uses a chosen colour.
+    var sw = $('kw-swatches');
+    sw.innerHTML = SWATCHES.map(function (c) {
+      return '<button type="button" class="kw-swatch' + (c.toLowerCase() === pr.colour.toLowerCase() ? ' is-on' : '') +
+             '" data-c="' + c + '" style="background:' + c + '" aria-label="' + c + '"></button>';
+    }).join('');
+    $('kw-colour-input').value = pr.colour;
+    $('kw-colours-pick').classList.toggle('is-off', pr.mode !== 'ink');
+
+    // The ramp under it: what each step of the streak looks like in this mode.
+    var ramp = $('kw-ramp'), hint = $('kw-colours-hint');
+    if (pr.mode === 'mosaic') {
+      ramp.innerHTML = KA_Kanji.PALETTE.map(function (c) { return '<i style="background:' + c + '"></i>'; }).join('');
+      hint.textContent = t('kw_cm_mosaic_h', 'Each kanji keeps one fixed colour forever. Pretty; the colour means nothing.');
+    } else if (pr.mode === 'ink') {
+      var tiers = KA_Kanji.inkTiers(pr.colour);
+      ramp.innerHTML = '<i style="background:' + tiers[0] + '"></i><b>' + t('kw_tier_1', 'just learned') + '</b>' +
+                       '<i style="background:' + tiers[1] + '"></i><b>' + t('kw_tier_2', 'settled ×2') + '</b>' +
+                       '<i style="background:' + tiers[2] + '"></i><b>' + t('kw_tier_3', 'mastered ×5') + '</b>';
+      hint.textContent = t('kw_cm_ink_h', 'Your colour, soaking in: a light tint after the first right answer, the full colour at two in a row, deep ink at five.');
+    } else {
+      ramp.innerHTML = KA_Kanji.RAINBOW.map(function (c, i) {
+        return '<i style="background:' + c + '" title="' + (i + 1) + '"></i>';
+      }).join('') + '<b>1 → 7+</b>';
+      hint.textContent = t('kw_cm_rainbow_h', 'One step along the spectrum per right answer in a row — orange first, purple at seven. A miss drops it to a red outline and the walk starts again.');
+    }
+    // The legend's "Solid" swatch follows the mode.
+    var lg = document.querySelector('#kw-legend-solid .kw-sw');
+    if (lg) lg.style.background = pr.mode === 'mosaic' ? '' : (pr.mode === 'ink' ? pr.colour : KA_Kanji.RAINBOW[3]);
+  }
+
+  function wireColours() {
+    var btn = $('kw-colours-btn'), panel = $('kw-colours');
+    btn.addEventListener('click', function () {
+      var open = panel.hidden;
+      panel.hidden = !open;
+      btn.setAttribute('aria-expanded', String(open));
+      btn.classList.toggle('is-on', open);
+    });
+    panel.addEventListener('click', function (e) {
+      var seg = e.target.closest('.kw-seg-btn');
+      if (seg) { KA_Kanji.setPrefs({ mode: seg.dataset.cm }); refresh(); return; }
+      var sw = e.target.closest('.kw-swatch[data-c]');
+      if (sw) { KA_Kanji.setPrefs({ colour: sw.dataset.c }); refresh(); }
+    });
+    $('kw-colour-input').addEventListener('input', function () {
+      KA_Kanji.setPrefs({ colour: this.value }); refresh();
+    });
+  }
 
   function showTab(which) {
     var wall = which === 'wall';
@@ -1413,14 +1525,15 @@
   function init() {
     if (typeof kanjiDataList === 'undefined' || !kanjiDataList.length) return;
 
+    wireColours();
     $('kw-tab-wall').addEventListener('click', function () { showTab('wall'); });
     $('kw-tab-card').addEventListener('click', function () { showTab('card'); });
 
     $('kw-filters').addEventListener('click', function (e) {
-      var chip = e.target.closest('.kw-chip');
+      var chip = e.target.closest('.kw-chip[data-f]');   // the Colours button is a chip too, but not a filter
       if (!chip) return;
       state.filter = chip.dataset.f;
-      $('kw-filters').querySelectorAll('.kw-chip').forEach(function (c) {
+      $('kw-filters').querySelectorAll('.kw-chip[data-f]').forEach(function (c) {
         c.classList.toggle('is-on', c === chip);
       });
       paintGrid();

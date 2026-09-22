@@ -208,7 +208,7 @@
     .kd-pip { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--wok-line);
       background: var(--wok-paper-2); box-sizing: border-box; display: flex; align-items: center;
       justify-content: center; font-size: 0.62rem; font-weight: 800; font-family: 'Outfit', sans-serif; }
-    .kd-pip.is-right { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff;
+    .kd-pip.is-right { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: var(--stamp-fg, #fff);
       box-shadow: 1.5px 1.5px 0 var(--wok-ink); transform: rotate(var(--tilt, -3deg)); }
     .kd-pip.is-wrong { background: #fff; border: 2px solid var(--wok-red); color: var(--wok-red); }
     .kd-pip.is-now   { background: var(--wok-ink); border-color: var(--wok-ink); color: var(--wok-paper); }
@@ -220,7 +220,7 @@
 
     .drill-choice { border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--wok-ink); }
     .drill-choice:hover:not(:disabled) { border-color: var(--wok-ink); transform: translate(-1px,-1px); }
-    .drill-choice.correct { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff;
+    .drill-choice.correct { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: var(--stamp-fg, #fff);
       transform: rotate(-2deg); }
     .drill-choice.wrong { background: #fff; border-color: var(--wok-red); color: var(--wok-red); box-shadow: none; }
     .drill-choice.dim { opacity: 0.35; box-shadow: none; }
@@ -253,7 +253,7 @@
     .kd-done-tiles { gap: 0.6rem; }
     .kd-tile { width: 52px; height: 52px; padding: 0; font-size: 1.5rem; border-radius: 10px; display: flex;
       align-items: center; justify-content: center; position: relative; box-sizing: border-box; }
-    .kd-tile.t-solid { background: var(--stamp, var(--wok-ink)); color: #fff; box-shadow: var(--wok-shadow);
+    .kd-tile.t-solid { background: var(--stamp, var(--wok-ink)); color: var(--stamp-fg, #fff); box-shadow: var(--wok-shadow);
       transform: rotate(var(--tilt, -2deg)); }
     .kd-tile.t-shaky { background: #fff; color: var(--wok-red); border: 2px solid var(--wok-red); box-shadow: var(--wok-shadow); }
     .kd-tile.t-shaky::after { content: ""; position: absolute; top: -5px; right: -5px; width: 10px; height: 10px;
@@ -662,6 +662,13 @@
         else b.classList.add('dim');
       });
       record(right);
+      // Colour reflects the streak this answer just produced.
+      buttons.forEach(function (b) {
+        if (b.dataset.kanji === item.kanji) {
+          b.style.setProperty('--stamp', KA_Kanji.colour(item.id));
+          b.style.setProperty('--stamp-fg', KA_Kanji.textOn(item.id));
+        }
+      });
       showFeedback(right);
     }
 
@@ -836,6 +843,7 @@
         // A right answer stamps its pip in that kanji's own colour — the same
         // one it wears on the wall — so the strip is a preview of the wall.
         pip.style.setProperty('--stamp', KA_Kanji.colour(state.queue[i]));
+        pip.style.setProperty('--stamp-fg', KA_Kanji.textOn(state.queue[i]));
         pip.style.setProperty('--tilt', KA_Kanji.tilt(state.queue[i]) + 'deg');
         if (i < state.qIdx) pip.textContent = state.qResult[i] ? '\u2713' : '\u00d7';
         strip.appendChild(pip);
@@ -865,7 +873,7 @@
       var pct = Math.round(100 * c.solid / c.total);
 
       var tiles = nowSolid.map(function (k) {
-        return '<span class="kd-tile t-solid" style="--stamp:' + KA_Kanji.colour(k.id) +
+        return '<span class="kd-tile t-solid" style="--stamp:' + KA_Kanji.colour(k.id) + ';--stamp-fg:' + KA_Kanji.textOn(k.id) +
                ';--tilt:' + KA_Kanji.tilt(k.id) + 'deg">' + k.kanji + '</span>';
       }).concat(stillShaky.map(function (k) {
         return '<span class="kd-tile t-shaky">' + k.kanji + '</span>';

@@ -155,12 +155,67 @@
     } catch (e) { return null; }
   }
 
-  // The stamp colour a kanji gets once it is solid. Fixed per id — not per
-  // status, not per position on screen — so a kanji is the same colour on the
-  // wall, in the drill's round strip and on the end-of-round panel, and a wall
-  // that is filling in reads as a mosaic rather than a reshuffle.
-  var STAMP = ['#c8392b', '#e0a030', '#2d6a9f', '#3aa17e'];
-  function colour(id) { return STAMP[(id * 7) % STAMP.length]; }
+  /* ---------- stamp colour ----------
+     What the colour of a solid stamp means is a setting, shared by the wall
+     and the Kitchen so they never disagree:
+
+       mosaic   a fixed colour per kanji (from a palette of four), forever —
+                the wall fills in like a mosaic; colour carries no meaning
+       ink      one colour you choose, soaking in with your streak:
+                a light tint after the first right answer, the full colour
+                at two in a row, a deep ink at five
+       rainbow  one step along the spectrum per right answer in a row:
+                orange, gold, green, teal, blue, indigo, purple at seven
+
+     Red is on none of the ramps, so it can only ever mean "shaky". */
+  var PREFS_KEY = 'katsuyo-kanji-colours';
+  var PALETTE = ['#c8392b', '#e0a030', '#2d6a9f', '#3aa17e'];
+  var RAINBOW = ['#e8742c', '#e0a030', '#7fae3c', '#3aa17e', '#2f8fa8', '#2d6a9f', '#7b4fa0'];
+  var INK = '#2b2320';
+  var prefs = { mode: 'mosaic', colour: '#3aa17e' };
+  try {
+    var saved = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null');
+    if (saved && /^(mosaic|ink|rainbow)$/.test(saved.mode)) prefs.mode = saved.mode;
+    if (saved && /^#[0-9a-f]{6}$/i.test(saved.colour || '')) prefs.colour = saved.colour;
+  } catch (e) {}
+  function setPrefs(next) {
+    if (next.mode && /^(mosaic|ink|rainbow)$/.test(next.mode)) prefs.mode = next.mode;
+    if (next.colour && /^#[0-9a-f]{6}$/i.test(next.colour)) prefs.colour = next.colour;
+    try { localStorage.setItem(PREFS_KEY, JSON.stringify(prefs)); } catch (e) {}
+    return getPrefs();
+  }
+  function getPrefs() { return { mode: prefs.mode, colour: prefs.colour }; }
+
+  function mix(a, b, t) {
+    var x = [1, 3, 5].map(function (i) { return parseInt(a.substr(i, 2), 16); });
+    var y = [1, 3, 5].map(function (i) { return parseInt(b.substr(i, 2), 16); });
+    return '#' + x.map(function (v, i) {
+      var n = Math.round(v * (1 - t) + y[i] * t); return (n < 16 ? '0' : '') + n.toString(16);
+    }).join('');
+  }
+  // The three depths of ink mode, from a base colour.
+  function inkTiers(base) { return [mix(base, '#ffffff', 0.55), base, mix(base, INK, 0.35)]; }
+  function tierOf(streak) { return streak < 2 ? 0 : (streak < 5 ? 1 : 2); }
+
+  // Background of a solid stamp, and the text colour that reads on it.
+  function colour(id) {
+    if (prefs.mode === 'mosaic') return PALETTE[(id * 7) % PALETTE.length];
+    var e = entry(id), streak = e ? e[STREAK] : 0;
+    if (prefs.mode === 'ink') return inkTiers(prefs.colour)[tierOf(streak)];
+    return RAINBOW[Math.min(Math.max(streak, 1), RAINBOW.length) - 1];
+  }
+  function textOn(id) {
+    if (prefs.mode !== 'ink') return '#ffffff';
+    var e = entry(id), streak = e ? e[STREAK] : 0;
+    return tierOf(streak) === 0 ? INK : '#ffffff';
+  }
+  // The block strip's stamps: mosaic keeps its palette, the others use the
+  // mode's "settled" colour so the strip matches the wall.
+  function blockColour(b) {
+    if (prefs.mode === 'mosaic') return PALETTE[((b + 1) * 7) % PALETTE.length];
+    if (prefs.mode === 'ink') return prefs.colour;
+    return RAINBOW[3];
+  }
   // Solid tiles sit slightly crooked, like a real hanko; the tilt is also
   // fixed per id so it never changes on repaint.
   function tilt(id) { return [-2, 2, -1.5, 1.5, -3][id % 5]; }
@@ -168,7 +223,14 @@
   window.KA_Kanji = {
     SOLID_AT: SOLID_AT,
     colour: colour,
+    textOn: textOn,
+    blockColour: blockColour,
     tilt: tilt,
+    prefs: getPrefs,
+    setPrefs: setPrefs,
+    PALETTE: PALETTE,
+    RAINBOW: RAINBOW,
+    inkTiers: inkTiers,
     status: status,
     detail: detail,
     counts: counts,
