@@ -145,12 +145,19 @@
        end-of-round panel, the missed list.
        ============================================================ */
     #page-kanji-drill { background: var(--wok-paper); color: var(--wok-ink); }
-    .kd-hero { padding: 1.5rem 0 2rem; min-height: 140px; margin-bottom: 0.4rem; }
-    .kd-hero-inner { max-width: 800px; margin: 0 auto; padding: 0 2rem; box-sizing: border-box;
-      display: flex; align-items: center; gap: 0.9rem; }
-    .kd-hero .page-tag { color: var(--wok-red); }
-    .kd-hero .page-title { color: var(--wok-ink); margin: 0; }
-    .kd-back { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--wok-ink);
+    /* One baseline: the ← button, the seal and the title all sit on the same
+       line, with the eyebrow above the title only. Everything is sized off
+       the title so the row reads as one object rather than three. */
+    .kd-hero { padding: 2rem 0 1.5rem; min-height: 200px; margin-bottom: 0.4rem;
+      display: flex; flex-direction: column; }
+    .kd-hero-inner { max-width: 800px; width: 100%; margin: auto auto 0; padding: 0 2rem; box-sizing: border-box;
+      display: flex; align-items: flex-end; gap: 1rem; }
+    .kd-hero .wok-title-row { align-items: flex-end; gap: 1rem; }
+    .kd-hero .wok-seal { width: 62px; height: 62px; font-size: 2.3rem; }
+    .kd-hero .page-tag { color: var(--wok-red); margin: 0 0 0.3rem; font-size: 0.7rem; letter-spacing: 0.2em; font-weight: 800; }
+    .kd-hero .page-title { color: var(--wok-ink); margin: 0; font-size: 2.6rem !important; line-height: 1; }
+    .kd-hero .wok-branch { height: 72%; }
+    .kd-back { flex: none; width: 42px; height: 42px; margin-bottom: 0.5rem; border-radius: 50%; border: 1.5px solid var(--wok-ink);
       background: #fff; color: var(--wok-ink); display: inline-flex; align-items: center; justify-content: center;
       font-size: 1.15rem; font-weight: 700; text-decoration: none; line-height: 1; }
     .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
@@ -261,7 +268,9 @@
     .drill-missed-chip .jp { color: var(--wok-red); font-weight: 700; }
 
     @media (max-width: 540px) {
-      .kd-hero { min-height: 110px; padding: 1.1rem 0 1.4rem; }
+      .kd-hero { min-height: 150px; padding: 1.2rem 0 1.2rem; }
+      .kd-hero .page-title { font-size: 2rem !important; }
+      .kd-hero .wok-seal { width: 48px; height: 48px; font-size: 1.8rem; }
       .kd-hero-inner { padding: 0 1.25rem; }
       .kd-toolbar-right { margin-left: 0; width: 100%; }
       .kd-round { margin-left: 0; width: 100%; }

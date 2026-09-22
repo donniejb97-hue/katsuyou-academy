@@ -660,16 +660,26 @@
       .kanji-japanese-title { display: none; }          /* the lone 漢字 decoration */
 
       /* ---- the hero ---- */
-      .kw-hero { margin: 0 0 1.2rem; padding: 2.2rem 0 3.6rem; min-height: 250px;
-        display: flex; flex-direction: column; justify-content: flex-start; }
+      /* Masthead: seal + title flush with the left edge of the sheets below,
+         the tabs flush with the right, all on one baseline at the foot of the
+         header so the mountains and the branch have the top to themselves.
+         The subtitle becomes a small red eyebrow ABOVE the name. */
+      .kw-hero { margin: 0 0 1.2rem; padding: 2rem 0 1.6rem; min-height: 250px;
+        display: flex; flex-direction: column; justify-content: flex-end; }
       .kw-hero-inner { max-width: 1180px; margin: 0 auto; width: 100%; box-sizing: border-box;
-        padding: 0 1.5rem; display: flex; flex-direction: column; align-items: center; }
+        padding: 0 1.5rem; display: flex; flex-direction: row; align-items: flex-end;
+        justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+      .kw-hero .wok-title-row { align-items: flex-end; }
+      .kw-hero .wok-title-text { flex-direction: column-reverse; gap: 0.3rem; }
+      .kw-hero .wok-seal { width: 62px; height: 62px; font-size: 2.3rem; }
+      .kw-hero .wok-branch { height: 68%; }
       .kanji-header h1 { text-shadow: none; }
       .kanji-header { text-align: left; margin: 0; }
       .kanji-title { margin: 0; }
-      .kanji-romaji-title { font-size: 2.6rem; line-height: 1; font-weight: 800; color: var(--wok-ink);
+      .kanji-romaji-title { font-size: 3rem; line-height: 1; font-weight: 800; color: var(--wok-ink);
         letter-spacing: -0.01em; display: block; }
-      .kanji-subtitle { margin: 0.2rem 0 0; font-size: 1rem; color: var(--wok-mute); }
+      .kanji-subtitle { margin: 0; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+        font-weight: 800; color: var(--wok-red); }
 
       /* An all-caps initialism set at display size needs a touch of tracking to
          stop the letters crowding; "The" must not get it, hence the inner span. */
@@ -678,7 +688,7 @@
       .kw-eyebrow { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.13em;
         text-transform: uppercase; color: var(--wok-mute); }
 
-      .kw-tabs { display: flex; gap: 0.45rem; margin: 1.1rem 0 0; justify-content: center; }
+      .kw-tabs { display: flex; gap: 0.45rem; margin: 0 0 0.35rem; }
       .kw-tab { padding: 0.5rem 1rem; border-radius: 999px; border: 1.5px solid var(--wok-ink);
         background: #fff; color: var(--wok-ink); font-family: inherit; font-size: 0.8rem; font-weight: 700;
         cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
@@ -817,7 +827,10 @@
         .kw-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0.35rem; padding: 0.6rem; }
         .kw-cell { font-size: 1.05rem; }
         .kw-d-vocab { grid-template-columns: 1fr; }
-        .kw-hero { min-height: 200px; padding-bottom: 2.4rem; }
+        .kw-hero { min-height: 190px; padding-bottom: 1.2rem; }
+        .kw-hero .wok-seal { width: 48px; height: 48px; font-size: 1.8rem; }
+        .kanji-romaji-title { font-size: 2.2rem; }
+        .kw-tabs { width: 100%; margin-top: 0.4rem; }
       }
 
       /* ---- which view is showing ----
