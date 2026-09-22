@@ -4,8 +4,8 @@
 // ============================================================
 var I18N = {
   en: {
-    kw_page_title:"The Walk",
-    kw_page_sub:"The Wall of Kanji",
+    kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
+    kw_page_sub:"Wall of Kanji",
     kd_logging:"Everything you answer here is recorded on the wall.",
     kd_from:"From",
     kd_to:"To",
@@ -648,8 +648,8 @@ var I18N = {
     ],
   },
   de: {
-    kw_page_title:"The Walk",
-    kw_page_sub:"Die Kanji-Wand",
+    kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
+    kw_page_sub:"Wall of Kanji — die Kanji-Wand",
     kd_logging:"Alles, was Sie hier beantworten, wird auf der Wand vermerkt.",
     kd_from:"Von",
     kd_to:"Bis",
@@ -1283,8 +1283,8 @@ var I18N = {
     ],
   },
   fr: {
-    kw_page_title:"The Walk",
-    kw_page_sub:"Le mur des kanji",
+    kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
+    kw_page_sub:"Wall of Kanji — le mur des kanji",
     kd_logging:"Tout ce que vous répondez ici est noté sur le mur.",
     kd_from:"De",
     kd_to:"à",
@@ -1918,8 +1918,8 @@ var I18N = {
     ],
   },
   zh: {
-    kw_page_title:"The Walk",
-    kw_page_sub:"汉字之墙",
+    kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
+    kw_page_sub:"Wall of Kanji — 汉字之墙",
     kd_logging:"您在这里的每次作答都会记录到字墙上。",
     kd_from:"从",
     kd_to:"到",
@@ -2554,8 +2554,8 @@ var I18N = {
     ],
   },
   ja: {
-    kw_page_title:"The Walk",
-    kw_page_sub:"漢字の壁",
+    kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
+    kw_page_sub:"Wall of Kanji — 漢字の壁",
     kd_logging:"ここでの解答はすべて一覧に記録されます。",
     kd_from:"開始",
     kd_to:"終了",

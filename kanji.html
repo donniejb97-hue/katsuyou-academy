@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
   <script src="analytics.js"></script>
-  <title>The Walk | Katsuyō Academy</title>
+  <title>The WOK | Katsuyō Academy</title>
   <meta name="description" content="Study all 2,300 kanji from the Kodansha Learner's Course with interactive flashcards, readings, and vocabulary.">
   <link rel="canonical" href="https://katsuyoacademy.com/kanji">
   <link rel="icon" type="image/png" href="open_book.png">
@@ -662,6 +662,9 @@
       .kanji-romaji-title { letter-spacing: -0.01em; color: #2b2320; font-weight: 700; }
       .kanji-subtitle { color: #6b615a; }
 
+      /* An all-caps initialism set at display size needs a touch of tracking to
+         stop the letters crowding; "The" must not get it, hence the inner span. */
+      .kw-acronym { letter-spacing: 0.055em; }
       .kw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
       .kw-eyebrow { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.13em;
         text-transform: uppercase; color: #8a7f76; }
@@ -829,9 +832,9 @@
       <div class="kanji-header">
         <h1 class="kanji-title">
           <span class="kanji-japanese-title jp">漢字</span>
-          <span class="kanji-romaji-title" data-i18n="kw_page_title">The Walk</span>
+          <span class="kanji-romaji-title" data-i18n-html="kw_page_title">The <span class="kw-acronym">WOK</span></span>
         </h1>
-        <p class="kanji-subtitle" data-i18n="kw_page_sub">The Wall of Kanji</p>
+        <p class="kanji-subtitle" data-i18n="kw_page_sub">Wall of Kanji</p>
 
       </div>
       
