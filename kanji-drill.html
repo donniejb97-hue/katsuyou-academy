@@ -351,7 +351,6 @@
             <input type="number" id="kd-hi" min="1" max="2300" value="100" class="kd-num">
             <button type="button" class="drill-chip" id="kd-apply" data-i18n="kd_apply">Apply</button>
           </span>
-          <span class="kd-poolsize" id="kd-poolsize"></span>
           <!-- In a round sent from the wall, the range IS the round. -->
           <span class="kd-round-tag" id="kd-round-label" hidden></span>
         </div>
@@ -813,7 +812,7 @@
       $('kd-round-label').hidden = false;
       $('kd-round-label').textContent = state.qLabel;
       $('kd-status').classList.add('is-round');
-      ['drill-range', 'kd-custom', 'kd-poolsize'].forEach(function (id) { $(id).hidden = true; });
+      ['drill-range', 'kd-custom'].forEach(function (id) { $(id).hidden = true; });
     }
 
     function paintStrip() {
@@ -949,7 +948,8 @@
 
     function showPoolSize() {
       var n = pool().length;
-      $('kd-poolsize').textContent = n + ' ' + tt('kd_in_range', 'in range');
+      // (The "N in range" readout used to sit here; the picker's own labels
+      // already say the size, so it was noise and is gone.)
       // An empty pool would loop forever in newQuestion, so say so and stop.
       if (!n) {
         $('drill-question').textContent = '\u2014';
