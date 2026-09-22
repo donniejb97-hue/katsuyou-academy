@@ -441,7 +441,7 @@ var I18N = {
     sensei_placeholder:'How do I say… in Japanese?', sensei_send:'Ask',
     sensei_greeting:'こんにちは！(Konnichiwa!) I’m Katsu. Ask me how to say something in Japanese, or any grammar question. 何でも聞いてください！(Nandemo kiite kudasai! — Ask me anything!)',
     sensei_error:'すみません (Sumimasen) — I couldn’t reach the server.', sensei_retry:'↻ Try again',
-    sensei_proactive_label:'Let Katsu check in when I seem stuck', sensei_clear_history:'🗑 Clear chat', sensei_restore_chat:'↩ Show previous conversation', sensei_clear_mistakes:'🗑 Clear saved mistakes',
+    sensei_proactive_label:'Let Katsu check in after six misses in a row', sensei_clear_history:'🗑 Clear chat', sensei_restore_chat:'↩ Show previous conversation', sensei_clear_mistakes:'🗑 Clear saved mistakes',
     // ---- Conjugator: input helper, streak, session, badges ----
     streak:'Streak', best_short:'best',
     answer_placeholder_romaji:'ikanai → いかない',
@@ -1077,7 +1077,7 @@ var I18N = {
     sensei_placeholder:'Wie sagt man … auf Japanisch?', sensei_send:'Fragen',
     sensei_greeting:'こんにちは！(Konnichiwa!) Ich bin Katsu. Fragen Sie mich, wie man etwas auf Japanisch sagt, oder stellen Sie eine Grammatikfrage. 何でも聞いてください！(Nandemo kiite kudasai — fragen Sie mich einfach alles!)',
     sensei_error:'すみません (Sumimasen) — Der Server war nicht erreichbar.', sensei_retry:'↻ Erneut versuchen',
-    sensei_proactive_label:'Katsu darf sich melden, wenn ich offenbar nicht weiterkomme', sensei_clear_history:'🗑 Chat löschen', sensei_restore_chat:'↩ Vorheriges Gespräch anzeigen', sensei_clear_mistakes:'🗑 Gespeicherte Fehler löschen',
+    sensei_proactive_label:'Katsu darf sich nach sechs Fehlern in Folge melden', sensei_clear_history:'🗑 Chat löschen', sensei_restore_chat:'↩ Vorheriges Gespräch anzeigen', sensei_clear_mistakes:'🗑 Gespeicherte Fehler löschen',
     // ---- Konjugator: Eingabehilfe, Serie, Runde, Kennzeichnung ----
     streak:'Serie', best_short:'Beste',
     answer_placeholder_romaji:'ikanai → いかない',
@@ -1713,7 +1713,7 @@ var I18N = {
     sensei_placeholder:'Comment dit-on … en japonais ?', sensei_send:'Demander',
     sensei_greeting:"こんにちは！(Konnichiwa !) Je suis Katsu. Demandez-moi comment dire quelque chose en japonais, ou posez une question de grammaire. 何でも聞いてください！(Nandemo kiite kudasai — n'hésitez pas à tout me demander !)",
     sensei_error:'すみません (Sumimasen) — impossible de joindre le serveur.', sensei_retry:'↻ Réessayer',
-    sensei_proactive_label:'Laisser Katsu intervenir si je semble bloqué(e)', sensei_clear_history:'🗑 Effacer la discussion', sensei_restore_chat:'↩ Afficher la discussion précédente', sensei_clear_mistakes:'🗑 Effacer les erreurs enregistrées',
+    sensei_proactive_label:'Laisser Katsu intervenir après six erreurs d’affilée', sensei_clear_history:'🗑 Effacer la discussion', sensei_restore_chat:'↩ Afficher la discussion précédente', sensei_clear_mistakes:'🗑 Effacer les erreurs enregistrées',
     // ---- Conjugateur : aide à la saisie, série, manche, badges ----
     streak:'Série', best_short:'record',
     answer_placeholder_romaji:'ikanai → いかない',
@@ -2350,7 +2350,7 @@ var I18N = {
     sensei_placeholder:'用日语怎么说…？', sensei_send:'提问',
     sensei_greeting:'こんにちは！(Konnichiwa!) 我是活先生。想知道某个词用日语怎么说，或者有语法问题，都可以问我。何でも聞いてください！（Nandemo kiite kudasai —— 尽管问我吧！）',
     sensei_error:'すみません (Sumimasen) — 无法连接服务器。', sensei_retry:'↻ 重试',
-    sensei_proactive_label:'当我似乎卡住时，允许活先生主动出现', sensei_clear_history:'🗑 清空对话', sensei_restore_chat:'↩ 显示上一次对话', sensei_clear_mistakes:'🗑 清除已保存的错误',
+    sensei_proactive_label:'连续答错六题后，允许活先生主动出现', sensei_clear_history:'🗑 清空对话', sensei_restore_chat:'↩ 显示上一次对话', sensei_clear_mistakes:'🗑 清除已保存的错误',
     // ---- 变位练习：输入辅助、连对、回合、标记 ----
     streak:'连对', best_short:'最高',
     answer_placeholder_romaji:'ikanai → いかない',
@@ -2991,7 +2991,7 @@ var I18N = {
     sensei_placeholder:'「…」は日本語で何と言いますか。', sensei_send:'きく',
     sensei_greeting:'こんにちは！カツです。日本語で何と言うか、文法のことなど、何でも聞いてください！',
     sensei_error:'すみません — サーバーに接続できませんでした。', sensei_retry:'↻ もう一度',
-    sensei_proactive_label:'行き詰まっていそうなときはカツから声をかける', sensei_clear_history:'🗑 履歴を消す', sensei_restore_chat:'↩ 前の会話を表示', sensei_clear_mistakes:'🗑 記録したまちがいを消す',
+    sensei_proactive_label:'6問続けてまちがえたらカツから声をかける', sensei_clear_history:'🗑 履歴を消す', sensei_restore_chat:'↩ 前の会話を表示', sensei_clear_mistakes:'🗑 記録したまちがいを消す',
     // ---- Conjugator: input helper, streak, session, badges ----
     best_short:'最高',
     answer_placeholder_romaji:'ikanai → いかない',

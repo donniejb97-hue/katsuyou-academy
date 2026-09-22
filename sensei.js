@@ -37,8 +37,9 @@
   var PREV_CHAT_TTL_MS = 24 * 60 * 60 * 1000;  // how long "show previous" still works
   var MISTAKE_TTL_MS = 12 * 60 * 60 * 1000;    // each mistake, from when it happened
 
-  var STRUGGLE_WINDOW_MS = 120000;   // count misses within this window
-  var STRUGGLE_THRESHOLD = 3;        // this many misses triggers a pop-in
+  var STRUGGLE_WINDOW_MS = 600000;   // a miss older than this no longer counts
+  var STRUGGLE_THRESHOLD = 6;        // this many misses IN A ROW triggers a pop-in;
+                                     // any right answer resets the count
   var PROACTIVE_COOLDOWN_MS = 180000; // don't pop in again this soon
   var MAX_PROACTIVE_PER_LOAD = 2;
 
@@ -453,7 +454,7 @@
     function applyStrings() {
       input.placeholder = tr('sensei_placeholder', 'How do I say… in Japanese?');
       send.textContent = tr('sensei_send', 'Ask');
-      panel.querySelector('#sensei-proactive-label').textContent = tr('sensei_proactive_label', 'Let Katsu check in when I seem stuck');
+      panel.querySelector('#sensei-proactive-label').textContent = tr('sensei_proactive_label', 'Let Katsu check in after six misses in a row');
       clearBtn.textContent = tr('sensei_clear_history', '🗑 Clear chat');
       refreshRestore();
       refreshMistakeUI();
@@ -669,7 +670,11 @@
     var lastProactiveAt = 0;
     var proactiveCount = 0;
     var STRUGGLE_PATTERN = /\bfeedback\b/;
-    var STRUGGLE_STATE = /\b(bad|wrong|incorrect|warn)\b/;
+    var STRUGGLE_STATE = /\b(bad|wrong|incorrect)\b/;
+    var GOOD_STATE = /\b(good|correct|right)\b/;
+
+    // "In a row" means exactly that: one right answer and the count starts over.
+    function noteHit() { recentMisses = []; }
 
     function noteMiss() {
       if (!settings.proactive) return;
@@ -738,6 +743,10 @@
         var el = mutations[i].target;
         if (!el || el.nodeType !== 1) continue;
         var cls = el.getAttribute ? el.getAttribute('class') : '';
+        if (cls && STRUGGLE_PATTERN.test(cls) && GOOD_STATE.test(cls) && !STRUGGLE_STATE.test(cls)) {
+          noteHit();
+          break;
+        }
         if (cls && STRUGGLE_PATTERN.test(cls) && STRUGGLE_STATE.test(cls)) {
           if (handsOffPage()) break;   // this page is none of Katsu's business
           captureMistake(el);   // logged, so Katsu can explain it later
