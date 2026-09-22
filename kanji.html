@@ -663,7 +663,7 @@
       .kw-hero { margin: 0 0 1.2rem; padding: 2.2rem 0 3.6rem; min-height: 250px;
         display: flex; flex-direction: column; justify-content: flex-start; }
       .kw-hero-inner { max-width: 1180px; margin: 0 auto; width: 100%; box-sizing: border-box;
-        padding: 0 1.5rem; }
+        padding: 0 1.5rem; display: flex; flex-direction: column; align-items: center; }
       .kanji-header h1 { text-shadow: none; }
       .kanji-header { text-align: left; margin: 0; }
       .kanji-title { margin: 0; }
@@ -678,7 +678,7 @@
       .kw-eyebrow { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.13em;
         text-transform: uppercase; color: var(--wok-mute); }
 
-      .kw-tabs { display: flex; gap: 0.45rem; margin: 1rem 0 0; }
+      .kw-tabs { display: flex; gap: 0.45rem; margin: 1.1rem 0 0; justify-content: center; }
       .kw-tab { padding: 0.5rem 1rem; border-radius: 999px; border: 1.5px solid var(--wok-ink);
         background: #fff; color: var(--wok-ink); font-family: inherit; font-size: 0.8rem; font-weight: 700;
         cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
@@ -882,10 +882,9 @@
               <span class="kanji-japanese-title jp">漢字</span>
               <span class="kanji-romaji-title" data-i18n-html="kw_page_title">The <span class="kw-acronym">WOK</span></span>
             </h1>
-            <p class="kanji-subtitle" data-i18n="kw_page_sub">Wall of Kanji</p>
+            <p class="kanji-subtitle" data-i18n="kw_page_sub">The Wall of Kanji</p>
           </div>
         </div>
-        <p class="wok-blurb" data-i18n="kw_blurb">2,300 kanji. Each one gets stamped the day you can read it; a red outline means you're still slipping on it.</p>
 
         <!-- ============ THE WALL ============ -->
         <div class="kw-tabs" role="tablist">
