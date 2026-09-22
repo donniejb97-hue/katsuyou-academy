@@ -41,6 +41,16 @@
   transform: rotate(-3deg); box-shadow: 0 2px 0 rgba(43,35,32,0.25);
 }
 .wok-title-text { display: flex; flex-direction: column; gap: 0.15rem; }
+/* The title lands on the darkest ridge of the mountains. A soft halo of the
+   paper colour behind the letters — mist, not a drop shadow — lifts it off
+   the grey without putting a box around it. */
+.wok-hero h1, .wok-hero .kanji-romaji-title, .wok-hero .page-title {
+  text-shadow: 0 0 2px var(--wok-paper), 0 0 2px var(--wok-paper), 0 0 6px var(--wok-paper), 0 0 12px var(--wok-paper),
+               0 0 24px var(--wok-paper), 0 0 40px var(--wok-paper), 0 0 40px var(--wok-paper);
+}
+.wok-hero .kanji-subtitle, .wok-hero .page-tag {
+  text-shadow: 0 0 3px var(--wok-paper), 0 0 8px var(--wok-paper), 0 0 16px var(--wok-paper);
+}
 .wok-h1 { margin: 0; font-size: 2.6rem; line-height: 1; font-weight: 800; color: var(--wok-ink); }
 .wok-sub { font-size: 1rem; color: var(--wok-mute); }
 .wok-sub .jp { font-family: 'Noto Serif JP', serif; }
