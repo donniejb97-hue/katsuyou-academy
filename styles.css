@@ -362,6 +362,7 @@
     .hero-demo .demo-verdict.good { color: #9fc4a3; }
     .hero-demo .demo-verdict.bad  { color: var(--accent-soft); }
     .hero-demo .demo-cta { color: var(--gold); margin-top: 0.9rem; display: inline-block; }
+
     .hero-demo .demo-b.katsu { background: var(--paper); }
     .hero-demo .demo-b-en { color: var(--text-light); }
 
@@ -2410,4 +2411,76 @@ a.nav-link {
       .demo-row { flex-direction: column; align-items: stretch; }
       .demo-stage { padding: 1.4rem 1rem; }
       .tour-step { padding: 0.85rem 0.9rem; gap: 0.75rem; }
+    }
+
+    /* ============================================================
+       B + C — English leads on the type, warm on the tone.
+
+       The tool cards used to open with a lone kanji glyph and a title
+       reading "仮名 — Kana", so the first thing a beginner's eye landed on
+       was the one part they could not read. The glyph is now a line icon,
+       the title leads in the reader's own language, and the Japanese sits
+       at the foot of the card with its romaji, where it reads as a bonus
+       rather than a prerequisite.
+       ============================================================ */
+
+    .tool-card {
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(26,26,46,0.04);
+    }
+    .tool-card:hover {
+      box-shadow: 0 6px 18px rgba(26,26,46,0.09);
+    }
+
+    /* the glyph box now holds an icon, not a character */
+    .tool-card__glyph { border-radius: 14px; }
+    .tool-card__glyph svg { width: 26px; height: 26px; }
+
+    .tool-card__title { font-size: 1.32rem; font-weight: 700; letter-spacing: -0.01em; }
+
+    /* the Japanese, demoted: same row as the CTA, quiet, never the entry point */
+    .tool-card__cta {
+      display: inline-flex; align-items: center;
+      padding-top: 0.85rem; margin-top: auto;
+      border-top: 1px solid rgba(0,0,0,0.07);
+      width: 100%;
+    }
+    .tool-card__jp {
+      position: absolute; right: 1.6rem; bottom: 1.5rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.78rem; color: var(--text-light); opacity: 0.8;
+      pointer-events: none;
+    }
+    .tool-card__jp i { font-style: normal; opacity: 0.75; margin-left: 0.15rem; }
+    .tool-card.is-feature .tool-card__jp { color: rgba(255,255,255,0.55); }
+    .tool-card.is-feature .tool-card__cta { border-top-color: rgba(255,255,255,0.14); }
+
+    /* warmer ground under the banded sections */
+    .home-section { background: #fdf8f1; }
+    .home-section.is-band { background: var(--ink); }
+    .home-panel { border-radius: 18px; }
+
+    /* the section headings lost their marks — give the title back its air */
+    .section-title { margin-top: 0.2rem; }
+
+    /* a first-time visitor should be told, not left to guess */
+    .toolkit-welcome {
+      display: flex; align-items: center; gap: 1.15rem;
+      max-width: 1100px; margin: 0 auto 2rem;
+      background: #ffffff; border: 1px solid rgba(196,92,74,0.18);
+      border-radius: 18px; padding: 1.15rem 1.5rem;
+    }
+    .toolkit-welcome__icon {
+      flex: 0 0 auto; width: 2.6rem; height: 2.6rem; border-radius: 50%;
+      background: var(--ink); color: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .toolkit-welcome__icon svg { width: 20px; height: 20px; }
+    .toolkit-welcome__text { flex: 1; font-size: 0.95rem; line-height: 1.65; color: var(--text); }
+    .toolkit-welcome__text strong { color: var(--ink); display: block; margin-bottom: 0.15rem; font-size: 1.02rem; }
+
+    @media (max-width: 640px) {
+      .toolkit-welcome { flex-direction: column; text-align: center; gap: 0.8rem; }
+      .tool-card__jp { position: static; display: block; margin-top: 0.6rem; }
     }

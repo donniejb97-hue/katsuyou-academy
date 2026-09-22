@@ -383,8 +383,10 @@
       <!-- Status bar: how it's going. Scores, and the round's stamps when there is one. -->
       <div class="kd-status" id="kd-status">
         <div class="drill-scores">
-          <span class="kd-score"><span class="drill-score-label" data-i18n="score">Score</span> <b><span id="drill-correct">0</span>/<span id="drill-total">0</span></b></span>
-          <span class="kd-score is-red"><span class="drill-score-label" data-i18n="streak">Streak</span> <b id="drill-streak">0</b></span>
+          <span class="kd-score"><span class="drill-score-label" data-i18n="kd_right_lbl">Right</span> <b id="drill-correct">0</b></span>
+          <span class="kd-score is-red"><span class="drill-score-label" data-i18n="kd_wrong_lbl">Wrong</span> <b id="drill-wrong">0</b></span>
+          <span class="kd-score"><span class="drill-score-label" data-i18n="streak">Streak</span> <b id="drill-streak">0</b></span>
+          <span id="drill-total" hidden>0</span>
           <span class="kd-score is-red" id="kd-best-wrap"><span class="drill-score-label" data-i18n="best">Best</span> <b id="drill-best">0</b></span>
         </div>
         <div class="kd-round" id="kd-round" hidden>
@@ -811,6 +813,7 @@
     function renderScores() {
       $('drill-correct').textContent = state.correct;
       $('drill-total').textContent = state.total;
+      $('drill-wrong').textContent = state.total - state.correct;
       $('drill-streak').textContent = state.streak;
       $('drill-best').textContent = state.best;
     }
