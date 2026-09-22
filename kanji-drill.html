@@ -214,6 +214,21 @@
     .kd-pip.is-now   { background: var(--wok-ink); border-color: var(--wok-ink); color: var(--wok-paper); }
 
     .drill-card { border: 2px solid var(--wok-ink); border-radius: 22px; box-shadow: var(--wok-shadow-lg); }
+    .kd-hear { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.8rem; border-radius: 999px;
+      border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink); font-family: inherit;
+      font-size: 0.76rem; font-weight: 700; cursor: pointer; line-height: 1; }
+    .kd-hear svg { width: 15px; height: 15px; }
+    .kd-hear:hover { transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+    .kd-hear.playing { background: var(--wok-ink); color: var(--wok-paper); }
+    .kd-hear[hidden] { display: none; }
+    .kd-hear-card { position: absolute; top: 0.9rem; left: 1.1rem; }
+    .kd-hear.is-mini { padding: 0.2rem; width: 22px; height: 22px; justify-content: center; margin-right: 0.3rem;
+      vertical-align: middle; border-color: var(--wok-line); color: var(--wok-mute); }
+    .kd-hear.is-mini svg { width: 12px; height: 12px; }
+    .kd-hear.is-mini:hover, .kd-hear.is-mini.playing { border-color: var(--wok-ink); color: var(--wok-ink); box-shadow: none; transform: none; }
+    .kd-hear.is-mini.playing { background: var(--wok-ink); color: var(--wok-paper); }
+    .drill-feedback .kd-hear { vertical-align: middle; }
+    @media (max-width: 540px) { .kd-hear-card { position: static; margin-bottom: 0.6rem; } }
     .drill-question-tag { color: var(--wok-red); background: var(--wok-red-wash); font-weight: 800; }
     .drill-question { color: var(--wok-ink); }
     .drill-klc-id { color: var(--wok-red); font-weight: 800; letter-spacing: 0.1em; }
@@ -306,7 +321,7 @@
         <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
         <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
         <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
-        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">Kanji</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">The WOK</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
         <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
@@ -382,6 +397,7 @@
       <div id="drill-card-wrap">
       <div class="drill-card">
         <span class="drill-klc-id" id="drill-klc-id"></span>
+        <button type="button" class="kd-hear kd-hear-card" id="drill-hear" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg><span data-i18n="kw_hear">Hear the readings</span></button>
         <div class="drill-question-tag" id="drill-tag">What is the keyword?</div>
         <div class="drill-question jp" id="drill-question">日</div>
       </div>
@@ -566,6 +582,8 @@
       state.current = { item: item };
       state.answered = false;
       state.retried = false;
+      if (window.KA_Listen) KA_Listen.stop();     // never talk over the next question
+      paintHear();
 
       $('drill-klc-id').textContent = 'KLC #' + item.id;
 
@@ -760,9 +778,12 @@
       var on = (item.onyomi && item.onyomi.length) ? item.onyomi.join(' ・ ') : '—';
       var kun = item.kunyomi ? item.kunyomi : '—';
       var vocabHtml = '';
+      var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>';
       if (item.vocabulary && item.vocabulary.length) {
         var v = item.vocabulary[0];
-        vocabHtml = '<div class="row"><span class="lbl">VOCAB</span><span class="jp">' + toRuby(v.word) + '</span><span>' + v.meaning + '</span></div>';
+        vocabHtml = '<div class="row"><span class="lbl">VOCAB</span>' +
+          '<button type="button" class="kd-hear is-mini" data-hear="vocab" aria-label="Listen">' + ICON + '</button>' +
+          '<span class="jp">' + toRuby(v.word) + '</span><span>' + v.meaning + '</span></div>';
       }
 
       fb.innerHTML =
@@ -770,9 +791,11 @@
         '<div class="big"><span class="jp">' + item.kanji + '</span><strong>' + item.keyword + '</strong></div>' +
         '<div class="drill-detail">' +
           '<div class="row"><span class="lbl">ON</span><span class="jp">' + on + '</span>' +
-          '<span class="lbl">KUN</span><span class="jp">' + kun + '</span></div>' +
+          '<span class="lbl">KUN</span><span class="jp">' + kun + '</span>' +
+          '<button type="button" class="kd-hear" data-hear="readings">' + ICON + tt('kw_hear', 'Hear the readings') + '</button></div>' +
           vocabHtml +
         '</div>';
+      wireHear(fb, item);
 
       var check = $('drill-check');
       check.style.display = 'block';
@@ -852,6 +875,30 @@
       $('kd-round-count').textContent =
         Math.min(state.qIdx + 1, state.queue.length) + ' / ' + state.queue.length +
         '  ·  ' + right + ' ' + tt('kd_right', 'right');
+    }
+
+    // ---------- listen ----------
+    // Same voice path as the wall and Talk (Azure, then the browser). The
+    // readings are read out, never the bare kanji; a word is read from its
+    // furigana. Buttons hide themselves until something can speak.
+    function canHear() { return !!(window.KA_Listen && KA_Listen.available()); }
+    function wireHear(root, item) {
+      if (!window.KA_Listen) return;
+      root.querySelectorAll('.kd-hear').forEach(function (btn) {
+        var which = btn.getAttribute('data-hear');
+        KA_Listen.attach(btn, function () {
+          if (which === 'readings') return window.kanjiReadingSpeech ? window.kanjiReadingSpeech(item) : '';
+          var v = (item.vocabulary || [])[0];
+          return v ? v.word : '';
+        });
+        btn.hidden = !canHear();
+      });
+    }
+    function paintHear() {
+      var can = canHear();
+      document.querySelectorAll('.drill-feedback .kd-hear').forEach(function (b) { b.hidden = !can; });
+      var card = $('drill-hear');
+      if (card) card.hidden = !(can && state.mode === 'kanji2keyword' && state.current);
     }
 
     function tt(key, fallback) {
@@ -1061,6 +1108,13 @@
         if (localStorage.getItem('kanjiDrillAnswer') === 'pick') state.answer = 'pick';
       } catch (e) {}
       paintAnswerToggle();
+      if (window.KA_Listen) {
+        KA_Listen.attach($('drill-hear'), function () {
+          return (state.current && window.kanjiReadingSpeech) ? window.kanjiReadingSpeech(state.current.item) : '';
+        });
+        if (window.KA_Speech && KA_Speech.onReady) KA_Speech.onReady(paintHear);
+        if (window.KA_Azure && KA_Azure.listVoices) KA_Azure.listVoices().then(paintHear);
+      }
       buildRangeOptions();
       $('drill-range').addEventListener('change', function () {
         applyRange(this.value);

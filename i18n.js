@@ -201,7 +201,7 @@ var I18N = {
     vq_check:'Check',
     vq_skip:'Skip',
     vq_next:'Next →',
-    vq_to_cards:'← Back to the flashcards', nav_kanji:'Kanji', nav_contact:'Contact',
+    vq_to_cards:'← Back to the flashcards', nav_kanji:'The WOK', nav_contact:'Contact',
     page_tag:'Interactive Practice', page_title:'Kana Drill',
     score:'Score', streak:'Streak', best:'Best',
     mode:'Mode', script:'Script', sets:'Sets', charts:'Charts',
@@ -249,7 +249,7 @@ var I18N = {
     card_vocab_t:"Vocabulary",
     card_vocab_d:"Practice <strong>941 essential Japanese words</strong> with intelligent flashcards. Study with <strong>hiragana, kanji, and katakana</strong> across <strong>8 different learning modes</strong>. Toggle between Japanese→English or English→Japanese practice, show or hide readings, and see both scripts side-by-side. <strong>Smart shuffle prioritises unseen cards</strong>, and progress tracking shows how many you've studied.",
     card_vocab_cta:"Start Learning Words →",
-    card_kanji_t:"Kanji",
+    card_kanji_t:"The WOK",
     card_kanji_d:"Practice <strong>2,300 kanji</strong> from the acclaimed <strong>Kodansha Learner's Course</strong>. Each card shows the kanji character, English keyword, <strong>on'yomi</strong> and <strong>kun'yomi</strong> readings, plus <strong>example vocabulary</strong> with meanings. Filter by level, <strong>shuffle cards</strong>, or <strong>jump to any KLC number</strong>. Keyboard shortcuts included!",
     card_kanji_cta:"Learn Kanji →",
     btn_start_kana:'Start with Kana', btn_explore_kanji:'Explore Kanji',
@@ -860,7 +860,7 @@ var I18N = {
     vq_check:'Prüfen',
     vq_skip:'Überspringen',
     vq_next:'Weiter →',
-    vq_to_cards:'← Zurück zu den Karteikarten', nav_kanji:'Kanji', nav_contact:'Kontakt',
+    vq_to_cards:'← Zurück zu den Karteikarten', nav_kanji:'The WOK', nav_contact:'Kontakt',
     page_tag:'Interaktive Übung', page_title:'Kana-Drill',
     score:'Punkte', streak:'Serie', best:'Rekord',
     mode:'Modus', script:'Schrift', sets:'Gruppen', charts:'Tabellen',
@@ -907,7 +907,7 @@ var I18N = {
     card_vocab_t:"Vokabeln",
     card_vocab_d:"Üben Sie <strong>941 wichtige japanische Wörter</strong> mit intelligenten Karteikarten. Lernen Sie mit <strong>Hiragana, Kanji und Katakana</strong> in <strong>8 verschiedenen Modi</strong>. Wechseln Sie zwischen Japanisch→Deutsch und Deutsch→Japanisch, blenden Sie Lesungen ein oder aus und sehen Sie beide Schriften nebeneinander. <strong>Das clevere Mischen bevorzugt ungesehene Karten</strong>, und die Fortschrittsanzeige zeigt, wie viele Sie schon gelernt haben.",
     card_vocab_cta:"Vokabeln lernen →",
-    card_kanji_t:"Kanji",
+    card_kanji_t:"The WOK",
     card_kanji_d:"Üben Sie <strong>2.300 Kanji</strong> aus dem renommierten <strong>Kodansha Learner's Course</strong>. Jede Karte zeigt das Zeichen, das englische Stichwort, die <strong>On-Lesung</strong> und die <strong>Kun-Lesung</strong> sowie <strong>Beispielvokabeln</strong> mit Bedeutungen. Nach Stufe filtern, <strong>Karten mischen</strong> oder <strong>zu einer beliebigen KLC-Nummer springen</strong>. Tastenkürzel inklusive!",
     card_kanji_cta:"Kanji lernen →",
     btn_start_kana:'Mit Kana beginnen', btn_explore_kanji:'Kanji entdecken',
@@ -1510,7 +1510,7 @@ var I18N = {
     vq_check:'Vérifier',
     vq_skip:'Passer',
     vq_next:'Suivant →',
-    vq_to_cards:'← Retour aux cartes', nav_kanji:'Kanji', nav_contact:'Contact',
+    vq_to_cards:'← Retour aux cartes', nav_kanji:'The WOK', nav_contact:'Contact',
     page_tag:'Entraînement interactif', page_title:'Drill Kana',
     score:'Score', streak:'Série', best:'Record',
     mode:'Mode', script:'Écriture', sets:'Groupes', charts:'Tableaux',
@@ -1557,7 +1557,7 @@ var I18N = {
     card_vocab_t:"Vocabulaire",
     card_vocab_d:"Pratiquez <strong>941 mots japonais essentiels</strong> avec des cartes intelligentes. Étudiez en <strong>hiragana, kanji et katakana</strong> selon <strong>8 modes différents</strong>. Passez du japonais→français au français→japonais, affichez ou masquez les lectures, et voyez les deux écritures côte à côte. <strong>Le mélange intelligent privilégie les cartes jamais vues</strong>, et le suivi indique combien vous en avez travaillées.",
     card_vocab_cta:"Apprendre du vocabulaire →",
-    card_kanji_t:"Kanji",
+    card_kanji_t:"The WOK",
     card_kanji_d:"Pratiquez <strong>2 300 kanji</strong> du célèbre <strong>Kodansha Learner's Course</strong>. Chaque carte affiche le caractère, le mot-clé anglais, les lectures <strong>on'yomi</strong> et <strong>kun'yomi</strong>, ainsi que du <strong>vocabulaire d'exemple</strong> avec les sens. Filtrez par niveau, <strong>mélangez les cartes</strong> ou <strong>sautez à n'importe quel numéro KLC</strong>. Raccourcis clavier inclus !",
     card_kanji_cta:"Apprendre les kanji →",
     btn_start_kana:'Commencer par les kana', btn_explore_kanji:'Explorer les kanji',
@@ -2160,7 +2160,7 @@ var I18N = {
     vq_check:'检查',
     vq_skip:'跳过',
     vq_next:'下一个 →',
-    vq_to_cards:'← 返回单词卡', nav_kanji:'汉字', nav_contact:'联系',
+    vq_to_cards:'← 返回单词卡', nav_kanji:'The WOK', nav_contact:'联系',
     page_tag:'互动练习', page_title:'假名练习',
     score:'得分', streak:'连击', best:'最高',
     mode:'模式', script:'字体', sets:'范围', charts:'对照表',
@@ -2207,7 +2207,7 @@ var I18N = {
     card_vocab_t:"词汇",
     card_vocab_d:"用智能记忆卡练习 <strong>941 个日语核心词汇</strong>。可用<strong>平假名、汉字和片假名</strong>学习，共 <strong>8 种学习模式</strong>。在日→中与中→日之间切换，按需显示或隐藏读音，也可并排查看两种写法。<strong>智能乱序会优先安排没见过的卡片</strong>，进度统计则显示你已学了多少张。",
     card_vocab_cta:"开始学单词 →",
-    card_kanji_t:"汉字",
+    card_kanji_t:"The WOK",
     card_kanji_d:"练习著名的《<strong>Kodansha Learner's Course</strong>》中的 <strong>2,300 个汉字</strong>。每张卡片会显示汉字、英文关键词、<strong>音读</strong>与<strong>训读</strong>，以及带释义的<strong>例词</strong>。可按等级筛选、<strong>打乱卡片</strong>，或<strong>跳转到任意 KLC 编号</strong>。还支持键盘快捷键！",
     card_kanji_cta:"学习汉字 →",
     btn_start_kana:'从假名开始', btn_explore_kanji:'探索汉字',
@@ -2807,7 +2807,7 @@ var I18N = {
     vq_check:'確認',
     vq_skip:'とばす',
     vq_next:'次へ →',
-    vq_to_cards:'← 単語カードに戻る', nav_kanji:'漢字', nav_contact:'お問い合わせ',
+    vq_to_cards:'← 単語カードに戻る', nav_kanji:'The WOK', nav_contact:'お問い合わせ',
     page_tag:'対話式の練習', page_title:'かな練習',
     score:'得点', streak:'連続正解', best:'最高記録',
     mode:'モード', script:'文字', sets:'出題範囲', charts:'一覧表',
@@ -2855,7 +2855,7 @@ var I18N = {
     card_vocab_t:'単語帳',
     card_vocab_d:'<strong>基本の941語</strong>を、賢い単語カードで練習します。<strong>ひらがな・漢字・カタカナ</strong>を<strong>8種類の学習モード</strong>で学べます。日本語→英語と英語→日本語を切り替え、読みを表示・非表示にし、両方の表記を並べて見ることもできます。<strong>シャッフルは未見のカードを優先</strong>し、進捗表示でこれまでに学んだ枚数がわかります。',
     card_vocab_cta:'単語を学ぶ →',
-    card_kanji_t:'漢字',
+    card_kanji_t:'The WOK',
     card_kanji_d:'定評ある<strong>講談社の漢字学習コース（KLC）</strong>から<strong>2,300字</strong>を練習できます。各カードには漢字・英語キーワード・<strong>音読み</strong>・<strong>訓読み</strong>に加え、意味つきの<strong>例語</strong>がのっています。レベルで絞り込み、<strong>カードをシャッフル</strong>したり、<strong>任意の KLC 番号へ移動</strong>したりできます。キーボード操作にも対応しています。',
     card_kanji_cta:'漢字を学ぶ →',
     btn_start_kana:'かなから始める', btn_explore_kanji:'漢字を見てみる',
@@ -3640,8 +3640,11 @@ function setLang(lang) {
       pages: ['learn', 'counters', 'adjectives', 'reference', 'conjugation', 'forms', 'verblist'] },
     // The cards and the quiz are the same subject, and the bar was already at
     // its limit — grouping them keeps the top level exactly as wide as before.
+    // `before` moves the menu: the vocabulary links sit late in the bar, but
+    // the menu belongs next to Practice, so it is planted in front of the
+    // Practice group's first link.
     { key: 'nav_group_vocab', fallback: 'Vocabulary',
-      pages: ['vocabulary', 'vocabquiz', 'kanji'] },
+      pages: ['vocabulary', 'vocabquiz', 'kanji'], before: 'conjugator' },
     // Four drills, one idea. Adding Reading pushed the bar past its width and
     // the last item was being clipped; these four collapse to one and leave
     // headroom for the longer German and French labels.
@@ -3679,7 +3682,8 @@ function setLang(lang) {
       var menu = document.createElement('div');
       menu.className = 'nav-group-menu';
 
-      bar.insertBefore(wrap, links[0]);
+      var anchor = group.before ? bar.querySelector('.nav-link[data-page="' + group.before + '"]') : null;
+      bar.insertBefore(wrap, anchor || links[0]);
       links.forEach(function (a) { menu.appendChild(a); });
 
       // the trigger reads as current when the page you're on lives inside it
