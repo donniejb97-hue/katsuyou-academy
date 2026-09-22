@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="wok-theme.css">
   <style>
-    .drill-page { max-width: 720px; margin: 0 auto; padding: 2rem; }
+    .drill-page { max-width: 800px; margin: 0 auto; padding: 2rem; }
     .drill-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
     .drill-scores { display: flex; gap: 0.75rem; align-items: stretch; }
     .drill-score-box { background: var(--ink); color: var(--paper); border-radius: 8px; padding: 0.6rem 1.1rem; text-align: center; min-width: 84px; }
@@ -97,14 +97,6 @@
   
     /* ---- handed a list by the wall ---- */
     .kd-round[hidden], .kd-done[hidden] { display: none; }
-    .kd-round { background: #fff; border: 1px solid rgba(0,0,0,0.08); border-radius: 14px;
-      padding: 0.8rem 1rem; margin-bottom: 1rem; }
-    .kd-round-head { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.6rem;
-      flex-wrap: wrap; }
-    .kd-back { color: #a8442f; text-decoration: none; font-size: 0.82rem; font-weight: 600; }
-    .kd-back:hover { text-decoration: underline; }
-    .kd-round-label { font-size: 0.82rem; color: #2b2320; font-weight: 600; }
-    .kd-round-count { margin-left: auto; font-size: 0.78rem; color: #6b615a; }
     .kd-strip { display: grid; gap: 3px; grid-auto-flow: column; grid-auto-columns: 1fr; }
     .kd-pip { height: 9px; border-radius: 3px; background: #e3d8c6; }
     .kd-pip.is-right { background: #4f7454; }
@@ -153,32 +145,58 @@
        end-of-round panel, the missed list.
        ============================================================ */
     #page-kanji-drill { background: var(--wok-paper); color: var(--wok-ink); }
-    .kd-hero { padding: 1.6rem 0 2.2rem; min-height: 150px; margin-bottom: 0.6rem; }
-    .kd-hero-inner { max-width: 720px; margin: 0 auto; padding: 0 2rem; box-sizing: border-box;
-      display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+    .kd-hero { padding: 1.5rem 0 2rem; min-height: 140px; margin-bottom: 0.4rem; }
+    .kd-hero-inner { max-width: 800px; margin: 0 auto; padding: 0 2rem; box-sizing: border-box;
+      display: flex; align-items: center; gap: 0.9rem; }
     .kd-hero .page-tag { color: var(--wok-red); }
     .kd-hero .page-title { color: var(--wok-ink); margin: 0; }
-    .kd-hero-back { align-self: flex-end; margin-bottom: 0.35rem; }
-    .kd-hero-scores { margin-left: auto; align-self: flex-end; }
+    .kd-back { flex: none; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--wok-ink);
+      background: #fff; color: var(--wok-ink); display: inline-flex; align-items: center; justify-content: center;
+      font-size: 1.15rem; font-weight: 700; text-decoration: none; line-height: 1; }
+    .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
     .drill-page { padding-top: 0.5rem; }
-    .drill-header { display: none; }              /* title + scores moved into the hero */
-    .drill-score-box { background: #fff; color: var(--wok-ink); border: 1.5px solid var(--wok-ink);
-      border-radius: 10px; box-shadow: var(--wok-shadow); }
-    .drill-score-label { opacity: 1; color: var(--wok-mute); }
-    .drill-score-box.streak .drill-score-value { color: var(--wok-red); }
 
+    /* toolbar */
+    .kd-toolbar { display: flex; flex-direction: row; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+      background: #fff; border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 4px 4px 0 var(--wok-ink);
+      padding: 0.6rem 0.75rem; margin-bottom: 0.9rem; }
+    .kd-seg { display: inline-flex; border: 1.5px solid var(--wok-ink); border-radius: 999px; overflow: hidden; background: #fff; }
+    .kd-seg-btn { border: 0; background: none; padding: 0.45rem 0.85rem; font-family: inherit; font-size: 0.8rem;
+      font-weight: 700; color: var(--wok-ink); cursor: pointer; white-space: nowrap; }
+    .kd-seg-btn + .kd-seg-btn { border-left: 1.5px solid var(--wok-ink); }
+    .kd-seg-btn.on { background: var(--wok-ink); color: var(--wok-paper); }
+    .kd-seg-btn:disabled { color: var(--wok-faint); cursor: default; }
+    .kd-seg-btn.on:disabled { background: var(--wok-mute); color: var(--wok-paper); }
+    .kd-toolbar-right { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .kd-round-tag { display: inline-flex; align-items: center; padding: 0.45rem 0.85rem; border-radius: 999px;
+      border: 1.5px solid var(--wok-red); background: var(--wok-red-wash); color: var(--wok-red);
+      font-size: 0.8rem; font-weight: 700; font-family: 'Outfit', 'Noto Serif JP', sans-serif; }
+    .kd-round-tag[hidden] { display: none; }
+    .kd-poolsize { margin-left: 0; }
+
+    /* status bar */
+    .kd-status { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      background: #fff; border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 4px 4px 0 var(--wok-ink);
+      padding: 0.55rem 0.9rem; margin-bottom: 1.1rem; }
+    .kd-status .drill-scores { display: flex; gap: 1rem; align-items: baseline; }
+    .kd-score { font-size: 0.82rem; font-weight: 700; color: var(--wok-ink); }
+    .kd-score .drill-score-label { font-size: 0.82rem; text-transform: none; letter-spacing: 0; opacity: 1; color: inherit; font-weight: 700; }
+    .kd-score.is-red { color: var(--wok-red); }
+    .kd-score b { font-weight: 800; }
+    .kd-reset { margin-left: auto; border: 0; background: none; font-family: inherit; font-size: 0.78rem;
+      font-weight: 700; color: var(--wok-red-dark); text-decoration: underline; cursor: pointer; padding: 0.2rem 0; }
+    .kd-round { display: flex; align-items: center; gap: 0.6rem; margin-left: auto; }
+    .kd-round[hidden] { display: none; }
+    .kd-status.is-round .kd-reset { margin-left: 0; }
+    .kd-status.is-round #kd-best-wrap { display: none; }
+    .kd-round-count { font-size: 0.76rem; color: var(--wok-mute); white-space: nowrap; }
     .drill-control-label { color: var(--wok-mute); }
     .drill-chip { border: 1.5px solid var(--wok-ink); color: var(--wok-ink); font-weight: 700; }
     .drill-chip:hover { border-color: var(--wok-ink); transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
     .drill-chip.on { background: var(--wok-ink); border-color: var(--wok-ink); color: var(--wok-paper); }
     .drill-select, .kd-num { border: 1.5px solid var(--wok-ink); color: var(--wok-ink); font-weight: 600; }
-    .kd-back { display: inline-flex; align-items: center; padding: 0.5rem 0.95rem; border-radius: 999px;
-      border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink); font-weight: 700; font-size: 0.8rem; }
-    .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
-    .kd-navrow .kd-back { display: none; }        /* it lives in the hero now */
+    .drill-select { max-width: 11.5rem; text-overflow: ellipsis; }
 
-    .kd-round { border: 2px solid var(--wok-ink); box-shadow: 4px 4px 0 var(--wok-ink); border-radius: 14px; }
-    .kd-round-label { font-weight: 800; }
     .kd-strip { display: flex; flex-wrap: wrap; gap: 5px; }
     .kd-pip { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--wok-line);
       background: var(--wok-paper-2); box-sizing: border-box; display: flex; align-items: center;
@@ -199,6 +217,9 @@
       transform: rotate(-2deg); }
     .drill-choice.wrong { background: #fff; border-color: var(--wok-red); color: var(--wok-red); box-shadow: none; }
     .drill-choice.dim { opacity: 0.35; box-shadow: none; }
+    .drill-choices.is-text { grid-template-columns: repeat(2, 1fr); }
+    .drill-choice.is-text { font-family: 'Outfit', sans-serif; font-size: 1.05rem; font-weight: 700; padding: 1rem 0.9rem;
+      letter-spacing: 0.02em; text-transform: lowercase; }
 
     .drill-input { border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--wok-ink); }
     .drill-input:focus { border-color: var(--wok-ink); }
@@ -240,9 +261,10 @@
     .drill-missed-chip .jp { color: var(--wok-red); font-weight: 700; }
 
     @media (max-width: 540px) {
-      .kd-hero { min-height: 120px; padding: 1.2rem 0 1.6rem; }
+      .kd-hero { min-height: 110px; padding: 1.1rem 0 1.4rem; }
       .kd-hero-inner { padding: 0 1.25rem; }
-      .kd-hero-scores { margin-left: 0; width: 100%; }
+      .kd-toolbar-right { margin-left: 0; width: 100%; }
+      .kd-round { margin-left: 0; width: 100%; }
     }
 
   </style>
@@ -294,6 +316,8 @@
     <div class="wok-hero kd-hero">
       <div class="wok-sky" data-wok-sky></div>
       <div class="kd-hero-inner">
+        <a class="kd-back" href="/kanji" aria-label="Back to the wall" title="Back to the wall"
+           data-i18n-label="kd_back_wall_btn" data-i18n-title="kd_back_wall_btn">&larr;</a>
         <div class="wok-title-row">
           <span class="wok-seal jp" aria-hidden="true">壁</span>
           <div class="wok-title-text">
@@ -301,34 +325,23 @@
             <h1 class="page-title" style="font-size: 2rem;" data-i18n="kd_title">Kanji Drill</h1>
           </div>
         </div>
-        <a class="kd-back kd-hero-back" href="/kanji" data-i18n="kd_back_wall">← Back to the wall</a>
-        <div class="drill-scores kd-hero-scores">
-          <div class="drill-score-box">
-            <div class="drill-score-label" data-i18n="score">Score</div>
-            <div class="drill-score-value"><span id="drill-correct">0</span>/<span id="drill-total">0</span></div>
-          </div>
-          <div class="drill-score-box streak">
-            <div class="drill-score-label" data-i18n="streak">Streak</div>
-            <div class="drill-score-value" id="drill-streak">0</div>
-          </div>
-          <div class="drill-score-box streak">
-            <div class="drill-score-label" data-i18n="best">Best</div>
-            <div class="drill-score-value" id="drill-best">0</div>
-          </div>
-        </div>
       </div>
     </div>
 
     <div class="drill-page">
 
-      <div class="drill-controls">
-        <div class="drill-control-row">
-          <span class="drill-control-label" data-i18n="mode">Mode</span>
-          <button class="drill-chip mode-chip on" data-mode="kanji2keyword" onclick="setMode('kanji2keyword')" data-i18n="mode_k2w">Kanji → Keyword</button>
-          <button class="drill-chip mode-chip" data-mode="keyword2kanji" onclick="setMode('keyword2kanji')" data-i18n="mode_w2k">Keyword → Kanji</button>
+      <!-- Toolbar: what you're practising. Mode · how you answer · which kanji. -->
+      <div class="kd-toolbar drill-controls" role="group" aria-label="Drill settings">
+        <div class="kd-seg" role="group" aria-label="Mode">
+          <button type="button" class="kd-seg-btn mode-chip on" data-mode="kanji2keyword" onclick="setMode('kanji2keyword')" data-i18n="mode_k2w">Kanji → Keyword</button>
+          <button type="button" class="kd-seg-btn mode-chip" data-mode="keyword2kanji" onclick="setMode('keyword2kanji')" data-i18n="mode_w2k">Keyword → Kanji</button>
         </div>
-        <div class="drill-control-row">
-          <span class="drill-control-label" data-i18n="range">Range</span>
+        <div class="kd-seg" id="kd-answer" role="group" aria-label="Answer method">
+          <button type="button" class="kd-seg-btn answer-chip on" data-answer="type" onclick="setAnswer('type')" data-i18n="kd_ans_type">Type it</button>
+          <button type="button" class="kd-seg-btn answer-chip" data-answer="pick" onclick="setAnswer('pick')" data-i18n="kd_ans_pick">Pick it</button>
+        </div>
+        <div class="kd-toolbar-right">
+          <label class="kd-sr" for="drill-range" data-i18n="range">Range</label>
           <select id="drill-range" class="drill-select"></select>
           <span class="kd-custom" id="kd-custom" hidden>
             <label class="kd-sr" for="kd-lo" data-i18n="kd_from">From</label>
@@ -339,21 +352,23 @@
             <button type="button" class="drill-chip" id="kd-apply" data-i18n="kd_apply">Apply</button>
           </span>
           <span class="kd-poolsize" id="kd-poolsize"></span>
+          <!-- In a round sent from the wall, the range IS the round. -->
+          <span class="kd-round-tag" id="kd-round-label" hidden></span>
         </div>
       </div>
 
-      <div class="kd-navrow">
-        <a class="kd-back" href="/kanji" data-i18n="kd_back_wall">← Back to the wall</a>
-        <span class="kd-navrow-note" id="kd-logging" data-i18n="kd_logging">Everything you answer here is recorded on the wall.</span>
-      </div>
-
-      <!-- Only present when the wall handed this page a list. -->
-      <div class="kd-round" id="kd-round" hidden>
-        <div class="kd-round-head">
-          <span class="kd-round-label" id="kd-round-label"></span>
+      <!-- Status bar: how it's going. Scores, and the round's stamps when there is one. -->
+      <div class="kd-status" id="kd-status">
+        <div class="drill-scores">
+          <span class="kd-score"><span class="drill-score-label" data-i18n="score">Score</span> <b><span id="drill-correct">0</span>/<span id="drill-total">0</span></b></span>
+          <span class="kd-score is-red"><span class="drill-score-label" data-i18n="streak">Streak</span> <b id="drill-streak">0</b></span>
+          <span class="kd-score is-red" id="kd-best-wrap"><span class="drill-score-label" data-i18n="best">Best</span> <b id="drill-best">0</b></span>
+        </div>
+        <div class="kd-round" id="kd-round" hidden>
+          <div class="kd-strip" id="kd-strip"></div>
           <span class="kd-round-count" id="kd-round-count"></span>
         </div>
-        <div class="kd-strip" id="kd-strip"></div>
+        <button type="button" class="kd-reset" id="kd-reset" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
       </div>
 
       <div id="drill-card-wrap">
@@ -376,7 +391,6 @@
       <div class="drill-actions">
         <button class="drill-btn primary" id="drill-check" onclick="checkDrillAnswer()" disabled data-i18n="check">Check Answer</button>
         <button class="drill-btn ghost" id="drill-skip" onclick="skipDrill()" data-i18n="skip">Skip (show answer)</button>
-        <button class="drill-btn ghost" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
       </div>
       </div><!-- /drill-card-wrap -->
 
@@ -415,6 +429,7 @@
     'use strict';
 
     var state = {
+      answer: 'type',            // 'type' | 'pick' — how you answer in Kanji → Keyword
       mode: 'kanji2keyword',
       lo: 1, hi: 500,        // the drill range, now any span rather than 3 fixed sets
       onlyWrong: false,      // "only the ones I've got wrong", read from the shared store
@@ -517,6 +532,9 @@
     function newQuestion() {
       if (!dataReady()) return;
       var item;
+      // Distractors come from the drill's own pool, or — in a round handed
+      // over by the wall, which has no range — from the round's block.
+      var p;
       if (state.queue) {
         // A handed-over round is finite and in a fixed order, so the strip at
         // the top means something and the round actually ends.
@@ -524,8 +542,11 @@
         item = byKlcId(state.queue[state.qIdx]);
         if (!item) { state.qIdx++; newQuestion(); return; }
         paintStrip();
+        var blo = Math.floor((item.id - 1) / 100) * 100 + 1;
+        p = kanjiDataList.filter(function (k) { return k.id >= blo && k.id < blo + 100; });
+        if (p.length < 4) p = kanjiDataList;
       } else {
-        var p = pool();
+        p = pool();
         if (!p.length) { showPoolSize(); return; }
         item = p[Math.floor(Math.random() * p.length)];
         if (state.current && p.length > 3) {
@@ -544,7 +565,17 @@
       fb.className = 'drill-feedback';
       fb.innerHTML = '';
 
-      if (state.mode === 'kanji2keyword') {
+      if (state.mode === 'kanji2keyword' && state.answer === 'pick') {
+        $('drill-tag').textContent = 'What is the keyword?';
+        var qp = $('drill-question');
+        qp.className = 'drill-question jp';
+        qp.textContent = item.kanji;
+        $('drill-type-row').style.display = 'none';
+        $('drill-choices').style.display = 'grid';
+        buildChoices(item, p, true);
+        $('drill-check').style.display = 'none';
+        $('drill-skip').style.display = 'block';
+      } else if (state.mode === 'kanji2keyword') {
         $('drill-tag').textContent = 'What is the keyword?';
         var q = $('drill-question');
         q.className = 'drill-question jp';
@@ -568,13 +599,13 @@
         q2.textContent = item.keyword;
         $('drill-type-row').style.display = 'none';
         $('drill-choices').style.display = 'grid';
-        buildChoices(item, p);
+        buildChoices(item, p, false);
         $('drill-check').style.display = 'none';
         $('drill-skip').style.display = 'block';
       }
     }
 
-    function buildChoices(answer, p) {
+    function buildChoices(answer, p, asText) {
       var distractors = [];
       var usedKanji = {};
       usedKanji[answer.kanji] = true;
@@ -597,10 +628,12 @@
       }
       var box = $('drill-choices');
       box.innerHTML = '';
+      box.classList.toggle('is-text', !!asText);
       options.forEach(function (opt) {
         var b = document.createElement('button');
-        b.className = 'drill-choice jp';
-        b.textContent = opt.kanji;
+        b.className = asText ? 'drill-choice is-text' : 'drill-choice jp';
+        b.textContent = asText ? primaryKeyword(opt).toLowerCase() : opt.kanji;
+        b.dataset.kanji = opt.kanji;
         b.style.setProperty('--stamp', KA_Kanji.colour(opt.id));
         b.onclick = function () { chooseKanji(opt, b); };
         box.appendChild(b);
@@ -616,7 +649,7 @@
       var buttons = $('drill-choices').querySelectorAll('.drill-choice');
       buttons.forEach(function (b) {
         b.disabled = true;
-        if (b.textContent === item.kanji) b.classList.add('correct');
+        if (b.dataset.kanji === item.kanji) b.classList.add('correct');
         else if (b === btn) b.classList.add('wrong');
         else b.classList.add('dim');
       });
@@ -664,7 +697,7 @@
         var buttons = $('drill-choices').querySelectorAll('.drill-choice');
         buttons.forEach(function (b) {
           b.disabled = true;
-          if (b.textContent === item.kanji) b.classList.add('correct');
+          if (b.dataset.kanji === item.kanji) b.classList.add('correct');
           else b.classList.add('dim');
         });
       }
@@ -771,6 +804,16 @@
         if (kanjiDataList[i].id === id) return kanjiDataList[i];
       }
       return null;
+    }
+
+    // The wall already chose the kanji, so the range picker gives way to a
+    // tag naming the round; the mode and answer toggles stay usable.
+    function enterRound() {
+      $('kd-round').hidden = false;
+      $('kd-round-label').hidden = false;
+      $('kd-round-label').textContent = state.qLabel;
+      $('kd-status').classList.add('is-round');
+      ['drill-range', 'kd-custom', 'kd-poolsize'].forEach(function (id) { $(id).hidden = true; });
     }
 
     function paintStrip() {
@@ -916,11 +959,31 @@
 
     window.toggleSet = function () { /* the range chips were replaced by a select */ };
 
+    // How you answer in Kanji → Keyword: type the keyword, or pick it from
+    // four. Keyword → Kanji is pick-only (typing a kanji needs an IME), so the
+    // toggle is disabled there rather than hidden — it stays in the same place.
+    window.setAnswer = function (how) {
+      state.answer = how === 'pick' ? 'pick' : 'type';
+      try { localStorage.setItem('kanjiDrillAnswer', state.answer); } catch (e) {}
+      paintAnswerToggle();
+      newQuestion();
+    };
+    function paintAnswerToggle() {
+      var pickOnly = state.mode !== 'kanji2keyword';
+      document.querySelectorAll('.answer-chip').forEach(function (c) {
+        var how = c.getAttribute('data-answer');
+        c.classList.toggle('on', pickOnly ? how === 'pick' : how === state.answer);
+        c.disabled = pickOnly;
+      });
+    }
+
     window.setMode = function (mode) {
       state.mode = mode;
       document.querySelectorAll('.mode-chip').forEach(function (c) {
         c.classList.toggle('on', c.getAttribute('data-mode') === mode);
       });
+      try { localStorage.setItem('kanjiDrillMode', mode); } catch (e) {}
+      paintAnswerToggle();
       newQuestion();
     };
 
@@ -975,6 +1038,12 @@
       $('drill-check').addEventListener('click', function () {
         if (state.answered) newQuestion();
       });
+      try {
+        var m = localStorage.getItem('kanjiDrillMode');
+        if (m === 'keyword2kanji') { state.mode = m; document.querySelectorAll('.mode-chip').forEach(function (c) { c.classList.toggle('on', c.getAttribute('data-mode') === m); }); }
+        if (localStorage.getItem('kanjiDrillAnswer') === 'pick') state.answer = 'pick';
+      } catch (e) {}
+      paintAnswerToggle();
       buildRangeOptions();
       $('drill-range').addEventListener('change', function () {
         applyRange(this.value);
@@ -997,10 +1066,7 @@
         if (q && q.ids && q.ids.length) {
           state.queue = q.ids;
           state.qLabel = q.label || '';
-          $('kd-round').hidden = false;
-          $('kd-round-label').textContent = state.qLabel;
-          var picker = document.querySelector('.drill-controls');
-          if (picker) picker.style.display = 'none';   // the wall already chose
+          enterRound();
           paintStrip();
         }
       }

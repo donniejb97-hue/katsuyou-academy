@@ -1269,7 +1269,7 @@
     var box = $('kw-detail');
 
     var stateLabel = d.status === 'solid'
-      ? t('kw_s_solid', 'Solid — right twice running')
+      ? (d.wrong === 0 ? t('kw_s_solid_clean', 'Solid — never missed') : t('kw_s_solid', 'Solid — right twice running'))
       : d.status === 'shaky'
         ? t('kw_s_shaky', 'Shaky') + ' — ' + d.wrong + '/' + d.seen + ' ' + t('kw_s_missed', 'missed')
         : t('kw_s_new', 'Not started yet');

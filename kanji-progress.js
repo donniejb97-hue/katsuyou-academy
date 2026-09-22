@@ -19,13 +19,14 @@
    Status rule — the whole of it:
 
      new    never answered
-     shaky  answered at least once, but not right twice in a row since
-     solid  right twice in a row
+     solid  never missed and answered right at least once,
+            or missed before but right twice in a row since
+     shaky  everything else — i.e. you have missed it and not yet won it back
 
-   "Right twice in a row" is deliberately forgiving: one wrong answer drops a
-   tile back to shaky, and two rights put it back. It needs no scheduler, no
-   intervals, and no clock — the user can close the tab for six months and the
-   wall still means the same thing.
+   So a red outline only ever appears on a kanji you actually got wrong. One
+   wrong answer drops a tile to shaky, and two rights put it back. It needs no
+   scheduler, no intervals, and no clock — the user can close the tab for six
+   months and the wall still means the same thing.
    ============================================================ */
 
 (function () {
@@ -33,7 +34,7 @@
 
   var PROGRESS_KEY = 'katsuyo-kanji-progress';
   var QUEUE_KEY    = 'katsuyo-kanji-queue';
-  var SOLID_AT     = 2;           // consecutive correct answers to count as known
+  var SOLID_AT     = 2;           // right answers in a row to WIN BACK a kanji you've missed
 
   var SEEN = 0, WRONG = 1, STREAK = 2, LAST = 3;
 
@@ -63,11 +64,19 @@
     return data()[String(id)] || null;
   }
 
-  function status(id) {
-    var e = entry(id);
+  // The rule, in one place:
+  //   never answered            → new
+  //   never missed, right ≥ 1   → solid   (a red outline means "you slipped
+  //                                          on this", so it must not appear
+  //                                          on a kanji you have never got wrong)
+  //   missed at some point      → shaky until SOLID_AT right answers in a row
+  function statusOf(e) {
     if (!e) return 'new';
+    if (e[WRONG] === 0) return e[STREAK] >= 1 ? 'solid' : 'shaky';
     return e[STREAK] >= SOLID_AT ? 'solid' : 'shaky';
   }
+
+  function status(id) { return statusOf(entry(id)); }
 
   // How the card explains itself: "missed 2 of the last 5" etc.
   function detail(id) {
@@ -80,10 +89,7 @@
   function counts(lo, hi) {
     var d = data(), out = { solid: 0, shaky: 0, 'new': 0, total: hi - lo + 1 };
     for (var id = lo; id <= hi; id++) {
-      var e = d[String(id)];
-      if (!e) out['new']++;
-      else if (e[STREAK] >= SOLID_AT) out.solid++;
-      else out.shaky++;
+      out[statusOf(d[String(id)])]++;
     }
     return out;
   }
@@ -92,9 +98,7 @@
   function idsWithStatus(lo, hi, want) {
     var d = data(), out = [];
     for (var id = lo; id <= hi; id++) {
-      var e = d[String(id)];
-      var s = !e ? 'new' : (e[STREAK] >= SOLID_AT ? 'solid' : 'shaky');
-      if (s === want) out.push(id);
+      if (statusOf(d[String(id)]) === want) out.push(id);
     }
     return out;
   }
