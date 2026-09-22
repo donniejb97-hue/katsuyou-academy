@@ -16,7 +16,7 @@
        All light on purpose: the hero above and the "Where to Start" band below
        are both dark, so another dark block here would make the page navy top
        to bottom. Colour comes from the numbers and the card edges instead. */
-    .hm-alt { background: var(--paper-warm); }
+    .hm-alt { background: #fdf8f1; }
     .hm-lede { max-width: 64ch; margin: .6rem auto 0; color: var(--text-light); line-height: 1.75; }
 
     .hm-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
@@ -108,7 +108,7 @@
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
         <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
-        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Drill</a>
+        <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Kitchen</a>
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
         <a class="nav-link" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
         <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
@@ -158,7 +158,7 @@
 
           <div class="hero-demo">
             <div class="demo-head">
-              <span class="demo-eyebrow" data-i18n="demo_eyebrow">Try it right here</span>
+              <span class="demo-eyebrow" data-i18n="demo_eyebrow">Demos</span>
             </div>
           <div class="demo-tabs" role="tablist">
             <button class="demo-tab cat-ref on" role="tab" data-demo="kana" data-i18n="demo_tab_kana">Kana Drill</button>
@@ -223,7 +223,6 @@
            Delete the style below to bring the long version back. -->
       <section class="home-section" style="display: none;">
         <div class="home-panel">
-          <span class="section-mark" aria-hidden="true">基</span>
           <h2 class="home-h2" data-i18n="intro_title">Your Complete Japanese Foundation</h2>
 
           <div style="color: var(--text); font-size: 1.05rem; line-height: 1.8;">
@@ -277,7 +276,6 @@
       <!-- ============ What it is, and how much of it ============ -->
       <section class="home-section hm-scale">
         <div class="home-panel" style="text-align:center">
-          <span class="section-mark" aria-hidden="true">全部</span>
           <h2 class="home-h2" data-i18n="hm_scale_t">Everything for Japanese, in one place</h2>
           <p class="hm-lede" data-i18n="hm_scale_d">Most people learning Japanese end up with a dictionary in one tab, a kanji app on their phone, a conjugation chart screenshotted from somewhere, and a textbook they've stopped opening. This is all of it in one place — and it's free because there's nothing here to sell you.</p>
           <div class="hm-nums">
@@ -295,7 +293,6 @@
       <section class="home-section hm-alt">
         <div class="home-panel">
           <div style="text-align:center">
-            <span class="section-mark" aria-hidden="true">中身</span>
             <h2 class="home-h2" data-i18n="hm_peek_t">Have a look inside</h2>
             <p class="hm-lede" data-i18n="hm_peek_d">Rather than describe it — this is real content from the site, exactly as it appears on the page.</p>
           </div>
@@ -352,12 +349,16 @@
         </div>
       </section>
 
-      <section class="features" id="toolkit" style="background: var(--paper-warm); padding: 4rem 2rem;">
+      <section class="features" id="toolkit" style="background: #fdf8f1; padding: 4rem 2rem;">
         <div class="features-inner" style="max-width: 1200px; margin: 0 auto;">
           <div class="features-header" style="text-align: center; margin-bottom: 3rem;">
-            <span class="section-mark" aria-hidden="true">具</span>
             <h2 class="home-h2" data-i18n="toolkit_title">The Toolkit</h2>
             <p class="features-subtitle" style="font-size: 1.1rem; color: var(--text-light);" data-i18n="toolkit_sub">Ten interconnected tools covering the foundations of Japanese</p>
+          </div>
+
+          <div class="toolkit-welcome">
+            <span class="toolkit-welcome__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.9 8 10 4.6-1.1 8-5 8-10V6l-8-4z"/><path d="m9 12 2 2 4-4"/></svg></span>
+            <p class="toolkit-welcome__text" data-i18n-html="toolkit_welcome"><strong>Can't read a word of Japanese yet? Good — start at the top.</strong>Nothing here needs prior knowledge, nothing keeps score unless you ask it to, and every tool is free with no account.</p>
           </div>
 
           <div class="tool-legend">
@@ -371,20 +372,20 @@
             <!-- Kana — reference -->
             <div class="tool-card is-reference" onclick="showPage('kana')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_reference">Reference</span>
-              <span class="tool-card__glyph" aria-hidden="true">仮</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a2 2 0 0 1 2-2h7v5H5a2 2 0 0 1-2-2z"/><path d="M21 18a2 2 0 0 1-2-2h-7v5h7a2 2 0 0 0 2-2z"/><path d="M3 18V5a2 2 0 0 1 2-2h7"/><path d="M21 18V5a2 2 0 0 0-2-2h-7"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_kana_t"><span class="jp">仮名</span> — Kana</h3>
               <p class="tool-card__desc" data-i18n-html="card_kana_d">
                 Practice all <strong>104 hiragana and katakana</strong> characters. Learn both Japanese writing systems side-by-side with
                 <strong>audio pronunciation</strong>, clear charts for basic kana, dakuten (voiced sounds), and combination characters.
                 Click any character to hear how it sounds.
               </p>
-              <div class="tool-card__cta" data-i18n="card_kana_cta">Learn Kana →</div>
+              <div class="tool-card__cta" data-i18n="card_kana_cta">Learn Kana →</div><span class="tool-card__jp" aria-hidden="true">仮名 <i>kana</i></span>
             </div>
 
             <!-- Kana Drill — practice -->
             <div class="tool-card is-practice" onclick="location.href='/kana-drill'" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">練</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01"/><path d="M10 10h.01"/><path d="M14 10h.01"/><path d="M18 10h.01"/><path d="M7 14h10"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_kdrill_t"><span class="jp">仮名練習</span> — Kana Drill</h3>
               <p class="tool-card__desc" data-i18n-html="card_kdrill_d">
                 Quiz yourself in both directions—<strong>kana → rōmaji</strong> by typing, or <strong>rōmaji → kana</strong> by
@@ -393,51 +394,51 @@
                 without leaving the question. A <strong>progress chart</strong> shows every kana you've answered and how
                 often you've missed it.
               </p>
-              <div class="tool-card__cta" data-i18n="card_kdrill_cta">Start Drilling →</div>
+              <div class="tool-card__cta" data-i18n="card_kdrill_cta">Start Drilling →</div><span class="tool-card__jp" aria-hidden="true">仮名練習 <i>kana renshū</i></span>
             </div>
 
             <!-- Learn — reference -->
             <div class="tool-card is-reference" onclick="showPage('learn')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_reference">Reference</span>
-              <span class="tool-card__glyph" aria-hidden="true">学</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V18h8v-3.3A7 7 0 0 0 12 2z"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_learn_t"></h3>
               <p class="tool-card__desc" data-i18n-html="card_learn_d">
                 Clear, visual explanations of how Japanese verb conjugation actually works. Understand the <em>why</em>
                 behind the patterns, not just the rules. Learn to identify verb types, understand the hiragana sound
                 system, and see step-by-step walkthroughs of each conjugation type.
               </p>
-              <div class="tool-card__cta" data-i18n="card_learn_cta">Start Learning →</div>
+              <div class="tool-card__cta" data-i18n="card_learn_cta">Start Learning →</div><span class="tool-card__jp" aria-hidden="true">学習 <i>gakushū</i></span>
             </div>
 
             <!-- Forms — reference -->
             <div class="tool-card is-reference" onclick="showPage('forms')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_reference">Reference</span>
-              <span class="tool-card__glyph" aria-hidden="true">形</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M9 10v10"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_forms_t"></h3>
               <p class="tool-card__desc" data-i18n-html="card_forms_d">
                 Comprehensive quick-reference conjugation charts covering 16 verb forms for all three verb types: Godan (五段), Ichidan (一段), and Suru (する).
                 From basic forms (negative, polite, past) to advanced (passive, causative, conditional), color-coded tables show you exactly how each form is created.
                 Perfect for quick lookups or comparing patterns side-by-side.
               </p>
-              <div class="tool-card__cta" data-i18n="card_forms_cta">View Forms →</div>
+              <div class="tool-card__cta" data-i18n="card_forms_cta">View Forms →</div><span class="tool-card__jp" aria-hidden="true">活用形 <i>katsuyōkei</i></span>
             </div>
 
             <!-- Verb List — reference -->
             <div class="tool-card is-reference" onclick="showPage('verblist')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_reference">Reference</span>
-              <span class="tool-card__glyph" aria-hidden="true">動</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_verbs_t"></h3>
               <p class="tool-card__desc" data-i18n-html="card_verbs_d">
                 Browse all <strong>129 verbs</strong> in our database, organized by type (Godan, Ichidan, Suru) with kanji, hiragana, and English meanings.
                 <strong>Search</strong> to find specific verbs instantly, or <strong>filter by JLPT level</strong> (N5, N4, N3) to focus on vocabulary appropriate for your level.
               </p>
-              <div class="tool-card__cta" data-i18n="card_verbs_cta">Browse Verbs →</div>
+              <div class="tool-card__cta" data-i18n="card_verbs_cta">Browse Verbs →</div><span class="tool-card__jp" aria-hidden="true">動詞 <i>dōshi</i></span>
             </div>
 
             <!-- The Conjugator — practice -->
             <div class="tool-card is-practice" onclick="showPage('conjugator')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">活</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_conj_t"></h3>
               <p class="tool-card__desc" data-i18n-html="card_conj_d">
                 The heart of Katsuyō Academy. Practice conjugating verbs across <strong>16 forms</strong> with instant feedback.
@@ -446,14 +447,14 @@
                 <strong>rounds</strong> that end with a summary. Verbs you get wrong <strong>come back</strong> until you've got them twice,
                 and every mistake is explained with the exact rule you needed.
               </p>
-              <div class="tool-card__cta" data-i18n="card_conj_cta">Start Practicing →</div>
+              <div class="tool-card__cta" data-i18n="card_conj_cta">Start Practicing →</div><span class="tool-card__jp" aria-hidden="true">活用 <i>katsuyō</i></span>
             </div>
 
             <!-- Talk — practice, new -->
             <div class="tool-card is-feature" onclick="location.href='/talk'" role="link" tabindex="0">
               <span class="tool-card__new" data-i18n="badge_new">New</span>
               <span class="tool-card__cat" data-i18n="cat_conversation">Conversation</span>
-              <span class="tool-card__glyph" aria-hidden="true">話</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.7-.8L3 21l1.9-5.2A8.4 8.4 0 0 1 4 11.5a8.5 8.5 0 0 1 17 0z"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_talk_t"><span class="jp">会話</span> — Talk</h3>
               <p class="tool-card__desc" data-i18n-html="card_talk_d">
                 Actually use what you've learned. Pick a <strong>scenario</strong>—ordering food, a doctor's visit, buying cinema
@@ -462,26 +463,26 @@
                 Stop whenever you like for a <strong>written assessment</strong>: what went well, what to fix, the full transcript,
                 and the words you met along the way.
               </p>
-              <div class="tool-card__cta" data-i18n="card_talk_cta">Start Talking →</div>
+              <div class="tool-card__cta" data-i18n="card_talk_cta">Start Talking →</div><span class="tool-card__jp" aria-hidden="true">会話 <i>kaiwa</i></span>
             </div>
 
             <!-- Reading — practice, new -->
             <div class="tool-card is-practice" onclick="location.href='/reading'" role="link" tabindex="0">
               <span class="tool-card__new" data-i18n="badge_new">New</span>
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">読</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a2 2 0 0 1 2-2h7v5H5a2 2 0 0 1-2-2z"/><path d="M21 18a2 2 0 0 1-2-2h-7v5h7a2 2 0 0 0 2-2z"/><path d="M3 18V5a2 2 0 0 1 2-2h7"/><path d="M21 18V5a2 2 0 0 0-2-2h-7"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_reading_t"><span class="jp">読解</span> — Reading</h3>
               <p class="tool-card__desc" data-i18n-html="card_reading_d">
                 Graded short stories from <strong>N5 to N1</strong>. Read in kana, with furigana, or kanji only, listen along,
                 then answer comprehension questions graded instantly.
               </p>
-              <div class="tool-card__cta" data-i18n="card_reading_cta">Start Reading →</div>
+              <div class="tool-card__cta" data-i18n="card_reading_cta">Start Reading →</div><span class="tool-card__jp" aria-hidden="true">読解 <i>dokkai</i></span>
             </div>
 
             <!-- Vocabulary — practice -->
             <div class="tool-card is-practice" onclick="showPage('vocabulary')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">語</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_vocab_t"><span class="jp">単語</span> — Vocabulary</h3>
               <p class="tool-card__desc" data-i18n-html="card_vocab_d">
                 Practice <strong>941 essential Japanese words</strong> with intelligent flashcards.
@@ -489,13 +490,13 @@
                 Toggle between Japanese→English or English→Japanese practice, show or hide readings, and see both scripts side-by-side.
                 <strong>Smart shuffle prioritises unseen cards</strong>, and progress tracking shows how many you've studied.
               </p>
-              <div class="tool-card__cta" data-i18n="card_vocab_cta">Start Learning Words →</div>
+              <div class="tool-card__cta" data-i18n="card_vocab_cta">Start Learning Words →</div><span class="tool-card__jp" aria-hidden="true">単語 <i>tango</i></span>
             </div>
 
             <!-- Kanji — practice -->
             <div class="tool-card is-practice" onclick="showPage('kanji')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">字</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_kanji_t"><span class="jp">漢字</span> — Kanji</h3>
               <p class="tool-card__desc" data-i18n-html="card_kanji_d">
                 Practice <strong>2,300 kanji</strong> from the acclaimed <strong>Kodansha Learner's Course</strong>.
@@ -503,13 +504,13 @@
                 plus <strong>example vocabulary</strong> with meanings. Filter by level, <strong>shuffle cards</strong>,
                 or <strong>jump to any KLC number</strong>. Keyboard shortcuts included!
               </p>
-              <div class="tool-card__cta" data-i18n="card_kanji_cta">Learn Kanji →</div>
+              <div class="tool-card__cta" data-i18n="card_kanji_cta">Learn Kanji →</div><span class="tool-card__jp" aria-hidden="true">漢字 <i>kanji</i></span>
             </div>
 
             <!-- HIDDEN — delete the "display: none;" below to bring this back -->
             <div class="tool-card is-practice" style="display: none;" onclick="showPage('datedojo')" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">日</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M3 11h18"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="card_dojo_t"><span class="jp">日付</span> — Dates &amp; Numbers</h3>
               <p class="tool-card__desc" data-i18n-html="card_dojo_d">
                 Practice Japanese dates, weekdays, months, and numbers. Questions cover today's date, future/past calculations,
@@ -517,21 +518,21 @@
                 <strong>Full sentence answers required</strong> — build proper grammar habits with です and でした endings.
                 Includes a handy <strong>reference chart</strong> for the tricky readings.
               </p>
-              <div class="tool-card__cta" data-i18n="card_dojo_cta">Enter the Dojo →</div>
+              <div class="tool-card__cta" data-i18n="card_dojo_cta">Enter the Dojo →</div><span class="tool-card__jp" aria-hidden="true">日付 <i>hizuke</i></span>
             </div>
 
             <!-- HIDDEN — delete the "display: none;" below to bring this back -->
             <div class="tool-card is-practice" style="display: none;" onclick="location.href='/kanji-drill'" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="cat_practice">Practice</span>
-              <span class="tool-card__glyph" aria-hidden="true">漢</span>
-              <h3 class="tool-card__title" data-i18n-html="card_kjdrill_t"><span class="jp">漢字練習</span> — Kanji Drill</h3>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span></span>
+              <h3 class="tool-card__title" data-i18n-html="card_kjdrill_t">Kanji Kitchen</h3>
               <p class="tool-card__desc" data-i18n-html="card_kjdrill_d">
                 Test yourself on all <strong>2,300 KLC kanji</strong>, either character → keyword or keyword → character.
                 <strong>Pick a range</strong> so you drill only the block you're studying rather than the whole course.
                 Typed answers get <strong>three-tier feedback</strong>—correct, close enough to try again, or the answer revealed—
                 and everything you miss collects in a <strong>review list</strong> at the bottom of the page.
               </p>
-              <div class="tool-card__cta" data-i18n="card_kjdrill_cta">Start Drilling →</div>
+              <div class="tool-card__cta" data-i18n="card_kjdrill_cta">Start Drilling →</div><span class="tool-card__jp" aria-hidden="true">漢字練習 <i>kanji renshū</i></span>
             </div>
 
           </div>
@@ -544,38 +545,37 @@
       <section class="home-section hm-spine">
         <div class="home-panel">
           <div style="text-align:center;margin-bottom:2.2rem">
-            <span class="section-mark" aria-hidden="true">活用</span>
             <h2 class="home-h2" data-i18n="hm_sp_t">The part this site is named after</h2>
             <p class="hm-lede" data-i18n="hm_sp_d">Katsuyō means conjugation. It is the thing that stops most learners, and it is where four of these tools point at the same problem from different sides.</p>
           </div>
           <div class="tool-grid hm-four">
             <div class="tool-card is-reference" onclick="location.href='/forms'" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="hm_sp1_c">Step one · Learn it</span>
-              <span class="tool-card__glyph" aria-hidden="true">形</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M9 10v10"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="hm_sp1_t"><span class="jp">形</span> — Forms</h3>
               <p class="tool-card__desc" data-i18n-html="hm_sp1_d">Twelve verb forms and the adjectives, each with the rule for every verb class, worked examples, and the exceptions spelled out rather than left for you to trip over. The reference you come back to.</p>
-              <div class="tool-card__cta" data-i18n="hm_sp1_a">Read the forms →</div>
+              <div class="tool-card__cta" data-i18n="hm_sp1_a">Read the forms →</div><span class="tool-card__jp" aria-hidden="true">形 <i>katachi</i></span>
             </div>
             <div class="tool-card is-practice" onclick="location.href='/conjugator'" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="hm_sp2_c">Step two · Build it</span>
-              <span class="tool-card__glyph" aria-hidden="true">活</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="hm_sp2_t"><span class="jp">活用</span> — Conjugator</h3>
               <p class="tool-card__desc" data-i18n-html="hm_sp2_d">You are given a verb and a target form; you produce it. <strong>Sixteen forms</strong>, five verb types, hints in three escalating steps, and a report at the end of exactly which forms keep catching you.</p>
-              <div class="tool-card__cta" data-i18n="hm_sp2_a">Start drilling →</div>
+              <div class="tool-card__cta" data-i18n="hm_sp2_a">Start drilling →</div><span class="tool-card__jp" aria-hidden="true">活用 <i>katsuyō</i></span>
             </div>
             <div class="tool-card is-practice" onclick="location.href='/deconjugator'" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="hm_sp3_c">Step three · Undo it</span>
-              <span class="tool-card__glyph" aria-hidden="true">逆</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="hm_sp3_t"><span class="jp">逆引き</span> — Rewind</h3>
               <p class="tool-card__desc" data-i18n-html="hm_sp3_d">Every conjugation drill goes one direction. This one goes the other: you are shown <strong>食べさせられた</strong> and you work out where it came from — which is what reading actually asks of you.</p>
-              <div class="tool-card__cta" data-i18n="hm_sp3_a">Work one backwards →</div>
+              <div class="tool-card__cta" data-i18n="hm_sp3_a">Work one backwards →</div><span class="tool-card__jp" aria-hidden="true">逆引き <i>gyakubiki</i></span>
             </div>
             <div class="tool-card is-reference" onclick="location.href='/dictionary'" role="link" tabindex="0">
               <span class="tool-card__cat" data-i18n="hm_sp4_c">In the wild</span>
-              <span class="tool-card__glyph" aria-hidden="true">辞</span>
+              <span class="tool-card__glyph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.6-3.6"/></svg></span></span>
               <h3 class="tool-card__title" data-i18n-html="hm_sp4_t"><span class="jp">辞書</span> — Dictionary</h3>
               <p class="tool-card__desc" data-i18n-html="hm_sp4_d">When you meet a form you don't recognise in real Japanese, paste it in. <strong>食べさせられなかった</strong> walks back to 食べる, naming every layer it removes on the way.</p>
-              <div class="tool-card__cta" data-i18n="hm_sp4_a">Look something up →</div>
+              <div class="tool-card__cta" data-i18n="hm_sp4_a">Look something up →</div><span class="tool-card__jp" aria-hidden="true">辞書 <i>jisho</i></span>
             </div>
           </div>
         </div>
@@ -585,7 +585,6 @@
       <section class="home-section hm-alt">
         <div class="home-panel">
           <div style="text-align:center">
-            <span class="section-mark" aria-hidden="true">流れ</span>
             <h2 class="home-h2" data-i18n="hm_fl_t">How the pieces fit together</h2>
             <p class="hm-lede" data-i18n="hm_fl_d">The tools aren't separate apps that happen to share a nav bar. They pass you between them.</p>
           </div>
@@ -606,7 +605,6 @@
       <section class="home-section is-band">
         <div class="home-panel">
           <div style="text-align: center;">
-            <span class="section-mark" aria-hidden="true">道</span>
             <h2 class="home-h2" data-i18n="tour_title">Where to Start</h2>
             <p class="tour-sub" data-i18n="tour_sub">New to Japanese? This is the order that works. About an hour a day gets you through it.</p>
           </div>
@@ -647,12 +645,11 @@
            Delete the style below to bring it back; it slots in here cleanly. -->
       <section class="home-section" style="display: none;">
         <div class="home-panel is-dark">
-          <span class="section-mark" aria-hidden="true">違</span>
           <h2 class="home-h2" data-i18n="why_title">What Makes This Different</h2>
 
           <div class="why-grid">
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">携</span><span data-i18n="why_install_t">Nothing to Install</span></h3>
+              <h3><span data-i18n="why_install_t">Nothing to Install</span></h3>
               <p data-i18n="why_install_d">
                 Fast, focused pages that open straight in your browser. No app to download, no account to create,
                 nothing to configure—on your desktop, your tablet or your phone.
@@ -660,7 +657,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">絞</span><span data-i18n="why_focus_t">Focused Tools</span></h3>
+              <h3><span data-i18n="why_focus_t">Focused Tools</span></h3>
               <p data-i18n="why_focus_d">
                 Not a gamified app or a full curriculum. Just focused, interconnected reference and practice tools
                 for the foundational building blocks you'll use every day.
@@ -668,7 +665,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">理</span><span data-i18n="why_understand_t">Understanding Over Memorization</span></h3>
+              <h3><span data-i18n="why_understand_t">Understanding Over Memorization</span></h3>
               <p data-i18n-html="why_understand_d">
                 The Learn section explains <em>why</em> patterns work the way they do. When you understand the logic,
                 conjugation becomes intuitive instead of a memory test.
@@ -676,7 +673,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">助</span><span data-i18n="why_feedback_t">Helpful Feedback</span></h3>
+              <h3><span data-i18n="why_feedback_t">Helpful Feedback</span></h3>
               <p data-i18n="why_feedback_d">
                 The Conjugator doesn't just say "wrong"—it shows the exact rule you needed and identifies your
                 specific error, then brings that verb back later. Flashcards prioritise unseen cards, and the kana
@@ -685,7 +682,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">美</span><span data-i18n="why_design_t">Thoughtfully Designed</span></h3>
+              <h3><span data-i18n="why_design_t">Thoughtfully Designed</span></h3>
               <p data-i18n="why_design_d">
                 Warm, aged-paper aesthetics with clean typography. It feels more like a well-crafted study journal
                 than a typical language app. No ads, no clutter, no distractions.
@@ -693,7 +690,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">訳</span><span data-i18n="why_langs_t">Five Languages</span></h3>
+              <h3><span data-i18n="why_langs_t">Five Languages</span></h3>
               <p data-i18n="why_langs_d">
                 The whole site—every page, every button, every explanation—reads in English, German, French or
                 Simplified Chinese. Switch language from the menu at any time; your place is kept.
@@ -701,7 +698,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">師</span><span data-i18n="why_katsu_t">Ask Katsu</span></h3>
+              <h3><span data-i18n="why_katsu_t">Ask Katsu</span></h3>
               <p data-i18n-html="why_katsu_d">
                 <span class="jp">カツ先生</span>, an AI tutor, waits in the corner of every page. Ask why a conjugation works,
                 what separates は from が, or anything that has you stuck—and get an answer in the language you're reading in.
@@ -710,7 +707,7 @@
             </div>
 
             <div class="why-item">
-              <h3><span class="why-mark" aria-hidden="true">無</span><span data-i18n="why_free_t">Free Forever</span></h3>
+              <h3><span data-i18n="why_free_t">Free Forever</span></h3>
               <p data-i18n="why_free_d">
                 A passion project born from my own struggles learning Japanese. No paywalls, no premium tiers,
                 no "sign up to continue." Just free resources for anyone who wants to learn.
@@ -727,7 +724,6 @@
       <section class="home-section hm-who">
         <div class="home-panel">
           <div style="text-align:center">
-            <span class="section-mark" aria-hidden="true">誰に</span>
             <h2 class="home-h2" data-i18n="hm_wh_t">Who it's for</h2>
           </div>
           <div class="hm-whogrid">
@@ -750,7 +746,6 @@
       <section class="home-section hm-alt">
         <div class="home-panel">
           <div style="text-align:center">
-            <span class="section-mark" aria-hidden="true">質問</span>
             <h2 class="home-h2" data-i18n="hm_qa_t">Before you ask</h2>
           </div>
           <div class="hm-qa">
@@ -770,7 +765,6 @@
 
       <section class="home-close">
         <div class="home-close-inner">
-          <span class="section-mark" aria-hidden="true">始</span>
           <p class="home-close-note" data-i18n-html="creator_note_plain">
             I built Katsuyō Academy because I needed it myself. Scattered textbook chapters,
             confusing online resources, flashcard apps that didn't quite work the way I wanted —
