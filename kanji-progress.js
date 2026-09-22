@@ -165,12 +165,14 @@
                 a light tint after the first right answer, the full colour
                 at two in a row, a deep ink at five
        rainbow  one step along the spectrum per right answer in a row:
-                orange, gold, green, teal, blue, indigo, purple at seven
+                red, orange, gold, green, teal, blue, indigo, purple at eight
 
-     Red is on none of the ramps, so it can only ever mean "shaky". */
+     A filled red stamp (spectrum, streak 1) and a red OUTLINE (shaky) are
+     different shapes, so red fill is allowed on this ramp; the other two
+     ramps keep red out entirely. */
   var PREFS_KEY = 'katsuyo-kanji-colours';
   var PALETTE = ['#c8392b', '#e0a030', '#2d6a9f', '#3aa17e'];
-  var RAINBOW = ['#e8742c', '#e0a030', '#7fae3c', '#3aa17e', '#2f8fa8', '#2d6a9f', '#7b4fa0'];
+  var RAINBOW = ['#c8392b', '#e8742c', '#e0a030', '#7fae3c', '#3aa17e', '#2f8fa8', '#2d6a9f', '#7b4fa0'];
   var INK = '#2b2320';
   var prefs = { mode: 'mosaic', colour: '#3aa17e' };
   try {
@@ -214,7 +216,7 @@
   function blockColour(b) {
     if (prefs.mode === 'mosaic') return PALETTE[((b + 1) * 7) % PALETTE.length];
     if (prefs.mode === 'ink') return prefs.colour;
-    return RAINBOW[3];
+    return RAINBOW[4];
   }
   // Solid tiles sit slightly crooked, like a real hanko; the tilt is also
   // fixed per id so it never changes on repaint.

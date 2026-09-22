@@ -1006,7 +1006,7 @@
             <div class="kw-seg" role="group">
               <button type="button" class="kw-seg-btn" data-cm="mosaic" data-i18n="kw_cm_mosaic">Mosaic</button>
               <button type="button" class="kw-seg-btn" data-cm="ink" data-i18n="kw_cm_ink">Ink</button>
-              <button type="button" class="kw-seg-btn" data-cm="rainbow" data-i18n="kw_cm_rainbow">Rainbow</button>
+              <button type="button" class="kw-seg-btn" data-cm="rainbow" data-i18n="kw_cm_rainbow">Spectrum</button>
             </div>
             <span class="kw-colours-pick" id="kw-colours-pick">
               <span class="kw-eyebrow" data-i18n="kw_cm_colour">Colour</span>
@@ -1483,12 +1483,12 @@
     } else {
       ramp.innerHTML = KA_Kanji.RAINBOW.map(function (c, i) {
         return '<i style="background:' + c + '" title="' + (i + 1) + '"></i>';
-      }).join('') + '<b>1 → 7+</b>';
-      hint.textContent = t('kw_cm_rainbow_h', 'One step along the spectrum per right answer in a row — orange first, purple at seven. A miss drops it to a red outline and the walk starts again.');
+      }).join('') + '<b>1 → 8+</b>';
+      hint.textContent = t('kw_cm_rainbow_h', 'One step along the spectrum per right answer in a row — red first, purple at eight. A miss drops it to a red outline and the walk starts again.');
     }
     // The legend's "Solid" swatch follows the mode.
     var lg = document.querySelector('#kw-legend-solid .kw-sw');
-    if (lg) lg.style.background = pr.mode === 'mosaic' ? '' : (pr.mode === 'ink' ? pr.colour : KA_Kanji.RAINBOW[3]);
+    if (lg) lg.style.background = pr.mode === 'mosaic' ? '' : (pr.mode === 'ink' ? pr.colour : KA_Kanji.RAINBOW[4]);
   }
 
   function wireColours() {
