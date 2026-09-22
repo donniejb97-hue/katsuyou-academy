@@ -6,6 +6,7 @@ var I18N = {
   en: {
     kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
     kw_page_sub:"Wall of Kanji",
+    kw_blurb: "2,300 kanji. Each one gets stamped the day you can read it; a red outline means you're still slipping on it.",
     kd_logging:"Everything you answer here is recorded on the wall.",
     kd_from:"From",
     kd_to:"To",
@@ -650,6 +651,7 @@ var I18N = {
   de: {
     kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
     kw_page_sub:"Wall of Kanji — die Kanji-Wand",
+    kw_blurb: "2.300 Kanji. Jedes bekommt seinen Stempel an dem Tag, an dem du es lesen kannst; ein roter Rand heißt, dass es dir noch entgleitet.",
     kd_logging:"Alles, was Sie hier beantworten, wird auf der Wand vermerkt.",
     kd_from:"Von",
     kd_to:"Bis",
@@ -1285,6 +1287,7 @@ var I18N = {
   fr: {
     kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
     kw_page_sub:"Wall of Kanji — le mur des kanji",
+    kw_blurb: "2 300 kanji. Chacun reçoit son tampon le jour où tu sais le lire ; un contour rouge veut dire qu'il t'échappe encore.",
     kd_logging:"Tout ce que vous répondez ici est noté sur le mur.",
     kd_from:"De",
     kd_to:"à",
@@ -1920,6 +1923,7 @@ var I18N = {
   zh: {
     kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
     kw_page_sub:"Wall of Kanji — 汉字之墙",
+    kw_blurb: "2,300 个汉字。你能读出它的那一天，它就会被盖上印章；红色描边表示你还没掌握。",
     kd_logging:"您在这里的每次作答都会记录到字墙上。",
     kd_from:"从",
     kd_to:"到",
@@ -2556,6 +2560,7 @@ var I18N = {
   ja: {
     kw_page_title:"The <span class=\"kw-acronym\">WOK</span>",
     kw_page_sub:"Wall of Kanji — 漢字の壁",
+    kw_blurb: "2,300字の漢字。読めるようになった日にハンコが押されます。赤い枠は、まだあやふやな字です。",
     kd_logging:"ここでの解答はすべて一覧に記録されます。",
     kd_from:"開始",
     kd_to:"終了",

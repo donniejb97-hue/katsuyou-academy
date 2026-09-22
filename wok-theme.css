@@ -1,0 +1,93 @@
+/* ============================================================
+   THE WOK — theme for kanji.html (the wall) and kanji-drill.html.
+
+   The world: ink-wash paper, sumi-e mountains and a sakura branch in the
+   header, one red seal. The wall: every kanji is a hanko stamp. Blank paper
+   until you meet it, a red-ink outline while it is shaky, and stamped in
+   colour — slightly crooked, like a real stamp — once it is solid. Each kanji
+   keeps one fixed colour (KA_Kanji.colour), so the wall fills in as a mosaic.
+
+   Loaded after styles.css; the page-local <style> blocks come after this, so
+   anything here that must beat them says so with !important.
+   ============================================================ */
+
+:root {
+  --wok-paper: #f4efe4;
+  --wok-paper-2: #faf6ec;
+  --wok-ink: #2b2320;
+  --wok-ink-soft: #4a423c;
+  --wok-mute: #6b615a;
+  --wok-faint: #b3a893;
+  --wok-line: #ddd3c0;
+  --wok-red: #c8392b;
+  --wok-red-dark: #a8442f;
+  --wok-red-wash: #fbeee6;
+  --wok-shadow: 2px 2px 0 var(--wok-ink);
+  --wok-shadow-lg: 5px 5px 0 var(--wok-ink);
+}
+
+/* ---------- the header: art behind, title in front ---------- */
+.wok-hero { position: relative; overflow: hidden; }
+.wok-sky { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.wok-sky-svg { display: block; width: 100%; height: 100%; }
+.wok-hero > :not(.wok-sky) { position: relative; z-index: 1; }
+
+.wok-title-row { display: flex; align-items: center; gap: 1rem; }
+.wok-seal {
+  flex: none; width: 54px; height: 54px; border-radius: 5px; background: var(--wok-red);
+  color: var(--wok-paper); font-family: 'Noto Serif JP', serif; font-weight: 900;
+  font-size: 2rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+  transform: rotate(-3deg); box-shadow: 0 2px 0 rgba(43,35,32,0.25);
+}
+.wok-title-text { display: flex; flex-direction: column; gap: 0.15rem; }
+.wok-h1 { margin: 0; font-size: 2.6rem; line-height: 1; font-weight: 800; color: var(--wok-ink); }
+.wok-sub { font-size: 1rem; color: var(--wok-mute); }
+.wok-sub .jp { font-family: 'Noto Serif JP', serif; }
+.wok-blurb { max-width: 34rem; font-size: 0.82rem; line-height: 1.6; color: var(--wok-mute); margin: 0.5rem 0 0; }
+
+/* ---------- paper-and-ink controls ---------- */
+.wok-chip, .wok-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.5rem 0.95rem;
+  border-radius: 999px; border: 1.5px solid var(--wok-ink); background: #fff;
+  color: var(--wok-ink); font-family: inherit; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; text-decoration: none; line-height: 1.2; transition: transform 0.1s;
+}
+.wok-chip:hover, .wok-btn:hover { transform: translate(-1px, -1px); box-shadow: var(--wok-shadow); }
+.wok-chip.is-on { background: var(--wok-ink); color: var(--wok-paper); }
+.wok-btn.is-red { background: var(--wok-red); border-color: var(--wok-red); color: #fff; }
+.wok-btn:disabled { opacity: 0.4; cursor: default; transform: none; box-shadow: none; }
+
+/* A "sheet": white paper with an ink border and an offset shadow. */
+.wok-sheet { background: #fff; border: 2px solid var(--wok-ink); border-radius: 18px; box-shadow: var(--wok-shadow-lg); }
+
+/* ---------- stamps ----------
+   One class for tiles on the wall, pips in the drill's round strip, tiles on
+   the end-of-round panel and the missed list — same three states everywhere. */
+.wok-stamp {
+  position: relative; display: flex; align-items: center; justify-content: center;
+  border-radius: 10px; font-family: 'Noto Serif JP', serif; font-weight: 700;
+  border: 1.5px solid var(--wok-line); background: var(--wok-paper-2); color: var(--wok-faint);
+}
+.wok-stamp.st-solid {
+  border-color: transparent; color: #fff; box-shadow: var(--wok-shadow);
+  transform: rotate(var(--tilt, -2deg));
+}
+.wok-stamp.st-shaky { background: #fff; border: 2px solid var(--wok-red); color: var(--wok-red); box-shadow: var(--wok-shadow); }
+.wok-stamp.st-shaky::after {
+  content: ""; position: absolute; top: -5px; right: -5px; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--wok-red); border: 2px solid var(--wok-paper);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wok-stamp.st-solid.is-fresh { animation: wok-stamp-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1); }
+}
+@keyframes wok-stamp-in {
+  0%   { transform: rotate(var(--tilt, -2deg)) scale(1.6); opacity: 0; }
+  60%  { transform: rotate(var(--tilt, -2deg)) scale(0.92); opacity: 1; }
+  100% { transform: rotate(var(--tilt, -2deg)) scale(1); }
+}
+
+@media (max-width: 600px) {
+  .wok-h1 { font-size: 2rem; }
+  .wok-seal { width: 44px; height: 44px; font-size: 1.6rem; }
+  .wok-sky { opacity: 0.7; }
+}

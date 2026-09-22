@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="wok-theme.css">
   <style>
     .drill-page { max-width: 720px; margin: 0 auto; padding: 2rem; }
     .drill-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
@@ -145,6 +146,105 @@
     .kd-dash { color: #8a7f76; }
     .kd-poolsize { font-size: 0.76rem; color: #8a7f76; margin-left: auto; }
 
+    /* ============================================================
+       THE WOK — the drill lives in the same world as the wall.
+       Paper ground, the same header art (shorter), paper-and-ink controls,
+       and stamps everywhere a kanji's state is shown: the round strip, the
+       end-of-round panel, the missed list.
+       ============================================================ */
+    #page-kanji-drill { background: var(--wok-paper); color: var(--wok-ink); }
+    .kd-hero { padding: 1.6rem 0 2.2rem; min-height: 150px; margin-bottom: 0.6rem; }
+    .kd-hero-inner { max-width: 720px; margin: 0 auto; padding: 0 2rem; box-sizing: border-box;
+      display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap; }
+    .kd-hero .page-tag { color: var(--wok-red); }
+    .kd-hero .page-title { color: var(--wok-ink); margin: 0; }
+    .kd-hero-back { align-self: flex-end; margin-bottom: 0.35rem; }
+    .kd-hero-scores { margin-left: auto; align-self: flex-end; }
+    .drill-page { padding-top: 0.5rem; }
+    .drill-header { display: none; }              /* title + scores moved into the hero */
+    .drill-score-box { background: #fff; color: var(--wok-ink); border: 1.5px solid var(--wok-ink);
+      border-radius: 10px; box-shadow: var(--wok-shadow); }
+    .drill-score-label { opacity: 1; color: var(--wok-mute); }
+    .drill-score-box.streak .drill-score-value { color: var(--wok-red); }
+
+    .drill-control-label { color: var(--wok-mute); }
+    .drill-chip { border: 1.5px solid var(--wok-ink); color: var(--wok-ink); font-weight: 700; }
+    .drill-chip:hover { border-color: var(--wok-ink); transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+    .drill-chip.on { background: var(--wok-ink); border-color: var(--wok-ink); color: var(--wok-paper); }
+    .drill-select, .kd-num { border: 1.5px solid var(--wok-ink); color: var(--wok-ink); font-weight: 600; }
+    .kd-back { display: inline-flex; align-items: center; padding: 0.5rem 0.95rem; border-radius: 999px;
+      border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink); font-weight: 700; font-size: 0.8rem; }
+    .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+    .kd-navrow .kd-back { display: none; }        /* it lives in the hero now */
+
+    .kd-round { border: 2px solid var(--wok-ink); box-shadow: 4px 4px 0 var(--wok-ink); border-radius: 14px; }
+    .kd-round-label { font-weight: 800; }
+    .kd-strip { display: flex; flex-wrap: wrap; gap: 5px; }
+    .kd-pip { width: 22px; height: 22px; border-radius: 6px; border: 1.5px solid var(--wok-line);
+      background: var(--wok-paper-2); box-sizing: border-box; display: flex; align-items: center;
+      justify-content: center; font-size: 0.62rem; font-weight: 800; font-family: 'Outfit', sans-serif; }
+    .kd-pip.is-right { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff;
+      box-shadow: 1.5px 1.5px 0 var(--wok-ink); transform: rotate(var(--tilt, -3deg)); }
+    .kd-pip.is-wrong { background: #fff; border: 2px solid var(--wok-red); color: var(--wok-red); }
+    .kd-pip.is-now   { background: var(--wok-ink); border-color: var(--wok-ink); color: var(--wok-paper); }
+
+    .drill-card { border: 2px solid var(--wok-ink); border-radius: 22px; box-shadow: var(--wok-shadow-lg); }
+    .drill-question-tag { color: var(--wok-red); background: var(--wok-red-wash); font-weight: 800; }
+    .drill-question { color: var(--wok-ink); }
+    .drill-klc-id { color: var(--wok-red); font-weight: 800; letter-spacing: 0.1em; }
+
+    .drill-choice { border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--wok-ink); }
+    .drill-choice:hover:not(:disabled) { border-color: var(--wok-ink); transform: translate(-1px,-1px); }
+    .drill-choice.correct { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff;
+      transform: rotate(-2deg); }
+    .drill-choice.wrong { background: #fff; border-color: var(--wok-red); color: var(--wok-red); box-shadow: none; }
+    .drill-choice.dim { opacity: 0.35; box-shadow: none; }
+
+    .drill-input { border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 3px 3px 0 var(--wok-ink); }
+    .drill-input:focus { border-color: var(--wok-ink); }
+    .drill-input.correct { border-color: var(--wok-ink); background: #edf5ee; }
+    .drill-input.wrong { border-color: var(--wok-red); background: #fff; color: var(--wok-red); }
+
+    .drill-feedback { border-radius: 14px; border: 2px solid; }
+    .drill-feedback.good { background: #fff; border-color: var(--stamp, var(--wok-ink)); color: var(--wok-ink); }
+    .drill-feedback.bad { background: #fff; border-color: var(--wok-red); color: var(--wok-ink); }
+    .drill-feedback.warn { background: #fff; border-color: #e0a030; color: var(--wok-ink); }
+    .drill-detail { border-top: 1px solid var(--wok-line); }
+
+    .drill-btn { border-radius: 999px; border: 1.5px solid var(--wok-ink); font-weight: 700; }
+    .drill-btn.primary:not(:disabled) { background: var(--wok-red); border-color: var(--wok-red); color: #fff; box-shadow: none; }
+    .drill-btn.primary:hover:not(:disabled) { background: var(--wok-red); transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+    .drill-btn.primary:disabled { background: #fff; color: var(--wok-ink); }
+    .drill-btn.ghost { background: #fff; border: 1.5px solid var(--wok-ink); color: var(--wok-ink); }
+    .drill-btn.ghost:hover { border-color: var(--wok-ink); transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+
+    .kd-done { background: #fff; color: var(--wok-ink); border: 2px solid var(--wok-ink); border-radius: 22px;
+      box-shadow: var(--wok-shadow-lg); }
+    .kd-done h3 { color: var(--wok-ink); font-size: 1.6rem; }
+    .kd-done p { color: var(--wok-mute); }
+    .kd-done-tiles { gap: 0.6rem; }
+    .kd-tile { width: 52px; height: 52px; padding: 0; font-size: 1.5rem; border-radius: 10px; display: flex;
+      align-items: center; justify-content: center; position: relative; box-sizing: border-box; }
+    .kd-tile.t-solid { background: var(--stamp, var(--wok-ink)); color: #fff; box-shadow: var(--wok-shadow);
+      transform: rotate(var(--tilt, -2deg)); }
+    .kd-tile.t-shaky { background: #fff; color: var(--wok-red); border: 2px solid var(--wok-red); box-shadow: var(--wok-shadow); }
+    .kd-tile.t-shaky::after { content: ""; position: absolute; top: -5px; right: -5px; width: 10px; height: 10px;
+      border-radius: 50%; background: var(--wok-red); border: 2px solid #fff; }
+    .kd-done-acts a, .kd-done-acts button { border: 1.5px solid var(--wok-ink); }
+    .kd-go { background: var(--wok-ink); color: var(--wok-paper); }
+    .kd-ghost { background: #fff; color: var(--wok-red); border-color: var(--wok-red) !important; }
+
+    .drill-missed { border: 2px solid var(--wok-ink); border-radius: 18px; box-shadow: var(--wok-shadow-lg); }
+    .drill-missed h2 { color: var(--wok-ink); }
+    .drill-missed-chip { background: #fff; border: 2px solid var(--wok-red); border-radius: 10px; color: var(--wok-ink); }
+    .drill-missed-chip .jp { color: var(--wok-red); font-weight: 700; }
+
+    @media (max-width: 540px) {
+      .kd-hero { min-height: 120px; padding: 1.2rem 0 1.6rem; }
+      .kd-hero-inner { padding: 0 1.25rem; }
+      .kd-hero-scores { margin-left: 0; width: 100%; }
+    }
+
   </style>
 </head>
 <body data-page="kanji-drill">
@@ -190,14 +290,19 @@
   </nav>
 
   <div id="page-kanji-drill" class="page active">
-    <div class="drill-page">
-
-      <div class="drill-header">
-        <div>
-          <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
-          <h1 class="page-title" style="font-size: 2rem;" data-i18n="kd_title">Kanji Drill</h1>
+    <!-- The same world as the wall: mountains and sakura, injected by wok-theme.js. -->
+    <div class="wok-hero kd-hero">
+      <div class="wok-sky" data-wok-sky></div>
+      <div class="kd-hero-inner">
+        <div class="wok-title-row">
+          <span class="wok-seal jp" aria-hidden="true">壁</span>
+          <div class="wok-title-text">
+            <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
+            <h1 class="page-title" style="font-size: 2rem;" data-i18n="kd_title">Kanji Drill</h1>
+          </div>
         </div>
-        <div class="drill-scores">
+        <a class="kd-back kd-hero-back" href="/kanji" data-i18n="kd_back_wall">← Back to the wall</a>
+        <div class="drill-scores kd-hero-scores">
           <div class="drill-score-box">
             <div class="drill-score-label" data-i18n="score">Score</div>
             <div class="drill-score-value"><span id="drill-correct">0</span>/<span id="drill-total">0</span></div>
@@ -212,6 +317,9 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="drill-page">
 
       <div class="drill-controls">
         <div class="drill-control-row">
@@ -291,6 +399,7 @@
   <div id="toast" class="toast"></div>
 
   <script src="kanji-progress.js"></script>
+  <script src="wok-theme.js"></script>
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="app.js"></script>
@@ -449,7 +558,8 @@
         input.focus();
         $('drill-check').style.display = 'block';
         $('drill-check').disabled = true;
-        $('drill-check').textContent = 'Check Answer';
+        $('drill-check').setAttribute('data-i18n', 'check');
+        $('drill-check').textContent = tt('check', 'Check Answer');
         $('drill-skip').style.display = 'block';
       } else {
         $('drill-tag').textContent = 'Pick the kanji';
@@ -491,6 +601,7 @@
         var b = document.createElement('button');
         b.className = 'drill-choice jp';
         b.textContent = opt.kanji;
+        b.style.setProperty('--stamp', KA_Kanji.colour(opt.id));
         b.onclick = function () { chooseKanji(opt, b); };
         box.appendChild(b);
       });
@@ -595,6 +706,7 @@
       var item = state.current.item;
       var fb = $('drill-feedback');
       fb.className = 'drill-feedback show ' + (right ? 'good' : 'bad');
+      fb.style.setProperty('--stamp', KA_Kanji.colour(item.id));
       var head = right ? '⭕ Correct!' : (skipped ? 'Answer:' : '❌ Not quite — the answer is:');
 
       var on = (item.onyomi && item.onyomi.length) ? item.onyomi.join(' ・ ') : '—';
@@ -617,7 +729,10 @@
       var check = $('drill-check');
       check.style.display = 'block';
       check.disabled = false;
-      check.textContent = 'Next Question →';
+      // i18n's observer re-applies data-i18n after any DOM change, so the label
+      // has to be switched by key or it snaps back to "Check Answer".
+      check.setAttribute('data-i18n', 'next');
+      check.textContent = tt('next', 'Next Question →');
       check.focus();
       $('drill-skip').style.display = 'none';
     }
@@ -667,6 +782,11 @@
         pip.className = 'kd-pip' +
           (i < state.qIdx ? (state.qResult[i] ? ' is-right' : ' is-wrong')
                           : (i === state.qIdx ? ' is-now' : ''));
+        // A right answer stamps its pip in that kanji's own colour — the same
+        // one it wears on the wall — so the strip is a preview of the wall.
+        pip.style.setProperty('--stamp', KA_Kanji.colour(state.queue[i]));
+        pip.style.setProperty('--tilt', KA_Kanji.tilt(state.queue[i]) + 'deg');
+        if (i < state.qIdx) pip.textContent = state.qResult[i] ? '\u2713' : '\u00d7';
         strip.appendChild(pip);
       }
       var right = state.qResult.filter(Boolean).length;
@@ -694,7 +814,8 @@
       var pct = Math.round(100 * c.solid / c.total);
 
       var tiles = nowSolid.map(function (k) {
-        return '<span class="kd-tile t-solid">' + k.kanji + '</span>';
+        return '<span class="kd-tile t-solid" style="--stamp:' + KA_Kanji.colour(k.id) +
+               ';--tilt:' + KA_Kanji.tilt(k.id) + 'deg">' + k.kanji + '</span>';
       }).concat(stillShaky.map(function (k) {
         return '<span class="kd-tile t-shaky">' + k.kanji + '</span>';
       })).join('');

@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="wok-theme.css">
 </head>
 <body data-page="kanji">
 
@@ -649,139 +650,160 @@
       /* ============================================================
          THE WALL — kanji.html's default view.
 
-         The page used to be a dark purple nothing else on the site uses.
-         It is now the warm ground, and the old flashcard is re-skinned to
+         Set in the world wok-theme.css describes: ink-wash paper, the sakura
+         header, and a wall of hanko stamps. The old flashcard is re-skinned to
          match rather than rewritten — it survives as the "One at a time" tab.
          ============================================================ */
 
-      #page-kanji { background: #f7f0e6; color: #2b2320; }
-      .kanji-container { max-width: 1180px; padding: 2rem 1.5rem 3rem; }
-      .kanji-header { margin-bottom: 1.4rem; }
-      .kanji-title { display: flex; flex-direction: column; gap: 0.1rem; align-items: center; }
+      #page-kanji { background: var(--wok-paper); color: var(--wok-ink); }
+      .kanji-container { max-width: 1180px; padding: 0 1.5rem 3rem; }
       .kanji-japanese-title { display: none; }          /* the lone 漢字 decoration */
-      .kanji-romaji-title { letter-spacing: -0.01em; color: #2b2320; font-weight: 700; }
-      .kanji-subtitle { color: #6b615a; }
+
+      /* ---- the hero ---- */
+      .kw-hero { margin: 0 0 1.2rem; padding: 2.2rem 0 3.6rem; min-height: 250px;
+        display: flex; flex-direction: column; justify-content: flex-start; }
+      .kw-hero-inner { max-width: 1180px; margin: 0 auto; width: 100%; box-sizing: border-box;
+        padding: 0 1.5rem; }
+      .kanji-header h1 { text-shadow: none; }
+      .kanji-header { text-align: left; margin: 0; }
+      .kanji-title { margin: 0; }
+      .kanji-romaji-title { font-size: 2.6rem; line-height: 1; font-weight: 800; color: var(--wok-ink);
+        letter-spacing: -0.01em; display: block; }
+      .kanji-subtitle { margin: 0.2rem 0 0; font-size: 1rem; color: var(--wok-mute); }
 
       /* An all-caps initialism set at display size needs a touch of tracking to
          stop the letters crowding; "The" must not get it, hence the inner span. */
       .kw-acronym { letter-spacing: 0.055em; }
       .kw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
       .kw-eyebrow { font-size: 0.64rem; font-weight: 700; letter-spacing: 0.13em;
-        text-transform: uppercase; color: #8a7f76; }
+        text-transform: uppercase; color: var(--wok-mute); }
 
-      .kw-tabs { display: flex; gap: 0.45rem; justify-content: center; margin-bottom: 1.3rem; }
-      .kw-tab { padding: 0.55rem 1.1rem; border-radius: 999px; border: 1px solid rgba(0,0,0,0.12);
-        background: #fff; color: #4a423c; font-family: inherit; font-size: 0.86rem; cursor: pointer;
-        text-decoration: none; display: inline-flex; align-items: center; }
-      .kw-tab.is-on { background: #2b2320; color: #fdfbf7; border-color: #2b2320; font-weight: 600; }
+      .kw-tabs { display: flex; gap: 0.45rem; margin: 1rem 0 0; }
+      .kw-tab { padding: 0.5rem 1rem; border-radius: 999px; border: 1.5px solid var(--wok-ink);
+        background: #fff; color: var(--wok-ink); font-family: inherit; font-size: 0.8rem; font-weight: 700;
+        cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+      .kw-tab:hover { transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+      .kw-tab.is-on { background: var(--wok-ink); color: var(--wok-paper); }
 
       /* ---- top strip ---- */
       .kw-top { display: flex; gap: 0.8rem; align-items: stretch; margin-bottom: 0.8rem; flex-wrap: wrap; }
-      .kw-total { background: #2b2320; border-radius: 14px; padding: 0.85rem 1.1rem; color: #fdfbf7;
-        display: flex; flex-direction: column; justify-content: center; min-width: 118px; }
-      .kw-total-num { font-size: 1.6rem; font-weight: 700; line-height: 1; }
-      .kw-total-lbl { font-size: 0.72rem; opacity: 0.62; margin-top: 0.15rem; }
-      .kw-total-bar { flex: 1 1 260px; background: #2b2320; border-radius: 14px;
+      .kw-total { background: var(--wok-ink); border-radius: 14px; padding: 0.85rem 1.1rem; color: var(--wok-paper);
+        display: flex; flex-direction: column; justify-content: center; min-width: 118px;
+        border: 2px solid var(--wok-ink); }
+      .kw-total-num { font-size: 1.6rem; font-weight: 800; line-height: 1; }
+      .kw-total-lbl { font-size: 0.72rem; opacity: 0.7; margin-top: 0.15rem; }
+      .kw-total-bar { flex: 1 1 260px; background: #fff; border: 2px solid var(--wok-ink); border-radius: 14px;
         padding: 0.85rem 1.1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.45rem; }
-      .kw-bar { height: 9px; border-radius: 999px; background: rgba(255,255,255,0.13);
+      .kw-bar { height: 10px; border-radius: 999px; background: var(--wok-paper-2); border: 1px solid var(--wok-line);
         overflow: hidden; display: flex; }
       .kw-bar i { display: block; height: 100%; }
-      #kw-bar-solid { background: #c45c4a; }
-      #kw-bar-shaky { background: #e8b4a8; }
-      .kw-total-legend { display: flex; gap: 1rem; font-size: 0.72rem; color: rgba(253,251,247,0.68); }
+      #kw-bar-solid { background: var(--wok-ink); }
+      #kw-bar-shaky { background: var(--wok-red); }
+      .kw-total-legend { display: flex; gap: 1rem; font-size: 0.72rem; color: var(--wok-mute); }
       .kw-search { flex: 0 1 280px; display: flex; align-items: center; gap: 0.6rem;
-        background: #fff; border: 1px solid rgba(0,0,0,0.09); border-radius: 14px; padding: 0 1rem; }
-      .kw-search svg { width: 17px; height: 17px; color: #a49a92; flex: none; }
+        background: #fff; border: 2px solid var(--wok-ink); border-radius: 14px; padding: 0 1rem; }
+      .kw-search svg { width: 17px; height: 17px; color: var(--wok-faint); flex: none; }
       .kw-search input { flex: 1; border: 0; outline: 0; background: transparent; padding: 0.8rem 0;
-        font-family: inherit; font-size: 0.87rem; color: #2b2320; }
+        font-family: inherit; font-size: 0.87rem; color: var(--wok-ink); }
 
-      /* ---- blocks ---- */
-      .kw-blocks-wrap { background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 14px;
+      /* ---- blocks: 23 stamps that fill with ink as the block gets solid ---- */
+      .kw-blocks-wrap { background: #fff; border: 2px solid var(--wok-ink); border-radius: 14px;
         padding: 0.8rem 1rem; margin-bottom: 0.8rem; }
       .kw-blocks-head { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.6rem; flex-wrap: wrap; }
-      .kw-blocks-sub { font-size: 0.76rem; color: #6b615a; }
-      .kw-resume { margin-left: auto; padding: 0.45rem 0.9rem; border-radius: 999px; border: 0;
-        background: #fbeee6; color: #a8442f; font-family: inherit; font-size: 0.76rem;
-        font-weight: 600; cursor: pointer; }
-      .kw-blocks { display: flex; gap: 0.55rem; overflow-x: auto; padding-bottom: 0.2rem; }
-      .kw-blk { flex: none; display: flex; flex-direction: column; align-items: center; gap: 0.25rem;
+      .kw-blocks-sub { font-size: 0.76rem; color: var(--wok-mute); }
+      .kw-resume { margin-left: auto; padding: 0.4rem 0.85rem; border-radius: 999px; border: 1.5px solid var(--wok-red);
+        background: #fff; color: var(--wok-red); font-family: inherit; font-size: 0.76rem;
+        font-weight: 700; cursor: pointer; }
+      .kw-resume:hover { background: var(--wok-red-wash); }
+      .kw-blocks { display: flex; gap: 0.5rem; overflow-x: auto; padding: 4px 4px 0.3rem; }
+      .kw-blk { flex: none; display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
         background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
-      .kw-blk-ring { width: 40px; height: 40px; border-radius: 50%; display: flex;
-        align-items: center; justify-content: center; font-size: 0.66rem; font-weight: 700;
-        border: 2px solid transparent; }
-      .kw-blk.is-on .kw-blk-ring { border-color: #2b2320; }
-      .kw-blk-lbl { font-size: 0.62rem; color: #6b615a; white-space: nowrap; }
+      .kw-blk-ring { width: 42px; height: 42px; border-radius: 9px; display: flex;
+        align-items: center; justify-content: center; font-size: 0.64rem; font-weight: 800;
+        border: 1.5px solid var(--wok-ink); box-sizing: border-box;
+        background: linear-gradient(to top, var(--blk, var(--wok-ink)) var(--pct, 0%), #fff var(--pct, 0%));
+        color: var(--wok-ink); transition: transform 0.1s; }
+      .kw-blk-ring.is-full { color: #fff; box-shadow: var(--wok-shadow); transform: rotate(-2deg); }
+      .kw-blk:hover .kw-blk-ring { transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+      .kw-blk.is-on .kw-blk-ring { box-shadow: var(--wok-shadow), 0 0 0 2px var(--wok-paper), 0 0 0 3.5px var(--wok-ink); }
+      .kw-blk-lbl { font-size: 0.62rem; color: var(--wok-mute); white-space: nowrap; }
 
       /* ---- filters ---- */
       .kw-filters { display: flex; gap: 0.45rem; align-items: center; margin-bottom: 0.7rem; flex-wrap: wrap; }
-      .kw-chip { padding: 0.42rem 0.85rem; border-radius: 999px; border: 1px solid rgba(0,0,0,0.12);
-        background: #fff; color: #4a423c; font-family: inherit; font-size: 0.78rem; cursor: pointer; }
-      .kw-chip b { font-weight: 700; opacity: 0.6; margin-left: 0.15rem; }
-      .kw-chip.is-on { background: #2b2320; color: #fdfbf7; border-color: #2b2320; font-weight: 600; }
+      .kw-chip { padding: 0.45rem 0.9rem; border-radius: 999px; border: 1.5px solid var(--wok-ink);
+        background: #fff; color: var(--wok-ink); font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+      .kw-chip b { font-weight: 700; opacity: 0.55; margin-left: 0.15rem; }
+      .kw-chip.is-on { background: var(--wok-ink); color: var(--wok-paper); }
       .kw-chip.is-on b { opacity: 0.75; }
-      .kw-legend { margin-left: auto; display: flex; gap: 0.85rem; font-size: 0.72rem; color: #6b615a; }
+      .kw-legend { margin-left: auto; display: flex; gap: 0.85rem; font-size: 0.72rem; color: var(--wok-mute); }
       .kw-legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
-      .kw-sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-      .kw-sw-solid { background: #2b2320; }
-      .kw-sw-shaky { background: #e8b4a8; }
-      .kw-sw-new { background: #fff; border: 1px solid rgba(0,0,0,0.16); }
+      .kw-sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; box-sizing: border-box; }
+      .kw-sw-solid { background: var(--wok-red); box-shadow: 1px 1px 0 var(--wok-ink); transform: rotate(-4deg); }
+      .kw-sw-shaky { background: #fff; border: 1.5px solid var(--wok-red); }
+      .kw-sw-new { background: var(--wok-paper-2); border: 1px solid var(--wok-line); }
 
-      /* ---- the grid ---- */
-      .kw-grid { background: #fff; border: 1px solid rgba(0,0,0,0.07); border-radius: 18px;
+      /* ---- the wall itself ---- */
+      .kw-grid { background: #fff; border: 2px solid var(--wok-ink); border-radius: 18px;
+        box-shadow: var(--wok-shadow-lg);
         padding: 0.9rem; display: grid; grid-template-columns: repeat(20, minmax(0, 1fr));
-        gap: 0.35rem; margin-bottom: 0.8rem; }
-      .kw-cell { aspect-ratio: 1; border-radius: 8px; border: 1px solid transparent;
-        font-family: 'Noto Serif JP', serif; font-size: 1.28rem; line-height: 1; cursor: pointer;
+        gap: 0.45rem; margin-bottom: 1.1rem; }
+      .kw-cell { aspect-ratio: 1; border-radius: 9px; border: 1.5px solid var(--wok-line);
+        font-family: 'Noto Serif JP', serif; font-size: 1.28rem; font-weight: 700; line-height: 1; cursor: pointer;
         display: flex; align-items: center; justify-content: center; padding: 0;
-        transition: transform 0.12s ease; position: relative; }
-      .kw-cell:hover { transform: scale(1.14); z-index: 2; }
-      .kw-cell:focus-visible { outline: 2px solid #c45c4a; outline-offset: 2px; z-index: 2; }
-      .kw-cell.s-solid { background: #2b2320; color: #fdfbf7; }
-      .kw-cell.s-shaky { background: #e8b4a8; color: #2b2320; }
-      .kw-cell.s-new   { background: #fff; border-color: rgba(0,0,0,0.12); color: #9a9089; }
-      .kw-cell.is-open { outline: 2px solid #c45c4a; outline-offset: 2px; z-index: 2; }
+        transition: transform 0.12s ease; position: relative; background: var(--wok-paper-2); color: var(--wok-faint); }
+      .kw-cell:hover { transform: scale(1.14) rotate(0deg); z-index: 2; }
+      .kw-cell:focus-visible { outline: 2px solid var(--wok-red); outline-offset: 2px; z-index: 2; }
+      .kw-cell.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff;
+        box-shadow: var(--wok-shadow); transform: rotate(var(--tilt, -2deg)); }
+      .kw-cell.s-solid:hover { transform: scale(1.14) rotate(var(--tilt, -2deg)); }
+      .kw-cell.s-shaky { background: #fff; border: 2px solid var(--wok-red); color: var(--wok-red); box-shadow: var(--wok-shadow); }
+      .kw-cell.s-shaky::after { content: ""; position: absolute; top: -5px; right: -5px; width: 10px; height: 10px;
+        border-radius: 50%; background: var(--wok-red); border: 2px solid #fff; }
+      .kw-cell.is-open { outline: 2.5px solid var(--wok-ink); outline-offset: 3px; z-index: 2; }
       .kw-cell.is-dim  { opacity: 0.18; pointer-events: none; }
+      @media (prefers-reduced-motion: no-preference) {
+        .kw-cell.s-solid.is-fresh { animation: wok-stamp-in 0.45s cubic-bezier(0.2, 1.4, 0.4, 1); }
+      }
 
       .kw-drillbar { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;
         margin-bottom: 0.8rem; }
-      .kw-go { padding: 0.65rem 1.25rem; border-radius: 999px; border: 0; background: #c45c4a;
-        color: #fff; font-family: inherit; font-size: 0.86rem; font-weight: 600; cursor: pointer;
-        box-shadow: 0 2px 9px rgba(196,92,74,0.28); }
-      .kw-go.is-ghost { background: #fff; color: #4a423c; border: 1px solid rgba(0,0,0,0.12);
-        box-shadow: none; font-weight: 500; }
+      .kw-go { padding: 0.6rem 1.15rem; border-radius: 999px; border: 1.5px solid var(--wok-red); background: var(--wok-red);
+        color: #fff; font-family: inherit; font-size: 0.84rem; font-weight: 700; cursor: pointer;
+        text-decoration: none; display: inline-flex; align-items: center; }
+      .kw-go:hover:not(:disabled) { transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+      .kw-go.is-ghost { background: #fff; color: var(--wok-ink); border-color: var(--wok-ink); }
       .kw-go:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
 
       /* ---- the opened card ---- */
       /* `display:flex` beats the UA stylesheet's [hidden]{display:none}, so the
          empty panel stayed on screen until this rule was added. */
       .kw-detail[hidden] { display: none; }
-      .kw-detail { background: #fff; border: 2px solid #c45c4a; border-radius: 18px;
-        padding: 1.15rem 1.35rem; display: flex; gap: 1.5rem;
-        box-shadow: 0 5px 20px rgba(120,80,60,0.12); }
+      .kw-detail { background: #fff; border: 2px solid var(--wok-ink); border-radius: 18px;
+        padding: 1.15rem 1.35rem; display: flex; gap: 1.5rem; box-shadow: var(--wok-shadow-lg); }
       .kw-d-left { flex: none; width: 132px; display: flex; flex-direction: column;
         align-items: center; gap: 0.5rem; }
-      .kw-d-char { font-family: 'Noto Serif JP', serif; font-size: 5.6rem; line-height: 1; color: #2b2320; }
-      .kw-d-id { font-size: 0.7rem; font-weight: 700; color: #a8442f; background: #fbeee6;
-        padding: 0.28rem 0.7rem; border-radius: 999px; }
+      .kw-d-char { font-family: 'Noto Serif JP', serif; font-size: 5.6rem; line-height: 1; color: var(--wok-ink); }
+      .kw-d-id { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: var(--wok-red);
+        background: var(--wok-red-wash); padding: 0.28rem 0.7rem; border-radius: 999px; }
       .kw-d-body { flex: 1; display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
       .kw-d-head { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
-      .kw-d-kw { font-size: 1.3rem; font-weight: 700; color: #2b2320; }
-      .kw-d-state { font-size: 0.72rem; padding: 0.3rem 0.7rem; border-radius: 999px; }
-      .kw-d-state.s-solid { background: #e8f0e8; color: #3f6344; }
-      .kw-d-state.s-shaky { background: #fbeee6; color: #a8442f; }
-      .kw-d-state.s-new   { background: #f4efe8; color: #6b615a; }
+      .kw-d-kw { font-size: 1.3rem; font-weight: 700; color: var(--wok-ink); }
+      .kw-d-state { font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.7rem; border-radius: 999px; border: 1.5px solid; }
+      .kw-d-state.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: #fff; }
+      .kw-d-state.s-shaky { background: #fff; border-color: var(--wok-red); color: var(--wok-red); }
+      .kw-d-state.s-new   { background: var(--wok-paper-2); border-color: var(--wok-line); color: var(--wok-mute); }
       .kw-d-readings { display: flex; gap: 1.6rem; flex-wrap: wrap; }
       .kw-d-readings b { display: block; font-size: 0.6rem; letter-spacing: 0.1em;
         text-transform: uppercase; margin-bottom: 0.15rem; }
-      .kw-d-on b { color: #a8442f; } .kw-d-kun b { color: #4f7454; }
-      .kw-d-readings span.jp { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: #2b2320; }
-      .kw-d-vocab { border-top: 1px solid rgba(0,0,0,0.07); padding-top: 0.6rem;
+      .kw-d-on b { color: var(--wok-red-dark); } .kw-d-kun b { color: #4f7454; }
+      .kw-d-readings span.jp { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: var(--wok-ink); }
+      .kw-d-vocab { border-top: 1px solid var(--wok-line); padding-top: 0.6rem;
         display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem 1rem; }
-      .kw-d-vocab li { list-style: none; font-size: 0.8rem; color: #6b615a; }
-      .kw-d-vocab .jp { font-family: 'Noto Serif JP', serif; font-size: 1rem; color: #2b2320; margin-right: 0.3rem; }
+      .kw-d-vocab li { list-style: none; font-size: 0.8rem; color: var(--wok-mute); }
+      .kw-d-vocab .jp { font-family: 'Noto Serif JP', serif; font-size: 1rem; color: var(--wok-ink); margin-right: 0.3rem; }
       .kw-d-acts { display: flex; gap: 0.45rem; margin-top: auto; align-items: center; flex-wrap: wrap; }
-      .kw-d-hint { margin-left: auto; font-size: 0.7rem; color: #a49a92; }
-      .kw-d-close { background: none; border: 0; color: #a49a92; font-size: 1.1rem; cursor: pointer;
+      .kw-d-hint { margin-left: auto; font-size: 0.7rem; color: var(--wok-faint); }
+      .kw-d-close { background: none; border: 0; color: var(--wok-faint); font-size: 1.1rem; cursor: pointer;
         font-family: inherit; padding: 0 0.2rem; }
 
       @media (max-width: 900px) {
@@ -792,8 +814,10 @@
         .kw-legend { margin-left: 0; width: 100%; }
       }
       @media (max-width: 560px) {
-        .kw-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+        .kw-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0.35rem; padding: 0.6rem; }
+        .kw-cell { font-size: 1.05rem; }
         .kw-d-vocab { grid-template-columns: 1fr; }
+        .kw-hero { min-height: 200px; padding-bottom: 2.4rem; }
       }
 
       /* ---- which view is showing ----
@@ -809,48 +833,76 @@
 
       /* ---- re-skin the old flashcard so the two tabs match ---- */
       .kanji-flashcard-front, .kanji-flashcard-back {
-        background: #fff !important; color: #2b2320 !important;
-        border: 1px solid rgba(0,0,0,0.09) !important; border-radius: 18px !important;
-        box-shadow: 0 3px 14px rgba(120,80,60,0.09) !important;
+        background: #fff !important; color: var(--wok-ink) !important;
+        border: 2px solid var(--wok-ink) !important; border-radius: 18px !important;
+        box-shadow: var(--wok-shadow-lg) !important;
       }
       .kanji-flashcard-front::before, .kanji-flashcard-front::after,
       .kanji-flashcard-back::after { display: none !important; }
-      .kanji-character { color: #2b2320 !important; }
-      .kanji-keyword { color: #2b2320 !important; }
-      .kanji-btn { background: #fff !important; color: #4a423c !important;
-        border: 1px solid rgba(0,0,0,0.12) !important; border-radius: 999px !important; }
-      .kanji-btn:hover:not(:disabled) { background: #fbeee6 !important; color: #a8442f !important; }
+      .kanji-corner-accent { display: none; }
+      .kanji-klc-id { color: var(--wok-red) !important; }
+      .kanji-character { color: var(--wok-ink) !important; text-shadow: none !important; }
+      .kanji-keyword { color: var(--wok-ink) !important; text-shadow: none !important; }
+      .kanji-onyomi { color: var(--wok-red-dark) !important; }
+      .kanji-kunyomi { color: #4f7454 !important; }
+      .kanji-reading-label, .kanji-vocab-title { color: var(--wok-mute) !important; }
+      .kanji-vocab-item { background: var(--wok-paper-2) !important; color: var(--wok-mute) !important; }
+      .kanji-vocab-word { color: var(--wok-ink) !important; }
+      .kanji-vocab-meaning { color: var(--wok-mute) !important; }
+      .kanji-hint { color: var(--wok-faint) !important; }
+      .kanji-btn { background: #fff !important; color: var(--wok-ink) !important;
+        border: 1.5px solid var(--wok-ink) !important; border-radius: 999px !important;
+        box-shadow: none !important; transform: none !important; }
+      .kanji-btn:hover:not(:disabled) { box-shadow: var(--wok-shadow) !important; transform: translate(-1px,-1px) !important; }
       .kanji-filters { display: none; }
-      .kanji-stats, .kanji-progress { color: #6b615a !important; }
-      .kanji-stat { background: #fff !important; border: 1px solid rgba(0,0,0,0.07) !important;
-        border-radius: 14px !important; }
-      .kanji-stat-value { color: #2b2320 !important; }
+      .kanji-stats, .kanji-progress { color: var(--wok-mute) !important; }
+      .kanji-stats { background: none !important; border: 0 !important; box-shadow: none !important; }
+      .kanji-stat { background: #fff !important; border: 1.5px solid var(--wok-ink) !important;
+        border-radius: 14px !important; padding: 0.6rem 1.2rem; }
+      .kanji-stat-value { color: var(--wok-ink) !important; text-shadow: none !important; }
+      .kanji-modal-content { background: #fff !important; border: 2px solid var(--wok-ink) !important;
+        box-shadow: var(--wok-shadow-lg) !important; }
+      .kanji-modal-title { color: var(--wok-ink) !important; }
+      .kanji-modal-input { background: var(--wok-paper-2) !important; color: var(--wok-ink) !important;
+        border: 1.5px solid var(--wok-ink) !important; }
+      .kanji-modal-go { background: var(--wok-red) !important; }
+      .kanji-modal-cancel { background: #fff !important; color: var(--wok-ink) !important; border: 1.5px solid var(--wok-ink) !important; }
 
     </style>
 
-    <div class="kanji-container">
-      <div class="kanji-header">
-        <h1 class="kanji-title">
-          <span class="kanji-japanese-title jp">漢字</span>
-          <span class="kanji-romaji-title" data-i18n-html="kw_page_title">The <span class="kw-acronym">WOK</span></span>
-        </h1>
-        <p class="kanji-subtitle" data-i18n="kw_page_sub">Wall of Kanji</p>
+      <!-- The hero: mountains and the sakura branch are injected by wok-theme.js
+         into the data-wok-sky element; everything else sits in front of them. -->
+    <div class="wok-hero kw-hero">
+      <div class="wok-sky" data-wok-sky></div>
+      <div class="kw-hero-inner">
+        <div class="kanji-header wok-title-row">
+          <span class="wok-seal jp" aria-hidden="true">壁</span>
+          <div class="wok-title-text">
+            <h1 class="kanji-title">
+              <span class="kanji-japanese-title jp">漢字</span>
+              <span class="kanji-romaji-title" data-i18n-html="kw_page_title">The <span class="kw-acronym">WOK</span></span>
+            </h1>
+            <p class="kanji-subtitle" data-i18n="kw_page_sub">Wall of Kanji</p>
+          </div>
+        </div>
+        <p class="wok-blurb" data-i18n="kw_blurb">2,300 kanji. Each one gets stamped the day you can read it; a red outline means you're still slipping on it.</p>
 
+        <!-- ============ THE WALL ============ -->
+        <div class="kw-tabs" role="tablist">
+          <button type="button" class="kw-tab is-on" id="kw-tab-wall" role="tab" aria-selected="true" data-i18n="kw_tab_wall">Wall</button>
+          <button type="button" class="kw-tab" id="kw-tab-card" role="tab" aria-selected="false" data-i18n="kw_tab_card">One at a time</button>
+          <a class="kw-tab kw-tab-link" href="/kanji-drill" data-i18n="kw_tab_drill">Drill</a>
+        </div>
       </div>
-      
-      <!-- Level Filters -->
+    </div>
+
+    <div class="kanji-container">
+      <!-- Level Filters (hidden; the wall's block strip replaced them) -->
       <div class="kanji-filters">
         <button class="kanji-filter-btn active" onclick="filterKanjiLevel('all')" data-i18n="filter_all">All (2300)</button>
         <button class="kanji-filter-btn" onclick="filterKanjiLevel('beginner')" data-i18n="filter_beginner">Beginner (1-500)</button>
         <button class="kanji-filter-btn" onclick="filterKanjiLevel('intermediate')" data-i18n="filter_intermediate">Intermediate (501-1200)</button>
         <button class="kanji-filter-btn" onclick="filterKanjiLevel('advanced')" data-i18n="filter_advanced">Advanced (1201-2300)</button>
-      </div>
-      
-      <!-- ============ THE WALL ============ -->
-      <div class="kw-tabs" role="tablist">
-        <button type="button" class="kw-tab is-on" id="kw-tab-wall" role="tab" aria-selected="true" data-i18n="kw_tab_wall">Wall</button>
-        <button type="button" class="kw-tab" id="kw-tab-card" role="tab" aria-selected="false" data-i18n="kw_tab_card">One at a time</button>
-        <a class="kw-tab kw-tab-link" href="/kanji-drill" data-i18n="kw_tab_drill">Drill</a>
       </div>
 
       <section class="kw-wall" id="kw-wall">
@@ -1004,6 +1056,7 @@
   <div id="toast" class="toast"></div>
 
   <script src="kanji-progress.js"></script>
+  <script src="wok-theme.js"></script>
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="app.js"></script>
@@ -1034,7 +1087,7 @@
   'use strict';
 
   var BLOCK = 100, TOTAL = 2300;
-  var state = { block: 0, filter: 'all', open: null, search: '' };
+  var state = { block: 0, filter: 'all', open: null, search: '', fresh: null };
 
   function $(id) { return document.getElementById(id); }
   function t(k, fb) { return (typeof window.t === 'function' && window.t(k) !== k) ? window.t(k) : fb; }
@@ -1060,15 +1113,9 @@
       '<span>' + c['new'].toLocaleString() + ' ' + t('kw_not_started', 'not started') + '</span>';
   }
 
-  /* ---------- block strip ---------- */
-  function ringColour(pct) {
-    if (pct >= 80) return ['#c45c4a', '#fff'];
-    if (pct >= 55) return ['#d4786a', '#fff'];
-    if (pct >= 30) return ['#e8b4a8', '#2b2320'];
-    if (pct >= 10) return ['#f2d8ce', '#2b2320'];
-    if (pct > 0)   return ['#eee5d8', '#6b615a'];
-    return ['#f4efe8', '#a49a92'];
-  }
+  /* ---------- block strip ----------
+     Each block is a stamp that fills with its colour from the bottom as the
+     block turns solid; at 100% it is a proper stamp, crooked and shadowed. */
   function paintBlocks() {
     var wrap = $('kw-blocks');
     wrap.innerHTML = '';
@@ -1076,12 +1123,12 @@
       var a = b * BLOCK + 1, z = Math.min(a + BLOCK - 1, TOTAL);
       var c = KA_Kanji.counts(a, z);
       var pct = Math.round(100 * c.solid / c.total);
-      var col = ringColour(pct);
       var btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'kw-blk' + (b === state.block ? ' is-on' : '');
-      btn.innerHTML = '<span class="kw-blk-ring" style="background:' + col[0] + ';color:' + col[1] + '">' +
-                      pct + '%</span><span class="kw-blk-lbl">' + a + '–' + z + '</span>';
+      btn.innerHTML = '<span class="kw-blk-ring' + (pct >= 100 ? ' is-full' : '') +
+                      '" style="--pct:' + pct + '%;--blk:' + KA_Kanji.colour(b + 1) + '">' +
+                      (b + 1) + '</span><span class="kw-blk-lbl">' + a + '–' + z + '</span>';
       btn.setAttribute('aria-label', a + '–' + z + ', ' + pct + '%');
       (function (n) { btn.addEventListener('click', function () { go(n); }); })(b);
       wrap.appendChild(btn);
@@ -1108,6 +1155,11 @@
       var cell = document.createElement('button');
       cell.type = 'button';
       cell.className = 'kw-cell s-' + st;
+      if (st === 'solid') {
+        cell.style.setProperty('--stamp', KA_Kanji.colour(id));
+        cell.style.setProperty('--tilt', KA_Kanji.tilt(id) + 'deg');
+        if (state.fresh && state.fresh[id]) cell.classList.add('is-fresh');
+      }
       cell.textContent = item.kanji;
       cell.title = item.keyword + ' · #' + id;
       cell.setAttribute('aria-label', item.kanji + ' — ' + item.keyword);
@@ -1131,6 +1183,7 @@
     $('kw-n-new').textContent = n['new'];
     $('kw-n-solid').textContent = n.solid;
     paintDrillBar(n);
+    state.fresh = null;   // the stamp-in animation plays once, on the first paint back
   }
 
   /* ---------- what you can drill from here ---------- */
@@ -1175,7 +1228,30 @@
       alert(t('kw_no_storage', 'Your browser is blocking storage, so the drill cannot be handed this list.'));
       return;
     }
+    // Remember what the drilled tiles looked like, so when you come back the
+    // ones that turned solid get stamped in front of you rather than just
+    // being different.
+    try {
+      var before = {};
+      ids.forEach(function (id) { before[id] = KA_Kanji.status(id); });
+      sessionStorage.setItem('katsuyo-kanji-before', JSON.stringify({ block: state.block, was: before }));
+    } catch (e) {}
     window.location.href = '/kanji-drill?from=wall';
+  }
+
+  // Coming back from a round: which tiles changed to solid since we left?
+  function takeFresh() {
+    var raw = null;
+    try { raw = sessionStorage.getItem('katsuyo-kanji-before'); sessionStorage.removeItem('katsuyo-kanji-before'); } catch (e) {}
+    if (!raw) return;
+    try {
+      var snap = JSON.parse(raw), fresh = {}, any = false;
+      Object.keys(snap.was).forEach(function (id) {
+        if (snap.was[id] !== 'solid' && KA_Kanji.status(+id) === 'solid') { fresh[id] = true; any = true; }
+      });
+      if (typeof snap.block === 'number') state.block = snap.block;
+      if (any) state.fresh = fresh;
+    } catch (e) {}
   }
 
   /* ---------- the opened card ---------- */
@@ -1206,7 +1282,7 @@
       '<div class="kw-d-body">' +
         '<div class="kw-d-head">' +
           '<span class="kw-d-kw">' + item.keyword.replace(/・/g, ' · ').toLowerCase() + '</span>' +
-          '<span class="kw-d-state s-' + d.status + '">' + stateLabel + '</span>' +
+          '<span class="kw-d-state s-' + d.status + '" style="--stamp:' + KA_Kanji.colour(id) + '">' + stateLabel + '</span>' +
           '<button type="button" class="kw-d-close" aria-label="Close">✕</button>' +
         '</div>' +
         '<div class="kw-d-readings">' +
@@ -1328,13 +1404,14 @@
       else if (e.key === 'ArrowLeft')  { step(-1); e.preventDefault(); }
     });
 
+    takeFresh();
     refresh();
     var saved = 'wall';
     try { saved = localStorage.getItem('katsuyo-kanji-view') || 'wall'; } catch (e) {}
     showTab(saved === 'card' ? 'card' : 'wall');
 
     // Coming back from a round: re-read the store and land on what changed.
-    window.addEventListener('pageshow', refresh);
+    window.addEventListener('pageshow', function (e) { if (e.persisted) { takeFresh(); refresh(); } });
     if (window.refreshKanjiWall === undefined) window.refreshKanjiWall = refresh;
   }
 

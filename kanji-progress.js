@@ -151,8 +151,20 @@
     } catch (e) { return null; }
   }
 
+  // The stamp colour a kanji gets once it is solid. Fixed per id — not per
+  // status, not per position on screen — so a kanji is the same colour on the
+  // wall, in the drill's round strip and on the end-of-round panel, and a wall
+  // that is filling in reads as a mosaic rather than a reshuffle.
+  var STAMP = ['#c8392b', '#e0a030', '#2d6a9f', '#3aa17e'];
+  function colour(id) { return STAMP[(id * 7) % STAMP.length]; }
+  // Solid tiles sit slightly crooked, like a real hanko; the tilt is also
+  // fixed per id so it never changes on repaint.
+  function tilt(id) { return [-2, 2, -1.5, 1.5, -3][id % 5]; }
+
   window.KA_Kanji = {
     SOLID_AT: SOLID_AT,
+    colour: colour,
+    tilt: tilt,
     status: status,
     detail: detail,
     counts: counts,
