@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
   <script src="analytics.js"></script>
-  <title>Kanji Flashcards — 2,300 KLC Kanji | Katsuyō Academy</title>
+  <title>The Walk | Katsuyō Academy</title>
   <meta name="description" content="Study all 2,300 kanji from the Kodansha Learner's Course with interactive flashcards, readings, and vocabulary.">
   <link rel="canonical" href="https://katsuyoacademy.com/kanji">
   <link rel="icon" type="image/png" href="open_book.png">
@@ -54,7 +54,7 @@
     </div>
   </nav>
 
-  <div id="page-kanji" class="page active">
+  <div id="page-kanji" class="page active kw-view-wall">
     <style>
       /* Kanji-specific dark theme overrides */
       #page-kanji {
@@ -793,8 +793,18 @@
         .kw-d-vocab { grid-template-columns: 1fr; }
       }
 
+      /* ---- which view is showing ----
+         Doing this with a class beats toggling el.style.display: restoring
+         display:'' just let the default rule re-hide the card, which is why
+         "One at a time" appeared to do nothing. */
+      #page-kanji.kw-view-wall .kanji-flashcard-area,
+      #page-kanji.kw-view-wall .kanji-nav,
+      #page-kanji.kw-view-wall .kanji-stats,
+      #page-kanji.kw-view-wall .ka-split,
+      #page-kanji.kw-view-wall .ka-audio-panel { display: none !important; }
+      #page-kanji.kw-view-card #kw-wall { display: none !important; }
+
       /* ---- re-skin the old flashcard so the two tabs match ---- */
-      .kanji-flashcard-area { display: none; }
       .kanji-flashcard-front, .kanji-flashcard-back {
         background: #fff !important; color: #2b2320 !important;
         border: 1px solid rgba(0,0,0,0.09) !important; border-radius: 18px !important;
@@ -819,9 +829,9 @@
       <div class="kanji-header">
         <h1 class="kanji-title">
           <span class="kanji-japanese-title jp">漢字</span>
-          <span class="kanji-romaji-title">Kanji Flashcards</span>
+          <span class="kanji-romaji-title" data-i18n="kw_page_title">The Walk</span>
         </h1>
-        <p class="kanji-subtitle" data-i18n="kanji_sub">Practice 2,300 Kanji</p>
+        <p class="kanji-subtitle" data-i18n="kw_page_sub">The Wall of Kanji</p>
 
       </div>
       
@@ -1073,8 +1083,10 @@
       (function (n) { btn.addEventListener('click', function () { go(n); }); })(b);
       wrap.appendChild(btn);
     }
+    // Deliberately NOT scrollIntoView: on a horizontally scrolling strip it drags
+    // the whole page vertically, which is what made every click jump to the top.
     var on = wrap.querySelector('.kw-blk.is-on');
-    if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest', inline: 'center' });
+    if (on) wrap.scrollLeft = Math.max(0, on.offsetLeft - wrap.clientWidth / 2);
   }
 
   /* ---------- the grid ---------- */
@@ -1221,7 +1233,6 @@
       refresh(); openCard(id);
     });
     paintGrid();
-    box.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 
   // "日[ひ]にち" → "日にち" — the bracketed readings are furigana hints.
@@ -1252,16 +1263,9 @@
 
   function showTab(which) {
     var wall = which === 'wall';
-    $('kw-wall').style.display = wall ? '' : 'none';
-    // Everything belonging to the one-at-a-time card. There are two .kanji-nav
-    // rows and an audio strip, so this has to be querySelectorAll, not
-    // querySelector — the first pass left Shuffle and the voice picker on screen.
-    var cardBits = document.querySelectorAll(
-      '.kanji-flashcard-area, .kanji-nav, .kanji-stats, .ka-split, .ka-audio-panel, .kanji-audio-row');
-    cardBits.forEach(function (el) {
-      if (wall) { el.dataset.kwPrev = el.style.display; el.style.display = 'none'; }
-      else { el.style.display = el.dataset.kwPrev || ''; }
-    });
+    var page = document.getElementById('page-kanji');
+    page.classList.toggle('kw-view-wall', wall);
+    page.classList.toggle('kw-view-card', !wall);
     $('kw-tab-wall').classList.toggle('is-on', wall);
     $('kw-tab-card').classList.toggle('is-on', !wall);
     $('kw-tab-wall').setAttribute('aria-selected', String(wall));
@@ -1314,7 +1318,7 @@
     });
 
     document.addEventListener('keydown', function (e) {
-      if ($('kw-wall').style.display === 'none') return;
+      if (!document.getElementById('page-kanji').classList.contains('kw-view-wall')) return;
       if (e.target.tagName === 'INPUT') return;
       if (e.key === 'Escape') closeCard();
       else if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }

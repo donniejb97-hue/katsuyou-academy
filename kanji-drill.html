@@ -130,6 +130,21 @@
     .drill-btn.primary:not(:disabled) { background: #c45c4a; color: #fff;
       box-shadow: 0 2px 9px rgba(196,92,74,0.28); }
 
+  
+    .kd-navrow { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.9rem;
+      flex-wrap: wrap; }
+    .kd-navrow-note { font-size: 0.76rem; color: #8a7f76; }
+    .kd-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .drill-select { padding: 0.5rem 0.85rem; border-radius: 999px; border: 1px solid rgba(0,0,0,0.14);
+      background: #fff; font-family: inherit; font-size: 0.84rem; color: #2b2320; cursor: pointer; }
+    .kd-custom { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .kd-custom[hidden] { display: none; }
+    .kd-num { width: 5rem; padding: 0.45rem 0.6rem; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.14); background: #fff; font-family: inherit;
+      font-size: 0.84rem; color: #2b2320; }
+    .kd-dash { color: #8a7f76; }
+    .kd-poolsize { font-size: 0.76rem; color: #8a7f76; margin-left: auto; }
+
   </style>
 </head>
 <body data-page="kanji-drill">
@@ -206,16 +221,27 @@
         </div>
         <div class="drill-control-row">
           <span class="drill-control-label" data-i18n="range">Range</span>
-          <button class="drill-chip set-chip on" data-set="r1" onclick="toggleSet('r1')">KLC 1–500</button>
-          <button class="drill-chip set-chip" data-set="r2" onclick="toggleSet('r2')">501–1200</button>
-          <button class="drill-chip set-chip" data-set="r3" onclick="toggleSet('r3')">1201–2300</button>
+          <select id="drill-range" class="drill-select"></select>
+          <span class="kd-custom" id="kd-custom" hidden>
+            <label class="kd-sr" for="kd-lo" data-i18n="kd_from">From</label>
+            <input type="number" id="kd-lo" min="1" max="2300" value="1" class="kd-num">
+            <span class="kd-dash">–</span>
+            <label class="kd-sr" for="kd-hi" data-i18n="kd_to">To</label>
+            <input type="number" id="kd-hi" min="1" max="2300" value="100" class="kd-num">
+            <button type="button" class="drill-chip" id="kd-apply" data-i18n="kd_apply">Apply</button>
+          </span>
+          <span class="kd-poolsize" id="kd-poolsize"></span>
         </div>
+      </div>
+
+      <div class="kd-navrow">
+        <a class="kd-back" href="/kanji" data-i18n="kd_back_wall">← Back to the wall</a>
+        <span class="kd-navrow-note" id="kd-logging" data-i18n="kd_logging">Everything you answer here is recorded on the wall.</span>
       </div>
 
       <!-- Only present when the wall handed this page a list. -->
       <div class="kd-round" id="kd-round" hidden>
         <div class="kd-round-head">
-          <a class="kd-back" href="/kanji" data-i18n="kd_back_wall">← Back to the wall</a>
           <span class="kd-round-label" id="kd-round-label"></span>
           <span class="kd-round-count" id="kd-round-count"></span>
         </div>
@@ -281,7 +307,8 @@
 
     var state = {
       mode: 'kanji2keyword',
-      sets: { r1: true, r2: false, r3: false },
+      lo: 1, hi: 500,        // the drill range, now any span rather than 3 fixed sets
+      onlyWrong: false,      // "only the ones I've got wrong", read from the shared store
       correct: 0, total: 0, streak: 0, best: 0,
       current: null,
       answered: false,
@@ -311,14 +338,18 @@
 
     function pool() {
       var out = [];
-      Object.keys(RANGES).forEach(function (key) {
-        if (!state.sets[key]) return;
-        var lo = RANGES[key][0], hi = RANGES[key][1];
-        for (var i = 0; i < kanjiDataList.length; i++) {
-          var k = kanjiDataList[i];
-          if (k.id >= lo && k.id <= hi) out.push(k);
-        }
-      });
+      if (state.onlyWrong && window.KA_Kanji) {
+        // Exactly what the wall's "Drill the shaky" does, without the wall.
+        KA_Kanji.idsWithStatus(1, 2300, 'shaky').forEach(function (id) {
+          var k = byKlcId(id);
+          if (k) out.push(k);
+        });
+        return out;
+      }
+      for (var i = 0; i < kanjiDataList.length; i++) {
+        var k = kanjiDataList[i];
+        if (k.id >= state.lo && k.id <= state.hi) out.push(k);
+      }
       return out;
     }
 
@@ -386,6 +417,7 @@
         paintStrip();
       } else {
         var p = pool();
+        if (!p.length) { showPoolSize(); return; }
         item = p[Math.floor(Math.random() * p.length)];
         if (state.current && p.length > 3) {
           while (item.kanji === state.current.item.kanji) {
@@ -700,6 +732,69 @@
     }
 
     // ---------- controls ----------
+    /* ---------- the range picker ---------- */
+
+    function buildRangeOptions() {
+      var sel = $('drill-range');
+      if (!sel) return;
+      function opt(value, label) {
+        var o = document.createElement('option');
+        o.value = value; o.textContent = label;
+        sel.appendChild(o);
+      }
+      sel.innerHTML = '';
+      opt('1-2300', tt('kd_r_all', 'Everything') + ' \u00b7 1\u20132300');
+      opt('1-500', 'KLC 1\u2013500');
+      opt('501-1200', 'KLC 501\u20131200');
+      opt('1201-2300', 'KLC 1201\u20132300');
+
+      var wrong = window.KA_Kanji ? KA_Kanji.idsWithStatus(1, 2300, 'shaky').length : 0;
+      opt('wrong', tt('kd_r_wrong', 'Only the ones I\u2019ve got wrong') + ' \u00b7 ' + wrong);
+
+      var g = document.createElement('optgroup');
+      g.label = tt('kd_r_blocks', 'Blocks of 100');
+      sel.appendChild(g);
+      for (var a = 1; a <= 2300; a += 100) {
+        var z = Math.min(a + 99, 2300);
+        var o = document.createElement('option');
+        o.value = a + '-' + z;
+        o.textContent = a + '\u2013' + z;
+        g.appendChild(o);
+      }
+      opt('custom', tt('kd_r_custom', 'Custom range\u2026'));
+      sel.value = state.lo + '-' + state.hi;
+    }
+
+    function applyRange(value) {
+      if (value === 'wrong') {
+        state.onlyWrong = true;
+        $('kd-custom').hidden = true;
+      } else if (value === 'custom') {
+        $('kd-custom').hidden = false;
+        return;                       // wait for Apply
+      } else {
+        state.onlyWrong = false;
+        $('kd-custom').hidden = true;
+        var parts = value.split('-');
+        state.lo = parseInt(parts[0], 10);
+        state.hi = parseInt(parts[1], 10);
+      }
+      showPoolSize();
+      newQuestion();
+    }
+
+    function showPoolSize() {
+      var n = pool().length;
+      $('kd-poolsize').textContent = n + ' ' + tt('kd_in_range', 'in range');
+      // An empty pool would loop forever in newQuestion, so say so and stop.
+      if (!n) {
+        $('drill-question').textContent = '\u2014';
+        $('drill-tag').textContent = tt('kd_r_empty', 'Nothing in that range yet');
+      }
+    }
+
+    window.toggleSet = function () { /* the range chips were replaced by a select */ };
+
     window.setMode = function (mode) {
       state.mode = mode;
       document.querySelectorAll('.mode-chip').forEach(function (c) {
@@ -759,6 +854,22 @@
       $('drill-check').addEventListener('click', function () {
         if (state.answered) newQuestion();
       });
+      buildRangeOptions();
+      $('drill-range').addEventListener('change', function () {
+        applyRange(this.value);
+      });
+      $('kd-apply').addEventListener('click', function () {
+        var a = parseInt($('kd-lo').value, 10) || 1;
+        var z = parseInt($('kd-hi').value, 10) || 2300;
+        if (a > z) { var t2 = a; a = z; z = t2; }
+        state.lo = Math.max(1, Math.min(2300, a));
+        state.hi = Math.max(1, Math.min(2300, z));
+        state.onlyWrong = false;
+        showPoolSize();
+        newQuestion();
+      });
+      showPoolSize();
+
       // If the wall sent us here, drill exactly what it chose.
       if (window.KA_Kanji) {
         var q = KA_Kanji.takeQueue();
