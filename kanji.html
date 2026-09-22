@@ -806,6 +806,18 @@
       .kw-d-readings b { display: block; font-size: 0.6rem; letter-spacing: 0.1em;
         text-transform: uppercase; margin-bottom: 0.15rem; }
       .kw-d-on b { color: var(--wok-red-dark); } .kw-d-kun b { color: #4f7454; }
+      .kw-d-readings { align-items: flex-end; }
+      .kw-hear { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.8rem; border-radius: 999px;
+        border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink); font-family: inherit;
+        font-size: 0.76rem; font-weight: 700; cursor: pointer; line-height: 1; }
+      .kw-hear svg { width: 15px; height: 15px; }
+      .kw-hear:hover { transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+      .kw-hear.playing { background: var(--wok-ink); color: var(--wok-paper); }
+      .kw-hear.is-mini { padding: 0.2rem; width: 22px; height: 22px; justify-content: center; margin-right: 0.35rem;
+        vertical-align: middle; border-color: var(--wok-line); color: var(--wok-mute); }
+      .kw-hear.is-mini svg { width: 12px; height: 12px; }
+      .kw-hear.is-mini:hover, .kw-hear.is-mini.playing { border-color: var(--wok-ink); color: var(--wok-ink); box-shadow: none; transform: none; }
+      .kw-hear.is-mini.playing { background: var(--wok-ink); color: var(--wok-paper); }
       .kw-d-readings span.jp { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; color: var(--wok-ink); }
       .kw-d-vocab { border-top: 1px solid var(--wok-line); padding-top: 0.6rem;
         display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.3rem 1rem; }
@@ -1287,8 +1299,10 @@
         ? t('kw_s_shaky', 'Shaky') + ' — ' + d.wrong + '/' + d.seen + ' ' + t('kw_s_missed', 'missed')
         : t('kw_s_new', 'Not started yet');
 
-    var vocab = (item.vocabulary || []).slice(0, 6).map(function (v) {
-      return '<li><span class="jp">' + stripFuri(v.word) + '</span>' +
+    var vocab = (item.vocabulary || []).slice(0, 6).map(function (v, i) {
+      return '<li><button type="button" class="kw-hear is-mini" data-hear="' + i + '" aria-label="Listen">' +
+               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg></button>' +
+             '<span class="jp">' + stripFuri(v.word) + '</span>' +
              (v.meaning || '').replace(/;,?\s*/g, ', ') + '</li>';
     }).join('');
 
@@ -1309,6 +1323,9 @@
             ((item.onyomi || []).join(' ・ ') || '—') + '</span></span>' +
           '<span class="kw-d-kun"><b>' + t('kunyomi', "Kun'yomi") + '</b><span class="jp">' +
             (item.kunyomi || '—') + '</span></span>' +
+          '<button type="button" class="kw-hear" data-hear="readings">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>' +
+            t('kw_hear', 'Hear the readings') + '</button>' +
         '</div>' +
         (vocab ? '<ul class="kw-d-vocab">' + vocab + '</ul>' : '') +
         '<div class="kw-d-acts">' +
@@ -1321,6 +1338,21 @@
       '</div>';
 
     box.querySelector('.kw-d-close').addEventListener('click', closeCard);
+
+    // Listen buttons: the readings, and each example word (spoken from its
+    // furigana, never the bare kanji). Hidden until something can speak.
+    if (window.KA_Listen) {
+      KA_Listen.stop();
+      box.querySelectorAll('.kw-hear').forEach(function (btn) {
+        var which = btn.getAttribute('data-hear');
+        KA_Listen.attach(btn, function () {
+          if (which === 'readings') return window.kanjiReadingSpeech ? window.kanjiReadingSpeech(item) : '';
+          var v = (item.vocabulary || [])[+which];
+          return v ? v.word : '';
+        });
+      });
+      paintListen();
+    }
     box.querySelector('[data-act="drill"]').addEventListener('click', function () {
       sendToDrill([id], item.kanji);
     });
@@ -1331,6 +1363,13 @@
       refresh(); openCard(id);
     });
     paintGrid();
+  }
+
+  // Voices arrive late (browser ones after load, Azure's as a fetch), so the
+  // Listen buttons are drawn and then shown or hidden once we know.
+  function paintListen() {
+    var can = !!(window.KA_Listen && KA_Listen.available());
+    document.querySelectorAll('#kw-detail .kw-hear').forEach(function (b) { b.style.display = can ? '' : 'none'; });
   }
 
   // "日[ひ]にち" → "日にち" — the bracketed readings are furigana hints.
@@ -1422,6 +1461,9 @@
       else if (e.key === 'ArrowRight') { step(1); e.preventDefault(); }
       else if (e.key === 'ArrowLeft')  { step(-1); e.preventDefault(); }
     });
+
+    if (window.KA_Speech && KA_Speech.onReady) KA_Speech.onReady(paintListen);
+    if (window.KA_Azure && KA_Azure.listVoices) KA_Azure.listVoices().then(paintListen);
 
     takeFresh();
     refresh();

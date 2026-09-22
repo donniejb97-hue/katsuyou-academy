@@ -9106,6 +9106,8 @@ function generateNewQuestion() {
     // notation the voice would read literally: "-び" marks a reading that takes
     // a prefix, and "ひと.つ" separates the kanji's own reading from its
     // okurigana. Strip the markers, keep the sound.
+    // The wall (kanji.html) needs this too, so it is shared rather than copied.
+    window.kanjiReadingSpeech = kanjiReadingSpeech;
     function kanjiReadingSpeech(card) {
       if (!card) return '';
       var parts = [];
