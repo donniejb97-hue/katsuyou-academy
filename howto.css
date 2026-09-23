@@ -1,0 +1,89 @@
+/* ============================================================
+   HOW IT WORKS — the hanging scroll on The WoK and the Kanji Kitchen.
+
+   A kakejiku: two wooden rollers with ruled paper between them. It hangs
+   in the right-hand margin when the screen has one, and sits in the page
+   flow above the content when it doesn't. Rolling it up shrinks the paper
+   until the two rollers meet; the state is remembered per browser.
+   ============================================================ */
+
+.howto {
+  --ht-w: 244px;
+  width: var(--ht-w);
+  font-family: 'Outfit', sans-serif;
+  color: #2b2320;
+  z-index: 40;
+}
+/* docked: hanging in the margin, pinned under the nav so it is always to hand.
+   Katsu's button lives in the same corner, so while the scroll hangs open
+   the button (and his panel) step to its left. */
+.howto.is-docked { position: fixed; right: 18px; top: 92px; }
+body.howto-open #sensei-fab { right: calc(2rem + 244px + 18px) !important; }
+body.howto-open #sensei-panel { right: calc(2rem + 244px + 18px) !important; }
+/* inline: a full-width strip above the content */
+.howto.is-inline { position: relative; width: 100%; max-width: 560px; margin: 0 auto 1.2rem; }
+
+.howto-roll {
+  position: relative; height: 16px; margin: 0 -10px; border-radius: 8px;
+  background: linear-gradient(#6a5240, #2b2320); box-shadow: 0 2px 0 rgba(0,0,0,0.35);
+}
+.howto-roll::before, .howto-roll::after {
+  content: ""; position: absolute; top: 2px; width: 14px; height: 12px; border-radius: 50%; background: #8b6b4a;
+}
+.howto-roll::before { left: -4px; } .howto-roll::after { right: -4px; }
+/* the bottom roller is what you grab */
+.howto-roll.is-bottom { cursor: pointer; }
+.howto-roll.is-bottom:hover { background: linear-gradient(#7a6250, #3b302c); }
+
+.howto-paper {
+  overflow: hidden; max-height: 900px;
+  transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #faf6ec;
+  background-image: repeating-linear-gradient(0deg, transparent 0 25px, #eee6d4 25px 26px);
+  border-left: 2px solid #2b2320; border-right: 2px solid #2b2320;
+}
+.howto.is-rolled .howto-paper { max-height: 0; }
+.howto-inner { padding: 14px 16px 12px; }
+
+.howto-eyebrow { font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: #c8392b; font-weight: 700; }
+.howto-title { margin: 2px 0 8px; font-size: 1rem; font-weight: 800; line-height: 1.2; }
+.howto-title .jp { font-family: 'Noto Serif JP', serif; font-weight: 700; color: #8b8273; font-size: 0.8rem; margin-left: 6px; }
+.howto-list { margin: 0; padding: 0 0 0 18px; font-size: 0.78rem; line-height: 1.5; }
+.howto-list li { margin: 0 0 7px; }
+.howto-list li:last-child { margin-bottom: 0; }
+.howto-list b { font-weight: 700; }
+.howto-list i { font-style: italic; }
+.howto-sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; vertical-align: -1px; margin: 0 2px 0 1px; box-sizing: border-box; }
+.howto-sw.is-new { background: #faf6ec; border: 1.5px solid #ddd3c0; }
+.howto-sw.is-shaky { background: #fff; border: 2px solid #c8392b; }
+.howto-sw.is-solid { background: #3aa17e; }
+
+.howto-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; }
+.howto-seal {
+  width: 26px; height: 26px; background: #c8392b; color: #faf6ec; font-family: 'Noto Serif JP', serif;
+  font-weight: 900; font-size: 0.9rem; display: flex; align-items: center; justify-content: center;
+  border-radius: 3px; transform: rotate(-4deg);
+}
+.howto-hide {
+  font-family: inherit; font-size: 0.7rem; color: #8b8273; background: transparent;
+  border: 1px solid #cfc6b3; border-radius: 999px; padding: 2px 9px; cursor: pointer;
+}
+.howto-hide:hover { color: #2b2320; border-color: #2b2320; }
+
+/* the tag that hangs off the rolled-up scroll */
+.howto-tag {
+  display: none; align-items: center; gap: 0.4rem; margin: 0 auto; width: max-content;
+  padding: 4px 12px 5px; background: #faf6ec; border: 1.5px solid #2b2320; border-top: 0;
+  border-radius: 0 0 8px 8px; font-size: 0.72rem; font-weight: 700; color: #2b2320; cursor: pointer;
+  box-shadow: 2px 2px 0 #c8392b;
+}
+.howto-tag .jp { font-family: 'Noto Serif JP', serif; }
+.howto.is-rolled .howto-tag { display: inline-flex; }
+.howto.is-rolled .howto-roll.is-bottom { margin-top: -6px; }
+
+@media (prefers-reduced-motion: reduce) { .howto-paper { transition: none; } }
+@media (max-width: 640px) {
+  .howto.is-inline .howto-roll { margin: 0 -4px; }
+  .howto-inner { padding: 12px 12px 10px; }
+  .howto-list { font-size: 0.8rem; }
+}
