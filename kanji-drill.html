@@ -153,11 +153,13 @@
        wall and the toolbar at eye level over the painting, so the room stays
        in view behind the drill. The title is centred so it clears the red
        lantern on the left. */
-    #page-kanji-drill { --kd-hero-h: clamp(360px, 40vw, 640px); --kd-eye: 250px; }
+    /* The hero is the painting's own shape (2560 x 1163), never cropped to a
+       fixed height: the wider the screen, the more of the room you see. */
+    #page-kanji-drill { --kd-hero-h: max(360px, 45.43vw); --kd-eye: 250px; }
     .kd-hero { padding: 0; min-height: 0; height: var(--kd-hero-h); margin-bottom: 0;
       display: flex; flex-direction: column; }
     .kitchen-photo { background: #f1ebdc url(kitchen-hero.jpg) center top / cover no-repeat; }
-    .kitchen-photo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 140px;
+    .kitchen-photo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: clamp(80px, 6vw, 160px);
       background: linear-gradient(rgba(244,239,228,0), var(--wok-paper)); }
     .wok-hero.kd-hero > .kd-hero-inner { position: absolute; left: 50%; bottom: calc(var(--kd-hero-h) - var(--kd-eye) + 12px); transform: translateX(-50%);
       width: 100%; max-width: 800px; padding: 0 2rem; box-sizing: border-box; display: flex; align-items: flex-end; justify-content: center; gap: 1rem; }
@@ -287,6 +289,9 @@
 
     .drill-btn { border-radius: 999px; border: 1.5px solid var(--wok-ink); font-weight: 700; }
     .drill-btn.primary:not(:disabled) { background: var(--wok-red); border-color: var(--wok-red); color: #fff; box-shadow: none; }
+    /* the drill now sits over the painting, so a waiting (disabled) Check button
+       stays solid paper instead of fading into the picture behind it */
+    #page-kanji-drill .drill-btn.primary:disabled { opacity: 1; background: #f4efe4; color: #a79d90; border-color: #d8cfbf; }
     .drill-btn.primary:hover:not(:disabled) { background: var(--wok-red); transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
     .drill-btn.primary:disabled { background: #fff; color: var(--wok-ink); }
     .drill-btn.ghost { background: #fff; border: 1.5px solid var(--wok-ink); color: var(--wok-ink); }
