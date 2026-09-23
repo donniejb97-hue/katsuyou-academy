@@ -172,12 +172,14 @@
        screens it is not drawn and the seal + title on the wall do the job. */
     #page-kanji-drill { position: relative; }
     .kd-logo { display: none; }
-    @media (min-width: 1440px) {
+    @media (min-width: 1500px) {
       .kd-logo { display: block; position: absolute; z-index: 3; pointer-events: none;
-        left: calc(50% + 404px); top: calc(var(--kd-eye) + 395px); width: min(320px, calc(50vw - 540px)); height: auto;
+        left: calc(50% + 440px); top: calc(var(--kd-eye) + 395px); width: min(320px, calc(50vw - 560px)); height: auto;
         filter: drop-shadow(0 0 10px rgba(255,255,255,0.85)); }
       .wok-hero.kd-hero > .kd-hero-inner .wok-title-row { visibility: hidden; }
     }
+    /* the footer follows the paper directly, with no strip of page background between */
+    #page-kanji-drill + .site-footer { margin-top: 0; }
     /* Back to the wall: the first chip in the toolbar, where your hands are. */
     .kd-back { flex: none; display: inline-flex; align-items: center; gap: 0.35rem; height: 34px; padding: 0 0.85rem 0 0.7rem;
       border-radius: 999px; border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink);
