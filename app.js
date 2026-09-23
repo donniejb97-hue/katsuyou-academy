@@ -1527,14 +1527,24 @@
         onReady: function (fn) { ready ? fn() : listeners.push(fn); },
 
         speak: function (text, opts) {
-          if (!synth || !jaVoice || !text) return false;
           opts = opts || {};
+          if (!synth || !text) return false;
+          // Japanese by default; opts.lang ('en', 'de', 'fr', 'zh') picks a
+          // voice for that language instead — Katsu reads his replies this way.
+          var use = jaVoice;
+          if (opts.lang && opts.lang !== 'ja') {
+            var want = new RegExp('^' + opts.lang + '(-|_|$)', 'i');
+            var cands = (synth.getVoices() || []).filter(function (v) { return want.test(v.lang || ''); });
+            cands.sort(function (a, b) { return (b.localService ? 1 : 0) - (a.localService ? 1 : 0); });
+            use = cands[0] || null;
+          }
+          if (!use) return false;
           synth.cancel();
           chunk(text).forEach(function (piece, i) {
             var u = new SpeechSynthesisUtterance(piece);
-            u.voice = jaVoice;
-            u.lang = jaVoice.lang || 'ja-JP';
-            u.rate = opts.rate || 0.9;   // a touch under natural, for learners
+            u.voice = use;
+            u.lang = use.lang || 'ja-JP';
+            u.rate = opts.rate || (opts.lang && opts.lang !== 'ja' ? 1 : 0.9);   // Japanese a touch under natural, for learners
             u.pitch = opts.pitch || 1;
             if (i === 0 && opts.onstart) u.onstart = opts.onstart;
             if (opts.onend) u.onend = function () {
@@ -1610,10 +1620,11 @@
         opts = opts || {};
         if (disabled || !text) return Promise.resolve(false);
 
-        var voice = currentVoice();
-        var style = (typeof opts.style === 'string') ? opts.style : '';
-        // Style changes the audio, so it has to be part of the cache key.
-        var key = voice + '|' + style + '|' + text;
+        var lang = (typeof opts.lang === 'string' && opts.lang !== 'ja') ? opts.lang : '';
+        var voice = lang ? '' : currentVoice();
+        var style = (typeof opts.style === 'string' && !lang) ? opts.style : '';
+        // Style and language change the audio, so they are part of the cache key.
+        var key = lang + '|' + voice + '|' + style + '|' + text;
         stop();
 
         function play(url) {
@@ -1634,7 +1645,7 @@
         return fetch(endpoint(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: text, voice: voice, style: style })
+          body: JSON.stringify(lang ? { text: text, lang: lang } : { text: text, voice: voice, style: style })
         })
           .then(function (r) {
             if (r.status === 503) { disabled = true; return null; }

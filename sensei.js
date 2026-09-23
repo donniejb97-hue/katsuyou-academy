@@ -22,6 +22,7 @@
   var STORAGE_PREV = 'katsuPrevChat';
   var STORAGE_OPEN = 'katsuPanelOpen';
   var STORAGE_PROACTIVE = 'katsuProactive';
+  var STORAGE_READALOUD = 'katsuReadAloud';
   var STORAGE_MISTAKES = 'katsuMistakes';
 
   var MAX_MISTAKES = 20;        // kept in storage
@@ -250,10 +251,11 @@
   }
 
   // ---------- settings & persisted state ----------
-  var settings = { proactive: true };
+  var settings = { proactive: true, readAloud: false };
   try {
     var savedProactive = localStorage.getItem(STORAGE_PROACTIVE);
     if (savedProactive !== null) settings.proactive = savedProactive === '1';
+    settings.readAloud = localStorage.getItem(STORAGE_READALOUD) === '1';
   } catch (e) { /* storage unavailable */ }
 
   // The stored chat is { t: when it was last touched, m: [messages] }. Older
@@ -305,6 +307,52 @@
   function persistOpen(isOpen) {
     try { localStorage.setItem(STORAGE_OPEN, isOpen ? '1' : '0'); } catch (e) {}
   }
+  function persistReadAloud() {
+    try { localStorage.setItem(STORAGE_READALOUD, settings.readAloud ? '1' : '0'); } catch (e) {}
+  }
+
+  // ---------- read aloud ----------
+  // Katsu answers in the site's language, so that is the voice he gets:
+  // Azure through /api/tts with `lang`, the browser's own voice underneath.
+  // Markdown, readings-in-brackets and emoji are stripped first — a voice
+  // should not read "asterisk asterisk".
+  function siteLang() {
+    var l = (typeof window.LANG === 'string') ? window.LANG : '';
+    if (!l) { try { l = localStorage.getItem('katsuyoLang') || 'en'; } catch (e) { l = 'en'; } }
+    return /^(en|de|fr|zh|ja)$/.test(l) ? l : 'en';
+  }
+  function plainForSpeech(text) {
+    // 食べる[たべる]: a Japanese voice gets the reading, any other voice the word.
+    var ja = siteLang() === 'ja';
+    return String(text || '')
+      .replace(/([^\s\[\]]+)\[([^\]]+)\]/g, ja ? '$2' : '$1')
+      .replace(/`([^`\n]+)`/g, '$1')
+      .replace(/\*\*([^*\n]+)\*\*/g, '$1')
+      .replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1$2')
+      .replace(/(^|[^_\w])_([^_\n]+)_(?![_\w])/g, '$1$2')
+      .replace(/^\s*[-•*]\s+/gm, '')
+      .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B50}\u{FE0F}]/gu, '')
+      .replace(/\s+/g, ' ').trim();
+  }
+  var readingBtn = null;
+  function stopReading() {
+    if (window.KA_Voice) window.KA_Voice.stop();
+    if (readingBtn) { readingBtn.classList.remove('playing'); readingBtn = null; }
+  }
+  function readAloud(text, btn) {
+    var say = plainForSpeech(text);
+    if (!say || !window.KA_Voice) return;
+    var same = readingBtn === btn;
+    stopReading();
+    if (same) return;                          // second click = stop
+    readingBtn = btn || null;
+    if (btn) btn.classList.add('playing');
+    window.KA_Voice.speak(say, { lang: siteLang() }).then(function (how) {
+      if (how === 'none' && btn) { btn.classList.remove('playing'); readingBtn = null; }
+    }).catch(function () { if (btn) { btn.classList.remove('playing'); readingBtn = null; } });
+  }
+  function canRead() { return !!(window.KA_Voice && window.KA_Voice.available()); }
+
   function persistProactive() {
     try { localStorage.setItem(STORAGE_PROACTIVE, settings.proactive ? '1' : '0'); } catch (e) {}
   }
@@ -370,6 +418,12 @@
     '.sensei-msg.thinking { opacity: 0.6; font-style: italic; }',
     '.sensei-msg.error { border-color: var(--accent-soft, #d4786a); }',
     '.sensei-msg strong { font-weight: 700; color: var(--ink, #1a1a2e); }',
+    '.sensei-read { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin: 0.35rem 0 0;',
+    '  border-radius: 999px; border: 1px solid rgba(0,0,0,0.18); background: #fff; color: #6b6b6b; cursor: pointer; padding: 0; vertical-align: middle; }',
+    '.sensei-read svg { width: 13px; height: 13px; }',
+    '.sensei-read:hover { color: var(--ink, #1a1a2e); border-color: currentColor; }',
+    '.sensei-read.playing { background: var(--ink, #1a1a2e); color: #fff; border-color: var(--ink, #1a1a2e); }',
+    '.sensei-read[hidden] { display: none; }',
     '.sensei-msg em { font-style: italic; opacity: 0.85; }',
     '.sensei-msg code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.86em;',
     '  background: rgba(0,0,0,0.06); border-radius: 4px; padding: 0.05rem 0.3rem; }',
@@ -420,6 +474,10 @@
           '<label class="sensei-switch"><input type="checkbox" id="sensei-proactive-toggle"><span class="sensei-switch-track"></span></label>' +
         '</div>' +
         '<div class="sensei-setting-row">' +
+          '<span id="sensei-readaloud-label"></span>' +
+          '<label class="sensei-switch"><input type="checkbox" id="sensei-readaloud-toggle"><span class="sensei-switch-track"></span></label>' +
+        '</div>' +
+        '<div class="sensei-setting-row">' +
           '<button id="sensei-clear"></button>' +
         '</div>' +
         '<div class="sensei-setting-row">' +
@@ -455,6 +513,8 @@
       input.placeholder = tr('sensei_placeholder', 'How do I say… in Japanese?');
       send.textContent = tr('sensei_send', 'Ask');
       panel.querySelector('#sensei-proactive-label').textContent = tr('sensei_proactive_label', 'Let Katsu check in after six misses in a row');
+      panel.querySelector('#sensei-readaloud-label').textContent = tr('sensei_readaloud_label', 'Read every reply aloud');
+      panel.querySelectorAll('.sensei-read').forEach(function (b) { b.title = tr('sensei_read_aloud', 'Read aloud'); b.setAttribute('aria-label', b.title); });
       clearBtn.textContent = tr('sensei_clear_history', '🗑 Clear chat');
       refreshRestore();
       refreshMistakeUI();
@@ -494,6 +554,13 @@
     proactiveToggle.addEventListener('change', function () {
       settings.proactive = proactiveToggle.checked;
       persistProactive();
+    });
+    var readToggle = panel.querySelector('#sensei-readaloud-toggle');
+    readToggle.checked = settings.readAloud;
+    readToggle.addEventListener('change', function () {
+      settings.readAloud = readToggle.checked;
+      persistReadAloud();
+      if (!settings.readAloud) stopReading();
     });
 
     gear.addEventListener('click', function () {
@@ -575,7 +642,7 @@
       var div = document.createElement('div');
       div.className = 'sensei-msg ' + role + (opts.thinking ? ' thinking' : '') + (opts.error ? ' error' : '');
       // Katsu's replies get light markdown; the student's own text never does.
-      if (role === 'sensei' && !opts.thinking && !opts.error) div.innerHTML = mdLite(text);
+      if (role === 'sensei' && !opts.thinking && !opts.error) { div.innerHTML = mdLite(text); attachRead(div, text); }
       else div.textContent = text;
       if (opts.retry) {
         var retryBtn = document.createElement('button');
@@ -589,6 +656,26 @@
       msgsEl.scrollTop = msgsEl.scrollHeight;
       return div;
     }
+
+    var READ_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>';
+    function attachRead(div, text) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'sensei-read';
+      b.setAttribute('aria-label', tr('sensei_read_aloud', 'Read aloud'));
+      b.title = tr('sensei_read_aloud', 'Read aloud');
+      b.innerHTML = READ_ICON;
+      b.hidden = !canRead();
+      b.addEventListener('click', function (e) { e.stopPropagation(); readAloud(text, b); });
+      div.appendChild(document.createTextNode(' '));
+      div.appendChild(b);
+    }
+    function paintReadButtons() {
+      var can = canRead();
+      panel.querySelectorAll('.sensei-read').forEach(function (b) { b.hidden = !can; });
+    }
+    if (window.KA_Speech && KA_Speech.onReady) KA_Speech.onReady(paintReadButtons);
+    if (window.KA_Azure && KA_Azure.listVoices) KA_Azure.listVoices().then(paintReadButtons);
 
     // Replay persisted history into the DOM on load (without hitting the API).
     history.forEach(function (m) {
@@ -647,6 +734,8 @@
       callBackend(payload).then(function (answer) {
         thinkingEl.classList.remove('thinking');
         thinkingEl.innerHTML = mdLite(answer);
+        attachRead(thinkingEl, answer);
+        if (settings.readAloud) readAloud(answer, thinkingEl.querySelector('.sensei-read'));
         history.push({ role: 'student', text: q });
         history.push({ role: 'sensei', text: answer });
         history = history.slice(-MAX_STORED_MESSAGES);
