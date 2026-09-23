@@ -11,6 +11,7 @@
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="words-theme.css">
 </head>
 <body data-page="vocabquiz">
 
@@ -54,312 +55,161 @@
     </div>
   </nav>
 
-  <div id="page-vocabquiz" class="page active">
+  <div id="page-vocabquiz" class="page active wd-page">
     <style>
-      /* Vocabulary Quiz — scoped, in the Vocabulary page's palette */
-      #page-vocabquiz {
-        background: #1a1a1e;
-        padding-top: 72px;
-        min-height: 100vh;
-        --vq-panel: #22222a;
-        --vq-line: rgba(255,255,255,0.09);
-        --vq-tan: #8b7355;
-        --vq-tan2: #a08a6d;
-        --vq-sage: #7a9e7e;
-        --vq-gold: #c9a962;
-        --vq-terra: #b44b41;
-        --vq-terra2: #c96a5e;
-        --vq-txt: #f0ede8;
-        --vq-dim: rgba(240,237,232,0.55);
-        --vq-dim2: rgba(240,237,232,0.33);
+      /* ---- the Word Quiz: page-local layout on top of words-theme.css ---- */
+      #page-vocabquiz .vq-toolbar { display: flex; align-items: center; gap: 0.45rem; flex-wrap: wrap; margin: 0.2rem 0 0.9rem; }
+      #page-vocabquiz .vq-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+      #page-vocabquiz .vq-chip {
+        display: inline-flex; align-items: center; padding: 0.42rem 0.85rem; border-radius: 999px;
+        border: 1.5px solid var(--wd-line); background: transparent; color: var(--wd-mute);
+        font-family: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; line-height: 1.2;
       }
-      #page-vocabquiz .vq-wrap {
-        max-width: 780px;
-        margin: 0 auto;
-        /* .page already reserves 72px for the fixed bar, but this page zeroes
-           that out to paint its own background edge to edge, so the wrapper
-           has to put the space back or the title hides behind the nav. */
-        padding: 2.4rem 1.3rem 4rem;
-        color: var(--vq-txt);
-      }
-      @media (max-width: 600px) {
-        #page-vocabquiz { padding-top: 100px; }
-      }
-      #page-vocabquiz .vq-head { text-align: center; margin-bottom: 1.6rem; }
-      #page-vocabquiz .vq-title {
-        font-family: 'Noto Serif JP', serif;
-        font-size: 2rem; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 0.2rem;
-      }
-      #page-vocabquiz .vq-sub { color: var(--vq-dim); font-size: 0.92rem; }
-
-      /* the one-line bar */
-      #page-vocabquiz .vq-bar {
-        display: flex; align-items: center; gap: 0.7rem;
-        background: var(--vq-panel); border: 1px solid var(--vq-line);
-        border-radius: 11px; padding: 0.55rem 0.7rem 0.55rem 0.75rem;
-        margin-bottom: 0.7rem;
-      }
-      #page-vocabquiz .vq-select {
-        background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.14);
-        color: var(--vq-txt); border-radius: 8px; padding: 0.38rem 0.6rem;
-        font-family: inherit; font-size: 0.85rem; cursor: pointer; flex: 0 0 auto;
-        max-width: 42%;
-      }
-      #page-vocabquiz .vq-select:focus { outline: none; border-color: var(--vq-tan2); }
-      #page-vocabquiz .vq-bar-main {
-        flex: 1; min-width: 0; font-size: 0.86rem; color: var(--vq-txt);
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-      }
-      #page-vocabquiz .vq-bar-main .muted { color: var(--vq-dim2); font-size: 0.8rem; }
-      #page-vocabquiz .vq-bar-main .flag {
-        display: inline-block; background: rgba(180,75,65,0.22); color: var(--vq-terra2);
-        border-radius: 999px; padding: 0.04rem 0.5rem; font-size: 0.7rem;
-        font-weight: 600; margin-left: 0.35rem;
-      }
-      #page-vocabquiz .vq-prow {
-        display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 0.7rem;
-      }
-      #page-vocabquiz .vq-plabel {
-        font-size: 0.65rem; letter-spacing: 0.13em; text-transform: uppercase;
-        color: var(--vq-dim2); width: 4.8rem; flex: 0 0 auto;
-      }
-      #page-vocabquiz .vq-prow .vq-chips { margin-bottom: 0; }
-
-      /* the language band */
-      #page-vocabquiz .vq-lang {
-        display: inline-flex; align-items: center; gap: 0.5rem;
-        margin: 0.35rem 0 1rem; border-radius: 8px;
-        padding: 0.34rem 0.75rem 0.34rem 0.45rem; font-size: 0.85rem; font-weight: 500;
-      }
-      #page-vocabquiz .vq-lang-tag {
-        border-radius: 5px; padding: 0.08rem 0.45rem;
-        font-size: 0.78rem; font-weight: 700; letter-spacing: 0.02em;
-      }
-      #page-vocabquiz .vq-lang.jp {
-        background: rgba(122,158,126,0.13); color: #a8cbab;
-        border: 1px solid rgba(122,158,126,0.35);
-      }
-      #page-vocabquiz .vq-lang.jp .vq-lang-tag {
-        background: var(--vq-sage); color: #16301a; font-family: 'Noto Serif JP', serif;
-      }
-      #page-vocabquiz .vq-lang.en {
-        background: rgba(111,157,196,0.13); color: #a9c9e2;
-        border: 1px solid rgba(111,157,196,0.35);
-      }
-      #page-vocabquiz .vq-lang.en .vq-lang-tag { background: #6f9dc4; color: #0e2233; }
-      #page-vocabquiz .vq-bar-btn {
-        flex: 0 0 auto; background: none; border: 1px solid transparent;
-        color: var(--vq-dim); font-family: inherit; font-size: 0.8rem;
-        padding: 0.32rem 0.6rem; border-radius: 8px; cursor: pointer;
-        display: inline-flex; align-items: center; gap: 0.35rem;
-      }
-      #page-vocabquiz .vq-bar-btn:hover { color: var(--vq-txt); border-color: var(--vq-line); }
-      #page-vocabquiz .vq-bar-btn .chev { font-size: 0.7em; transition: transform 0.18s ease; }
-      #page-vocabquiz .vq-bar-btn[aria-expanded="true"] { color: var(--vq-tan2); }
+      #page-vocabquiz .vq-chip:hover { color: var(--wd-cream); border-color: var(--wd-cream); }
+      #page-vocabquiz .vq-chip.on { background: var(--wd-cream); color: var(--wd-ink); border-color: var(--wd-cream); }
+      #page-vocabquiz .vq-chip.gold.on { background: var(--wd-gold); border-color: var(--wd-gold); }
+      #page-vocabquiz #vq-skill-chips .vq-chip.on { background: var(--wd-red); border-color: var(--wd-red); color: #fff; }
+      #page-vocabquiz .vq-bar-btn { margin-left: auto; }
+      #page-vocabquiz .vq-bar-btn .chev { display: inline-block; transition: transform 0.15s; }
       #page-vocabquiz .vq-bar-btn[aria-expanded="true"] .chev { transform: rotate(180deg); }
 
+      /* the closed line: what is narrowing the deck */
+      #page-vocabquiz .vq-bar-main { display: block; font-size: 0.78rem; color: var(--wd-mute); margin-bottom: 0.7rem; }
+      #page-vocabquiz .vq-bar-main .muted { color: var(--wd-faint); }
+      #page-vocabquiz .vq-bar-main .flag {
+        display: inline-block; background: var(--wd-red); color: #fff; border-radius: 999px;
+        padding: 0.04rem 0.5rem; font-size: 0.66rem; font-weight: 700; margin-left: 0.35rem;
+      }
       #page-vocabquiz .vq-filters {
-        background: var(--vq-panel); border: 1px solid var(--vq-line);
-        border-radius: 11px; padding: 0.85rem 1rem; margin-bottom: 0.9rem;
+        background: var(--wd-ink-2); border: 1.5px solid var(--wd-line); border-radius: 14px;
+        padding: 0.9rem 1rem 0.6rem; margin-bottom: 0.9rem;
       }
-      #page-vocabquiz .vq-filters-note {
-        font-size: 0.75rem; color: var(--vq-dim2); margin-top: 0.15rem; line-height: 1.5;
+      #page-vocabquiz .vq-prow { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 0.7rem; }
+      #page-vocabquiz .vq-plabel { width: 4.6rem; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--wd-faint); font-weight: 700; }
+      #page-vocabquiz .vq-select {
+        background: var(--wd-ink); border: 1.5px solid var(--wd-line); color: var(--wd-cream); border-radius: 999px;
+        padding: 0.38rem 0.8rem; font-family: inherit; font-size: 0.82rem; cursor: pointer; flex: 0 0 auto; max-width: 46%;
       }
-      #page-vocabquiz .vq-scope-label {
-        font-size: 0.68rem; letter-spacing: 0.13em; text-transform: uppercase;
-        color: var(--vq-dim2); margin-bottom: 0.6rem;
-      }
-      #page-vocabquiz .vq-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 0.55rem; }
-      #page-vocabquiz .vq-chip {
-        border: 1px solid rgba(255,255,255,0.17); background: transparent;
-        color: rgba(240,237,232,0.75); border-radius: 999px;
-        padding: 0.38rem 0.88rem; font-family: inherit; font-size: 0.83rem;
-        cursor: pointer; transition: all 0.15s ease;
-      }
-      #page-vocabquiz .vq-chip:hover { border-color: var(--vq-tan2); color: var(--vq-txt); }
-      #page-vocabquiz .vq-chip.on {
-        background: var(--vq-tan); border-color: var(--vq-tan); color: #fff; font-weight: 600;
-      }
-      #page-vocabquiz .vq-chip.gold { border-color: var(--vq-gold); color: var(--vq-gold); }
-      #page-vocabquiz .vq-chip.gold.on { background: var(--vq-gold); border-color: var(--vq-gold); color: #1a1a1e; }
+      #page-vocabquiz .vq-select:focus { outline: none; border-color: var(--wd-cream); }
+      #page-vocabquiz .vq-filters-note { font-size: 0.74rem; color: var(--wd-faint); margin-top: 0.2rem; }
 
-      /* question card */
-      #page-vocabquiz .vq-card {
-        background: var(--vq-panel); border: 1px solid var(--vq-line);
-        border-radius: 14px; padding: 1.5rem 1.6rem 1.35rem;
-        border-left: 3px solid var(--vq-terra);
-      }
-      #page-vocabquiz .vq-card-top {
-        display: flex; align-items: center; gap: 9px; margin-bottom: 1.1rem; flex-wrap: wrap;
-      }
-      #page-vocabquiz .vq-skill {
-        border: 1px solid var(--vq-tan2); color: var(--vq-tan2);
-        border-radius: 7px; padding: 0.26rem 0.68rem; font-size: 0.75rem;
-      }
-      #page-vocabquiz .vq-pill {
-        border-radius: 999px; padding: 0.16rem 0.62rem; font-size: 0.69rem;
-        font-weight: 600; margin-left: auto;
-      }
-      #page-vocabquiz .vq-new      { background: rgba(255,255,255,0.09); color: var(--vq-dim); }
-      #page-vocabquiz .vq-learning { background: rgba(201,169,98,0.17);  color: var(--vq-gold); }
-      #page-vocabquiz .vq-weak     { background: rgba(180,75,65,0.2);    color: var(--vq-terra2); }
-      #page-vocabquiz .vq-known    { background: rgba(122,158,126,0.2);  color: var(--vq-sage); }
-
-      #page-vocabquiz .vq-prompt-row {
-        display: flex; align-items: center; gap: 13px; flex-wrap: nowrap;
-      }
-      #page-vocabquiz .vq-prompt-main { font-size: 2.9rem; font-weight: 600; line-height: 1.15; }
-      #page-vocabquiz .vq-prompt-main.en { font-size: 2.1rem; font-family: 'Outfit', sans-serif; }
-      #page-vocabquiz .vq-prompt-sub { color: var(--vq-dim); font-size: 0.95rem; margin-top: 0.15rem; }
-      #page-vocabquiz .vq-ask { color: var(--vq-dim); font-size: 0.88rem; margin: 0.55rem 0 1.15rem; }
-
-      #page-vocabquiz .vq-speak, #page-vocabquiz .vq-answer-speak {
-        background: rgba(255,255,255,0.06); border: 1px solid var(--vq-line);
-        color: rgba(240,237,232,0.7); border-radius: 8px;
-        width: 34px; height: 34px; cursor: pointer; font-size: 0.9rem; flex: 0 0 auto;
-      }
-      #page-vocabquiz .vq-speak:hover, #page-vocabquiz .vq-answer-speak:hover {
-        border-color: var(--vq-terra2); color: var(--vq-terra2);
-      }
-
-      #page-vocabquiz .vq-input-row { display: flex; gap: 8px; margin-bottom: 0.6rem; }
+      /* the sheet */
+      #page-vocabquiz .vq-card-top { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; padding-right: 3rem; }
+      #page-vocabquiz .vq-skill { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--wd-faint); font-weight: 700; }
+      #page-vocabquiz .vq-pill { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; border-radius: 999px; padding: 0.12rem 0.55rem; border: 1.5px solid; }
+      #page-vocabquiz .vq-new      { color: var(--wd-faint); border-color: var(--wd-paper-line); }
+      #page-vocabquiz .vq-learning { color: #9a6d10; border-color: var(--wd-gold); }
+      #page-vocabquiz .vq-weak     { color: var(--wd-red); border-color: var(--wd-red); }
+      #page-vocabquiz .vq-known    { color: #22715a; border-color: var(--wd-green); }
+      #page-vocabquiz .vq-prompt-row { display: flex; align-items: flex-start; gap: 0.8rem; }
+      #page-vocabquiz .vq-prompt-main { font-size: 3.4rem; font-weight: 700; line-height: 1.15; color: var(--wd-text); }
+      #page-vocabquiz .vq-prompt-main.en { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 800; }
+      #page-vocabquiz .vq-prompt-sub { font-size: 1.15rem; color: var(--wd-faint); margin-top: 0.1rem; }
+      #page-vocabquiz .vq-speak { display: none; }
+      #page-vocabquiz .vq-lang { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.7rem; font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--wd-faint); font-weight: 700; font-family: 'Outfit', sans-serif; }
+      #page-vocabquiz .vq-lang-tag { display: inline-flex; align-items: center; justify-content: center; min-width: 1.6rem; height: 1.6rem; border-radius: 6px; font-size: 0.85rem; letter-spacing: 0; padding: 0 0.35rem; }
+      #page-vocabquiz .vq-lang.jp .vq-lang-tag { background: var(--wd-green); color: #fff; }
+      #page-vocabquiz .vq-lang.en .vq-lang-tag { background: #2d6a9f; color: #fff; }
+      #page-vocabquiz .vq-input-row { display: flex; align-items: flex-end; gap: 0.6rem; margin-top: 0.4rem; }
       #page-vocabquiz .vq-input {
-        flex: 1; background: rgba(0,0,0,0.42); border: 1.5px solid var(--vq-sage);
-        border-radius: 9px; padding: 0.82rem 1rem; font-size: 1.04rem;
-        color: var(--vq-txt); font-family: 'Noto Serif JP', serif;
+        flex: 1; min-width: 0; background: transparent; border: 0; border-bottom: 2.5px solid var(--wd-text);
+        border-radius: 0; padding: 0.5rem 0.2rem 0.35rem; font-size: 1.7rem; color: var(--wd-text);
+        caret-color: var(--wd-red); font-family: 'Outfit', sans-serif;
       }
-      #page-vocabquiz .vq-input.en-mode {
-        border-color: #6f9dc4; font-family: 'Outfit', sans-serif;
-      }
-      #page-vocabquiz .vq-input:focus { outline: none; border-color: var(--vq-terra2); }
-      #page-vocabquiz .vq-input::placeholder { color: var(--vq-dim2); font-size: 0.9rem; }
+      #page-vocabquiz .vq-input.jp { font-family: 'Noto Serif JP', serif; letter-spacing: 0.12em; }
+      #page-vocabquiz .vq-input:focus { outline: none; border-color: var(--wd-red); }
+      #page-vocabquiz .vq-input::placeholder { color: #b9b0a0; font-size: 1rem; letter-spacing: 0; font-family: 'Outfit', sans-serif; }
       #page-vocabquiz .vq-kana-toggle {
-        flex: 0 0 auto; width: 3rem; border: 1.5px solid var(--vq-sage);
-        background: var(--vq-sage); color: #16301a; font-weight: 600; border-radius: 9px;
-        font-size: 1.1rem; font-family: 'Noto Serif JP', serif; cursor: pointer;
+        width: 40px; height: 40px; border-radius: 10px; border: 1.5px solid var(--wd-text); background: transparent;
+        color: var(--wd-text); font-size: 1.1rem; cursor: pointer; font-family: 'Noto Serif JP', serif; flex: none;
       }
-      #page-vocabquiz .vq-kana-toggle.off {
-        background: transparent; color: var(--vq-dim2); border-color: rgba(255,255,255,0.18);
-      }
-      /* Katakana is gold, the same as in Talk, so the mode reads at a glance
-         without having to notice which character is on the key. */
-      #page-vocabquiz .vq-kana-toggle.kata {
-        background: var(--vq-gold); border-color: var(--vq-gold); color: #2a2109;
-      }
-      /* Off is a mode you can choose; disabled is the English-answer case. Only
-         the second one should stop looking clickable. */
-      #page-vocabquiz .vq-kana-toggle:disabled { cursor: default; }
-
-      #page-vocabquiz .vq-btn-row { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 1rem; }
-      /* The verdict is followed by the Next button, which takes focus as soon
-         as it appears. Without the offset its focus ring is drawn over the
-         verdict box's border and the two look like they are overlapping. */
-      #page-vocabquiz .vq-btn:focus-visible {
-        outline: 2px solid var(--vq-tan2);
-        outline-offset: 3px;
-      }
+      #page-vocabquiz .vq-kana-toggle.kata { background: var(--wd-text); color: var(--wd-paper); }
+      #page-vocabquiz .vq-kana-toggle.off { opacity: 0.4; }
+      #page-vocabquiz .vq-kana-toggle:disabled { cursor: default; opacity: 0.25; }
+      #page-vocabquiz .vq-btn-row { margin-top: 1rem; }
       #page-vocabquiz .vq-btn {
-        border-radius: 9px; padding: 0.62rem 1.3rem; font-family: inherit;
-        font-size: 0.92rem; cursor: pointer; border: 1px solid var(--vq-line);
-        background: rgba(255,255,255,0.05); color: rgba(240,237,232,0.78);
+        padding: 0.6rem 1.2rem; border-radius: 999px; border: 1.5px solid var(--wd-text); background: transparent;
+        color: var(--wd-text); font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 800; cursor: pointer;
       }
-      #page-vocabquiz .vq-btn:hover { border-color: var(--vq-tan2); color: var(--vq-txt); }
-      #page-vocabquiz .vq-btn.primary {
-        background: var(--vq-terra); border-color: var(--vq-terra); color: #fff; font-weight: 600;
-      }
-      #page-vocabquiz .vq-btn.primary:hover { background: var(--vq-terra2); border-color: var(--vq-terra2); }
+      #page-vocabquiz .vq-btn:hover { transform: translate(-1px,-1px); box-shadow: 2px 2px 0 var(--wd-text); }
+      #page-vocabquiz .vq-btn.primary { background: var(--wd-red); border-color: var(--wd-red); color: #fff; }
+      #page-vocabquiz .vq-btn.primary:hover { box-shadow: 2px 2px 0 var(--wd-text); }
 
-      /* verdict */
-      #page-vocabquiz .vq-feedback {
-        margin-top: 0.15rem; border-radius: 11px; padding: 0.95rem 1.1rem; border: 1px solid;
+      /* the verdict, inside the sheet */
+      #page-vocabquiz .vq-feedback { margin-top: 1rem; border-top: 1px dashed #cfc6b3; padding-top: 0.9rem; }
+      #page-vocabquiz .vq-verdict-title { font-family: 'Noto Serif JP', serif; font-size: 1.15rem; font-weight: 700; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+      #page-vocabquiz .vq-feedback.correct .vq-verdict-title { color: #22715a; }
+      #page-vocabquiz .vq-feedback.incorrect .vq-verdict-title { color: var(--wd-red); }
+      #page-vocabquiz .vq-feedback.revealed .vq-verdict-title { color: #9a6d10; }
+      #page-vocabquiz .vq-when { font-family: 'Outfit', sans-serif; font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 700; border: 1.5px solid; border-radius: 999px; padding: 0.1rem 0.55rem; color: var(--wd-faint); border-color: var(--wd-paper-line); }
+      #page-vocabquiz .vq-when.ok { color: #22715a; border-color: var(--wd-green); }
+      #page-vocabquiz .vq-when.no { color: var(--wd-red); border-color: var(--wd-red); }
+      #page-vocabquiz .vq-when.cleared { color: #22715a; border-color: var(--wd-green); background: #e3f3ec; }
+      #page-vocabquiz .vq-verdict-body { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.4rem; }
+      #page-vocabquiz .vq-verdict-yours { font-size: 0.82rem; color: var(--wd-faint); }
+      #page-vocabquiz .vq-verdict-yours b { color: var(--wd-red); }
+      #page-vocabquiz .vq-verdict-answer { font-size: 1.7rem; font-weight: 800; }
+      #page-vocabquiz .vq-verdict-answer.jp { font-size: 2rem; font-weight: 700; }
+      #page-vocabquiz .vq-verdict-gloss { color: var(--wd-faint); font-size: 0.95rem; }
+      #page-vocabquiz .vq-answer-speak {
+        margin-left: auto; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--wd-ink);
+        color: var(--wd-paper); cursor: pointer; font-size: 0.9rem; flex: none;
       }
-      #page-vocabquiz .vq-feedback.correct   { background: rgba(122,158,126,0.09); border-color: rgba(122,158,126,0.4); }
-      #page-vocabquiz .vq-feedback.incorrect { background: rgba(180,75,65,0.09);  border-color: rgba(180,75,65,0.45); }
-      /* Shown is its own state: you did not get it wrong, but you did not know
-         it either, so it must not look like a pass. */
-      #page-vocabquiz .vq-feedback.revealed  { background: rgba(201,169,98,0.08); border-color: rgba(201,169,98,0.4); }
-      #page-vocabquiz .vq-verdict-title {
-        font-weight: 600; margin-bottom: 0.45rem; display: flex; align-items: center; gap: 9px;
-        font-family: 'Noto Serif JP', serif;
-      }
-      #page-vocabquiz .vq-when {
-        margin-left: auto; font-size: 0.71rem; border-radius: 999px;
-        padding: 0.14rem 0.62rem; font-weight: 500; font-family: 'Outfit', sans-serif;
-        border: 1px solid var(--vq-gold); color: var(--vq-gold);
-      }
-      #page-vocabquiz .vq-when.cleared { border-color: var(--vq-sage); color: var(--vq-sage); }
-      #page-vocabquiz .vq-verdict-answer { font-size: 1.32rem; font-weight: 600; margin-bottom: 0.2rem; }
-      #page-vocabquiz .vq-verdict-gloss { color: var(--vq-dim); font-size: 0.88rem; }
-      #page-vocabquiz .vq-verdict-yours { color: var(--vq-dim); font-size: 0.86rem; margin-bottom: 0.3rem; }
-      #page-vocabquiz .vq-verdict-yours b { color: var(--vq-terra2); }
-      #page-vocabquiz .vq-verdict-body { display: flex; align-items: flex-start; gap: 11px; }
-      #page-vocabquiz .vq-verdict-body > div { flex: 1; }
+      #page-vocabquiz .vq-answer-speak:hover { background: var(--wd-red); }
 
-      #page-vocabquiz .vq-stats {
-        text-align: center; color: var(--vq-dim2); font-size: 0.82rem; margin-top: 1.1rem;
-      }
-      #page-vocabquiz .vq-foot {
-        text-align: center; margin-top: 1.5rem; font-size: 0.82rem; color: var(--vq-dim2);
-      }
-      #page-vocabquiz .vq-foot a { color: var(--vq-tan2); text-decoration: none; }
-      #page-vocabquiz .vq-foot a:hover { text-decoration: underline; }
-
-      /* hover translations, same mechanism as the Dojo */
-      #page-vocabquiz .dojo-kanji-tip {
-        position: relative; border-bottom: 1px dotted rgba(255,255,255,0.3); cursor: help;
-      }
+      /* hover translations */
+      #page-vocabquiz .dojo-kanji-tip { position: relative; border-bottom: 1px dotted #b9b0a0; cursor: help; }
       #page-vocabquiz .dojo-kanji-tip::after {
         content: attr(data-reading) " \00b7 " attr(data-en);
         position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%);
-        margin-bottom: 0.45rem; background: #2c2c36;
-        border: 1px solid rgba(255,255,255,0.18); border-radius: 7px;
+        margin-bottom: 0.45rem; background: var(--wd-ink); border-radius: 7px;
         padding: 0.3rem 0.6rem; font-size: 0.72rem; font-family: 'Outfit', sans-serif;
         font-weight: 400; color: #fff; white-space: nowrap; pointer-events: none;
         opacity: 0; visibility: hidden; transition: opacity 0.12s ease; z-index: 40;
       }
       #page-vocabquiz .dojo-kanji-tip:hover::after { opacity: 1; visibility: visible; }
 
+      #page-vocabquiz .vq-stats { display: none; }
+      #page-vocabquiz .wd-foot-link { text-align: center; margin-top: 1.6rem; font-size: 0.82rem; }
+      #page-vocabquiz .wd-foot-link a { color: var(--wd-mute); text-decoration: none; border-bottom: 1px dotted var(--wd-line); }
+      #page-vocabquiz .wd-foot-link a:hover { color: var(--wd-cream); border-color: var(--wd-cream); }
+
       @media (max-width: 640px) {
-        #page-vocabquiz .vq-wrap { padding: 1.6rem 1rem 3rem; }
-        #page-vocabquiz .vq-prompt-main { font-size: 2.2rem; }
+        #page-vocabquiz .vq-prompt-main { font-size: 2.4rem; }
         #page-vocabquiz .vq-prompt-main.en { font-size: 1.6rem; }
         #page-vocabquiz .vq-plabel { width: auto; }
-        #page-vocabquiz .vq-title { font-size: 1.6rem; }
-        #page-vocabquiz .vq-bar { flex-wrap: wrap; }
         #page-vocabquiz .vq-select { max-width: none; flex: 1 1 100%; }
-        #page-vocabquiz .vq-bar-main { white-space: normal; }
         #page-vocabquiz .dojo-kanji-tip::after { display: none; }
         #page-vocabquiz .dojo-kanji-tip { border-bottom: none; cursor: default; }
+        #page-vocabquiz .vq-input { font-size: 1.4rem; }
       }
     </style>
 
-    <div class="vq-wrap">
+    <div class="wd-wrap">
 
-      <div class="vq-head">
-        <div class="vq-title jp">単語クイズ</div>
-        <div class="vq-sub" data-i18n="vq_page_sub">Vocabulary Quiz — meaning, reading, and saying it yourself</div>
+      <div class="wd-hero">
+        <div class="wd-seal">問</div>
+        <div>
+          <div class="wd-eyebrow"><span data-i18n="vq_eyebrow">Practice</span> · 練習</div>
+          <h1 class="wd-title" data-i18n="vq_title">Word Quiz</h1>
+        </div>
+        <div class="wd-hero-right"><span class="wd-sub" id="vq-round-n"></span></div>
       </div>
 
-      <!-- One control. The topic dropdown used to sit outside the filter panel
-           doing the same job as the things inside it, which made no sense. The
-           closed line says when anything is narrowing the deck, so the quiz can
-           never silently serve a pool of one again. -->
-      <div class="vq-bar" id="vq-bar">
-        <span class="vq-bar-main" id="vq-bar-main"></span>
-        <button type="button" class="vq-bar-btn" id="vq-filter-btn"
+      <!-- what to ask, and the filters that narrow the deck -->
+      <div class="vq-toolbar" id="vq-bar">
+        <div class="vq-chips" id="vq-skill-chips"></div>
+        <button type="button" class="wd-chip is-quiet vq-bar-btn" id="vq-filter-btn"
                 aria-expanded="false" aria-controls="vq-filters">
           <span data-i18n="vq_filters">Filters</span> <span class="chev">▾</span>
         </button>
       </div>
+      <span class="vq-bar-main" id="vq-bar-main"></span>
       <div class="vq-filters" id="vq-filters" style="display:none;">
         <div class="vq-prow">
           <span class="vq-plabel" data-i18n="vq_row_deck">Deck</span>
           <select id="vq-topic-select" class="vq-select" aria-label="Topic"></select>
           <select id="vq-level-select" class="vq-select" aria-label="Level"></select>
-        </div>
-        <div class="vq-prow">
-          <span class="vq-plabel" data-i18n="vq_row_ask">Ask me</span>
-          <div class="vq-chips" id="vq-skill-chips"></div>
         </div>
         <div class="vq-prow">
           <span class="vq-plabel" data-i18n="vq_row_serve">Serve</span>
@@ -368,7 +218,8 @@
         <div class="vq-filters-note" data-i18n="vq_filters_note">Leave these alone and the quiz mixes the whole deck, bringing back what you've missed more often.</div>
       </div>
 
-      <div class="vq-card">
+      <div class="wd-sheet vq-card" style="cursor:default">
+        <button type="button" class="wd-hear" id="vq-speak" title="Listen" aria-label="Listen">🔊</button>
         <div class="vq-card-top">
           <span class="vq-skill" id="vq-skill"></span>
           <span class="vq-pill vq-new" id="vq-state"></span>
@@ -379,10 +230,7 @@
             <div class="vq-prompt-main jp" id="vq-prompt-main"></div>
             <div class="vq-prompt-sub jp" id="vq-prompt-sub"></div>
           </div>
-          <button type="button" class="vq-speak" id="vq-speak" title="Listen" aria-label="Listen">🔊</button>
         </div>
-        <!-- Which language to type is the one thing you must never have to
-             guess, so it gets a coloured band rather than a line of grey text. -->
         <div class="vq-lang jp" id="vq-lang">
           <span class="vq-lang-tag jp" id="vq-lang-tag">あ</span>
           <span id="vq-ask"></span>
@@ -408,7 +256,7 @@
         </div>
 
         <div class="vq-btn-row" id="vq-btn-row">
-          <span id="vq-check-row" style="display:flex;gap:9px;">
+          <span id="vq-check-row" style="display:flex;gap:9px;flex-wrap:wrap;">
             <button type="button" class="vq-btn primary" id="vq-check-btn" data-i18n="vq_check">Check</button>
             <button type="button" class="vq-btn" id="vq-show-btn" data-i18n="vq_show">Show me</button>
             <button type="button" class="vq-btn" id="vq-skip-btn" data-i18n="vq_skip">Skip</button>
@@ -417,14 +265,31 @@
             <button type="button" class="vq-btn primary" id="vq-next-btn" data-i18n="vq_next">Next →</button>
           </span>
         </div>
-
-        </div>
       </div>
+
+      <!-- the round: ten stops on the rail -->
+      <div class="wd-stops-row">
+        <span data-i18n="vq_stops">Stops</span>
+        <div class="wd-stops" id="vq-stops"></div>
+        <span id="vq-stop-label">1 / 10</span>
+      </div>
+
+      <div class="wd-tiles">
+        <div class="wd-tile"><b id="vq-t-right">0</b><span data-i18n="kd_right_lbl">Right</span></div>
+        <div class="wd-tile"><b id="vq-t-wrong">0</b><span data-i18n="kd_wrong_lbl">Wrong</span></div>
+        <div class="wd-tile"><b id="vq-t-streak">0</b><span data-i18n="streak">Streak</span></div>
+        <div class="wd-tile"><b id="vq-t-best">0</b><span data-i18n="best">Best</span></div>
+        <div class="wd-tile"><b id="vq-t-skipped">0</b><span data-i18n="kd_skipped">Skipped</span></div>
+        <button type="button" class="wd-tile is-reset" id="vq-reset" data-i18n="vq_reset">Reset</button>
+      </div>
+
+      <div class="wd-strip-h"><span data-i18n="vq_missed_round">Missed this round</span></div>
+      <div class="wd-missed" id="vq-missed"></div>
 
       <div class="vq-stats" id="vq-stats"></div>
 
-      <div class="vq-foot">
-        <a href="/vocabulary" data-i18n="vq_to_cards">← Back to the flashcards</a>
+      <div class="wd-foot-link">
+        <a href="/vocabulary" data-i18n="vq_to_cards">← Back to the Word Book</a>
       </div>
 
     </div>
@@ -441,6 +306,7 @@
   <script src="app.i18n.js"></script>
   <script src="vocab.i18n.js"></script>
   <script src="romaji.js"></script>
+  <script src="words-theme.js"></script>
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
@@ -456,7 +322,8 @@
       on('vq-check-btn',   function () { vqCheck(); });
       on('vq-show-btn',    function () { vqReveal(); });
       on('vq-next-btn',    function () { vqNext(); });
-      on('vq-skip-btn',    function () { vqNext(); });
+      on('vq-skip-btn',    function () { if (window.KA_VocabQuiz) KA_VocabQuiz.skip(); else vqNext(); });
+      on('vq-reset',       function () { if (window.KA_VocabQuiz) KA_VocabQuiz.reset(); });
       on('vq-speak',       function () { vqSpeakPrompt(); });
       on('vq-answer-speak',function () { vqSpeakAnswer(); });
     });

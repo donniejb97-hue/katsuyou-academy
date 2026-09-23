@@ -8309,15 +8309,73 @@ function generateNewQuestion() {
       });
     }
 
+    // ---- decks -------------------------------------------------------------
+    // The Word Book's rail: one station per topic. 'all' rides the whole line.
+    var VOCAB_DECK_KEY = 'katsuyo-vocab-deck';
+    var vocabDeck = 'all';
+    try { vocabDeck = localStorage.getItem(VOCAB_DECK_KEY) || 'all'; } catch (e) {}
+
+    function vocabDeckCards(key) {
+      if (!key || key === 'all') return vocabDataList;
+      var out = vocabDataList.filter(function (c) { return c.topic === key; });
+      return out.length ? out : vocabDataList;
+    }
+
+    function setVocabDeck(key) {
+      vocabDeck = key || 'all';
+      try { localStorage.setItem(VOCAB_DECK_KEY, vocabDeck); } catch (e) {}
+      filteredCardsVocab = shuffleArrayVocab(vocabDeckCards(vocabDeck));
+      currentIndexVocab = 0;
+      studiedCardsVocab.clear();
+      isFlippedVocab = false;
+      loadCardVocab();
+      updateProgressVocab();
+      if (window.KA_WordsPage && KA_WordsPage.onDeck) KA_WordsPage.onDeck(vocabDeck);
+    }
+
+    // ✓ / ✗ on a card. Written to the same memory entry the quiz uses for
+    // "type the meaning", so the two pages agree about what you know.
+    function gradeVocab(right) {
+      var card = filteredCardsVocab[currentIndexVocab];
+      if (!card) return;
+      if (window.KA_Words) KA_Words.grade(card, right);
+      if (window.KA_WordsPage && KA_WordsPage.onGrade) KA_WordsPage.onGrade(card, right);
+      if (currentIndexVocab < filteredCardsVocab.length - 1) {
+        currentIndexVocab++;
+      } else {
+        // End of the deck: go round again, unseen and shaky words first.
+        currentIndexVocab = 0;
+        filteredCardsVocab = shuffleArrayVocab(filteredCardsVocab);
+        showToast(ct('wb_deck_done', 'End of the deck — going round again.'));
+      }
+      loadCardVocab();
+      updateProgressVocab();
+    }
+
+    window.KA_Vocab = {
+      deck: function () { return vocabDeck; },
+      setDeck: setVocabDeck,
+      grade: gradeVocab,
+      current: function () { return filteredCardsVocab[currentIndexVocab] || null; },
+      cards: function () { return filteredCardsVocab; },
+      goTo: function (card) { vsGoTo(card); },
+      flip: function () { flipCardVocab(); },
+      next: function () { nextCardVocab(); },
+      prev: function () { previousCardVocab(); },
+      shuffle: function () { shuffleCardsVocab(); },
+      reverse: function () { return showReverseVocab; }
+    };
+
     // Initialize vocabulary
     function initVocab() {
-      filteredCardsVocab = shuffleArrayVocab(vocabDataList);
+      filteredCardsVocab = shuffleArrayVocab(vocabDeckCards(vocabDeck));
       loadCardVocab();
       updateProgressVocab();
       wireVocabListen();
       wireVocabKeys();
       wireVocabSearch();
       openVocabQuery();
+      if (window.KA_WordsPage && KA_WordsPage.onDeck) KA_WordsPage.onDeck(vocabDeck);
     }
 
     // /vocabulary?q=食べる — the Dictionary links here, so the search should
@@ -8695,6 +8753,12 @@ function generateNewQuestion() {
       seenCardIndicesVocab.add(card.japanese);
       
       updateStatsVocab();
+      if (window.KA_WordsPage && KA_WordsPage.onCard) {
+        KA_WordsPage.onCard(card, {
+          reverse: showReverseVocab, kanji: showKanjiVocab, katakana: showKatakanaVocab,
+          romaji: showRomajiVocab, index: currentIndexVocab, total: filteredCardsVocab.length
+        });
+      }
     }
 
     // Get category label
@@ -8712,14 +8776,11 @@ function generateNewQuestion() {
     function flipCardVocab() {
       document.getElementById('flashcard-vocab').classList.toggle('flipped');
       isFlippedVocab = !isFlippedVocab;
+      if (window.KA_WordsPage && KA_WordsPage.onFlip) KA_WordsPage.onFlip(isFlippedVocab);
     }
 
     // Next card
     function nextCardVocab() {
-      if (isFlippedVocab) {
-        showToast('Please flip the card back first!');
-        return;
-      }
       if (currentIndexVocab < filteredCardsVocab.length - 1) {
         currentIndexVocab++;
         loadCardVocab();
@@ -8729,10 +8790,6 @@ function generateNewQuestion() {
 
     // Previous card
     function previousCardVocab() {
-      if (isFlippedVocab) {
-        showToast('Please flip the card back first!');
-        return;
-      }
       if (currentIndexVocab > 0) {
         currentIndexVocab--;
         loadCardVocab();
@@ -8777,8 +8834,7 @@ function generateNewQuestion() {
       if (prevBtn) prevBtn.disabled = currentIndexVocab === 0;
       if (nextBtn) nextBtn.disabled = currentIndexVocab === filteredCardsVocab.length - 1;
       if (totalEl) totalEl.textContent = filteredCardsVocab.length;
-      
-      console.log('Progress updated: Card ' + (currentIndexVocab + 1) + ' of ' + filteredCardsVocab.length);
+      if (window.KA_WordsPage && KA_WordsPage.onProgress) KA_WordsPage.onProgress(currentIndexVocab, filteredCardsVocab.length);
     }
 
     // Update stats (enhanced)
@@ -8787,7 +8843,6 @@ function generateNewQuestion() {
       if (studiedEl) {
         studiedEl.textContent = studiedCardsVocab.size;
       }
-      console.log('Stats updated: ' + studiedCardsVocab.size + ' cards studied');
     }
 
 
@@ -9401,7 +9456,70 @@ function generateNewQuestion() {
     var vqKanaMode = 'kana';
     var vqKanaModeForced = null;   // what the learner last chose, if anything
     var vqRecent = [];              // ids served lately, so nothing repeats immediately
-    var vqSession = { asked: 0, right: 0, streak: 0, best: 0, cleared: 0 };
+    var vqSession = { asked: 0, right: 0, wrong: 0, skipped: 0, streak: 0, best: 0, cleared: 0 };
+    // A round is ten stops on the rail. Right, wrong, or skipped (null);
+    // what was missed is listed newest first with a count.
+    var VQ_ROUND = 10;
+    var vqRound = { n: 1, results: [], missed: {}, seq: 0 };
+
+    function vqRoundNote(result, card) {
+      vqRound.results.push(result);
+      if (result === false && card) {
+        var k = vqCardId(card), prev = vqRound.missed[k];
+        vqRound.missed[k] = { card: card, count: prev ? prev.count + 1 : 1, seq: ++vqRound.seq };
+      }
+      if (vqRound.results.length >= VQ_ROUND) {
+        var right = vqRound.results.filter(function (r) { return r === true; }).length;
+        showToast(ct('vq_round_done', 'Round {n} done — {r} of {t} right')
+          .replace('{n}', vqRound.n).replace('{r}', right).replace('{t}', VQ_ROUND));
+        vqRound = { n: vqRound.n + 1, results: [], missed: {}, seq: 0 };
+      }
+      vqPaintRound();
+    }
+
+    function vqPaintRound() {
+      var stops = vqEl('vq-stops');
+      if (stops && window.KA_Words) KA_Words.renderStops(stops, vqRound.results, VQ_ROUND);
+      var lab = vqEl('vq-stop-label');
+      if (lab) lab.textContent = (Math.min(vqRound.results.length + 1, VQ_ROUND)) + ' / ' + VQ_ROUND;
+      var rn = vqEl('vq-round-n');
+      if (rn) rn.textContent = ct('vq_round', 'Round') + ' ' + vqRound.n;
+      var set = function (id, v) { var el = vqEl(id); if (el) el.textContent = v; };
+      set('vq-t-right', vqSession.right);
+      set('vq-t-wrong', vqSession.wrong);
+      set('vq-t-streak', vqSession.streak);
+      set('vq-t-best', vqSession.best);
+      set('vq-t-skipped', vqSession.skipped);
+      var box = vqEl('vq-missed');
+      if (box) {
+        var items = Object.keys(vqRound.missed).map(function (k) { return vqRound.missed[k]; })
+          .sort(function (a, b) { return b.seq - a.seq; });
+        box.innerHTML = items.length ? items.map(function (m) {
+          var c = m.card;
+          return '<span class="wd-miss jp" title="' + dojoEscape(c.english) + '">' +
+            dojoEscape(c.kanji || c.katakana || c.japanese) +
+            '<small>' + dojoEscape(c.english) + '</small>' +
+            (m.count > 1 ? '<i>×' + m.count + '</i>' : '') + '</span>';
+        }).join('') : '<span class="wd-missed-empty">' + ct('vq_missed_none', 'Nothing yet this round.') + '</span>';
+      }
+    }
+
+    function vqResetSession() {
+      vqSession = { asked: 0, right: 0, wrong: 0, skipped: 0, streak: 0, best: 0, cleared: 0 };
+      vqRound = { n: 1, results: [], missed: {}, seq: 0 };
+      vqPaintRound();
+      vqPaintStats();
+    }
+
+    // Skip is neutral: nothing recorded, not in the missed list, a dot on the rail.
+    function vqSkip() {
+      if (vqQuestion && !vqAnswered) {
+        vqSession.skipped++;
+        vqRoundNote(null, vqQuestion.card);
+      }
+      vqNext();
+    }
+    window.KA_VocabQuiz = { skip: vqSkip, reset: vqResetSession, paintRound: vqPaintRound };
 
     // A card's identity has to survive the deck being reordered or added to,
     // so it is the word itself rather than its index.
@@ -9744,10 +9862,12 @@ function generateNewQuestion() {
         vqSession.streak++;
         if (vqSession.streak > vqSession.best) vqSession.best = vqSession.streak;
       } else {
+        vqSession.wrong++;
         vqSession.streak = 0;
       }
       var after = KA_Memory.record(vqQuestion.id, right);
       if (right && after === 'known' && before !== 'known') vqSession.cleared++;
+      vqRoundNote(right, vqQuestion.card);
       vqRenderVerdict(right, before, after, given);
     }
 
@@ -9759,10 +9879,12 @@ function generateNewQuestion() {
       if (!vqQuestion || vqAnswered) return;
       vqAnswered = true;
       vqSession.asked++;
+      vqSession.wrong++;
       vqSession.streak = 0;
       KA_Memory.tick();
       var before = KA_Memory.state(vqQuestion.id);
       var after = KA_Memory.record(vqQuestion.id, false);
+      vqRoundNote(false, vqQuestion.card);
       vqRenderVerdict(false, before, after, '', true);
     }
 
@@ -10206,6 +10328,7 @@ function generateNewQuestion() {
       if (window.KA_Speech) KA_Speech.onReady(function () { if (vqQuestion) vqRender(); });
       vqNext();
       vqPaintStats();
+      vqPaintRound();
     }
 
     // ============ MULTI-PAGE INIT ============

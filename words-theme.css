@@ -1,0 +1,237 @@
+/* ============================================================
+   WORDS — theme for vocabulary.html (the Word Book) and vocabquiz.html.
+
+   The Wall of Kanji's paper-and-ink world, printed the other way round:
+   ink-black paper, a cream sheet in the middle, the same red seal. Decks are
+   stations on a rail drawn across the top; a word is written one character
+   per square, like a manuscript sheet; progress is a hanko stamp.
+
+   Loaded after styles.css. Everything is scoped under .wd-page so it can sit
+   on a page that still carries the old vocabulary styles.
+   ============================================================ */
+
+:root {
+  --wd-ink: #2b2320;
+  --wd-ink-2: #3a302c;
+  --wd-ink-3: #4a3f3a;
+  --wd-line: #5a4f48;
+  --wd-paper: #f4efe4;
+  --wd-paper-2: #faf6ec;
+  --wd-paper-line: #ddd3c0;
+  --wd-cream: #f4efe4;
+  --wd-mute: #cbbfa8;
+  --wd-faint: #8b8273;
+  --wd-text: #2b2320;
+  --wd-red: #c8392b;
+  --wd-green: #3aa17e;
+  --wd-gold: #e0a030;
+  --wd-shadow: 5px 5px 0 #120e0c;
+  --wd-shadow-sm: 2px 2px 0 #120e0c;
+}
+
+.wd-page {
+  background: var(--wd-ink);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96  0 0 0 0 0.94  0 0 0 0 0.89  0 0 0 .05 0'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>");
+  color: var(--wd-cream);
+  min-height: 100vh;
+  padding-top: 72px;
+  font-family: 'Outfit', sans-serif;
+}
+.wd-page .jp { font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+.wd-wrap { max-width: 880px; margin: 0 auto; padding: 1.6rem 1.25rem 3.5rem; }
+
+/* ---------- header: seal, eyebrow, title, and whatever sits right ---------- */
+.wd-hero { display: flex; align-items: flex-end; gap: 0.9rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.wd-seal {
+  flex: none; width: 50px; height: 50px; border-radius: 5px; background: var(--wd-red);
+  color: var(--wd-paper); font-family: 'Noto Serif JP', serif; font-weight: 900;
+  font-size: 1.8rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+  transform: rotate(-3deg); box-shadow: 0 2px 0 rgba(0,0,0,0.4);
+}
+.wd-eyebrow { color: var(--wd-red); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; margin-bottom: 0.3rem; }
+.wd-title { margin: 0; font-size: 2rem; line-height: 1; font-weight: 800; color: var(--wd-cream); }
+.wd-hero-right { margin-left: auto; display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.wd-sub { color: var(--wd-mute); font-size: 0.82rem; }
+
+/* ---------- controls: chips and buttons ---------- */
+.wd-chip, .wd-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.42rem 0.85rem;
+  border-radius: 999px; border: 1.5px solid var(--wd-cream); background: transparent;
+  color: var(--wd-cream); font-family: inherit; font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; text-decoration: none; line-height: 1.2; transition: transform 0.1s, background 0.15s;
+  user-select: none;
+}
+.wd-chip:hover, .wd-btn:hover { transform: translate(-1px, -1px); box-shadow: var(--wd-shadow-sm); }
+.wd-chip.is-on, .wd-chip:has(input:checked) { background: var(--wd-cream); color: var(--wd-ink); }
+.wd-chip input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.wd-chip.is-quiet { border-color: var(--wd-line); color: var(--wd-mute); }
+.wd-chip.is-quiet:hover { color: var(--wd-cream); border-color: var(--wd-cream); }
+.wd-btn.is-red { background: var(--wd-red); border-color: var(--wd-red); color: #fff; }
+.wd-btn.is-cream { background: var(--wd-cream); color: var(--wd-ink); }
+.wd-btn.is-green { border-color: var(--wd-green); color: #a6e3cb; }
+.wd-btn.is-green:hover { background: var(--wd-green); color: #fff; }
+.wd-btn:disabled { opacity: 0.35; cursor: default; transform: none; box-shadow: none; }
+.wd-btn.is-lg { padding: 0.7rem 1.4rem; font-size: 0.9rem; }
+.wd-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.wd-row.is-center { justify-content: center; }
+
+/* ---------- the rail: decks as stations ---------- */
+.wd-rail-wrap { position: relative; margin: 0.4rem -1.25rem 1.1rem; padding: 0 1.25rem; overflow-x: auto; overflow-y: hidden; scrollbar-width: thin; scrollbar-color: var(--wd-line) transparent;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 56px), transparent); mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 56px), transparent); }
+.wd-rail { position: relative; display: flex; height: 92px; min-width: 100%; width: max-content; padding-top: 22px; }
+.wd-rail::before { content: ""; position: absolute; left: 44px; right: 44px; top: 32px; height: 6px; border-radius: 999px; background: var(--wd-cream); }
+.wd-rail-fill { position: absolute; left: 44px; top: 32px; height: 6px; border-radius: 999px; background: var(--wd-red); transition: width 0.35s; }
+.wd-stn { position: relative; flex: 0 0 88px; display: flex; flex-direction: column; align-items: center; cursor: pointer; background: none; border: 0; padding: 0; color: inherit; font-family: inherit; }
+.wd-stn-stamp {
+  position: relative; width: 26px; height: 26px; border-radius: 6px; border: 1.5px solid var(--wd-line);
+  background: var(--wd-ink-2); transform: rotate(var(--tilt, -2deg)); transition: transform 0.15s;
+  overflow: hidden;
+}
+/* the stamp fills from the bottom by the share of the deck you have met */
+.wd-stn-stamp::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: var(--pct, 0%); background: var(--c, var(--wd-green)); }
+.wd-stn.is-done .wd-stn-stamp { border-color: transparent; box-shadow: var(--wd-shadow-sm); }
+.wd-stn:hover .wd-stn-stamp { transform: rotate(var(--tilt, -2deg)) scale(1.12); }
+.wd-stn.is-here .wd-stn-stamp {
+  width: 32px; height: 32px; margin-top: -3px; border-color: transparent; background: var(--wd-red);
+  box-shadow: var(--wd-shadow-sm); transform: rotate(-3deg);
+}
+.wd-stn.is-here .wd-stn-stamp::before { display: none; }
+.wd-stn.is-here .wd-stn-stamp::after {
+  content: "今"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-family: 'Noto Serif JP', serif; font-weight: 900; font-size: 1rem;
+}
+.wd-stn-label { margin-top: 0.4rem; text-align: center; font-size: 0.62rem; letter-spacing: 0.04em; color: var(--wd-mute); line-height: 1.2; white-space: nowrap; }
+.wd-stn-label b { display: block; font-size: 0.82rem; color: var(--wd-cream); font-weight: 700; }
+.wd-stn.is-here .wd-stn-label { color: var(--wd-cream); }
+.wd-stn.is-here .wd-stn-label b { color: #fff; }
+.wd-train {
+  position: absolute; top: 0; transform: translateX(-50%); background: var(--wd-cream); color: var(--wd-ink);
+  font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; white-space: nowrap; pointer-events: none;
+  transition: left 0.35s;
+}
+.wd-train::after { content: ""; position: absolute; left: 50%; bottom: -5px; border: 5px solid transparent; border-top-color: var(--wd-cream); border-bottom: 0; transform: translateX(-50%); }
+
+/* ---------- the sheet ---------- */
+.wd-sheet {
+  position: relative; background: var(--wd-paper); color: var(--wd-text);
+  border: 2px solid #1a1512; border-radius: 16px; box-shadow: var(--wd-shadow);
+  padding: 1.6rem 1.6rem 1.4rem;
+}
+.wd-sheet .wd-hear {
+  position: absolute; right: 1rem; top: 1rem; width: 38px; height: 38px; border-radius: 50%;
+  background: var(--wd-ink); color: var(--wd-paper); border: 0; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.wd-sheet .wd-hear:hover { background: var(--wd-red); }
+.wd-sheet .wd-hear.playing { background: var(--wd-red); }
+.wd-mark {
+  position: absolute; left: 1rem; top: 0.8rem; width: 58px; height: 58px; border: 5px solid var(--wd-red);
+  border-radius: 50%; opacity: 0.85; transform: rotate(-8deg); display: none; pointer-events: none;
+}
+.wd-mark::after { content: "正"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--wd-red); font-size: 1.5rem; font-family: 'Noto Serif JP', serif; font-weight: 900; }
+.wd-sheet.is-solid .wd-mark { display: block; }
+.wd-sheet.is-shaky .wd-mark { display: block; border-style: dashed; opacity: 0.6; }
+.wd-sheet.is-shaky .wd-mark::after { content: "再"; }
+
+.wd-cells { display: flex; justify-content: center; flex-wrap: wrap; margin: 0.4rem auto 0; max-width: 100%; }
+.wd-cell {
+  width: var(--cell, 72px); height: var(--cell, 72px); border: 1.5px solid #cfc6b3; margin-left: -1.5px; margin-top: -1.5px;
+  display: flex; align-items: center; justify-content: center; position: relative;
+  font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: calc(var(--cell, 72px) * 0.66); line-height: 1;
+}
+.wd-cell::after { content: ""; position: absolute; inset: 12px; border: 1px dashed #eee6d4; pointer-events: none; }
+.wd-cell.is-cursor { box-shadow: inset 0 -4px 0 var(--wd-red); }
+.wd-cell.is-empty { color: #cfc6b3; }
+.wd-big { text-align: center; font-size: 2.2rem; font-weight: 800; margin: 0.6rem 0 0.2rem; line-height: 1.2; }
+.wd-meta { text-align: center; color: var(--wd-faint); font-size: 0.74rem; letter-spacing: 0.22em; text-transform: uppercase; margin-top: 0.7rem; }
+.wd-scripts { display: flex; justify-content: center; gap: 1.2rem; align-items: baseline; margin-top: 0.5rem; min-height: 0; }
+.wd-scripts .wd-kanji { font-size: 1.7rem; color: var(--wd-red); font-weight: 600; }
+.wd-scripts .wd-kata { font-size: 1.5rem; color: #2d6a9f; font-weight: 600; }
+.wd-romaji { text-align: center; font-style: italic; color: var(--wd-faint); font-size: 1rem; margin-top: 0.3rem; letter-spacing: 0.04em; }
+
+.wd-answer { margin-top: 0.9rem; border-top: 1px dashed #cfc6b3; padding-top: 0.9rem; text-align: center; }
+.wd-answer .wd-lab { font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--wd-faint); font-weight: 700; }
+.wd-answer .wd-ans { font-size: 1.6rem; font-weight: 800; color: var(--wd-text); margin-top: 0.15rem; line-height: 1.25; }
+.wd-answer .wd-ans.jp { font-size: 2rem; }
+.wd-answer .wd-ans-sub { color: var(--wd-faint); font-size: 0.95rem; margin-top: 0.2rem; }
+.wd-hidden { visibility: hidden; }
+.wd-sheet:not(.flipped) .wd-answer { position: relative; height: 3.2rem; overflow: hidden; }
+.wd-sheet:not(.flipped) .wd-answer > * { visibility: hidden; }
+.wd-sheet:not(.flipped) .wd-answer::before {
+  content: attr(data-hint); position: absolute; inset: 0.9rem 0 0; display: flex; align-items: flex-start; justify-content: center;
+  color: var(--wd-faint); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+}
+.wd-sheet { cursor: pointer; }
+.wd-sheet button, .wd-sheet input { cursor: pointer; }
+
+/* ---------- the verdict ---------- */
+.wd-verdict { display: flex; justify-content: center; gap: 0.7rem; margin: 1.2rem 0 0.9rem; flex-wrap: wrap; }
+
+/* ---------- foot: position, bar, counts ---------- */
+.wd-foot { display: flex; align-items: center; gap: 0.8rem; color: var(--wd-mute); font-size: 0.78rem; flex-wrap: wrap; }
+.wd-foot .wd-bar { flex: 1 1 8rem; height: 10px; border: 1.5px solid var(--wd-cream); border-radius: 999px; background: var(--wd-ink-2); overflow: hidden; min-width: 6rem; }
+.wd-foot .wd-bar i { display: block; height: 100%; width: 0; background: var(--wd-red); transition: width 0.3s; }
+.wd-foot .wd-arrows { display: inline-flex; gap: 0.3rem; }
+.wd-foot .wd-arrow {
+  width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--wd-line); background: transparent;
+  color: var(--wd-cream); cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center;
+}
+.wd-foot .wd-arrow:hover { border-color: var(--wd-cream); }
+.wd-foot .wd-arrow:disabled { opacity: 0.3; cursor: default; }
+
+/* ---------- stamps: every word in the deck ---------- */
+.wd-strip-h { font-size: 0.68rem; color: var(--wd-mute); letter-spacing: 0.14em; text-transform: uppercase; margin: 1.3rem 0 0.5rem; display: flex; align-items: center; gap: 0.6rem; }
+.wd-strip-h .wd-legend { margin-left: auto; display: inline-flex; gap: 0.7rem; text-transform: lowercase; letter-spacing: 0; }
+.wd-strip-h .wd-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.wd-stamps { display: flex; flex-wrap: wrap; gap: 6px; }
+.wd-stamp {
+  width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: 1.05rem; cursor: pointer; border: 0; padding: 0;
+  background: var(--wd-ink-2); border: 1.5px solid var(--wd-line); color: var(--wd-faint); transition: transform 0.12s;
+}
+.wd-stamp:hover { transform: scale(1.12); z-index: 1; }
+.wd-stamp.st-solid { background: var(--c, var(--wd-green)); color: #fff; border-color: transparent; transform: rotate(var(--tilt, -2deg)); box-shadow: var(--wd-shadow-sm); }
+.wd-stamp.st-solid:hover { transform: rotate(var(--tilt, -2deg)) scale(1.12); }
+.wd-stamp.st-shaky { background: var(--wd-ink); border: 2px solid var(--wd-red); color: #f3a59a; }
+.wd-stamp.is-here { outline: 2px solid var(--wd-cream); outline-offset: 2px; }
+
+/* ---------- quiz: stops, tiles, missed ---------- */
+.wd-stops-row { display: flex; align-items: center; gap: 0.8rem; margin: 1.1rem 0 0.8rem; color: var(--wd-mute); font-size: 0.78rem; }
+.wd-stops { flex: 1; position: relative; display: flex; justify-content: space-between; align-items: center; min-height: 20px; }
+.wd-stops::before { content: ""; position: absolute; left: 6px; right: 6px; top: 50%; height: 4px; margin-top: -2px; background: var(--wd-cream); border-radius: 999px; }
+.wd-stop { position: relative; width: 14px; height: 14px; border-radius: 4px; background: var(--wd-ink-2); border: 1.5px solid var(--wd-line); transform: rotate(-2deg); }
+.wd-stop.is-right { background: var(--wd-green); border-color: transparent; box-shadow: 1px 1px 0 #120e0c; }
+.wd-stop.is-wrong { background: var(--wd-ink); border: 2px solid var(--wd-red); }
+.wd-stop.is-skip { background: var(--wd-cream); border-color: transparent; border-radius: 50%; width: 12px; height: 12px; }
+.wd-stop.is-here { width: 20px; height: 20px; background: var(--wd-red); border-color: transparent; box-shadow: 1px 1px 0 #120e0c; transform: rotate(-4deg); }
+.wd-tiles { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.wd-tile { flex: 1 1 5rem; background: var(--wd-paper); color: var(--wd-text); border: 1.5px solid #1a1512; border-radius: 10px; padding: 0.55rem 0.7rem; box-shadow: var(--wd-shadow-sm); }
+.wd-tile b { display: block; font-size: 1.4rem; line-height: 1.1; }
+.wd-tile span { font-size: 0.6rem; color: var(--wd-faint); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+.wd-tile.is-reset { flex: 0 0 auto; background: transparent; color: var(--wd-mute); border-color: var(--wd-line); box-shadow: none; display: flex; align-items: center; cursor: pointer; font-family: inherit; font-size: 0.72rem; font-weight: 700; }
+.wd-tile.is-reset:hover { color: var(--wd-cream); border-color: var(--wd-cream); }
+.wd-missed { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
+.wd-missed-empty { color: var(--wd-faint); font-size: 0.78rem; }
+.wd-miss {
+  position: relative; background: var(--wd-ink); border: 2px solid var(--wd-red); color: #f3a59a; border-radius: 8px;
+  padding: 0.3rem 0.7rem; font-family: 'Noto Serif JP', serif; font-weight: 700; font-size: 1rem; cursor: default;
+}
+.wd-miss small { font-family: 'Outfit', sans-serif; font-weight: 500; color: var(--wd-mute); font-size: 0.72rem; margin-left: 0.4rem; }
+.wd-miss i { position: absolute; top: -9px; right: -9px; background: var(--wd-red); color: #fff; font-style: normal; font-family: 'Outfit', sans-serif; font-size: 0.62rem; font-weight: 800; border-radius: 999px; padding: 1px 6px; }
+
+/* ---------- the info overlay, in this palette ---------- */
+.wd-page .cheat-box { background: var(--wd-paper); color: var(--wd-text); }
+
+@media (max-width: 640px) {
+  .wd-page { padding-top: 100px; }
+  .wd-strip-h .wd-legend { display: none; }
+  .wd-title { font-size: 1.6rem; }
+  .wd-seal { width: 42px; height: 42px; font-size: 1.5rem; }
+  .wd-wrap { padding: 1.2rem 1rem 3rem; }
+  .wd-rail-wrap { margin: 0.4rem -1rem 1rem; padding: 0 1rem; }
+  .wd-sheet { padding: 1.3rem 1rem 1.1rem; }
+  .wd-cells { --cell: 52px; }
+  .wd-mark { width: 46px; height: 46px; border-width: 4px; left: 0.6rem; top: 0.5rem; }
+  .wd-mark::after { font-size: 1.15rem; }
+  .wd-tile b { font-size: 1.2rem; }
+}
