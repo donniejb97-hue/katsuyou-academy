@@ -673,6 +673,15 @@
       .kw-hero .wok-title-text { flex-direction: column-reverse; gap: 0.3rem; }
       .kw-hero .wok-seal { width: 62px; height: 62px; font-size: 2.3rem; }
       .kw-hero .wok-branch { height: 68%; }
+      /* The header photograph. Positioned so the branch sits top-right and
+         the ridge line runs under the title; the bottom fades into the paper
+         so the page has no hard edge. */
+      .kw-hero { min-height: 380px; }
+      .kw-photo { background: #f3e6e6 url(wok-header.jpg) 50% 35% / cover no-repeat; }
+      .kw-photo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px;
+        background: linear-gradient(rgba(244,239,228,0), var(--wok-paper)); }
+      .kw-hero .kanji-romaji-title, .kw-hero .kanji-subtitle, .kw-hero .page-tag {
+        text-shadow: 0 0 2px #fff, 0 0 6px #fff, 0 0 14px #fff, 0 0 28px #fff, 0 0 40px #fff; }
       /* (the halo behind the title lives in wok-theme.css) */
       .kanji-header { text-align: left; margin: 0; }
       .kanji-title { margin: 0; }
@@ -870,7 +879,8 @@
         .kw-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0.35rem; padding: 0.6rem; }
         .kw-cell { font-size: 1.05rem; }
         .kw-d-vocab { grid-template-columns: 1fr; }
-        .kw-hero { min-height: 190px; padding-bottom: 1.2rem; }
+        .kw-hero { min-height: 240px; padding-bottom: 1.2rem; }
+        .kw-photo { background-position: 62% 30%; }
         .kw-hero .wok-seal { width: 48px; height: 48px; font-size: 1.8rem; }
         .kanji-romaji-title { font-size: 2.2rem; }
         .kw-tabs { width: 100%; margin-top: 0.4rem; }
@@ -929,7 +939,8 @@
       <!-- The hero: mountains and the sakura branch are injected by wok-theme.js
          into the data-wok-sky element; everything else sits in front of them. -->
     <div class="wok-hero kw-hero">
-      <div class="wok-sky" data-wok-sky></div>
+      <!-- a photograph instead of the drawn sky: misty ridges and a sakura branch -->
+      <div class="wok-sky kw-photo" aria-hidden="true"></div>
       <div class="kw-hero-inner">
         <div class="kanji-header wok-title-row">
           <span class="wok-seal jp" aria-hidden="true">壁</span>
