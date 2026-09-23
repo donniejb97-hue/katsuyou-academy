@@ -149,22 +149,35 @@
     /* One baseline: the ← button, the seal and the title all sit on the same
        line, with the eyebrow above the title only. Everything is sized off
        the title so the row reads as one object rather than three. */
-    .kd-hero { padding: 0; min-height: 0; height: clamp(260px, 36vw, 580px); margin-bottom: 0.4rem;
+    /* The kitchen painting fills the top of the page; the title sits on the
+       wall and the toolbar at eye level over the painting, so the room stays
+       in view behind the drill. The title is centred so it clears the red
+       lantern on the left. */
+    #page-kanji-drill { --kd-hero-h: clamp(360px, 40vw, 640px); --kd-eye: 250px; }
+    .kd-hero { padding: 0; min-height: 0; height: var(--kd-hero-h); margin-bottom: 0;
       display: flex; flex-direction: column; }
-    /* The kitchen painting. Its own "Kanji Kitchen" lettering is the title,
-       so the page's seal and title row stay in the markup (screen readers,
-       search) but are not drawn. The bottom fades into the paper. */
-    .kitchen-photo { background: #f1ebdc url(kitchen-hero.jpg) center 38% / cover no-repeat; }
-    .kitchen-photo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 120px;
+    .kitchen-photo { background: #f1ebdc url(kitchen-hero.jpg) center top / cover no-repeat; }
+    .kitchen-photo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 140px;
       background: linear-gradient(rgba(244,239,228,0), var(--wok-paper)); }
-    .kd-hero-inner { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); margin: -1px; padding: 0; }
-    .kd-hero-inner { max-width: 800px; width: 100%; margin: auto auto 0; padding: 0 2rem; box-sizing: border-box;
-      display: flex; align-items: flex-end; gap: 1rem; }
+    .wok-hero.kd-hero > .kd-hero-inner { position: absolute; left: 50%; bottom: calc(var(--kd-hero-h) - var(--kd-eye) + 12px); transform: translateX(-50%);
+      width: 100%; max-width: 800px; padding: 0 2rem; box-sizing: border-box; display: flex; align-items: flex-end; justify-content: center; gap: 1rem; }
     .kd-hero .wok-title-row { align-items: flex-end; gap: 1rem; }
     .kd-hero .wok-seal { width: 62px; height: 62px; font-size: 2.3rem; }
-    .kd-hero .page-tag { color: var(--wok-red); margin: 0 0 0.3rem; font-size: 0.7rem; letter-spacing: 0.2em; font-weight: 800; }
-    .kd-hero .page-title { color: var(--wok-ink); margin: 0; font-size: 2.6rem !important; line-height: 1; }
-    .kd-hero .wok-branch { height: 72%; }
+    .kd-hero .page-tag { color: var(--wok-red); margin: 0 0 0.3rem; font-size: 0.7rem; letter-spacing: 0.2em; font-weight: 800;
+      text-shadow: 0 0 3px #fff, 0 0 8px #fff, 0 0 16px #fff; }
+    .kd-hero .page-title { color: var(--wok-ink); margin: 0; font-size: 2.6rem !important; line-height: 1;
+      text-shadow: 0 0 3px #fff, 0 0 8px #fff, 0 0 18px #fff, 0 0 32px #fff; }
+    /* The Kanji Kitchen logo hangs in the right margin beside the card, where
+       the room shows through. It needs a margin to hang in, so on narrower
+       screens it is not drawn and the seal + title on the wall do the job. */
+    #page-kanji-drill { position: relative; }
+    .kd-logo { display: none; }
+    @media (min-width: 1440px) {
+      .kd-logo { display: block; position: absolute; z-index: 3; pointer-events: none;
+        left: calc(50% + 404px); top: calc(var(--kd-eye) + 395px); width: min(320px, calc(50vw - 540px)); height: auto;
+        filter: drop-shadow(0 0 10px rgba(255,255,255,0.85)); }
+      .wok-hero.kd-hero > .kd-hero-inner .wok-title-row { visibility: hidden; }
+    }
     /* Back to the wall: the first chip in the toolbar, where your hands are. */
     .kd-back { flex: none; display: inline-flex; align-items: center; gap: 0.35rem; height: 34px; padding: 0 0.85rem 0 0.7rem;
       border-radius: 999px; border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink);
@@ -172,7 +185,7 @@
       box-shadow: 2px 2px 0 var(--wok-red); }
     .kd-back .jp { color: var(--wok-red); font-family: 'Noto Serif JP', serif; }
     .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--wok-red); }
-    .drill-page { padding-top: 0.5rem; }
+    .drill-page { padding-top: 0.5rem; margin-top: calc(var(--kd-eye) - var(--kd-hero-h)); position: relative; z-index: 2; }
 
     /* toolbar */
     .kd-toolbar { display: flex; flex-direction: row; align-items: center; gap: 0.6rem; flex-wrap: wrap;
@@ -300,9 +313,12 @@
     .drill-missed-chip .jp { color: var(--wok-red); font-weight: 700; }
 
     @media (max-width: 540px) {
-      .kd-hero { height: 56vw; }
-      .kitchen-photo { background-position: 48% 20%; }
-      .kitchen-photo::after { height: 60px; }
+      #page-kanji-drill { --kd-hero-h: calc(56vw + 96px); --kd-eye: calc(56vw + 12px); }
+      .kitchen-photo { background-position: 45% 30%; }
+      .kitchen-photo::after { height: 150px; }
+      .wok-hero.kd-hero > .kd-hero-inner { padding: 0 1.25rem; justify-content: flex-start; }
+      .kd-hero .page-title { font-size: 2rem !important; }
+      .kd-hero .wok-seal { width: 48px; height: 48px; font-size: 1.8rem; }
       .kd-toolbar-right { margin-left: 0; width: 100%; }
       .kd-round { margin-left: 0; width: 100%; }
     }
@@ -352,7 +368,8 @@
   </nav>
 
   <div id="page-kanji-drill" class="page active">
-    <!-- The kitchen painting; its lettering is the title (the row below is for screen readers). -->
+    <!-- The kitchen painting, with the page's seal and title on its wall. -->
+    <img class="kd-logo" src="kitchen-logo.png" alt="" aria-hidden="true" width="1320" height="766">
     <div class="wok-hero kd-hero">
       <div class="wok-sky kitchen-photo" aria-hidden="true"></div>
       <div class="kd-hero-inner">
@@ -366,7 +383,7 @@
       </div>
     </div>
 
-    <div data-howto="kit" data-howto-seal="竈" data-howto-anchor=".drill-page"></div>
+    <div data-howto="kit" data-howto-seal="竈" data-howto-anchor=".kd-toolbar"></div>
     <div class="drill-page">
 
       <!-- Toolbar: what you're practising. Mode · how you answer · which kanji. -->
