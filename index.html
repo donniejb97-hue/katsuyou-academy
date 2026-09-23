@@ -94,12 +94,13 @@
     .hero {
       /* Shown at the painting's own proportions, edge to edge, so nothing is
          cropped and nothing is blown up: the hero is exactly as tall as the
-         picture is at this width. The copy card hangs over the bottom edge
-         into the dark band beneath. */
-      background: #f1ebdc url(hero-art.jpg) center top / 100% auto no-repeat;
-      aspect-ratio: 1344 / 376; min-height: 0;
-      padding: 2rem 2rem 0; overflow: visible; align-items: flex-start;
+         picture is at this width. The copy card sits on the bottom edge and
+         hangs 150px over it into the dark band beneath, at every width. */
+      background: #f1ebdc url(hero-art.jpg) center top / cover no-repeat;
+      aspect-ratio: 2688 / 752; min-height: 400px;   /* below ~1430px the card needs the extra height, and cover adds a hair of zoom */
+      padding: 2rem 2rem 0; overflow: visible; align-items: flex-end;
     }
+    .hero-grid { align-items: flex-end; }
     .hero::before { display: none; }
     .hero-grid { grid-template-columns: 1fr; }
     .hero-copy {
