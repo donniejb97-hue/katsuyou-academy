@@ -3659,12 +3659,12 @@ function setLang(lang) {
     // the menu belongs next to Practice, so it is planted in front of the
     // Practice group's first link.
     { key: 'nav_group_vocab', fallback: 'Vocabulary',
-      pages: ['vocabulary', 'vocabquiz', 'kanji'], before: 'conjugator' },
+      pages: ['vocabulary', 'kanji'], before: 'conjugator' },
     // Four drills, one idea. Adding Reading pushed the bar past its width and
     // the last item was being clipped; these four collapse to one and leave
     // headroom for the longer German and French labels.
     { key: 'nav_group_practice', fallback: 'Practice',
-      pages: ['conjugator', 'deconjugator', 'kana-drill', 'kanji-drill', 'datedojo'] }
+      pages: ['conjugator', 'deconjugator', 'kana-drill', 'kanji-drill', 'vocabquiz', 'datedojo'] }
   ];
 
   function buildNavGroups() {
