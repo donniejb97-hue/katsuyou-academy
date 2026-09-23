@@ -93,8 +93,9 @@
       // it hangs on the LEFT of the content, in the margin there
       var margin = rect.left;
       var avail = Math.min(FULL_W, margin - GAP - 12);
-      // the paper may scroll inside itself, but never below ~260px
-      var paperMax = window.innerHeight - TOP - ROLLERS - 40;
+      // the paper may scroll inside itself, but never below ~260px. The Ko-fi
+      // button floats in the bottom-left corner, so the scroll stops above it.
+      var paperMax = window.innerHeight - TOP - ROLLERS - kofiRoom();
       var mode = (avail >= MIN_W && paperMax >= 260) ? 'docked' : 'inline';
       if (mode !== placed) {
         placed = mode;
@@ -110,6 +111,16 @@
       el.classList.toggle('is-narrow', mode === 'docked' && avail < 230);
       paper.style.maxHeight = (mode === 'docked' && !rolled) ? Math.min(900, paperMax) + 'px' : '';
       column();
+    }
+    // How much of the bottom-left corner the Ko-fi button takes: measured
+    // when it has rendered, a safe guess until then.
+    function kofiRoom() {
+      var k = document.querySelector('.floatingchat-container-wrap, [class*="floatingchat"], iframe[id^="kofi"]');
+      if (k) {
+        var r = k.getBoundingClientRect();
+        if (r.height && r.top < window.innerHeight) return Math.max(40, window.innerHeight - r.top + 16);
+      }
+      return 110;
     }
     // Tell the floating buttons where the scroll's column is and where it ends.
     function column() {
@@ -130,6 +141,7 @@
 
     window.addEventListener('resize', place);
     window.addEventListener('katsuyo:lang', fill);
+    var tries = 0, again = setInterval(function () { place(); if (++tries > 8) clearInterval(again); }, 1000);
   }
 
   function init() {
