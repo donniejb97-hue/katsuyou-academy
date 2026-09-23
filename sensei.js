@@ -215,10 +215,14 @@
     'a site for beginner Japanese learners (around JLPT N5-N4 level).\n\n' +
     'Rules:\n' +
     '- When asked how to say a word or phrase in Japanese, give: the word in ' +
-    'hiragana (or katakana for loanwords), the romaji in parentheses, the kanji ' +
-    'if common, and one short example sentence with a translation.\n' +
+    'hiragana (or katakana for loanwords), the kanji if common, and one short ' +
+    'example sentence with a translation.\n' +
+    '- Never write rōmaji. Not in parentheses, not after a dash, nowhere: the ' +
+    'student reads kana. For a word with kanji, put its reading in square ' +
+    'brackets right after it, like 食べる[たべる] or 日本語[にほんご] — the site shows ' +
+    'that as furigana.\n' +
     '- Keep answers short and beginner-friendly: a few sentences, not essays.\n' +
-    '- Prefer hiragana over kanji-heavy writing; always include romaji.\n' +
+    '- Prefer hiragana over kanji-heavy writing.\n' +
     '- You may answer grammar questions, cultural questions, and questions about ' +
     'how to use this website (it has Kana charts, a verb Learn section, a Forms ' +
     'reference, a Verb list, the Conjugator practice tool, Kana Drill, the Kanji Kitchen (kanji drill), a Talk ' +
@@ -336,7 +340,14 @@
     var ja = siteLang() === 'ja';
     return String(text || '')
       .replace(/([^\s\[\]]+)\[([^\]]+)\]/g, ja ? '$2' : '$1')
-      .replace(JA_THEN_PAREN, function (m, jp, inner) { return isRomaji(inner) ? jp : m; })
+      .replace(JA_THEN_PAREN, function (m, jp, inner) {
+        if (isRomaji(inner)) return jp;
+        // "(Nandemo kiite kudasai! — Ask me anything!)": drop the romaji half,
+        // keep the translation.
+        var cut = inner.match(/^(.+?)\s*(?:[—–-]+|:)\s+(.+)$/);
+        if (cut && isRomaji(cut[1])) return jp + ' (' + cut[2] + ')';
+        return m;
+      })
       .replace(/`([^`\n]+)`/g, '$1')
       .replace(/\*\*([^*\n]+)\*\*/g, '$1')
       .replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1$2')
@@ -685,7 +696,7 @@
     });
 
     function greetingFallback() {
-      return 'こんにちは！(Konnichiwa!) I’m Katsu. Ask me how to say something in Japanese, or any grammar question. 何でも聴いてください！(Nandemo kiite kudasai! — Ask me anything!)';
+      return 'こんにちは！ I’m Katsu. Ask me how to say something in Japanese, or any grammar question. 何でも聞いてください！ (Ask me anything!)';
     }
 
     function addMsg(role, text, opts) {
