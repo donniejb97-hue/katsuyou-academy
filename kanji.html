@@ -829,6 +829,10 @@
       .kw-d-state.s-solid { background: var(--stamp, var(--wok-ink)); border-color: transparent; color: var(--stamp-fg, #fff); }
       .kw-d-state.s-shaky { background: #fff; border-color: var(--wok-red); color: var(--wok-red); }
       .kw-d-state.s-new   { background: var(--wok-paper-2); border-color: var(--wok-line); color: var(--wok-mute); }
+      .kw-d-stats { font-size: 0.74rem; color: var(--wok-mute); white-space: nowrap; }
+      .kw-d-stats b { font-weight: 800; color: var(--wok-ink); }
+      .kw-d-stats b.is-right { color: #4f7454; }
+      .kw-d-stats b.is-wrong { color: var(--wok-red); }
       .kw-d-readings { display: flex; gap: 1.6rem; flex-wrap: wrap; }
       .kw-d-readings b { display: block; font-size: 0.6rem; letter-spacing: 0.1em;
         text-transform: uppercase; margin-bottom: 0.15rem; }
@@ -1371,6 +1375,11 @@
         '<div class="kw-d-head">' +
           '<span class="kw-d-kw">' + item.keyword.replace(/・/g, ' · ').toLowerCase() + '</span>' +
           '<span class="kw-d-state s-' + d.status + '" style="--stamp:' + KA_Kanji.colour(id) + ';--stamp-fg:' + KA_Kanji.textOn(id) + '">' + stateLabel + '</span>' +
+          (d.seen ? '<span class="kw-d-stats">' +
+              '<b class="is-right">✓ ' + (d.seen - d.wrong) + '</b> ' + t('kw_st_right', 'right') + ' · ' +
+              '<b class="is-wrong">✗ ' + d.wrong + '</b> ' + t('kw_st_wrong', 'wrong') +
+              (d.streak > 1 ? ' · <b>' + d.streak + '</b> ' + t('kw_st_streak', 'in a row') : '') +
+            '</span>' : '') +
           '<button type="button" class="kw-d-close" aria-label="Close">✕</button>' +
         '</div>' +
         '<div class="kw-d-readings">' +
