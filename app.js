@@ -1539,19 +1539,41 @@
             use = cands[0] || null;
           }
           if (!use) return false;
+          // Mixed text ("食べる means to eat") is split by script so the
+          // Japanese runs go to the Japanese voice — the same trick the
+          // Azure path does server-side.
+          var JA_RUN = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff66-\uff9f\u3000-\u303f\uff01-\uff0f\uff1a-\uff1f]+/g;
+          var runs = [];
+          if (use !== jaVoice && jaVoice) {
+            var last = 0, m;
+            while ((m = JA_RUN.exec(text)) !== null) {
+              if (m.index > last) runs.push({ v: use, t: text.slice(last, m.index) });
+              runs.push({ v: jaVoice, t: m[0] });
+              last = m.index + m[0].length;
+            }
+            if (last < text.length) runs.push({ v: use, t: text.slice(last) });
+          } else {
+            runs.push({ v: use, t: text });
+          }
           synth.cancel();
-          chunk(text).forEach(function (piece, i) {
-            var u = new SpeechSynthesisUtterance(piece);
-            u.voice = use;
-            u.lang = use.lang || 'ja-JP';
-            u.rate = opts.rate || (opts.lang && opts.lang !== 'ja' ? 1 : 0.9);   // Japanese a touch under natural, for learners
-            u.pitch = opts.pitch || 1;
-            if (i === 0 && opts.onstart) u.onstart = opts.onstart;
-            if (opts.onend) u.onend = function () {
-              // only when the whole queue has drained
-              if (!synth.pending && !synth.speaking) opts.onend();
-            };
-            synth.speak(u);
+          var first = true;
+          runs.forEach(function (run) {
+            if (!run.t.trim()) return;
+            chunk(run.t).forEach(function (piece) {
+              var u = new SpeechSynthesisUtterance(piece);
+              u.voice = run.v;
+              u.lang = run.v.lang || 'ja-JP';
+              var isJa = run.v === jaVoice;
+              u.rate = opts.rate || (isJa ? 0.9 : 1);   // Japanese a touch under natural, for learners
+              u.pitch = opts.pitch || 1;
+              if (first && opts.onstart) u.onstart = opts.onstart;
+              first = false;
+              if (opts.onend) u.onend = function () {
+                // only when the whole queue has drained
+                if (!synth.pending && !synth.speaking) opts.onend();
+              };
+              synth.speak(u);
+            });
           });
           return true;
         },
@@ -1594,6 +1616,29 @@
       }
       function currentVoice() { return savedVoice() || defaultVoice; }
 
+      // Katsu reads replies in the site language; each language keeps its own
+      // chosen voice, stored beside the Japanese one.
+      function langVoiceKey(lang) { return VOICE_KEY + '-' + lang; }
+      function langVoice(lang) {
+        if (!lang || lang === 'ja') return '';
+        try { return localStorage.getItem(langVoiceKey(lang)) || ''; } catch (e) { return ''; }
+      }
+      function setLangVoice(lang, name) {
+        if (!lang || lang === 'ja') return setVoice(name);
+        try { localStorage.setItem(langVoiceKey(lang), name || ''); } catch (e) {}
+        cache = {};
+      }
+      var langVoices = {};      // lang → [{name, display, gender}]
+      function listLangVoices(lang) {
+        if (!lang || lang === 'ja') return listVoices();
+        if (langVoices[lang]) return Promise.resolve(langVoices[lang]);
+        if (disabled) return Promise.resolve([]);
+        return fetch(endpoint() + '?voices=1&lang=' + encodeURIComponent(lang))
+          .then(function (r) { return r.ok ? r.json() : { voices: [] }; })
+          .then(function (data) { langVoices[lang] = (data && data.voices) || []; return langVoices[lang]; })
+          .catch(function () { langVoices[lang] = []; return langVoices[lang]; });
+      }
+
       function listVoices() {
         if (voices) return Promise.resolve(voices);
         if (disabled) return Promise.resolve([]);
@@ -1621,10 +1666,10 @@
         if (disabled || !text) return Promise.resolve(false);
 
         var lang = (typeof opts.lang === 'string' && opts.lang !== 'ja') ? opts.lang : '';
-        var voice = lang ? '' : currentVoice();
+        var voice = lang ? langVoice(lang) : currentVoice();
         var style = (typeof opts.style === 'string' && !lang) ? opts.style : '';
-        // Style and language change the audio, so they are part of the cache key.
-        var key = lang + '|' + voice + '|' + style + '|' + text;
+        // Style, language and both voices change the audio, so they are all in the cache key.
+        var key = lang + '|' + voice + '|' + (lang ? currentVoice() : '') + '|' + style + '|' + text;
         stop();
 
         function play(url) {
@@ -1645,7 +1690,9 @@
         return fetch(endpoint(), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(lang ? { text: text, lang: lang } : { text: text, voice: voice, style: style })
+          body: JSON.stringify(lang
+            ? { text: text, lang: lang, voice: voice, jaVoice: currentVoice() }   // Japanese runs inside get the Japanese voice
+            : { text: text, voice: voice, style: style })
         })
           .then(function (r) {
             if (r.status === 503) { disabled = true; return null; }
@@ -1664,8 +1711,11 @@
       return {
         endpoint: endpoint,
         listVoices: listVoices,
+        listLangVoices: listLangVoices,
         currentVoice: currentVoice,
+        langVoice: langVoice,
         setVoice: setVoice,
+        setLangVoice: setLangVoice,
         speak: speak,
         stop: stop,
         offline: function () { return disabled; },

@@ -424,6 +424,9 @@
     '.sensei-read:hover { color: var(--ink, #1a1a2e); border-color: currentColor; }',
     '.sensei-read.playing { background: var(--ink, #1a1a2e); color: #fff; border-color: var(--ink, #1a1a2e); }',
     '.sensei-read[hidden] { display: none; }',
+    '#sensei-voice-row[hidden] { display: none; }',
+    '#sensei-voice { max-width: 58%; font-family: inherit; font-size: 0.82rem; padding: 0.25rem 0.4rem; border-radius: 6px;',
+    '  border: 1px solid rgba(0,0,0,0.18); background: #fff; color: var(--ink, #1a1a2e); }',
     '.sensei-msg em { font-style: italic; opacity: 0.85; }',
     '.sensei-msg code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.86em;',
     '  background: rgba(0,0,0,0.06); border-radius: 4px; padding: 0.05rem 0.3rem; }',
@@ -477,6 +480,10 @@
           '<span id="sensei-readaloud-label"></span>' +
           '<label class="sensei-switch"><input type="checkbox" id="sensei-readaloud-toggle"><span class="sensei-switch-track"></span></label>' +
         '</div>' +
+        '<div class="sensei-setting-row" id="sensei-voice-row" hidden>' +
+          '<label for="sensei-voice" id="sensei-voice-label"></label>' +
+          '<select id="sensei-voice"></select>' +
+        '</div>' +
         '<div class="sensei-setting-row">' +
           '<button id="sensei-clear"></button>' +
         '</div>' +
@@ -514,6 +521,7 @@
       send.textContent = tr('sensei_send', 'Ask');
       panel.querySelector('#sensei-proactive-label').textContent = tr('sensei_proactive_label', 'Let Katsu check in after six misses in a row');
       panel.querySelector('#sensei-readaloud-label').textContent = tr('sensei_readaloud_label', 'Read every reply aloud');
+      panel.querySelector('#sensei-voice-label').textContent = tr('sensei_voice_label', 'Voice');
       panel.querySelectorAll('.sensei-read').forEach(function (b) { b.title = tr('sensei_read_aloud', 'Read aloud'); b.setAttribute('aria-label', b.title); });
       clearBtn.textContent = tr('sensei_clear_history', '🗑 Clear chat');
       refreshRestore();
@@ -555,6 +563,38 @@
       settings.proactive = proactiveToggle.checked;
       persistProactive();
     });
+    // The voice picker: Azure's list for the site language (Japanese voices
+    // when the site is in Japanese). Hidden when Azure isn't there — the
+    // browser fallback picks its own voice.
+    var voiceRow = panel.querySelector('#sensei-voice-row');
+    var voiceSel = panel.querySelector('#sensei-voice');
+    function fillVoices() {
+      if (!window.KA_Azure || !KA_Azure.listLangVoices) return;
+      var lang = siteLang();
+      KA_Azure.listLangVoices(lang).then(function (list) {
+        if (!list || !list.length) { voiceRow.hidden = true; return; }
+        var current = lang === 'ja' ? KA_Azure.currentVoice() : (KA_Azure.langVoice(lang) || '');
+        voiceSel.innerHTML = '';
+        var def = document.createElement('option');
+        def.value = ''; def.textContent = tr('sensei_voice_default', 'Default');
+        voiceSel.appendChild(def);
+        list.forEach(function (v) {
+          var o = document.createElement('option');
+          o.value = v.name;
+          o.textContent = v.display + (v.gender ? ' · ' + v.gender.charAt(0) : '');
+          voiceSel.appendChild(o);
+        });
+        voiceSel.value = list.some(function (v) { return v.name === current; }) ? current : '';
+        voiceRow.hidden = false;
+      });
+    }
+    voiceSel.addEventListener('change', function () {
+      KA_Azure.setLangVoice(siteLang(), voiceSel.value);
+      stopReading();
+    });
+    fillVoices();
+    window.addEventListener('katsuyo:lang', fillVoices);
+
     var readToggle = panel.querySelector('#sensei-readaloud-toggle');
     readToggle.checked = settings.readAloud;
     readToggle.addEventListener('change', function () {
