@@ -88,6 +88,16 @@
       #page-vocabulary .drill-chip.info-chip { border-color: var(--wd-line); color: var(--wd-mute); width: 30px; height: 30px; }
       #page-vocabulary .drill-chip.info-chip:hover { border-color: var(--wd-cream); color: var(--wd-cream); background: transparent; }
       #page-vocabulary .ka-audio-panel { justify-content: center; }
+      /* the stamp strip folds away; a chevron in its heading is the handle */
+      #page-vocabulary .wd-strip-toggle {
+        display: inline-flex; align-items: center; gap: 0.5rem; background: none; border: 0; padding: 0;
+        color: inherit; font: inherit; letter-spacing: inherit; text-transform: inherit; cursor: pointer;
+      }
+      #page-vocabulary .wd-strip-toggle:hover { color: var(--wd-cream); }
+      #page-vocabulary .wd-strip-chev { display: inline-block; width: 1em; transition: transform 0.15s; color: var(--wd-red); }
+      #page-vocabulary .wd-strip-toggle[aria-expanded="false"] .wd-strip-chev { transform: rotate(-90deg); }
+      #page-vocabulary .wd-strip-count { color: var(--wd-faint); letter-spacing: 0.04em; text-transform: none; }
+      #page-vocabulary .wd-stamps.is-folded { display: none; }
       #page-vocabulary .wd-quiz-link { text-align: center; margin-top: 1.6rem; font-size: 0.82rem; }
       #page-vocabulary .wd-quiz-link a { color: var(--wd-mute); text-decoration: none; border-bottom: 1px dotted var(--wd-line); }
       #page-vocabulary .wd-quiz-link a:hover { color: var(--wd-cream); border-color: var(--wd-cream); }
@@ -200,14 +210,18 @@
       </div>
 
       <div class="wd-strip-h">
-        <span data-i18n="wb_this_deck">This deck</span> · <span id="wb-deck-name" class="jp"></span>
+        <button type="button" class="wd-strip-toggle" id="wb-strip-toggle" aria-expanded="false" aria-controls="wb-stamps">
+          <span class="wd-strip-chev" aria-hidden="true">▾</span>
+          <span data-i18n="wb_this_deck">This deck</span> · <span id="wb-deck-name" class="jp"></span>
+          <span class="wd-strip-count" id="wb-strip-count"></span>
+        </button>
         <span class="wd-legend">
           <span><i style="background:var(--wd-green)"></i><span data-i18n="wb_known">known</span></span>
           <span><i style="background:var(--wd-ink);border:2px solid var(--wd-red);box-sizing:border-box"></i><span data-i18n="kw_s_shaky">shaky</span></span>
           <span><i style="background:var(--wd-ink-2);border:1.5px solid var(--wd-line);box-sizing:border-box"></i><span data-i18n="kw_s_new">new</span></span>
         </span>
       </div>
-      <div class="wd-stamps" id="wb-stamps"></div>
+      <div class="wd-stamps is-folded" id="wb-stamps"></div>
 
       <!-- kept for app.js -->
       <span id="cards-studied-vocab" style="display:none;">0</span>
@@ -297,6 +311,8 @@
         if (known) known.textContent = counts.solid + ' ' + ct('wb_known', 'known') + (counts.shaky ? ' · ' + counts.shaky + ' ' + ct('kw_s_shaky', 'shaky').toLowerCase() : '');
         var bar = $('wb-bar');
         if (bar) bar.style.width = (cards.length ? Math.round(counts.solid / cards.length * 100) : 0) + '%';
+        var cnt = $('wb-strip-count');
+        if (cnt) cnt.textContent = '· ' + cards.length + ' · ' + counts.solid + ' ' + ct('wb_known', 'known') + (counts.shaky ? ' · ' + counts.shaky + ' ' + ct('kw_s_shaky', 'shaky').toLowerCase() : '');
         var name = $('wb-deck-name');
         if (name) {
           var d = KA_Words.deck(KA_Vocab.deck());
@@ -342,6 +358,23 @@
           var sync = function () { vbtn.style.display = (split && split.style.display !== 'none') ? '' : 'none'; };
           sync();
           new MutationObserver(sync).observe(split, { attributes: true, attributeFilter: ['style'] });
+        }
+        // the strip starts folded, and remembers whichever way you left it
+        var STRIP_KEY = 'katsuyo-vocab-strip';
+        var tg = $('wb-strip-toggle'), strip = $('wb-stamps');
+        if (tg && strip) {
+          var open = false;
+          try { open = localStorage.getItem(STRIP_KEY) === 'open'; } catch (e) {}
+          var paintFold = function () {
+            strip.classList.toggle('is-folded', !open);
+            tg.setAttribute('aria-expanded', open ? 'true' : 'false');
+          };
+          paintFold();
+          tg.addEventListener('click', function () {
+            open = !open;
+            try { localStorage.setItem(STRIP_KEY, open ? 'open' : 'closed'); } catch (e) {}
+            paintFold();
+          });
         }
         var stamps = $('wb-stamps');
         if (stamps) stamps.addEventListener('click', function (e) {
