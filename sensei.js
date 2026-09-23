@@ -255,7 +255,7 @@
   }
 
   // ---------- settings & persisted state ----------
-  var settings = { proactive: true, readAloud: false };
+  var settings = { proactive: false, readAloud: false };   // the pop-in is opt-in
   try {
     var savedProactive = localStorage.getItem(STORAGE_PROACTIVE);
     if (savedProactive !== null) settings.proactive = savedProactive === '1';

@@ -15,7 +15,8 @@
   'use strict';
 
   var STORE = 'katsuyo-howto-';
-  var DOCK_W = 244 + 18 + 16;     // scroll width + right inset + breathing room
+  var GAP = 28;                    // between the content's edge and the scroll
+  var FULL_W = 244, MIN_W = 200;   // the scroll's width; it narrows a little to fit a margin
 
   function t(key, fallback) {
     try {
@@ -73,12 +74,12 @@
     function paint() {
       el.classList.toggle('is-rolled', rolled);
       el.setAttribute('aria-expanded', rolled ? 'false' : 'true');
-      document.body.classList.toggle('howto-open', !rolled && placed === 'docked');
     }
     function toggle() {
       rolled = !rolled;
       try { localStorage.setItem(STORE + key, rolled ? 'rolled' : 'open'); } catch (e) {}
       paint();
+      if (placed) place();
     }
     hideBtn.addEventListener('click', toggle);
     tag.addEventListener('click', toggle);
@@ -86,22 +87,40 @@
 
     // Where it hangs. Measured, not guessed, so it works for any page width.
     var placed = null;
+    var TOP = 92, ROLLERS = 32;
     function place() {
       var rect = anchor.getBoundingClientRect();
-      var margin = window.innerWidth - rect.right;
-      // the open height, even while rolled, so the mode doesn't flip on toggle;
-      // Katsu's button steps aside via body.howto-open, so no extra room needed
-      var need = 92 + 32 + paper.scrollHeight + 24;
-      var mode = (margin >= DOCK_W && window.innerHeight >= need) ? 'docked' : 'inline';
+      // it hangs on the LEFT of the content, in the margin there
+      var margin = rect.left;
+      var avail = Math.min(FULL_W, margin - GAP - 12);
+      // the paper may scroll inside itself, but never below ~260px
+      var paperMax = window.innerHeight - TOP - ROLLERS - 40;
+      var mode = (avail >= MIN_W && paperMax >= 260) ? 'docked' : 'inline';
       if (mode !== placed) {
         placed = mode;
         el.classList.toggle('is-docked', mode === 'docked');
         el.classList.toggle('is-inline', mode === 'inline');
+        document.body.classList.toggle('howto-docked', mode === 'docked');
         if (mode === 'docked') document.body.appendChild(el);
         else anchor.parentNode.insertBefore(el, anchor);
       }
-      document.body.classList.toggle('howto-open', !rolled && placed === 'docked');
+      // Docked, it hangs just off the content's left edge — beside the page.
+      el.style.left = mode === 'docked' ? Math.round(rect.left - GAP - avail) + 'px' : '';
+      el.style.width = mode === 'docked' ? Math.round(avail) + 'px' : '';
+      el.classList.toggle('is-narrow', mode === 'docked' && avail < 230);
+      paper.style.maxHeight = (mode === 'docked' && !rolled) ? Math.min(900, paperMax) + 'px' : '';
+      column();
     }
+    // Tell the floating buttons where the scroll's column is and where it ends.
+    function column() {
+      if (placed !== 'docked') return;
+      var r = el.getBoundingClientRect();
+      var st = document.body.style;
+      st.setProperty('--howto-left', Math.round(r.left) + 'px');
+      st.setProperty('--howto-right', Math.round(r.right) + 'px');
+      st.setProperty('--howto-bottom', Math.round(r.bottom) + 'px');
+    }
+    paper.addEventListener('transitionend', column);
 
     // the first paint should not animate the paper open
     paper.style.transition = 'none';
