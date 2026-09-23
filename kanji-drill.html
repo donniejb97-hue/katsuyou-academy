@@ -149,8 +149,15 @@
     /* One baseline: the ← button, the seal and the title all sit on the same
        line, with the eyebrow above the title only. Everything is sized off
        the title so the row reads as one object rather than three. */
-    .kd-hero { padding: 2rem 0 1.5rem; min-height: 200px; margin-bottom: 0.4rem;
+    .kd-hero { padding: 0; min-height: 0; height: clamp(260px, 36vw, 580px); margin-bottom: 0.4rem;
       display: flex; flex-direction: column; }
+    /* The kitchen painting. Its own "Kanji Kitchen" lettering is the title,
+       so the page's seal and title row stay in the markup (screen readers,
+       search) but are not drawn. The bottom fades into the paper. */
+    .kitchen-photo { background: #f1ebdc url(kitchen-hero.jpg) center 38% / cover no-repeat; }
+    .kitchen-photo::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 120px;
+      background: linear-gradient(rgba(244,239,228,0), var(--wok-paper)); }
+    .kd-hero-inner { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); margin: -1px; padding: 0; }
     .kd-hero-inner { max-width: 800px; width: 100%; margin: auto auto 0; padding: 0 2rem; box-sizing: border-box;
       display: flex; align-items: flex-end; gap: 1rem; }
     .kd-hero .wok-title-row { align-items: flex-end; gap: 1rem; }
@@ -158,10 +165,13 @@
     .kd-hero .page-tag { color: var(--wok-red); margin: 0 0 0.3rem; font-size: 0.7rem; letter-spacing: 0.2em; font-weight: 800; }
     .kd-hero .page-title { color: var(--wok-ink); margin: 0; font-size: 2.6rem !important; line-height: 1; }
     .kd-hero .wok-branch { height: 72%; }
-    .kd-back { flex: none; width: 42px; height: 42px; margin-bottom: 0.5rem; border-radius: 50%; border: 1.5px solid var(--wok-ink);
-      background: #fff; color: var(--wok-ink); display: inline-flex; align-items: center; justify-content: center;
-      font-size: 1.15rem; font-weight: 700; text-decoration: none; line-height: 1; }
-    .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: var(--wok-shadow); }
+    /* Back to the wall: the first chip in the toolbar, where your hands are. */
+    .kd-back { flex: none; display: inline-flex; align-items: center; gap: 0.35rem; height: 34px; padding: 0 0.85rem 0 0.7rem;
+      border-radius: 999px; border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink);
+      font-size: 0.8rem; font-weight: 700; text-decoration: none; line-height: 1; white-space: nowrap;
+      box-shadow: 2px 2px 0 var(--wok-red); }
+    .kd-back .jp { color: var(--wok-red); font-family: 'Noto Serif JP', serif; }
+    .kd-back:hover { text-decoration: none; transform: translate(-1px,-1px); box-shadow: 3px 3px 0 var(--wok-red); }
     .drill-page { padding-top: 0.5rem; }
 
     /* toolbar */
@@ -290,10 +300,9 @@
     .drill-missed-chip .jp { color: var(--wok-red); font-weight: 700; }
 
     @media (max-width: 540px) {
-      .kd-hero { min-height: 150px; padding: 1.2rem 0 1.2rem; }
-      .kd-hero .page-title { font-size: 2rem !important; }
-      .kd-hero .wok-seal { width: 48px; height: 48px; font-size: 1.8rem; }
-      .kd-hero-inner { padding: 0 1.25rem; }
+      .kd-hero { height: 56vw; }
+      .kitchen-photo { background-position: 48% 20%; }
+      .kitchen-photo::after { height: 60px; }
       .kd-toolbar-right { margin-left: 0; width: 100%; }
       .kd-round { margin-left: 0; width: 100%; }
     }
@@ -343,12 +352,10 @@
   </nav>
 
   <div id="page-kanji-drill" class="page active">
-    <!-- The same world as the wall: mountains and sakura, injected by wok-theme.js. -->
+    <!-- The kitchen painting; its lettering is the title (the row below is for screen readers). -->
     <div class="wok-hero kd-hero">
-      <div class="wok-sky" data-wok-sky></div>
+      <div class="wok-sky kitchen-photo" aria-hidden="true"></div>
       <div class="kd-hero-inner">
-        <a class="kd-back" href="/kanji" aria-label="Back to the wall" title="Back to the wall"
-           data-i18n-label="kd_back_wall_btn" data-i18n-title="kd_back_wall_btn">&larr;</a>
         <div class="wok-title-row">
           <span class="wok-seal jp" aria-hidden="true">壁</span>
           <div class="wok-title-text">
@@ -364,6 +371,8 @@
 
       <!-- Toolbar: what you're practising. Mode · how you answer · which kanji. -->
       <div class="kd-toolbar drill-controls" role="group" aria-label="Drill settings">
+        <a class="kd-back" href="/kanji" aria-label="Back to the wall" title="Back to the wall"
+           data-i18n-label="kd_back_wall_btn" data-i18n-title="kd_back_wall_btn">&larr; <span class="jp" aria-hidden="true">壁</span><span data-i18n="kd_back_chip">Wall</span></a>
         <div class="kd-seg" role="group" aria-label="Mode">
           <button type="button" class="kd-seg-btn mode-chip on" data-mode="kanji2keyword" onclick="setMode('kanji2keyword')" data-i18n="mode_k2w">Kanji → Keyword</button>
           <button type="button" class="kd-seg-btn mode-chip" data-mode="keyword2kanji" onclick="setMode('keyword2kanji')" data-i18n="mode_w2k">Keyword → Kanji</button>
