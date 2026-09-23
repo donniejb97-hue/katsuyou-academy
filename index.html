@@ -92,12 +92,18 @@
        in the Word Book's ink-and-red frame. The demos moved to the band
        beneath so the painting is not covered. -------------------------- */
     .hero {
-      background: #f1ebdc url(hero-art.jpg) center 42% / cover no-repeat;
-      padding: 3rem 2rem 3.5rem; min-height: 540px;
+      /* Shown at the painting's own proportions, edge to edge, so nothing is
+         cropped and nothing is blown up: the hero is exactly as tall as the
+         picture is at this width. The copy card hangs over the bottom edge
+         into the dark band beneath. */
+      background: #f1ebdc url(hero-art.jpg) center top / 100% auto no-repeat;
+      aspect-ratio: 1344 / 376; min-height: 0;
+      padding: 2rem 2rem 0; overflow: visible; align-items: flex-start;
     }
     .hero::before { display: none; }
     .hero-grid { grid-template-columns: 1fr; }
     .hero-copy {
+      margin-bottom: -150px; position: relative; z-index: 2;
       text-align: left; max-width: 540px; background: rgba(244,239,228,0.9);
       border: 2px solid #1a1512; border-radius: 18px; box-shadow: 6px 6px 0 #c8392b;
       padding: 2rem 2.2rem; backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
@@ -110,12 +116,13 @@
     .hero-meta { justify-content: flex-start; }
     .hero-meta div { color: #4a423c; }
     .hero-meta b { color: #c8392b; }
-    .demo-band { background: linear-gradient(135deg, var(--ink) 0%, var(--ink-light) 100%); padding: 2.5rem 2rem; }
+    .demo-band { background: linear-gradient(135deg, var(--ink) 0%, var(--ink-light) 100%); padding: calc(150px + 2.5rem) 2rem 2.5rem; }
     .demo-band .hero-demo { max-width: 820px; margin: 0 auto; }
     @media (max-width: 760px) {
       /* the nav is two rows tall on a phone and overhangs .page's 100px */
-      .hero { padding: 1.6rem 1rem 2rem; margin-top: 12px; min-height: 0; background-position: 60% 40%; }
-      .hero-copy { padding: 1.5rem 1.3rem; }
+      /* a phone is too narrow for the whole painting; here it fills behind the card */
+      .hero { aspect-ratio: auto; padding: 1.6rem 1rem 2rem; margin-top: 12px; background-size: cover; background-position: 60% 40%; }
+      .hero-copy { margin-bottom: 0; padding: 1.5rem 1.3rem; }
       .demo-band { padding: 1.6rem 1rem; }
     }
   </style>
