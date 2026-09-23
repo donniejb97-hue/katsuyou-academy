@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="wok-theme.css">
+  <link rel="stylesheet" href="howto.css">
   <style>
     .drill-page { max-width: 800px; margin: 0 auto; padding: 2rem; }
     .drill-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
@@ -327,7 +328,7 @@
         <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
         <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
         <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
-        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">The WOK</a>
+        <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">The WoK</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
         <select id="lang-select" class="lang-select" aria-label="Language" onchange="setLang(this.value)">
@@ -358,6 +359,7 @@
       </div>
     </div>
 
+    <div data-howto="kit" data-howto-seal="竈" data-howto-anchor=".drill-page"></div>
     <div class="drill-page">
 
       <!-- Toolbar: what you're practising. Mode · how you answer · which kanji. -->
@@ -447,6 +449,7 @@
 
   <script src="kanji-progress.js"></script>
   <script src="wok-theme.js"></script>
+  <script src="howto.js"></script>
   <script src="i18n.js"></script>
   <script src="app.i18n.js"></script>
   <script src="app.js"></script>
