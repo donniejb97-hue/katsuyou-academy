@@ -321,11 +321,22 @@
     if (!l) { try { l = localStorage.getItem('katsuyoLang') || 'en'; } catch (e) { l = 'en'; } }
     return /^(en|de|fr|zh|ja)$/.test(l) ? l : 'en';
   }
+  // Romaji is for the eye, not the ear: "食べる (taberu)" read aloud says the
+  // word twice, once by the Japanese voice and once mangled by the other. A
+  // parenthesis is romaji when every word in it is a chain of Japanese
+  // syllables — "taberu", "tabemasu ka" pass; "to eat", "means" do not.
+  var ROMAJI_WORD = /^(?:(?:kk|ss|tt|pp|gg|zz|jj|dd|bb|mm|tc|ts)?(?:ky|gy|sh|ch|ny|hy|my|ry|by|py|ts|dz|[ksthfmyrwgzjdbpn])?[aiueoāīūēōâîûêô]|n['’]?)+$/i;
+  function isRomaji(s) {
+    var words = s.replace(/[.,!?~〜…]/g, ' ').trim().split(/\s+/);
+    return words.length > 0 && words.every(function (w) { return ROMAJI_WORD.test(w); });
+  }
+  var JA_THEN_PAREN = /([぀-ヿ一-鿿々〆ー「-』][぀-ヿ一-鿿々〆ー「-』\s、。！？]*?)\s*[(（]([^()（）\n]+)[)）]/g;
   function plainForSpeech(text) {
     // 食べる[たべる]: a Japanese voice gets the reading, any other voice the word.
     var ja = siteLang() === 'ja';
     return String(text || '')
       .replace(/([^\s\[\]]+)\[([^\]]+)\]/g, ja ? '$2' : '$1')
+      .replace(JA_THEN_PAREN, function (m, jp, inner) { return isRomaji(inner) ? jp : m; })
       .replace(/`([^`\n]+)`/g, '$1')
       .replace(/\*\*([^*\n]+)\*\*/g, '$1')
       .replace(/(^|[^*\w])\*([^*\n]+)\*(?![*\w])/g, '$1$2')
