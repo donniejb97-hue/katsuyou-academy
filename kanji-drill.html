@@ -513,10 +513,27 @@
     }
 
     // "SUN ・ DAY ・ JAPAN" → ['sun', 'day', 'japan']
+    // Everything that counts as typing the keyword. The KLC keywords carry
+    // editorial marks — "(TO) REST", "FORM[ULA]", "TO THE … OF", "AHEAD [of]",
+    // "LINE [of print]" — that nobody should have to reproduce, so each part
+    // is accepted in every sensible reading: with the bracketed bit, without
+    // it, and with all punctuation ignored. "rest", "to rest", "form",
+    // "formula", "to the of", "by means of", "line", "line of print" all pass.
+    function norm(t) {
+      return String(t).toLowerCase().replace(/…/g, ' ').replace(/[^a-z0-9\u00c0-\u024f\s-]/g, ' ')
+        .replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+    }
     function keywordParts(item) {
-      return item.keyword.split('・').map(function (p) {
-        return p.trim().toLowerCase();
-      }).filter(Boolean);
+      var out = {}, list = [];
+      function add(t) { t = norm(t); if (t && !out[t]) { out[t] = 1; list.push(t); } }
+      item.keyword.split(/・|,/).forEach(function (part) {
+        part = part.trim();
+        if (!part) return;
+        add(part);                                             // as written, punctuation ignored
+        add(part.replace(/\s*[\[(][^\])]*[\])]\s*/g, ' '));   // without the bracketed bits
+        add(part.replace(/[\[\]()]/g, ''));                    // with them, as plain words
+      });
+      return list;
     }
 
     function primaryKeyword(item) {
@@ -704,7 +721,7 @@
     function checkDrillAnswer() {
       if (state.answered || state.mode !== 'kanji2keyword') return;
       var input = $('drill-input');
-      var val = input.value.trim().toLowerCase().replace(/\s+/g, ' ').replace(/\.$/, '');
+      var val = norm(input.value);
       if (!val) return;
       var item = state.current.item;
       var right = keywordParts(item).indexOf(val) !== -1;
