@@ -169,17 +169,36 @@
       text-shadow: 0 0 3px #fff, 0 0 8px #fff, 0 0 16px #fff; }
     .kd-hero .page-title { color: var(--wok-ink); margin: 0; font-size: 2.6rem !important; line-height: 1;
       text-shadow: 0 0 3px #fff, 0 0 8px #fff, 0 0 18px #fff, 0 0 32px #fff; }
-    /* The Kanji Kitchen logo hangs in the right margin beside the card, where
-       the room shows through. It needs a margin to hang in, so on narrower
-       screens it is not drawn and the seal + title on the wall do the job. */
-    #page-kanji-drill { position: relative; }
-    .kd-logo { display: none; }
+    /* The shop sign: an iron bracket fixed to the right edge of the page, with
+       a wooden board carrying the Kanji Kitchen logo. Sized in em off one
+       font-size, so the whole sign scales with the margin it hangs in; below
+       ~1500px there is no margin for it, so it is not drawn and the seal +
+       title on the wall do the job instead. */
+    .kk-sign { display: none; }
     @media (min-width: 1500px) {
-      .kd-logo { display: block; position: absolute; z-index: 3; pointer-events: none;
-        left: calc(50% + 440px); top: calc(var(--kd-eye) + 395px); width: min(320px, calc(50vw - 560px)); height: auto;
-        filter: drop-shadow(0 0 10px rgba(255,255,255,0.85)); }
+      .wok-hero.kd-hero > .kk-sign { display: block; position: absolute; z-index: 4; pointer-events: none;
+        top: 10vw; right: 0; font-size: clamp(11px, calc((50vw - 440px) / 25), 20px);
+        width: 25em; height: 18.75em; }
       .wok-hero.kd-hero > .kd-hero-inner .wok-title-row { visibility: hidden; }
     }
+    .kk-sign i { position: absolute; display: block; }
+    .kk-sign-wall { right: 0; top: 0; width: 1.5em; height: 5.6em; border-radius: 4px 0 0 4px;
+      background: linear-gradient(90deg, #3b2a1d, #5b4130); }
+    .kk-sign-arm { right: 1.25em; top: 1.6em; width: 22.5em; height: 0.62em; border-radius: 0.31em;
+      background: linear-gradient(#4a4a4a, #1f1f1f); box-shadow: 0 2px 3px rgba(0,0,0,0.3); }
+    .kk-sign-rope { top: 2.1em; width: 3px; height: 1.9em; border-radius: 2px; background: linear-gradient(#6d5238, #4a3524); }
+    .kk-sign-rope::before { content: ""; position: absolute; left: -4px; top: -5px; width: 11px; height: 11px; border-radius: 50%; background: #3b2a1d; }
+    .kk-sign-rope.is-l { left: 3.75em; } .kk-sign-rope.is-r { left: 18.1em; }
+    .kk-sign-board { position: absolute; top: 3.9em; left: 1.25em; width: 20em; height: 11.9em; box-sizing: border-box;
+      padding: 0.7em; border-radius: 0.75em; border: 3px solid #2a1b12; box-shadow: 0 10px 18px rgba(43,35,32,0.35);
+      background:
+        repeating-linear-gradient(92deg, rgba(0,0,0,0.05) 0 2px, transparent 2px 9px),
+        repeating-linear-gradient(88deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 13px),
+        linear-gradient(180deg, #8a5a36, #6b4228 55%, #5a3620); }
+    .kk-sign-panel { width: 100%; height: 100%; border-radius: 0.5em; background: #f6eedc;
+      box-shadow: inset 0 0 0 2px #c9b28c, inset 0 0 18px rgba(120,80,40,0.2);
+      display: flex; align-items: center; justify-content: center; }
+    .kk-sign-panel img { width: 90%; height: auto; }
     /* the footer follows the paper directly, with no strip of page background between */
     #page-kanji-drill + .site-footer { margin-top: 0; }
     /* Back to the wall: the first chip in the toolbar, where your hands are. */
@@ -376,9 +395,13 @@
 
   <div id="page-kanji-drill" class="page active">
     <!-- The kitchen painting, with the page's seal and title on its wall. -->
-    <img class="kd-logo" src="kitchen-logo.png" alt="" aria-hidden="true" width="1320" height="766">
     <div class="wok-hero kd-hero">
       <div class="wok-sky kitchen-photo" aria-hidden="true"></div>
+      <div class="kk-sign" aria-hidden="true">
+        <i class="kk-sign-wall"></i><i class="kk-sign-arm"></i>
+        <i class="kk-sign-rope is-l"></i><i class="kk-sign-rope is-r"></i>
+        <div class="kk-sign-board"><div class="kk-sign-panel"><img src="kitchen-logo.png" alt="" width="1320" height="766"></div></div>
+      </div>
       <div class="kd-hero-inner">
         <div class="wok-title-row">
           <span class="wok-seal jp" aria-hidden="true">壁</span>
