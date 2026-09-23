@@ -189,6 +189,11 @@
     .kd-score { font-size: 0.82rem; font-weight: 700; color: var(--wok-ink); }
     .kd-score .drill-score-label { font-size: 0.82rem; text-transform: none; letter-spacing: 0; opacity: 1; color: inherit; font-weight: 700; }
     .kd-score.is-red { color: var(--wok-red); }
+    .kd-score.is-mute { color: var(--wok-mute); }
+    .drill-missed-chip .miss-count { display: inline-block; margin-left: 0.45rem; padding: 0.05rem 0.45rem; border-radius: 999px;
+      background: var(--wok-red); color: #fff; font-size: 0.74rem; font-weight: 800; vertical-align: middle; }
+    .drill-missed-chip.hot { background: var(--wok-red-wash); }
+    .kd-pip.is-skip { background: #fff; border: 1.5px dashed var(--wok-faint); color: var(--wok-faint); }
     .kd-score b { font-weight: 800; }
     .kd-reset { margin-left: auto; border: 0; background: none; font-family: inherit; font-size: 0.78rem;
       font-weight: 700; color: var(--wok-red-dark); text-decoration: underline; cursor: pointer; padding: 0.2rem 0; }
@@ -271,6 +276,7 @@
     .kd-tile.t-solid { background: var(--stamp, var(--wok-ink)); color: var(--stamp-fg, #fff); box-shadow: var(--wok-shadow);
       transform: rotate(var(--tilt, -2deg)); }
     .kd-tile.t-shaky { background: #fff; color: var(--wok-red); border: 2px solid var(--wok-red); box-shadow: var(--wok-shadow); }
+    .kd-tile.t-new { background: var(--wok-paper-2); color: var(--wok-faint); border: 1.5px solid var(--wok-line); }
     .kd-tile.t-shaky::after { content: ""; position: absolute; top: -5px; right: -5px; width: 10px; height: 10px;
       border-radius: 50%; background: var(--wok-red); border: 2px solid #fff; }
     .kd-done-acts a, .kd-done-acts button { border: 1.5px solid var(--wok-ink); }
@@ -388,6 +394,7 @@
           <span class="kd-score"><span class="drill-score-label" data-i18n="streak">Streak</span> <b id="drill-streak">0</b></span>
           <span id="drill-total" hidden>0</span>
           <span class="kd-score is-red" id="kd-best-wrap"><span class="drill-score-label" data-i18n="best">Best</span> <b id="drill-best">0</b></span>
+          <span class="kd-score is-mute"><span class="drill-score-label" data-i18n="kd_skipped">Skipped</span> <b id="drill-skipped">0</b></span>
         </div>
         <div class="kd-round" id="kd-round" hidden>
           <div class="kd-strip" id="kd-strip"></div>
@@ -463,7 +470,9 @@
       current: null,
       answered: false,
       retried: false,
-      missed: {},         // key: kanji char → item
+      missed: {},         // key: kanji char → { item, count, seq }
+      missSeq: 0,
+      skipped: 0,
 
       // Set only when the wall handed this page a list. When it is null the
       // drill behaves exactly as it always did: endless, range-driven.
@@ -736,7 +745,16 @@
           else b.classList.add('dim');
         });
       }
-      record(false);
+      // A skip is not a miss. Nothing is recorded — not on the score, not on
+      // the wall, not in the missed list — and the streak is left alone. It
+      // just counts as skipped and moves on.
+      state.skipped++;
+      if (state.queue) {
+        state.qResult[state.qIdx] = null;   // a blank pip, neither ✓ nor ×
+        state.qIdx++;
+        paintStrip();
+      }
+      renderScores();
       showFeedback(false, true);
     }
 
@@ -764,7 +782,8 @@
       } else {
         state.streak = 0;
         var item = state.current.item;
-        state.missed[item.kanji] = item;
+        var prev = state.missed[item.kanji];
+        state.missed[item.kanji] = { item: item, count: prev ? prev.count + 1 : 1, seq: ++state.missSeq };
         renderMissed();
       }
       renderScores();
@@ -773,9 +792,9 @@
     function showFeedback(right, skipped) {
       var item = state.current.item;
       var fb = $('drill-feedback');
-      fb.className = 'drill-feedback show ' + (right ? 'good' : 'bad');
+      fb.className = 'drill-feedback show ' + (right ? 'good' : (skipped ? 'warn' : 'bad'));
       fb.style.setProperty('--stamp', KA_Kanji.colour(item.id));
-      var head = right ? '⭕ Correct!' : (skipped ? 'Answer:' : '❌ Not quite — the answer is:');
+      var head = right ? '⭕ Correct!' : (skipped ? 'Skipped — the answer is:' : '❌ Not quite — the answer is:');
 
       var on = (item.onyomi && item.onyomi.length) ? item.onyomi.join(' ・ ') : '—';
       var kun = item.kunyomi ? item.kunyomi : '—';
@@ -814,6 +833,7 @@
       $('drill-correct').textContent = state.correct;
       $('drill-total').textContent = state.total;
       $('drill-wrong').textContent = state.total - state.correct;
+      $('drill-skipped').textContent = state.skipped;
       $('drill-streak').textContent = state.streak;
       $('drill-best').textContent = state.best;
     }
@@ -825,12 +845,16 @@
       box.className = 'drill-missed show';
       var list = $('drill-missed-list');
       list.innerHTML = '';
+      // Newest miss first, like the kana drill; a kanji missed more than once
+      // carries its count and turns "hot".
+      keys.sort(function (a, b) { return state.missed[b].seq - state.missed[a].seq; });
       keys.forEach(function (ch) {
-        var item = state.missed[ch];
+        var rec = state.missed[ch], item = rec.item;
         var chip = document.createElement('span');
-        chip.className = 'drill-missed-chip';
+        chip.className = 'drill-missed-chip' + (rec.count > 1 ? ' hot' : '');
         chip.title = 'ON: ' + ((item.onyomi || []).join('・') || '—') + '  KUN: ' + (item.kunyomi || '—');
-        chip.innerHTML = '<span class="jp">' + item.kanji + '</span><small>' + item.keyword + ' · #' + item.id + '</small>';
+        chip.innerHTML = '<span class="jp">' + item.kanji + '</span><small>' + item.keyword + ' · #' + item.id + '</small>' +
+          (rec.count > 1 ? '<span class="miss-count" aria-label="missed ' + rec.count + ' times">×' + rec.count + '</span>' : '');
         list.appendChild(chip);
       });
     }
@@ -864,14 +888,14 @@
       for (var i = 0; i < state.queue.length; i++) {
         var pip = document.createElement('span');
         pip.className = 'kd-pip' +
-          (i < state.qIdx ? (state.qResult[i] ? ' is-right' : ' is-wrong')
+          (i < state.qIdx ? (state.qResult[i] === null ? ' is-skip' : (state.qResult[i] ? ' is-right' : ' is-wrong'))
                           : (i === state.qIdx ? ' is-now' : ''));
         // A right answer stamps its pip in that kanji's own colour — the same
         // one it wears on the wall — so the strip is a preview of the wall.
         pip.style.setProperty('--stamp', KA_Kanji.colour(state.queue[i]));
         pip.style.setProperty('--stamp-fg', KA_Kanji.textOn(state.queue[i]));
         pip.style.setProperty('--tilt', KA_Kanji.tilt(state.queue[i]) + 'deg');
-        if (i < state.qIdx) pip.textContent = state.qResult[i] ? '\u2713' : '\u00d7';
+        if (i < state.qIdx) pip.textContent = state.qResult[i] === null ? '\u2013' : (state.qResult[i] ? '\u2713' : '\u00d7');
         strip.appendChild(pip);
       }
       var right = state.qResult.filter(Boolean).length;
@@ -926,7 +950,10 @@
         return '<span class="kd-tile t-solid" style="--stamp:' + KA_Kanji.colour(k.id) + ';--stamp-fg:' + KA_Kanji.textOn(k.id) +
                ';--tilt:' + KA_Kanji.tilt(k.id) + 'deg">' + k.kanji + '</span>';
       }).concat(stillShaky.map(function (k) {
-        return '<span class="kd-tile t-shaky">' + k.kanji + '</span>';
+        // A skipped, never-answered kanji is not shaky — it is still blank paper.
+        return KA_Kanji.status(k.id) === 'new'
+          ? '<span class="kd-tile t-new">' + k.kanji + '</span>'
+          : '<span class="kd-tile t-shaky">' + k.kanji + '</span>';
       })).join('');
 
       var done = $('kd-done');
@@ -1072,8 +1099,8 @@
     window.skipDrill = skipDrill;
 
     window.resetDrill = function () {
-      state.correct = 0; state.total = 0; state.streak = 0;
-      state.missed = {};
+      state.correct = 0; state.total = 0; state.streak = 0; state.skipped = 0;
+      state.missed = {}; state.missSeq = 0;
       renderScores();
       renderMissed();
       newQuestion();
