@@ -9,10 +9,11 @@
   <meta name="description" content="Build your Japanese vocabulary with interactive flashcards organized by category and JLPT level.">
   <link rel="canonical" href="https://katsuyoacademy.com/vocabulary">
   <link rel="icon" type="image/png" href="open_book.png">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&family=Klee+One:wght@600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="words-theme.css">
   <link rel="stylesheet" href="night-theme.css">
+  <link rel="stylesheet" href="notebook.css">
 </head>
 <body data-page="vocabulary">
 
@@ -289,6 +290,9 @@
       <!-- kept for app.js -->
       <span id="cards-studied-vocab" style="display:none;">0</span>
       <span id="total-cards-vocab" style="display:none;">941</span>
+
+      <!-- How it works: the 学生 notebook (notebook.js places it) -->
+      <div data-notebook="owl" data-notebook-title="wb_title" data-notebook-anchor=".nt-line" data-notebook-after="#wb-send"></div>
 
       <div class="wd-quiz-link"><a href="/vocabquiz" data-i18n="vocab_try_quiz">Quiz yourself on these words →</a></div>
     </div>
@@ -610,6 +614,7 @@
   <script src="romaji.js"></script>
   <script src="words-theme.js"></script>
   <script src="app.js"></script>
+  <script src="notebook.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
 
