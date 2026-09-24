@@ -116,7 +116,10 @@
         #page-vocabulary .wd-search-wrap.is-open .vocab-search { width: 100%; }
         #page-vocabulary .wd-hero-right:has(.is-open) { flex: 1 1 100%; }
         /* closed on a phone, the glass sits at the end of the title row instead of on a row of its own */
-        #page-vocabulary .wd-hero-right:not(:has(.is-open)) { position: absolute; right: 0; bottom: 2px; }
+        /* on a phone the Night Shift button and the glass get a row of their own under the title;
+           while searching, the box takes the whole row */
+        #page-vocabulary .wd-hero-right { flex: 1 1 100%; margin-left: 0; }
+        #page-vocabulary .wd-hero-right:has(.is-open) .nt-go-shift { display: none; }
         #page-vocabulary .vocab-search-hit { grid-template-columns: 1fr 1fr; }
         #page-vocabulary .vs-en { grid-column: 1 / -1; }
       }
@@ -161,6 +164,7 @@
           <h1 class="wd-title" data-i18n="wb_title">Night Owl</h1>
         </div>
         <div class="wd-hero-right">
+          <a class="nt-go-shift" href="/vocabquiz" data-i18n-title="nt_take" title="Quiz them in 学生 Night Shift"><span class="jp">学生</span> Night Shift <span aria-hidden="true">→</span></a>
           <span class="wd-sub" id="wb-sub"></span>
           <div class="wd-search-wrap" id="wb-search-wrap">
             <button type="button" class="wd-search-btn" id="wb-search-btn" data-i18n-title="wb_search_btn" title="Search (/)" aria-controls="vocab-search" aria-expanded="false">

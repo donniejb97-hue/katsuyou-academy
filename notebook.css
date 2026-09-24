@@ -123,3 +123,6 @@
 .nb2 button:focus-visible { outline: 2px solid #f3c86b; outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) { .nb2-leaf, .nb2-book { transition: none; } .nb2-wheel::after { animation: none; } }
+/* a narrow cover keeps "How it works · 使い方" on one line */
+.nb2.is-single .nb2-label small { letter-spacing: 0.06em; white-space: nowrap; }
+.nb2.is-single .nb2-label { padding: 10px 10px; }

@@ -341,3 +341,21 @@
   #page-vocabulary.wd-page .nt-sky.is-dense .nt-bld { grid-template-columns: repeat(var(--cols, 3), 4px); gap: 1px; padding: 3px 2px 2px; }
   #page-vocabulary.wd-page .nt-sky.is-dense .nt-win { width: 4px; height: 5px; }
 }
+
+/* The paintings fade into a flat night colour, but the page underneath carried
+   the Word Book's paper grain, a shade lighter, so a line showed where the
+   painting ended. The night pages are flat all the way down. */
+#page-vocabulary.wd-page, #page-vocabquiz.wd-page { background-image: none; }
+
+/* ---- Night Owl: the way over to Night Shift, beside the magnifying glass
+   (the same height as the "← 学生 Night Owl" button on Night Shift) ---- */
+#page-vocabulary.wd-page .nt-go-shift {
+  display: inline-flex; align-items: center; gap: 0.35rem; height: 34px; padding: 0 0.75rem 0 0.85rem; border-radius: 999px;
+  background: rgba(20, 18, 28, 0.55); border: 1.5px solid #cfd6e4; color: #fff; font: 700 0.8rem 'Outfit', sans-serif;
+  text-decoration: none; white-space: nowrap; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: border-color 0.15s;
+}
+#page-vocabulary.wd-page .nt-go-shift .jp { color: var(--nt-gold); font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+#page-vocabulary.wd-page .nt-go-shift:hover, #page-vocabulary.wd-page .nt-go-shift:focus-visible { border-color: var(--nt-gold); outline: none; }
+#page-vocabulary.wd-page .wd-hero-right { gap: 0.6rem; }
+/* while the search box is open it takes the button's place */
+#page-vocabulary.wd-page .wd-hero-right:has(.is-open) .nt-go-shift { display: none; }
