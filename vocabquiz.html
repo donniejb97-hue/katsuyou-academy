@@ -190,19 +190,25 @@
          wider screens see more of the street, and the quiz rides up over the
          bottom of the painting, where it fades into the night. ---- */
       #page-vocabquiz.wd-page { padding-top: 0; background-color: #141620; }
-      #page-vocabquiz .vq-night { position: relative; margin-top: 75px;   /* just under the fixed nav */
-        height: clamp(320px, 36.8vw, 760px);
-        background: #141620 url(quiz-hero.jpg) center bottom / cover no-repeat; }
+      /* Eye level: the quiz always starts the same distance under the nav, like
+         Night Owl. The painting is drawn a little larger and anchored left, which
+         moves the machines and the cat out to the right of the quiz, and on wide
+         screens it is lifted (its top slides under the nav) so the machines'
+         lit displays stay above the quiz. */
+      #page-vocabquiz { --nt-h: clamp(320px, 36.8vw, 760px); --nt-lift: clamp(0px, 21.6vw - 260px, 200px); --nt-eye: 96px; }
+      #page-vocabquiz .vq-night { position: relative; margin-top: calc(75px - var(--nt-lift));
+        height: var(--nt-h);
+        background: #141620 url(quiz-hero.jpg) 0% 100% / 112% auto no-repeat; }
       #page-vocabquiz .vq-night::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
         height: clamp(80px, 7vw, 170px); background: linear-gradient(rgba(20,22,32,0), #141620); }
-      #page-vocabquiz .wd-wrap { position: relative; z-index: 2; margin-top: calc(-1 * clamp(150px, 15vw, 330px)); }
+      #page-vocabquiz .wd-wrap { position: relative; z-index: 2; margin-top: calc(var(--nt-eye) + var(--nt-lift) - var(--nt-h)); }
       #page-vocabquiz .wd-title, #page-vocabquiz .wd-eyebrow { text-shadow: 0 1px 3px #000, 0 2px 14px rgba(0,0,0,0.9); }
       #page-vocabquiz .wd-eyebrow { color: #ff8f80; }
       #page-vocabquiz .wd-hero-right { background: rgba(20,22,32,0.72); padding: 6px 10px; border-radius: 14px;
         -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
       #page-vocabquiz .wd-hero-right:empty, #page-vocabquiz .wd-hero-right:has(.wd-sub:empty:only-child) { background: none; padding: 0; }
       @media (max-width: 640px) {
-        #page-vocabquiz .vq-night { margin-top: 109px; height: 62vw; background-position: 72% bottom; }
+        #page-vocabquiz .vq-night { margin-top: 109px; height: 62vw; background-size: cover; background-position: 72% bottom; }
         #page-vocabquiz .wd-wrap { margin-top: -24vw; }
       }
     </style>
@@ -218,31 +224,45 @@
           <div class="wd-eyebrow"><span data-i18n="vq_eyebrow">Vocabulary quiz</span> · 学生</div>
           <h1 class="wd-title" data-i18n="vq_title">Night Shift</h1>
         </div>
-        <div class="wd-hero-right"><span class="wd-sub" id="vq-round-n"></span></div>
+        <div class="wd-hero-right">
+          <a class="nt-back" href="/vocabulary" title="学生 Night Owl" aria-label="Back to 学生 Night Owl"
+             data-i18n-title="vq_to_cards" data-i18n-label="vq_to_cards">&larr; <span class="jp" aria-hidden="true">学生</span><span>Night Owl</span></a>
+        </div>
       </div>
 
-      <!-- what to ask, and the filters that narrow the deck -->
-      <div class="vq-toolbar" id="vq-bar">
-        <a class="nt-back" href="/vocabulary" title="学生 Night Owl" aria-label="Back to 学生 Night Owl"
-           data-i18n-title="vq_to_cards" data-i18n-label="vq_to_cards">&larr; <span class="jp" aria-hidden="true">学生</span><span>Night Owl</span></a>
-        <div class="vq-chips" id="vq-skill-chips"></div>
-        <button type="button" class="wd-chip is-quiet vq-bar-btn" id="vq-filter-btn"
-                aria-expanded="false" aria-controls="vq-filters">
-          <span data-i18n="vq_filters">Filters</span> <span class="chev">▾</span>
-        </button>
-      </div>
-      <span class="vq-bar-main" id="vq-bar-main"></span>
-      <div class="vq-filters" id="vq-filters" style="display:none;">
-        <div class="vq-prow">
-          <span class="vq-plabel" data-i18n="vq_row_deck">Deck</span>
-          <select id="vq-topic-select" class="vq-select" aria-label="Topic"></select>
-          <select id="vq-level-select" class="vq-select" aria-label="Level"></select>
+      <!-- quiz settings: one line saying what you are being quizzed on; Change
+           drops down the machine's panel (① ask me · ② which words · ③ serve) -->
+      <div class="nt-set" id="vq-bar">
+        <div class="nt-set-head">
+          <span class="nt-set-title"><span aria-hidden="true">⚙</span> <span data-i18n="nt_set_title">Quiz settings</span></span>
+          <span class="nt-set-sum" id="vq-set-sum" aria-live="polite"></span>
+          <span class="nt-set-lcd"><i id="vq-set-count">0</i><small data-i18n="nt_set_in">in the machine</small></span>
+          <button type="button" class="nt-set-btn" id="vq-filter-btn" aria-expanded="false" aria-controls="vq-filters">
+            <span class="nt-set-change" data-i18n="nt_set_change">Change</span><span class="nt-set-done" data-i18n="nt_set_done">Done</span>
+            <span class="chev" aria-hidden="true">▾</span>
+          </button>
         </div>
-        <div class="vq-prow">
-          <span class="vq-plabel" data-i18n="vq_row_serve">Serve</span>
-          <div class="vq-chips" id="vq-scope-chips"></div>
+        <div class="nt-set-body" id="vq-filters" style="display:none;">
+          <div class="nt-set-col">
+            <div class="nt-set-lbl"><span class="nt-set-n">1</span><span data-i18n="nt_set_ask">Ask me</span></div>
+            <div class="nt-set-note" data-i18n="nt_set_ask_note">What the machine asks you. Turn on one, two or all three.</div>
+            <div class="vq-chips nt-set-stack" id="vq-skill-chips"></div>
+          </div>
+          <div class="nt-set-col">
+            <div class="nt-set-lbl"><span class="nt-set-n">2</span><span data-i18n="nt_set_words">Which words</span></div>
+            <div class="nt-set-note" data-i18n="nt_set_words_note">Pick a topic or a JLPT level, or leave both on all.</div>
+            <div class="nt-set-stack">
+              <select id="vq-topic-select" class="vq-select" aria-label="Topic"></select>
+              <select id="vq-level-select" class="vq-select" aria-label="Level"></select>
+            </div>
+          </div>
+          <div class="nt-set-col">
+            <div class="nt-set-lbl"><span class="nt-set-n">3</span><span data-i18n="nt_set_serve">Serve</span></div>
+            <div class="nt-set-note" data-i18n="nt_set_serve_note">Which kinds of word come up: due for review, weak, learning or new. Leave them all on for a mix — missed words come back more often.</div>
+            <div class="vq-chips" id="vq-scope-chips"></div>
+          </div>
         </div>
-        <div class="vq-filters-note" data-i18n="vq_filters_note">Leave these alone and the quiz mixes the whole deck, bringing back what you've missed more often.</div>
+        <span class="vq-bar-main" id="vq-bar-main" hidden></span>
       </div>
 
       <!-- the machine: its display is the question, its keypad the answer,
@@ -302,7 +322,7 @@
         <div class="wd-stops-row nt-tray">
           <span class="nt-tray-lbl" data-i18n="nt_tray">tonight</span>
           <div class="wd-stops" id="vq-stops"></div>
-          <span class="nt-tray-n"><b id="vq-stop-label">1 / 10</b><small data-i18n="nt_cans">cans in the tray</small></span>
+          <span class="nt-tray-n"><em id="vq-round-n"></em><b id="vq-stop-label">1 / 10</b><small data-i18n="nt_cans">cans in the tray</small></span>
         </div>
       </div>
 
@@ -441,7 +461,27 @@
         if (act === 'owl' && window.KA_Words) KA_Words.sendToOwl(misses, box.__label);
       });
 
-      window.KA_VQPage = { onQuestion: onQuestion, onVerdict: onVerdict, onPaint: onPaint, onRoundDone: onRoundDone };
+      // ---- the settings line: ① what it asks · ② which words · ③ what it serves ----
+      var lastSet = null;
+      function onSettings(st) {
+        lastSet = st;
+        var sum = $('vq-set-sum'), lcd = $('vq-set-count');
+        if (lcd) lcd.textContent = st.inPlay;
+        if (!sum) return;
+        var SK = { meaning: ct('vq_skill_meaning', 'Meaning'), reading: ct('vq_skill_reading', 'Reading'), produce: ct('nt_sk_say', 'Say it') };
+        var SC = { due: ct('nt_sc_due', 'Due'), weak: ct('vq_scope_weak', 'Weak'), learning: ct('vq_scope_learning', 'Learning'), fresh: ct('vq_scope_new', 'New') };
+        var allSkills = st.skills.length === 3, allScopes = st.scopes.length === 4;
+        function part(n, text, narrowed) {
+          return '<span class="nt-set-part' + (narrowed ? ' is-narrow' : '') + '"><span class="nt-set-n">' + n + '</span><b>' + esc(text) + '</b></span>';
+        }
+        sum.innerHTML =
+          part(1, st.skills.map(function (k) { return SK[k]; }).join(' · '), !allSkills) +
+          part(2, st.topicName + ' · ' + st.levelName, !!(st.topic || st.level)) +
+          part(3, allScopes ? ct('nt_set_all', 'Everything') : st.scopes.map(function (k) { return SC[k]; }).join(' · '), !allScopes);
+      }
+      window.addEventListener('katsuyo:lang', function () { if (lastSet) onSettings(lastSet); });
+
+      window.KA_VQPage = { onQuestion: onQuestion, onVerdict: onVerdict, onPaint: onPaint, onRoundDone: onRoundDone, onSettings: onSettings };
     })();
   </script>
 

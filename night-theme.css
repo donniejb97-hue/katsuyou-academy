@@ -359,3 +359,83 @@
 #page-vocabulary.wd-page .wd-hero-right { gap: 0.6rem; }
 /* while the search box is open it takes the button's place */
 #page-vocabulary.wd-page .wd-hero-right:has(.is-open) .nt-go-shift { display: none; }
+
+/* ---- Night Shift: quiz settings. Closed, one line of the machine's panel says
+   what you are being quizzed on; Change drops the panel down:
+   ① Ask me · ② Which words · ③ Serve. ---- */
+#page-vocabquiz.wd-page .nt-set {
+  margin: 0.2rem 0 0.9rem; border-radius: 14px; overflow: hidden; color: #eef1f7;
+  background: linear-gradient(#20243a, #141725); border: 2px solid #3a4160;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+#page-vocabquiz.wd-page .nt-set-head { display: flex; align-items: center; gap: 0.9rem; padding: 7px 7px 7px 14px; }
+#page-vocabquiz.wd-page .nt-set-title { font: 700 0.82rem 'Outfit', sans-serif; white-space: nowrap; }
+#page-vocabquiz.wd-page .nt-set-sum { display: flex; align-items: center; gap: 0.9rem; min-width: 0; flex-wrap: wrap; }
+#page-vocabquiz.wd-page .nt-set-part { display: inline-flex; align-items: center; gap: 6px; font: 600 0.78rem 'Outfit', sans-serif; white-space: nowrap; }
+#page-vocabquiz.wd-page .nt-set-part b { font-weight: 600; }
+#page-vocabquiz.wd-page .nt-set-part.is-narrow b { color: var(--nt-gold); }   /* something is narrowing the deck */
+#page-vocabquiz.wd-page .nt-set-n {
+  display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; flex: 0 0 auto;
+  background: #e04a3b; color: #fff; font: 800 0.62rem/1 'Outfit', sans-serif;
+}
+#page-vocabquiz.wd-page .nt-set-lcd {
+  margin-left: auto; display: inline-flex; align-items: baseline; gap: 7px; white-space: nowrap;
+  background: #0b0d14; border: 1px solid #2c3250; border-radius: 8px; padding: 4px 10px;
+}
+#page-vocabquiz.wd-page .nt-set-lcd i { font: 700 1.1rem/1 'Courier New', monospace; font-style: normal; color: #7ef0b0; text-shadow: 0 0 8px rgba(126, 240, 176, 0.6); letter-spacing: 0.05em; }
+#page-vocabquiz.wd-page .nt-set-lcd small { font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: #9aa3b8; font-weight: 800; }
+#page-vocabquiz.wd-page .nt-set-btn {
+  flex: 0 0 auto; height: 32px; padding: 0 12px 0 14px; border-radius: 10px; border: 0; cursor: pointer; white-space: nowrap;
+  background: #e8ecf2; color: #1a1d2e; font: 700 0.8rem 'Outfit', sans-serif; box-shadow: 0 3px 0 #9aa3b8;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+#page-vocabquiz.wd-page .nt-set-btn:hover { background: #fff; }
+#page-vocabquiz.wd-page .nt-set-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #9aa3b8; }
+#page-vocabquiz.wd-page .nt-set-btn .chev { font-size: 0.7rem; transition: transform 0.15s; }
+#page-vocabquiz.wd-page .nt-set-done { display: none; }
+#page-vocabquiz.wd-page .nt-set.open .nt-set-change { display: none; }
+#page-vocabquiz.wd-page .nt-set.open .nt-set-done { display: inline; }
+#page-vocabquiz.wd-page .nt-set.open .nt-set-btn .chev { transform: rotate(180deg); }
+#page-vocabquiz.wd-page .nt-set.open .nt-set-head { border-bottom: 1px solid #2c3250; }
+#page-vocabquiz.wd-page .nt-set.open .nt-set-sum { display: none; }   /* the panel says it all */
+/* the dropped-down panel */
+#page-vocabquiz.wd-page .nt-set-body { display: grid; grid-template-columns: 1fr 1.1fr 1.3fr; }
+#page-vocabquiz.wd-page .nt-set-col { padding: 12px 14px 14px; min-width: 0; }
+#page-vocabquiz.wd-page .nt-set-col + .nt-set-col { border-left: 1px solid #2c3250; }
+#page-vocabquiz.wd-page .nt-set-lbl { display: flex; align-items: center; gap: 7px; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #9aa3b8; font-weight: 800; }
+#page-vocabquiz.wd-page .nt-set-note { font-size: 0.7rem; color: #9aa3b8; line-height: 1.35; margin: 5px 0 10px; }
+#page-vocabquiz.wd-page .nt-set-stack { display: flex; flex-direction: column; gap: 9px; align-items: flex-start; }
+#page-vocabquiz.wd-page .nt-set .vq-select {
+  max-width: 100%; height: 32px; padding: 0 0.8rem; border-radius: 10px; background: #2a2e40; border: 1.5px solid #454b63; color: #eef1f7; font-weight: 600;
+}
+#page-vocabquiz.wd-page .nt-set .vq-select:focus { border-color: var(--nt-gold); }
+#page-vocabquiz.wd-page .nt-set .vq-select option { background: #1a1d2e; color: #eef1f7; }
+/* the serve chips: machine buttons with a light, like the ask-me ones */
+#page-vocabquiz.wd-page #vq-scope-chips { gap: 9px; }
+#page-vocabquiz.wd-page #vq-scope-chips .vq-chip {
+  gap: 0.5rem; background: #2a2e40; color: #9aa3b8; border: 0; border-radius: 10px; padding: 0.5rem 0.9rem 0.5rem 0.7rem; box-shadow: 0 3px 0 #10121b;
+}
+#page-vocabquiz.wd-page #vq-scope-chips .vq-chip::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #4a5068; }
+#page-vocabquiz.wd-page #vq-scope-chips .vq-chip.on { background: #e8ecf2; color: #1a1d2e; box-shadow: 0 3px 0 #8f9bb0; }
+#page-vocabquiz.wd-page #vq-scope-chips .vq-chip.on::before { background: var(--nt-led-green); box-shadow: 0 0 8px var(--nt-led-green); }
+#page-vocabquiz.wd-page #vq-scope-chips .vq-chip.gold.on { background: #f3b43c; color: #241b12; box-shadow: 0 3px 0 #a87412; }
+#page-vocabquiz.wd-page #vq-scope-chips .vq-chip.gold.on::before { background: #fff3c4; box-shadow: 0 0 8px #fff; }
+#page-vocabquiz.wd-page #vq-skill-chips .vq-chip:not(.on) { background: #2a2e40; color: #9aa3b8; box-shadow: 0 3px 0 #10121b; }
+#page-vocabquiz.wd-page #vq-skill-chips .vq-chip:not(.on)::before { background: #4a5068; }
+/* the round's name now sits in the tray, over the count */
+#page-vocabquiz.wd-page .nt-tray-n em { display: block; font-style: normal; font-size: 0.62rem; letter-spacing: 0.08em; color: var(--nt-gold); font-weight: 700; white-space: nowrap; }
+#page-vocabquiz.wd-page .wd-hero-right { background: none; padding: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+@media (max-width: 900px) {
+  #page-vocabquiz.wd-page .nt-set-head { flex-wrap: wrap; gap: 0.6rem 0.9rem; }
+  #page-vocabquiz.wd-page .nt-set-sum { order: 5; flex: 1 1 100%; gap: 0.5rem 0.9rem; }
+  #page-vocabquiz.wd-page .nt-set-body { grid-template-columns: 1fr 1fr; }
+  #page-vocabquiz.wd-page .nt-set-col:nth-child(3) { grid-column: 1 / -1; border-left: 0; border-top: 1px solid #2c3250; }
+}
+@media (max-width: 560px) {
+  #page-vocabquiz.wd-page .nt-set-body { grid-template-columns: 1fr; }
+  #page-vocabquiz.wd-page .nt-set-col + .nt-set-col { border-left: 0; border-top: 1px solid #2c3250; }
+  #page-vocabquiz.wd-page .nt-set-stack { flex-direction: row; flex-wrap: wrap; }
+  #page-vocabquiz.wd-page .nt-set-lcd small { display: none; }
+}
+#page-vocabquiz.wd-page .vq-bar-main { display: none !important; }   /* the settings line replaces it */

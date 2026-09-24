@@ -10323,7 +10323,6 @@ function generateNewQuestion() {
       }
 
       var main = vqEl('vq-bar-main');
-      if (!main) return;
 
       // The closed line has to show, at a glance, whether anything is narrowing
       // the deck. Not doing that is how a pool of one card looked like a bug in
@@ -10347,7 +10346,15 @@ function generateNewQuestion() {
       if (c.due) bits.push(c.due + ' ' + ct('vq_due', 'due'));
       if (c.weak) bits.push(c.weak + ' ' + ct('vq_weak', 'weak'));
       if (bits.length) html += '<span class="muted"> \u00b7 ' + bits.join(' \u00b7 ') + '</span>';
-      main.innerHTML = html;
+      if (main) main.innerHTML = html;
+      // the page draws its own summary line from this
+      if (window.KA_VQPage && KA_VQPage.onSettings) KA_VQPage.onSettings({
+        skills: VQ_SKILLS.filter(function (k) { return vqSkillsOn[k]; }),
+        topic: topic ? parts[0] : '', level: vqLevel ? parts[1] : '',
+        topicName: parts[0], levelName: parts[1],
+        scopes: VQ_SCOPE_CHIPS.filter(function (x) { return vqScopes[x.key]; }).map(function (x) { return x.key; }),
+        inPlay: inPlay || c.total, due: c.due, weak: c.weak, narrowed: narrowed
+      });
     }
 
     function vqPaintStats() {
