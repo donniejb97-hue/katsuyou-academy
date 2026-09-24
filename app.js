@@ -4647,8 +4647,12 @@ function generateNewQuestion() {
                          `Common examples: 勉強する (to study), 仕事する (to work), 料理する (to cook).`;
           }
           
-          document.getElementById('feedback-explanation').innerHTML = explanation;
-          document.getElementById('feedback-explanation').style.display = 'block';
+          // As with a wrong conjugation, the explanation waits to be asked for.
+          const typeExpl = document.getElementById('feedback-explanation');
+          typeExpl.innerHTML = '<button type="button" id="conju-explain" class="conju-explain-btn">' +
+            ct('conju_explain_type', '📚 Why? Show me how to tell') + '</button>';
+          typeExpl.style.display = 'block';
+          document.getElementById('conju-explain').onclick = function () { typeExpl.innerHTML = explanation; };
           
           document.getElementById('check-btn').style.display = 'none';
           document.getElementById('skip-btn').style.display = 'none';
@@ -4822,19 +4826,6 @@ function generateNewQuestion() {
           document.getElementById('ai-examples').style.display = 'none';
           document.getElementById('ai-examples').innerHTML = '';
           
-          // Explain the mistake straight away from the rules, rather than
-          // making the learner watch a spinner while the API answers. The AI
-          // explanation replaces this in place when it arrives.
-          const explanationEl = document.getElementById('feedback-explanation');
-          explanationEl.innerHTML =
-            `<div style="background:#fff7ed;border-left:4px solid #f59e0b;padding:16px 20px;border-radius:8px;margin:10px 0;line-height:1.7;color:#1e293b;">
-               ${getErrorExplanation(userAnswer, correctAnswer, currentVerb, currentVerb.form)}
-             </div>
-             <div id="ai-pending" style="color:#94a3b8;font-size:0.85rem;margin-top:6px;">
-               ${ct('ai_thinking', 'Conju is writing a fuller explanation…')}
-             </div>`;
-          explanationEl.style.display = 'block';
-          
           // Store context for "Show More Examples" button
           window.currentQuestionContext = {
             verb: `${currentVerb.kanji} (${currentVerb.hiragana}) - ${currentVerb.meaning}`,
@@ -4842,62 +4833,83 @@ function generateNewQuestion() {
             correctAnswer: correctAnswer
           };
           
-          // Try to get enhanced AI feedback
-          const verbInfo = `${currentVerb.kanji} (${currentVerb.hiragana}) - ${currentVerb.meaning}`;
-          const formName = currentVerb.form.name;
-          const verbType = currentVerb.type;
-          const verbHiragana = currentVerb.hiragana;
+          // The explanation waits until it is asked for: a miss shows the
+          // answer, and Conju only explains when the learner wants it.
+          const explanationEl = document.getElementById('feedback-explanation');
+          explanationEl.innerHTML =
+            '<button type="button" id="conju-explain" class="conju-explain-btn">' +
+            ct('conju_explain', '📚 Why? Ask Conju to explain') + '</button>';
+          explanationEl.style.display = 'block';
+          document.getElementById('conju-explain').onclick = function () {
+            // Explain the mistake straight away from the rules, rather than
+            // making the learner watch a spinner while the API answers. The AI
+            // explanation replaces this in place when it arrives.
+            explanationEl.innerHTML =
+              `<div style="background:#fff7ed;border-left:4px solid #f59e0b;padding:16px 20px;border-radius:8px;margin:10px 0;line-height:1.7;color:#1e293b;">
+                 ${getErrorExplanation(userAnswer, correctAnswer, currentVerb, currentVerb.form)}
+               </div>
+               <div id="ai-pending" style="color:#94a3b8;font-size:0.85rem;margin-top:6px;">
+                 ${ct('ai_thinking', 'Conju is writing a fuller explanation…')}
+               </div>`;
+            explanationEl.style.display = 'block';
           
-          console.log('📝 Requesting AI feedback for:', verbInfo, formName);
+            // Try to get enhanced AI feedback
+            const verbInfo = `${currentVerb.kanji} (${currentVerb.hiragana}) - ${currentVerb.meaning}`;
+            const formName = currentVerb.form.name;
+            const verbType = currentVerb.type;
+            const verbHiragana = currentVerb.hiragana;
           
-          const feedbackToken = questionSerial;
-          getEnhancedAIFeedback(verbInfo, formName, userAnswer, correctAnswer, verbType, verbHiragana).then(aiFeedback => {
-            if (feedbackToken !== questionSerial) return;   // learner already moved on
-            let explanation;
+            console.log('📝 Requesting AI feedback for:', verbInfo, formName);
+          
+            const feedbackToken = questionSerial;
+            getEnhancedAIFeedback(verbInfo, formName, userAnswer, correctAnswer, verbType, verbHiragana).then(aiFeedback => {
+              if (feedbackToken !== questionSerial) return;   // learner already moved on
+              let explanation;
             
-            if (aiFeedback) {
-              // Use AI-generated feedback with enhanced styling
-              console.log('✅ Using AI feedback');
-              explanation = `<div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; border-radius: 8px; margin: 10px 0; line-height: 1.8; color: #1e293b;">
-                <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; color: #1e40af;">📚 Conju explains:</div>
-                ${aiFeedback.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}
-              </div>`;
+              if (aiFeedback) {
+                // Use AI-generated feedback with enhanced styling
+                console.log('✅ Using AI feedback');
+                explanation = `<div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; border-radius: 8px; margin: 10px 0; line-height: 1.8; color: #1e293b;">
+                  <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; color: #1e40af;">📚 Conju explains:</div>
+                  ${aiFeedback.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>')}
+                </div>`;
               
-              // Show "More Examples" button
-              document.getElementById('more-examples-btn').style.display = 'inline-block';
-            } else {
-              // The rule-based explanation is already on screen; keep it and
-              // just clear the "still writing" line.
-              console.log('⚠️ AI not available, keeping rule-based explanation');
+                // Show "More Examples" button
+                document.getElementById('more-examples-btn').style.display = 'inline-block';
+              } else {
+                // The rule-based explanation is already on screen; keep it and
+                // just clear the "still writing" line.
+                console.log('⚠️ AI not available, keeping rule-based explanation');
+                document.getElementById('more-examples-btn').style.display = 'none';
+                explanation = null;
+              }
+
+              const pending = document.getElementById('ai-pending');
+              if (pending) pending.remove();
+
+              // After 2-3 failures, show a worked example
+              const worked = (consecutiveFailures >= 2 && Math.random() < 0.7)
+                ? generateWorkedExample(currentVerb, currentVerb.form) : '';
+
+              if (explanation) {
+                explanationEl.innerHTML = explanation + worked;
+              } else if (worked) {
+                explanationEl.insertAdjacentHTML('beforeend', worked);
+              }
+            }).catch(error => {
+              // If AI fails completely, the rule-based explanation is already
+              // on screen — just drop the "still writing" line.
+              console.error('❌ AI feedback error:', error);
+              if (feedbackToken !== questionSerial) return;
+              const pending = document.getElementById('ai-pending');
+              if (pending) pending.remove();
+
+              if (consecutiveFailures >= 2 && Math.random() < 0.7) {
+                explanationEl.insertAdjacentHTML('beforeend', generateWorkedExample(currentVerb, currentVerb.form));
+              }
               document.getElementById('more-examples-btn').style.display = 'none';
-              explanation = null;
-            }
-
-            const pending = document.getElementById('ai-pending');
-            if (pending) pending.remove();
-
-            // After 2-3 failures, show a worked example
-            const worked = (consecutiveFailures >= 2 && Math.random() < 0.7)
-              ? generateWorkedExample(currentVerb, currentVerb.form) : '';
-
-            if (explanation) {
-              explanationEl.innerHTML = explanation + worked;
-            } else if (worked) {
-              explanationEl.insertAdjacentHTML('beforeend', worked);
-            }
-          }).catch(error => {
-            // If AI fails completely, the rule-based explanation is already
-            // on screen — just drop the "still writing" line.
-            console.error('❌ AI feedback error:', error);
-            if (feedbackToken !== questionSerial) return;
-            const pending = document.getElementById('ai-pending');
-            if (pending) pending.remove();
-
-            if (consecutiveFailures >= 2 && Math.random() < 0.7) {
-              explanationEl.insertAdjacentHTML('beforeend', generateWorkedExample(currentVerb, currentVerb.form));
-            }
-            document.getElementById('more-examples-btn').style.display = 'none';
-          });
+            });
+          };
         }
       }
     }
