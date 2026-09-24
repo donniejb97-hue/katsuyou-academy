@@ -5057,10 +5057,11 @@ function generateNewQuestion() {
       stopTypeQuizCountdown();
       // Track skipped questions. Skipping has never counted against your
       // score — it just breaks the streak and shows you the answer.
+      // Show me is free, like everywhere else on the site: no miss, and the
+      // streak carries on.
       stats.skipped++;
       session.skipped++;
       session.answered++;
-      streak = 0;
       updateScoreDisplay();
       
       // Get correct answer - check if this is a type identification quiz
@@ -5078,7 +5079,7 @@ function generateNewQuestion() {
       feedbackResult.style.background = 'linear-gradient(135deg, #fff8e1 0%, #fffde7 100%)';
       feedbackResult.style.borderLeftColor = '#f9a825';
       
-      document.getElementById('feedback-title').textContent = '⏭️ Skipped';
+      document.getElementById('feedback-title').textContent = ct('tv_shown_free', '👁 Shown — free, this one doesn’t count');
       document.getElementById('feedback-answer').textContent = correctAnswer;
       document.getElementById('feedback-explanation').innerHTML = 
         `<div style="color: var(--text-light); margin-top: 0.5rem;">` +

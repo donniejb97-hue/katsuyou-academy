@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="analytics.js"></script>
-  <title>The Deconjugator — take a conjugated verb back to its dictionary form | Katsuyō Academy</title>
+  <title>Rewind — take a conjugated verb back to its dictionary form | Katsuyō Academy</title>
   <meta name="description" content="The Conjugator in reverse. You get 食べさせられました, you give 食べる. Filter by verb type, form, level and how many layers deep the form is stacked.">
   <link rel="canonical" href="https://katsuyoacademy.com/deconjugator">
   <link rel="icon" type="image/png" href="open_book.png">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="tv-theme.css">
   <style>
     /* The page borrows the Conjugator's furniture — .conjugator-page,
        .form-select, .score-box, .check-btn, .feedback — so the two read as a
@@ -120,7 +121,7 @@
         <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
         <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">活用 TV</a>
         <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
         <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Kitchen</a>
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
@@ -142,40 +143,79 @@
     </div>
   </nav>
 
-  <div id="page-deconjugator" class="page active">
-    <div class="conjugator-page">
+  <div id="page-deconjugator" class="page active tv-page is-vhs" data-tv-help="vhs" data-tv-ch="REWIND">
 
-      <div class="conjugator-header" style="align-items:flex-start">
-        <div>
-          <div class="page-tag" data-i18n="dj_tag">Interactive Practice</div>
-          <h1 class="page-title" data-i18n="dj_title">Rewind</h1>
-          <p class="dj-desc" style="color:var(--text-light);max-width:60ch;margin:.45rem 0 0" data-i18n="dj_desc">
-            The Conjugator, played backwards. You are shown a conjugated verb and you give the
-            dictionary form it came from — and every answer unwinds the derivation a layer at a time.
-          </p>
-        </div>
+    <!-- the title, on the dark bookshelf -->
+    <div class="tv-ttl">
+      <div class="tv-seal jp">戻</div>
+      <div>
+        <div class="tv-eyebrow"><span data-i18n="vhs_eyebrow">Conjugation, backwards</span> · 逆活用</div>
+        <h1 data-i18n="dj_title">Rewind</h1>
+        <span class="tv-live">◀◀ VHS</span>
+      </div>
+      <a class="tv-link" href="/conjugator">▶ <span class="jp">活用</span> TV</a>
+    </div>
+
+    <!-- the room; the tape plays on the TV's screen -->
+    <div class="tv-room">
+      <div class="tv-scr" id="tv-scr">
+        <div class="tv-osd"><span>◀◀ REW</span><span id="tv-osd-r"></span></div>
+        <div class="dj-badges" id="dj-badges"></div>
+        <div class="dj-word tv-word jp" id="dj-word">…</div>
+        <div class="dj-prompt tv-sub" data-i18n="dj_ask">What is the dictionary form?</div>
+        <div class="tv-grow"></div>
+        <div class="tv-echo" id="tv-echo"></div>
+        <span class="tv-stamp" id="tv-stamp"></span>
+      </div>
+      <span class="tv-vcr" id="dj-progress">0</span>
+    </div>
+
+    <div class="tv-below">
+      <div id="dj-summary" class="session-summary" style="display:none"></div>
+
+      <div class="dj-answer tv-answer">
+        <input id="dj-input" class="answer-input jp" type="text" autocomplete="off"
+               autocorrect="off" autocapitalize="off" spellcheck="false"
+               placeholder="taberu → たべる" aria-label="Your answer">
+        <button type="button" id="dj-romaji" class="romaji-toggle"
+                title="Romaji typing: type taberu, get たべる">あ</button>
       </div>
 
-      <!-- What is set right now, the gear that changes it, and the score.
-           One line instead of five dropdowns and three boxes. -->
-      <div class="dj-bar">
-        <button type="button" id="dj-gear" class="dj-gear" aria-expanded="false">
-          <span>⚙</span><span data-i18n="dj_settings">Settings</span>
-        </button>
-        <div class="dj-now" id="dj-now"></div>
-        <div class="dj-stats">
-          <span><b id="dj-right">0</b><span data-i18n="dj_correct">correct</span></span>
-          <span><b id="dj-total">0</b><span data-i18n="dj_of">asked</span></span>
-          <span class="fire">🔥 <b id="dj-streak">0</b><span data-i18n="dj_streak">streak</span>
-            <span class="best">(<span data-i18n="dj_best">best</span> <span id="dj-best">0</span>)</span></span>
-          <button type="button" id="dj-reset" class="dj-reset-link" data-i18n="dj_reset">reset</button>
-        </div>
+      <div class="tv-remote">
+        <button type="button" id="dj-check" class="check-btn primary" data-i18n="vhs_check">◀◀ Rewind</button>
+        <button type="button" id="dj-skip" class="skip-btn" data-i18n="tv_show">Show me</button>
+        <button type="button" id="dj-next" class="check-btn next" style="display:none" data-i18n="tv_next">Next ▶</button>
       </div>
 
-      <div class="dj-panel" id="dj-panel">
-        <div class="dj-row">
-          <label data-i18n="dj_lbl_form">Form</label>
-          <select id="dj-form" class="form-select">
+      <div class="tv-status">
+        <button type="button" class="hint-btn tv-help-btn" id="tv-help" data-i18n="tv_help">📺 How it works</button>
+          <button type="button" id="dj-hint" class="hint-btn"><span data-i18n="dj_showhint">💡 Show hint</span></button>
+        <span class="tv-lamps" id="tv-lamps" aria-hidden="true"></span>
+        <span class="tv-streak">🔥 <b id="dj-streak">0</b> <span>(<span data-i18n="dj_best">best</span> <span id="dj-best">0</span>)</span></span>
+        <button type="button" class="tv-send" id="tv-send" hidden></button>
+      </div>
+      <div class="tv-queue" id="tv-queue" hidden></div>
+
+      <div id="dj-feedback" class="feedback" style="display:none"></div>
+      <div id="dj-hintbox" class="hint-box" style="display:none"></div>
+
+      <!-- the remote's settings: ① forms · ② verbs · ③ the tape -->
+      <div class="tv-set" id="tv-set">
+        <div class="tv-set-head">
+          <span class="tv-set-title"><span aria-hidden="true">⚙</span> <span data-i18n="tv_set_title">Remote</span></span>
+          <span class="tv-set-sum" id="tv-set-sum" aria-live="polite"></span>
+          <span class="tv-set-lcd"><b><span id="dj-right">0</span>/<span id="dj-total">0</span></b><small data-i18n="tv_score">score</small></span>
+          <button type="button" class="tv-set-btn" id="tv-set-btn" aria-expanded="false" aria-controls="dj-panel">
+            <span class="tv-set-change" data-i18n="nt_set_change">Change</span><span class="tv-set-done" data-i18n="nt_set_done">Done</span>
+            <span class="chev" aria-hidden="true">▾</span>
+          </button>
+        </div>
+        <div class="tv-set-body" id="dj-panel">
+          <div class="tv-set-col">
+            <div class="tv-set-lbl"><span class="tv-set-n">1</span><span data-i18n="tv_set_forms">Forms</span></div>
+            <div class="tv-set-note" data-i18n="vhs_set_forms_note">Which forms are recorded on the tape. Random mixes them.</div>
+            <div class="tv-set-stack">
+            <select id="dj-form" class="form-select">
             <optgroup label="🎲 Random Modes" data-i18n-label="dj_og_random">
               <option value="random" data-i18n="dj_f_random">Random (all forms)</option>
               <option value="random-basic" data-i18n="dj_f_rbasic">Random (basic)</option>
@@ -205,9 +245,15 @@
               <option value="causative-passive" data-i18n="dj_f_cp">Causative-Passive (させられる)</option>
             </optgroup>
           </select>
-        </div>
-        <div class="dj-row">
-          <label data-i18n="dj_lbl_type">Verb</label>
+              <label class="tv-set-tog"><input type="checkbox" id="dj-hideform">
+                <span data-i18n="dj_hide">Don’t tell me which form it is</span></label>
+            </div>
+          </div>
+          <div class="tv-set-col">
+            <div class="tv-set-lbl"><span class="tv-set-n">2</span><span data-i18n="tv_set_verbs">Verbs</span></div>
+            <div class="tv-set-note" data-i18n="vhs_set_verbs_note">Keep to one kind of verb or one JLPT level, or leave both on all.</div>
+            <div class="tv-set-stack">
+              <div class="tv-set-sub" data-i18n="dj_lbl_type">Verb</div>
           <div class="dj-chips" id="dj-type" data-value="all">
             <button type="button" class="dj-chip on" data-v="all" data-i18n="dj_t_all">All</button>
             <button type="button" class="dj-chip" data-v="godan">Godan</button>
@@ -215,9 +261,7 @@
             <button type="button" class="dj-chip" data-v="suru">する</button>
             <button type="button" class="dj-chip" data-v="irregular">来る</button>
           </div>
-        </div>
-        <div class="dj-row">
-          <label data-i18n="dj_lbl_level">Level</label>
+              <div class="tv-set-sub" data-i18n="dj_lbl_level">Level</div>
           <div class="dj-chips" id="dj-level" data-value="all">
             <button type="button" class="dj-chip on" data-v="all" data-i18n="dj_l_all2">All</button>
             <button type="button" class="dj-chip" data-v="N5">N5</button>
@@ -226,60 +270,36 @@
             <button type="button" class="dj-chip" data-v="N5,N4">N5+N4</button>
             <button type="button" class="dj-chip" data-v="N4,N3">N4+N3</button>
           </div>
-        </div>
-        <div class="dj-row">
-          <label data-i18n="dj_lbl_layers">Layers</label>
+            </div>
+          </div>
+          <div class="tv-set-col">
+            <div class="tv-set-lbl"><span class="tv-set-n">3</span><span data-i18n="vhs_set_tape">The tape</span></div>
+            <div class="tv-set-note" data-i18n="vhs_set_tape_note">How many layers are stacked on each verb, and how long a round is.</div>
+            <div class="tv-set-stack">
+              <div class="tv-set-sub" data-i18n="dj_lbl_layers">Layers</div>
           <div class="dj-chips" id="dj-depth" data-value="1">
             <button type="button" class="dj-chip on" data-v="1" data-i18n="dj_d1b">One</button>
             <button type="button" class="dj-chip" data-v="2" data-i18n="dj_d2b">Up to two</button>
             <button type="button" class="dj-chip" data-v="3" data-i18n="dj_d3b">Up to three</button>
             <button type="button" class="dj-chip" data-v="deep" data-i18n="dj_ddeepb">Stacked only</button>
           </div>
-        </div>
-        <div class="dj-row">
-          <label data-i18n="dj_lbl_round">Round</label>
+              <div class="tv-set-sub" data-i18n="dj_lbl_round">Round</div>
           <div class="dj-chips" id="dj-goal" data-value="0">
             <button type="button" class="dj-chip on" data-v="0" data-i18n="dj_g0b">No limit</button>
             <button type="button" class="dj-chip" data-v="10">10</button>
             <button type="button" class="dj-chip" data-v="20">20</button>
             <button type="button" class="dj-chip" data-v="50">50</button>
           </div>
-        </div>
-        <div class="dj-toggles">
-          <label><input type="checkbox" id="dj-hideform">
-            <span data-i18n="dj_hide">Don’t tell me which form it is</span></label>
-          <label><input type="checkbox" id="dj-kanji" checked>
-            <span data-i18n="dj_kanjiq">Show the question in kanji where possible</span></label>
-          <span class="options-right" style="margin-left:auto">
-            <span id="dj-progress" class="session-progress">0</span>
-          </span>
+              <label class="tv-set-tog"><input type="checkbox" id="dj-kanji" checked>
+                <span data-i18n="dj_kanjiq">Show the question in kanji where possible</span></label>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div id="dj-summary" class="session-summary" style="display:none"></div>
-
-      <div id="dj-stage" class="dj-stage">
-        <div class="dj-badges" id="dj-badges"></div>
-        <div class="dj-word jp" id="dj-word">…</div>
-        <div class="dj-prompt" data-i18n="dj_ask">What is the dictionary form?</div>
-        <div class="dj-answer">
-          <input id="dj-input" class="answer-input jp" type="text" autocomplete="off"
-                 autocorrect="off" autocapitalize="off" spellcheck="false"
-                 placeholder="taberu → たべる" aria-label="Your answer">
-          <button type="button" id="dj-romaji" class="romaji-toggle"
-                  title="Romaji typing: type taberu, get たべる">あ</button>
-        </div>
-        <button type="button" id="dj-hint" class="hint-btn" style="margin-top:.2rem">
-          <span data-i18n="dj_showhint">💡 Show hint</span>
-        </button>
-        <div id="dj-hintbox" class="hint-box" style="display:none"></div>
+      <div class="tv-extras">
+        <button type="button" id="dj-reset" class="dj-reset-link" data-i18n="dj_reset">reset</button>
       </div>
-
-      <div id="dj-feedback" class="feedback" style="display:none"></div>
-
-      <button type="button" id="dj-check" class="check-btn primary" data-i18n="dj_check">Check Answer</button>
-      <button type="button" id="dj-skip" class="skip-btn" data-i18n="dj_skip">Show me the answer</button>
-      <button type="button" id="dj-next" class="check-btn next" style="display:none" data-i18n="dj_next">Next Question →</button>
 
     </div>
   </div>
@@ -296,6 +316,7 @@
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
   <script src="dict/deconjugate.js"></script>
+  <script src="tv.js"></script>
   <script>
   (function () {
     var $ = function (id) { return document.getElementById(id); };
@@ -338,6 +359,10 @@
     var S = { right: 0, total: 0, streak: 0, best: 0 };
     try { S = Object.assign(S, JSON.parse(localStorage.getItem(STORE)) || {}); } catch (e) {}
     var weak = [], cur = null, answered = false, inRound = 0;
+    // 活用 TV hands over the verbs you missed there; misses here go back the other way
+    var TV = window.KA_TV || null;
+    var queue = TV ? TV.take('katsuyo-rewind-queue') : null;
+    var results = [], misses = [];
 
     function save(){ try { localStorage.setItem(STORE, JSON.stringify(S)); } catch(e){} }
 
@@ -373,7 +398,32 @@
 
     function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
+    // A verb and form handed over from 活用 TV, asked as a single layer.
+    function fromQueue() {
+      while (queue && queue.items.length) {
+        var it = queue.items.shift(), v = null, vt = it.type;
+        [it.type, 'godan', 'ichidan', 'suru', 'irregular'].some(function (ty) {
+          var hit = (verbs[ty] || []).filter(function (x) { return x.kanji === it.kanji; })[0];
+          if (hit) { v = hit; vt = hit.type || ty; return true; }
+          return false;
+        });
+        var f = FORM(it.form);
+        if (!v || !f) continue;
+        var w = '';
+        try { w = conjugateVerb(Object.assign({}, v, { type: vt }), f); } catch (e) { w = ''; }
+        if (!w || w === v.kanji) continue;
+        var d = [];
+        try { d = KA_Deconjugate.deconjugate(w, known); } catch (e) {}
+        if (!d.some(function (r) { return r.word === v.kanji || r.word === v.hiragana; })) continue;
+        return { verb: v, type: vt, word: w, layers: [f.name], mids: [w], formKey: it.form, derivation: d, useKanji: true, fromTv: true };
+      }
+      queue = null;
+      return null;
+    }
+
     function build() {
+      var q = fromQueue();
+      if (q) return q;
       var p = pool();
       if (!p.length) return null;
       var depth = val('dj-depth');
@@ -469,6 +519,8 @@
       }
       $('dj-word').textContent = cur.word;
       $('dj-badges').innerHTML = badges();
+      if (TV) { TV.verdict(null); TV.echo(''); TV.fitWord($('dj-word')); }
+      paintTv();
       $('dj-input').focus();
       progress();
     }
@@ -494,19 +546,21 @@
       return h;
     }
 
-    function reveal(right, given) {
+    function reveal(right, given, shown) {
       answered = true;
+      if (TV) TV.verdict(shown ? 'shown' : right ? 'right' : 'wrong', (right ? '✓ ' : shown ? '' : '→ ') + cur.verb.kanji);
       $('dj-check').style.display = 'none';
       $('dj-skip').style.display = 'none';
       $('dj-next').style.display = 'block';
       $('dj-hint').style.display = 'none';
 
       var fb = $('dj-feedback');
-      fb.className = 'feedback ' + (right ? 'correct' : 'incorrect');
+      fb.className = 'feedback ' + (shown ? '' : right ? 'correct' : 'incorrect');
       fb.style.display = 'block';
       fb.innerHTML =
         '<div class="feedback-title">' +
-          (right ? '✓ ' + tr('dj_right', 'Correct!')
+          (shown ? tr('tv_shown_free', '👁 Shown — free, this one doesn’t count')
+           : right ? '✓ ' + tr('dj_right', 'Correct!')
                  : '✗ ' + tr('dj_wrong', 'Not quite') +
                    (given ? ' — <span class="jp">' + esc(given) + '</span>' : '')) +
         '</div>' +
@@ -534,18 +588,22 @@
           weak.push({ v: cur.verb, type: cur.type });
           if (weak.length > 14) weak.shift();
         }
+        var mk = cur.verb.kanji + '|' + cur.formKey;
+        if (!misses.some(function (m) { return m.k === mk; })) misses.push({ k: mk, kanji: cur.verb.kanji, type: cur.type, form: cur.formKey });
       }
+      results.push(right);
       save(); paint(); reveal(right, right ? '' : given);
+      paintTv();
       roundCheck();
     }
 
+    // Show me is free, like everywhere else on the site: nothing is counted,
+    // the streak carries on, and it drops a dashed lamp.
     function skip() {
       if (!cur || answered) return;
-      S.total++; inRound++; S.streak = 0;
-      if (!weak.some(function (w) { return w.v.kanji === cur.verb.kanji; })) {
-        weak.push({ v: cur.verb, type: cur.type });
-      }
-      save(); paint(); reveal(false, ''); roundCheck();
+      inRound++;
+      results.push(null);
+      reveal(false, '', true); paintTv(); roundCheck();
     }
 
     // Three steps, the way the Conjugator does it. The old single hint named
@@ -638,8 +696,7 @@
     function goal(){ return parseInt(val('dj-goal'), 10) || 0; }
     function progress() {
       var g = goal();
-      $('dj-progress').style.display = g ? '' : 'none';
-      if (g) $('dj-progress').textContent = inRound + ' / ' + g;
+      $('dj-progress').textContent = g ? inRound + ' / ' + g : '◀◀ ' + inRound;
     }
     function roundCheck() {
       var g = goal();
@@ -649,8 +706,11 @@
       $('dj-summary').style.display = 'block';
       $('dj-summary').innerHTML = '<strong>' + tr('dj_round_done', 'Round finished') + '</strong> — ' +
         inRound + ' ' + tr('dj_asked', 'asked') + ', ' + pct + '% ' +
-        tr('dj_overall', 'correct overall') + '.';
-      inRound = 0;
+        tr('dj_overall', 'correct overall') + '.' +
+        (misses.length ? '<div class="summary-actions"><button type="button" class="skip-btn" id="dj-sum-send" style="margin:0">' +
+          esc(tr('vhs_send_tv', '▶ Practise your misses in 活用 TV ({n})').replace('{n}', misses.length)) + '</button></div>' : '');
+      var ss = $('dj-sum-send'); if (ss) ss.onclick = sendMisses;
+      inRound = 0; results = [];
     }
 
     function paint() {
@@ -690,18 +750,34 @@
       return c ? c.textContent.trim() : v;
     }
     function summary() {
-      var bits = [labelOf('dj-form'), labelOf('dj-type'), labelOf('dj-level'), labelOf('dj-depth')];
+      if (!TV) return;
       var g = goal();
-      if (g) bits.push(g + ' ' + tr('dj_qs', 'questions'));
-      $('dj-now').innerHTML = bits.map(function (b, i) {
-        return (i ? '<span class="sep">·</span>' : '') + '<b>' + esc(b) + '</b>';
-      }).join(' ');
+      TV.paintSummary([
+        { text: labelOf('dj-form') + ($('dj-hideform').checked ? ' · ' + tr('vhs_sum_hidden', 'form hidden') : ''),
+          narrow: val('dj-form').indexOf('random') !== 0 },
+        { text: (val('dj-type') === 'all' ? tr('vhs_all_verbs', 'All verbs') : labelOf('dj-type')) + ' · ' +
+                (val('dj-level') === 'all' ? tr('vhs_all_levels', 'All levels') : labelOf('dj-level')),
+          narrow: val('dj-type') !== 'all' || val('dj-level') !== 'all' },
+        { text: tr('dj_lbl_layers', 'Layers') + ': ' + labelOf('dj-depth') + ' · ' + (g ? g + ' ' + tr('dj_qs', 'questions') : labelOf('dj-goal')), narrow: false }
+      ]);
     }
-    $('dj-gear').onclick = function () {
-      var open = $('dj-panel').classList.toggle('open');
-      this.classList.toggle('open', open);
-      this.setAttribute('aria-expanded', open ? 'true' : 'false');
-    };
+    // the lamps, the hand-off button and a list from 活用 TV
+    function paintTv() {
+      if (!TV) return;
+      TV.paintLamps(results, goal() || 10);
+      TV.paintSend($('tv-send'), misses.length, 'vhs_send_tv', '▶ Practise your misses in 活用 TV ({n})');
+      var left = queue && queue.items ? queue.items.length + (cur && cur.fromTv ? 1 : 0) : (cur && cur.fromTv ? 1 : 0);
+      $('tv-osd-r').textContent = cur && cur.fromTv ? '▶ ' + tr('vhs_from_tv_osd', 'from 活用 TV') : '';
+      TV.paintQueue(left ? { items: new Array(left) } : null, 'vhs_from_tv', 'Rewinding your misses from 活用 TV — {n} to go', function () {
+        queue = null; if (cur) cur.fromTv = false; next();
+      });
+    }
+    function sendMisses() {
+      if (!TV || !misses.length) return;
+      TV.send('katsuyo-conj-queue', misses.map(function (m) { return { kanji: m.kanji, type: m.type, form: m.form }; }),
+        tr('tv_misses', 'your misses'), '/conjugator?from=vhs');
+    }
+    if ($('tv-send')) $('tv-send').onclick = sendMisses;
     ['dj-type', 'dj-level', 'dj-depth', 'dj-goal'].forEach(function (id) {
       $(id).addEventListener('click', function (e) {
         var c = e.target.closest('.dj-chip');
@@ -718,9 +794,11 @@
     ['dj-form', 'dj-kanji'].forEach(function (id) {
       $(id).onchange = function () { $('dj-summary').style.display = 'none'; summary(); next(); };
     });
-    $('dj-hideform').onchange = function () { if (cur) $('dj-badges').innerHTML = badges(); };
+    $('dj-hideform').onchange = function () { summary(); if (cur) $('dj-badges').innerHTML = badges(); };
+    if (TV) TV.bindEcho($('dj-input'));
+    window.addEventListener('katsuyo:lang', function () { summary(); paintTv(); });
     $('dj-reset').onclick = function () {
-      S = { right: 0, total: 0, streak: 0, best: 0 }; weak = []; inRound = 0;
+      S = { right: 0, total: 0, streak: 0, best: 0 }; weak = []; inRound = 0; results = []; misses = [];
       save(); paint(); summary(); $('dj-summary').style.display = 'none'; next();
     };
 
@@ -734,6 +812,7 @@
     };
 
     paint(); summary(); progress(); next();
+    window.addEventListener('load', function () { setTimeout(summary, 200); setTimeout(summary, 1200); });
   })();
   </script>
 

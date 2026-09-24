@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
   <script src="analytics.js"></script>
-  <title>The Conjugator — Japanese Conjugation Practice | Katsuyō Academy</title>
+  <title>活用 TV — Japanese Conjugation Practice | Katsuyō Academy</title>
   <meta name="description" content="Practice Japanese verb conjugation with instant feedback, score tracking, and AI-powered explanations.">
   <link rel="canonical" href="https://katsuyoacademy.com/conjugator">
   <link rel="icon" type="image/png" href="open_book.png">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="tv-theme.css">
 </head>
 <body data-page="conjugator">
 
@@ -32,7 +33,7 @@
         <a class="nav-link" data-page="forms" href="/forms" data-i18n="nav_forms">Forms</a>
         <a class="nav-link" data-page="verblist" href="/verblist" data-i18n="nav_verbs">Verbs</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
-        <a class="nav-link active" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">Conjugator</a>
+        <a class="nav-link active" data-page="conjugator" href="/conjugator" data-i18n="nav_conjugator">活用 TV</a>
         <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kana Drill</a>
         <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Kitchen</a>
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
@@ -54,166 +55,182 @@
     </div>
   </nav>
 
-  <div id="page-conjugator" class="page active">
-    <div class="conjugator-page">
-      <div class="conjugator-header">
-        <div>
-          <div class="page-tag" data-i18n="page_tag">Interactive Practice</div>
-          <h1 class="page-title" style="font-size: 2rem" data-i18n="conj_title">The Conjugator</h1>
+  <div id="page-conjugator" class="page active tv-page is-onair" data-tv-help="tv" data-tv-ch="活用TV">
+
+    <!-- the title, in the dark window of the room -->
+    <div class="tv-ttl">
+      <div class="tv-seal jp">活</div>
+      <div>
+        <div class="tv-eyebrow"><span data-i18n="tv_eyebrow">Conjugation practice</span> · 活用</div>
+        <h1 data-i18n="conj_title">活用 TV</h1>
+        <span class="tv-live" data-i18n="tv_onair">ON AIR</span>
+      </div>
+      <a class="tv-link" href="/deconjugator"><span class="jp">◀◀</span> <span data-i18n="tv_to_rewind">Rewind</span></a>
+    </div>
+
+    <!-- the room; the question is drawn onto the TV's screen -->
+    <div class="tv-room" aria-hidden="false">
+      <div class="tv-scr" id="tv-scr">
+        <div class="tv-osd"><span id="verb-type" class="verb-type">Godan Verb</span><span id="tv-osd-r">▶ ON AIR</span></div>
+        <div class="question-badges tv-badges">
+          <!-- shown when the Dictionary handed this page a verb to stay on -->
+          <span id="lock-badge" class="q-badge" style="display: none;">
+            <span id="lock-text"></span>
+            <button type="button" id="lock-off"></button>
+          </span>
+          <span id="review-badge" class="q-badge review" style="display: none;" data-i18n="badge_review">🔁 Review — you missed this one before</span>
+          <span id="type-quiz-badge" class="q-badge quiz" style="display: none;" data-i18n="badge_type_quiz">First: which type of verb is this?</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <button id="report-btn" class="report-btn" onclick="showMistakeReport()" title="View your practice report" data-i18n="view_report">
-            📊 View Report
-          </button>
-          <button type="button" id="reset-stats-btn" class="reset-btn" title="Reset score" onclick="resetScoreNow()" style="padding: 0.75rem 1rem; font-size: 0.85rem;" data-i18n="reset_short">
-            ↺ Reset
-          </button>
-          <div id="streak-box" class="score-box streak-box" title="Answers right in a row">
-            <div class="score-label" data-i18n="streak">Streak</div>
-            <div class="score-value">🔥 <span id="streak-value">0</span> <span class="streak-best-wrap">(<span data-i18n="best_short">best</span> <span id="streak-best">0</span>)</span></div>
-          </div>
-          <div class="score-box">
-            <div class="score-label" data-i18n="score">Score</div>
-            <div class="score-value"><span id="score-correct">0</span> / <span id="score-total">0</span></div>
-          </div>
-        </div>
+        <div id="verb-kanji" class="verb-kanji tv-word jp">行く</div>
+        <div class="verb-info tv-sub"><span id="verb-hiragana" class="jp">いく</span> — <span id="verb-meaning">to go</span></div>
+        <div class="tv-grow"></div>
+        <div class="tv-cap"><span id="prompt-form" class="prompt-form">Negative</span></div>
+        <div class="tv-echo" id="tv-echo"></div>
+        <span class="tv-stamp" id="tv-stamp"></span>
+        <div class="tv-end"><b>おつかれさま</b><small data-i18n="tv_end">End of the episode</small></div>
       </div>
+      <span class="tv-vcr" id="session-progress">0 / 10</span>
+    </div>
 
-      <!-- Filters Row -->
-      <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-        <!-- Form Select -->
-        <select id="form-select" class="form-select" onchange="generateNewQuestion()" style="flex: 2; min-width: 200px; margin-bottom: 0;">
-          <optgroup label="🎲 Random Modes" data-i18n-label="og_random">
-            <option value="random" data-i18n="f_random">Random (All Forms)</option>
-            <option value="random-basic" data-i18n="f_random_basic">Random (Basic Only)</option>
-            <option value="random-intermediate" data-i18n="f_random_int">Random (Intermediate)</option>
-            <option value="random-advanced" data-i18n="f_random_adv">Random (Advanced)</option>
-          </optgroup>
-          <optgroup label="📚 Basic Forms (N5)" data-i18n-label="og_basic">
-            <option value="masu" data-i18n="f_masu">Polite (ます)</option>
-            <option value="negative" data-i18n="f_negative">Negative (ない)</option>
-            <option value="past" data-i18n="f_past">Past (た)</option>
-            <option value="te" data-i18n="f_te">Te-form (て)</option>
-            <option value="masen" data-i18n="f_masen">Polite Negative (ません)</option>
-            <option value="mashita" data-i18n="f_mashita">Polite Past (ました)</option>
-            <option value="nakatta" data-i18n="f_nakatta">Negative Past (なかった)</option>
-          </optgroup>
-          <optgroup label="🎯 Intermediate Forms (N4)" data-i18n-label="og_intermediate">
-            <option value="tai" data-i18n="f_tai">Want to (たい)</option>
-            <option value="potential" data-i18n="f_potential">Potential (られる/える)</option>
-            <option value="volitional" data-i18n="f_volitional">Volitional (よう/おう)</option>
-            <option value="ba" data-i18n="f_ba">Conditional (ば)</option>
-            <option value="tara" data-i18n="f_tara">Conditional (たら)</option>
-            <option value="imperative" data-i18n="f_imperative">Imperative (命令形)</option>
-          </optgroup>
-          <optgroup label="🔥 Advanced Forms (N3+)" data-i18n-label="og_advanced">
-            <option value="passive" data-i18n="f_passive">Passive (られる/あれる)</option>
-            <option value="causative" data-i18n="f_causative">Causative (させる/あせる)</option>
-            <option value="causative-passive" data-i18n="f_caus_pass">Causative-Passive (させられる)</option>
-          </optgroup>
-        </select>
-
-        <!-- JLPT Filter -->
-        <select id="jlpt-filter" class="form-select" onchange="generateNewQuestion()" style="flex: 1; min-width: 120px; margin-bottom: 0;">
-          <option value="all" data-i18n="jlpt_all">All Levels</option>
-          <option value="N5" data-i18n="jlpt_n5">N5 Only</option>
-          <option value="N4" data-i18n="jlpt_n4">N4 Only</option>
-          <option value="N3" data-i18n="jlpt_n3">N3 Only</option>
-          <option value="N5-N4" data-i18n="jlpt_n54">N5 + N4</option>
-        </select>
-
-        <!-- Session goal -->
-        <select id="session-goal" class="form-select" onchange="continueSession()" style="flex: 1; min-width: 155px; margin-bottom: 0;" title="How many questions in a round">
-          <option value="10" data-i18n="goal_10">Round of 10</option>
-          <option value="20" data-i18n="goal_20">Round of 20</option>
-          <option value="50" data-i18n="goal_50">Round of 50</option>
-          <option value="0" data-i18n="goal_none">No limit</option>
-        </select>
-      </div>
-
-      <!-- Practice options -->
-      <div class="practice-options">
-        <label class="opt-toggle">
-          <input type="checkbox" id="type-quiz-toggle" checked onchange="setTypeQuiz(this.checked)">
-          <span data-i18n="opt_type_quiz">Also ask me to name the verb type</span>
-        </label>
-        <span class="options-right">
-          <span id="session-progress" class="session-progress">0 / 10</span>
-          <button type="button" class="drill-chip info-chip" id="conj-info-chip" onclick="openConjInfo()"
-                  aria-label="Shortcuts and options" title="Shortcuts and options (Alt+I)">i</button>
-        </span>
-      </div>
-
+    <div class="tv-below">
       <!-- Session summary (shown when a round finishes) -->
       <div id="session-summary" class="session-summary" style="display: none;"></div>
 
       <div id="question-area">
-      <div class="verb-display">
-        <div id="verb-type" class="verb-type">Godan Verb</div>
-        <div id="verb-kanji" class="verb-kanji jp">行く</div>
-        <div class="verb-info">
-          <span id="verb-hiragana" class="jp">いく</span> — <span id="verb-meaning">to go</span>
+        <div class="answer-row tv-answer">
+          <input
+            type="text"
+            id="answer-input"
+            class="answer-input jp"
+            placeholder="ikanai → いかない"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            onkeypress="handleKeyPress(event)"
+          >
+          <button type="button" id="romaji-toggle" class="romaji-toggle" onclick="toggleRomajiInput()"
+                  title="Romaji typing: type ikanai, get いかない">あ</button>
+        </div>
+
+        <div class="tv-remote">
+          <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled>Check Answer</button>
+          <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="tv_show">Show me</button>
+          <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="tv_next">Next ▶</button>
+        </div>
+
+        <div class="tv-status">
+          <button type="button" class="hint-btn tv-help-btn" id="tv-help" data-i18n="tv_help">📺 How it works</button>
+          <button class="hint-btn" onclick="toggleHint()"><span id="hint-btn-text" data-i18n="show_hint">💡 Show hint</span></button>
+          <span class="tv-lamps" id="tv-lamps" aria-hidden="true"></span>
+          <span id="streak-box" class="tv-streak" title="Answers right in a row">🔥 <b id="streak-value">0</b> <span class="streak-best-wrap">(<span data-i18n="best_short">best</span> <span id="streak-best">0</span>)</span></span>
+          <button type="button" class="tv-send" id="tv-send" hidden></button>
+        </div>
+        <div class="tv-queue" id="tv-queue" hidden></div>
+
+        <div id="feedback-warning" class="feedback warning">
+          <div class="feedback-title" data-i18n="warn_try_again">⚠️ Not quite — try again!</div>
+        </div>
+
+        <div id="feedback-result" class="feedback">
+          <div id="feedback-title" class="feedback-title"></div>
+          <div class="feedback-answer jp"><span data-i18n="fb_answer">Answer:</span> <strong id="feedback-answer"></strong></div>
+          <div id="feedback-explanation" class="feedback-explanation"></div>
+          <div id="ai-examples" style="margin-top: 15px; display: none;"></div>
+          <button id="more-examples-btn" onclick="showMoreExamples()" style="display: none; margin-top: 10px; background: #4a90a4; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;" data-i18n="more_examples">
+            📚 Show More Examples
+          </button>
+        </div>
+
+        <div id="hint-box" class="hint-box">
+          <div class="hint-label" data-i18n="hint_label">💡 Hint</div>
+          <div id="hint-content"></div>
+        </div>
+      </div><!-- /#question-area -->
+
+      <!-- the remote's settings: ① forms · ② verbs · ③ episode -->
+      <div class="tv-set" id="tv-set">
+        <div class="tv-set-head">
+          <span class="tv-set-title"><span aria-hidden="true">⚙</span> <span data-i18n="tv_set_title">Remote</span></span>
+          <span class="tv-set-sum" id="tv-set-sum" aria-live="polite"></span>
+          <span class="tv-set-lcd" title="Score"><b><span id="score-correct">0</span>/<span id="score-total">0</span></b><small data-i18n="tv_score">score</small></span>
+          <button type="button" class="tv-set-btn" id="tv-set-btn" aria-expanded="false" aria-controls="tv-set-body">
+            <span class="tv-set-change" data-i18n="nt_set_change">Change</span><span class="tv-set-done" data-i18n="nt_set_done">Done</span>
+            <span class="chev" aria-hidden="true">▾</span>
+          </button>
+        </div>
+        <div class="tv-set-body" id="tv-set-body">
+          <div class="tv-set-col">
+            <div class="tv-set-lbl"><span class="tv-set-n">1</span><span data-i18n="tv_set_forms">Forms</span></div>
+            <div class="tv-set-note" data-i18n="tv_set_forms_note">Which forms the show asks for. Random mixes them; pick one to drill it.</div>
+            <select id="form-select" class="form-select" onchange="generateNewQuestion()" aria-label="Form">
+              <optgroup label="🎲 Random Modes" data-i18n-label="og_random">
+                <option value="random" data-i18n="f_random">Random (All Forms)</option>
+                <option value="random-basic" data-i18n="f_random_basic">Random (Basic Only)</option>
+                <option value="random-intermediate" data-i18n="f_random_int">Random (Intermediate)</option>
+                <option value="random-advanced" data-i18n="f_random_adv">Random (Advanced)</option>
+              </optgroup>
+              <optgroup label="📚 Basic Forms (N5)" data-i18n-label="og_basic">
+                <option value="masu" data-i18n="f_masu">Polite (ます)</option>
+                <option value="negative" data-i18n="f_negative">Negative (ない)</option>
+                <option value="past" data-i18n="f_past">Past (た)</option>
+                <option value="te" data-i18n="f_te">Te-form (て)</option>
+                <option value="masen" data-i18n="f_masen">Polite Negative (ません)</option>
+                <option value="mashita" data-i18n="f_mashita">Polite Past (ました)</option>
+                <option value="nakatta" data-i18n="f_nakatta">Negative Past (なかった)</option>
+              </optgroup>
+              <optgroup label="🎯 Intermediate Forms (N4)" data-i18n-label="og_intermediate">
+                <option value="tai" data-i18n="f_tai">Want to (たい)</option>
+                <option value="potential" data-i18n="f_potential">Potential (られる/える)</option>
+                <option value="volitional" data-i18n="f_volitional">Volitional (よう/おう)</option>
+                <option value="ba" data-i18n="f_ba">Conditional (ば)</option>
+                <option value="tara" data-i18n="f_tara">Conditional (たら)</option>
+                <option value="imperative" data-i18n="f_imperative">Imperative (命令形)</option>
+              </optgroup>
+              <optgroup label="🔥 Advanced Forms (N3+)" data-i18n-label="og_advanced">
+                <option value="passive" data-i18n="f_passive">Passive (られる/あれる)</option>
+                <option value="causative" data-i18n="f_causative">Causative (させる/あせる)</option>
+                <option value="causative-passive" data-i18n="f_caus_pass">Causative-Passive (させられる)</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="tv-set-col">
+            <div class="tv-set-lbl"><span class="tv-set-n">2</span><span data-i18n="tv_set_verbs">Verbs</span></div>
+            <div class="tv-set-note" data-i18n="tv_set_verbs_note">Keep to one JLPT level, or leave it on all.</div>
+            <select id="jlpt-filter" class="form-select" onchange="generateNewQuestion()" aria-label="Level">
+              <option value="all" data-i18n="jlpt_all">All Levels</option>
+              <option value="N5" data-i18n="jlpt_n5">N5 Only</option>
+              <option value="N4" data-i18n="jlpt_n4">N4 Only</option>
+              <option value="N3" data-i18n="jlpt_n3">N3 Only</option>
+              <option value="N5-N4" data-i18n="jlpt_n54">N5 + N4</option>
+            </select>
+          </div>
+          <div class="tv-set-col">
+            <div class="tv-set-lbl"><span class="tv-set-n">3</span><span data-i18n="tv_set_ep">Episode</span></div>
+            <div class="tv-set-note" data-i18n="tv_set_ep_note">How many questions make an episode, and whether it also asks for the verb type.</div>
+            <div class="tv-set-stack">
+              <select id="session-goal" class="form-select" onchange="continueSession()" aria-label="Round">
+                <option value="10" data-i18n="goal_10">Round of 10</option>
+                <option value="20" data-i18n="goal_20">Round of 20</option>
+                <option value="50" data-i18n="goal_50">Round of 50</option>
+                <option value="0" data-i18n="goal_none">No limit</option>
+              </select>
+              <label class="tv-set-tog">
+                <input type="checkbox" id="type-quiz-toggle" checked onchange="setTypeQuiz(this.checked)">
+                <span data-i18n="opt_type_quiz">Also ask me to name the verb type</span>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="question-badges">
-        <!-- shown when the Dictionary handed this page a verb to stay on -->
-        <span id="lock-badge" class="q-badge" style="display: none; background: rgba(201,169,98,.2); color: #7a5f1f; border: 1px solid rgba(201,169,98,.5);">
-          <span id="lock-text"></span>
-          <button type="button" id="lock-off" style="background: none; border: 0; padding: 0 0 0 .5rem; font: inherit; color: inherit; text-decoration: underline; cursor: pointer;"></button>
-        </span>
-        <span id="review-badge" class="q-badge review" style="display: none;" data-i18n="badge_review">🔁 Review — you missed this one before</span>
-        <span id="type-quiz-badge" class="q-badge quiz" style="display: none;" data-i18n="badge_type_quiz">First: which type of verb is this?</span>
+      <div class="tv-extras">
+        <button id="report-btn" class="report-btn" onclick="showMistakeReport()" title="View your practice report" data-i18n="view_report">📊 View Report</button>
+        <button type="button" id="reset-stats-btn" class="reset-btn" title="Reset score" onclick="resetScoreNow()" data-i18n="reset_short">↺ Reset</button>
+        <button type="button" class="drill-chip info-chip" id="conj-info-chip" onclick="openConjInfo()"
+                aria-label="Shortcuts and options" title="Shortcuts and options (Alt+I)">i</button>
       </div>
 
-      <div class="prompt-row">
-        <span class="prompt-text">
-          <span id="prompt-form" class="prompt-form">Negative</span>
-        </span>
-        <button class="hint-btn" onclick="toggleHint()">
-          <span id="hint-btn-text" data-i18n="show_hint">💡 Show hint</span>
-        </button>
-      </div>
-
-      <div id="hint-box" class="hint-box">
-        <div class="hint-label" data-i18n="hint_label">💡 Hint</div>
-        <div id="hint-content"></div>
-      </div>
-
-      <div class="answer-row">
-        <input
-          type="text"
-          id="answer-input"
-          class="answer-input jp"
-          placeholder="ikanai → いかない"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-          spellcheck="false"
-          onkeypress="handleKeyPress(event)"
-        >
-        <button type="button" id="romaji-toggle" class="romaji-toggle" onclick="toggleRomajiInput()"
-                title="Romaji typing: type ikanai, get いかない">あ</button>
-      </div>
-
-      <div id="feedback-warning" class="feedback warning">
-        <div class="feedback-title" data-i18n="warn_try_again">⚠️ Not quite — try again!</div>
-      </div>
-
-      <div id="feedback-result" class="feedback">
-        <div id="feedback-title" class="feedback-title"></div>
-        <div class="feedback-answer jp"><span data-i18n="fb_answer">Answer:</span> <strong id="feedback-answer"></strong></div>
-        <div id="feedback-explanation" class="feedback-explanation"></div>
-        <div id="ai-examples" style="margin-top: 15px; display: none;"></div>
-        <button id="more-examples-btn" onclick="showMoreExamples()" style="display: none; margin-top: 10px; background: #4a90a4; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.9rem;" data-i18n="more_examples">
-          📚 Show More Examples
-        </button>
-      </div>
-
-      <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled>Check Answer</button>
-      <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="skip">Show me the answer</button>
-      <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="next">Next Question →</button>
-      </div><!-- /#question-area -->
     </div>
   </div>
 
@@ -265,6 +282,7 @@
   <script src="app.js"></script>
   <script src="ai.js"></script>
   <script src="sensei.js"></script>
+  <script src="tv.js"></script>
 
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
 <script>
