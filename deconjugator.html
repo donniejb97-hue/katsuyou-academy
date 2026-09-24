@@ -146,15 +146,12 @@
   <div id="page-deconjugator" class="page active tv-page is-vhs" data-tv-help="vhs" data-tv-ch="REWIND">
 
     <!-- the title, on the dark bookshelf -->
-    <div class="tv-ttl">
-      <div class="tv-seal jp">戻</div>
-      <div>
-        <div class="tv-eyebrow"><span data-i18n="vhs_eyebrow">Conjugation, backwards</span> · 逆活用</div>
-        <h1 data-i18n="dj_title">Rewind</h1>
-        <span class="tv-live">◀◀ VHS</span>
-      </div>
-      <a class="tv-link" href="/conjugator">▶ <span class="jp">活用</span> TV</a>
-    </div>
+    <!-- the page name, and the way across: PLAY is 活用 TV, REW is Rewind -->
+    <nav class="tv-keys" aria-label="活用 TV / Rewind">
+      <h1 class="tv-sr" data-i18n="dj_title">Rewind</h1>
+      <a class="tv-key" href="/conjugator"><span class="led"></span><span><small>▶ PLAY · 活用</small><span class="jp">活用</span> TV</span></a>
+      <a class="tv-key on" href="/deconjugator" aria-current="page"><span class="led"></span><span><small>◀◀ REW · 逆活用</small>Rewind</span></a>
+    </nav>
 
     <!-- the room; the tape plays on the TV's screen -->
     <div class="tv-room">

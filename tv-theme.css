@@ -257,15 +257,6 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 @media (max-width: 1500px) {
   .tv-page { --iw: max(100vw, 1500px); --ix: calc(50vw - var(--cx) * var(--iw)); }
 }
-@media (max-width: 1200px) {
-  .tv-ttl { position: static; display: flex; align-items: center; gap: 12px; margin: 75px auto 0; padding: 12px 16px; width: min(840px, 100%); }
-  .tv-ttl .tv-seal { margin: 0; width: 38px; height: 38px; font-size: 1.1rem; }
-  .tv-ttl .tv-eyebrow { display: none; }
-  .tv-ttl h1 { margin: 0; font-size: 1.7rem; }
-  .tv-ttl .tv-live { margin-top: 3px; font-size: .64rem; }
-  .tv-ttl .tv-link { margin-left: auto; }
-  .tv-room { margin-top: 0; }
-}
 @media (max-width: 700px) {
   .tv-page { --iw: 235vw; --hc: calc(var(--hi) * 0.8); }
   .tv-below { margin-top: -30px; }
@@ -278,8 +269,7 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
   .tv-send { margin-left: 0; }
 }
 @media (max-width: 640px) {
-  .tv-ttl { margin-top: 109px; }
-  .tv-ttl h1 { font-size: 1.4rem; }
+  .tv-room { margin-top: 109px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .tv-live::before, .tv-echo::after { animation: none; }
@@ -309,3 +299,22 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 .tt-green { background: #00d800; color: #000; }
 .tt-yellow { background: #d8d800; color: #000; }
 .tv-page.is-teletext .tv-help-btn { border-color: #ffff00; color: #ffff00; }
+
+/* ---- the page name and the way across: a VCR's PLAY / REW keys, top left of the room ---- */
+.tv-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+.tv-page .tv-keys { position: absolute; z-index: 9; top: calc(75px + 16px); left: 16px; display: flex; gap: 0; padding: 6px; border-radius: 14px;
+  background: linear-gradient(#26262c, #121216); border: 2px solid #3a3a44; box-shadow: 0 12px 26px rgba(0,0,0,.55); }
+.tv-key { display: flex; align-items: center; gap: 10px; padding: 8px 18px 8px 14px; border-radius: 9px; color: #9aa0b0; font: 800 1.05rem 'Outfit', sans-serif;
+  text-decoration: none; white-space: nowrap; transition: color .15s, background .15s; }
+.tv-key small { display: block; font: 800 .58rem 'Outfit', sans-serif; letter-spacing: .2em; color: #6b7080; margin-bottom: 1px; }
+.tv-key .led { width: 9px; height: 9px; border-radius: 50%; background: #333; flex: 0 0 auto; }
+.tv-key:not(.on):hover, .tv-key:not(.on):focus-visible { color: #fff; background: rgba(255,255,255,.05); outline: none; }
+.tv-key:not(.on):hover .led { background: #555; }
+.tv-key.on { background: linear-gradient(#3a3a44, #24242c); color: #fff; box-shadow: inset 0 2px 6px rgba(0,0,0,.6); cursor: default; }
+.tv-key.on .led { background: var(--live); box-shadow: 0 0 8px var(--live); }
+.tv-key.on small { color: var(--live); }
+@media (max-width: 700px) {
+  .tv-page .tv-keys { position: static; margin: 109px 10px 0; }
+  .tv-page .tv-keys + .tv-room { margin-top: 8px; }
+  .tv-key { flex: 1; padding: 6px 10px; font-size: .92rem; }
+}

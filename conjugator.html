@@ -58,15 +58,12 @@
   <div id="page-conjugator" class="page active tv-page is-onair" data-tv-help="tv" data-tv-ch="活用TV">
 
     <!-- the title, in the dark window of the room -->
-    <div class="tv-ttl">
-      <div class="tv-seal jp">活</div>
-      <div>
-        <div class="tv-eyebrow"><span data-i18n="tv_eyebrow">Conjugation practice</span> · 活用</div>
-        <h1 data-i18n="conj_title">活用 TV</h1>
-        <span class="tv-live" data-i18n="tv_onair">ON AIR</span>
-      </div>
-      <a class="tv-link" href="/deconjugator"><span class="jp">◀◀</span> <span data-i18n="tv_to_rewind">Rewind</span></a>
-    </div>
+    <!-- the page name, and the way across: PLAY is 活用 TV, REW is Rewind -->
+    <nav class="tv-keys" aria-label="活用 TV / Rewind">
+      <h1 class="tv-sr" data-i18n="conj_title">活用 TV</h1>
+      <a class="tv-key on" href="/conjugator" aria-current="page"><span class="led"></span><span><small>▶ PLAY · 活用</small><span class="jp">活用</span> TV</span></a>
+      <a class="tv-key" href="/deconjugator"><span class="led"></span><span><small>◀◀ REW · 逆活用</small>Rewind</span></a>
+    </nav>
 
     <!-- the room; the question is drawn onto the TV's screen -->
     <div class="tv-room" aria-hidden="false">
