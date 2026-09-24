@@ -9932,21 +9932,16 @@ function generateNewQuestion() {
       vqRenderVerdict(right, before, after, given);
     }
 
-    // Show me. Deliberately counted as a miss: you did not know it, and a
-    // reveal that costs nothing would let the scheduler be talked out of ever
-    // asking again, which is the one thing it is for. Skip stays neutral, so
-    // there is still a way to pass on a card without being marked for it.
+    // Show me is free, like the Kanji Kitchen's: no miss, the streak stays, and
+    // nothing is recorded, so the word's progress is exactly as it was. Looking
+    // up an answer is part of learning it, not a mistake. In the tray it drops
+    // a neutral can, like a skip.
     function vqReveal() {
       if (!vqQuestion || vqAnswered) return;
       vqAnswered = true;
-      vqSession.asked++;
-      vqSession.wrong++;
-      vqSession.streak = 0;
-      KA_Memory.tick();
-      var before = KA_Memory.state(vqQuestion.id);
-      var after = KA_Memory.record(vqQuestion.id, false);
-      vqRoundNote(false, vqQuestion.card);
-      vqRenderVerdict(false, before, after, '', true);
+      var st = KA_Memory.state(vqQuestion.id);
+      vqRoundNote(null, vqQuestion.card);
+      vqRenderVerdict(false, st, st, '', true);
     }
 
     // How long until this comes back, in words rather than a date.
@@ -10088,9 +10083,8 @@ function generateNewQuestion() {
       var when = vqEl('vq-verdict-when');
       // Say plainly that a reveal is counted, rather than letting it be a
       // penalty you only discover later.
-      when.textContent = (shown ? ct('vq_counts_missed', 'counted as missed') + ' · ' : '') +
-                         vqWhenBack(q.id);
-      when.className = 'vq-when' + (after === 'known' ? ' cleared' : right ? ' ok' : ' no');
+      when.textContent = shown ? ct('vq_shown_free', 'free — this one doesn’t count') : vqWhenBack(q.id);
+      when.className = 'vq-when' + (shown ? '' : after === 'known' ? ' cleared' : right ? ' ok' : ' no');
 
       var gloss = vqEl('vq-verdict-gloss');
       if (gloss) {

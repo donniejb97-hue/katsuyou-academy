@@ -402,7 +402,8 @@
       }
       function onVerdict(right, shown) {
         var c = card();
-        if (c) { c.classList.toggle('is-right', right); c.classList.toggle('is-wrong', !right); }
+        // a reveal is neither: the card keeps its plain frame
+        if (c) { c.classList.toggle('is-right', right); c.classList.toggle('is-wrong', !right && !shown); }
         var g = $('vq-gakon');
         if (g && right) {
           // restart the drop animation
