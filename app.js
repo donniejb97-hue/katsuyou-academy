@@ -8321,7 +8321,12 @@ function generateNewQuestion() {
       return out.length ? out : vocabDataList;
     }
 
+    // A short study deck handed over from Night Shift ("study the misses").
+    // It is not saved: picking any stop on the line leaves it.
+    var vocabFocus = null;   // { cards: [...], label: '' }
+
     function setVocabDeck(key) {
+      vocabFocus = null;
       vocabDeck = key || 'all';
       try { localStorage.setItem(VOCAB_DECK_KEY, vocabDeck); } catch (e) {}
       filteredCardsVocab = shuffleArrayVocab(vocabDeckCards(vocabDeck));
@@ -8347,6 +8352,7 @@ function generateNewQuestion() {
         currentIndexVocab = 0;
         filteredCardsVocab = shuffleArrayVocab(filteredCardsVocab);
         showToast(ct('wb_deck_done', 'End of the deck — going round again.'));
+        if (window.KA_WordsPage && KA_WordsPage.onDeckEnd) KA_WordsPage.onDeckEnd();
       }
       loadCardVocab();
       updateProgressVocab();
@@ -8363,12 +8369,16 @@ function generateNewQuestion() {
       next: function () { nextCardVocab(); },
       prev: function () { previousCardVocab(); },
       shuffle: function () { shuffleCardsVocab(); },
-      reverse: function () { return showReverseVocab; }
+      reverse: function () { return showReverseVocab; },
+      focus: function () { return vocabFocus; },
+      endFocus: function () { setVocabDeck(vocabDeck); }
     };
 
     // Initialize vocabulary
     function initVocab() {
-      filteredCardsVocab = shuffleArrayVocab(vocabDeckCards(vocabDeck));
+      var handed = window.KA_Words && KA_Words.takeFocus ? KA_Words.takeFocus() : null;
+      if (handed) vocabFocus = handed;
+      filteredCardsVocab = vocabFocus ? vocabFocus.cards.slice() : shuffleArrayVocab(vocabDeckCards(vocabDeck));
       loadCardVocab();
       updateProgressVocab();
       wireVocabListen();
@@ -9470,30 +9480,60 @@ function generateNewQuestion() {
     // A round is ten stops on the rail. Right, wrong, or skipped (null);
     // what was missed is listed newest first with a count.
     var VQ_ROUND = 10;
-    var vqRound = { n: 1, results: [], missed: {}, seq: 0 };
+    // A list handed over by Night Owl: exactly these words, in rounds of ten
+    // (the last round may be shorter). Null when the quiz is choosing.
+    var vqQueue = null;   // { cards: [...], label: '', total: n }
+    function vqNewRound(n) {
+      var size = (vqQueue && vqQueue.cards.length) ? Math.min(VQ_ROUND, vqQueue.cards.length) : VQ_ROUND;
+      return { n: n, results: [], missed: {}, seq: 0, items: [], size: size };
+    }
+    var vqRound = vqNewRound(1);
 
     function vqRoundNote(result, card) {
       vqRound.results.push(result);
+      vqRound.items.push({ card: card, result: result, skill: vqQuestion ? vqQuestion.skill : '' });
       if (result === false && card) {
         var k = vqCardId(card), prev = vqRound.missed[k];
         vqRound.missed[k] = { card: card, count: prev ? prev.count + 1 : 1, seq: ++vqRound.seq };
       }
-      if (vqRound.results.length >= VQ_ROUND) {
+      if (vqRound.results.length >= (vqRound.size || VQ_ROUND)) {
         var right = vqRound.results.filter(function (r) { return r === true; }).length;
-        showToast(ct('vq_round_done', 'Round {n} done — {r} of {t} right')
-          .replace('{n}', vqRound.n).replace('{r}', right).replace('{t}', VQ_ROUND));
-        vqRound = { n: vqRound.n + 1, results: [], missed: {}, seq: 0 };
+        var queueDone = !!(vqQueue && !vqQueue.cards.length);
+        var hook = window.KA_VQPage && KA_VQPage.onRoundDone;
+        if (hook) {
+          hook({ n: vqRound.n, results: vqRound.results, items: vqRound.items, size: vqRound.size,
+                 right: right, queue: vqQueue ? { label: vqQueue.label, total: vqQueue.total, left: vqQueue.cards.length } : null,
+                 queueDone: queueDone });
+        } else {
+          showToast(ct('vq_round_done', 'Round {n} done — {r} of {t} right')
+            .replace('{n}', vqRound.n).replace('{r}', right).replace('{t}', vqRound.size || VQ_ROUND));
+        }
+        if (queueDone) vqQueue = null;
+        vqRound = vqNewRound(vqRound.n + 1);
       }
+      vqPaintRound();
+    }
+
+    // Start quizzing a given list (from Night Owl, or "these misses again").
+    function vqStartQueue(cards, label) {
+      if (!cards || !cards.length) return;
+      vqQueue = { cards: cards.slice(), label: label || '', total: cards.length };
+      vqRound = vqNewRound(1);
+      vqRecent = [];
+      vqNext();
       vqPaintRound();
     }
 
     function vqPaintRound() {
       var stops = vqEl('vq-stops');
-      if (stops && window.KA_Words) KA_Words.renderStops(stops, vqRound.results, VQ_ROUND);
+      var size = vqRound.size || VQ_ROUND;
+      if (stops && window.KA_Words) KA_Words.renderStops(stops, vqRound.results, size);
       var lab = vqEl('vq-stop-label');
-      if (lab) lab.textContent = (Math.min(vqRound.results.length + 1, VQ_ROUND)) + ' / ' + VQ_ROUND;
+      if (lab) lab.textContent = vqRound.results.length + ' / ' + size;   // cans in the tray
       var rn = vqEl('vq-round-n');
-      if (rn) rn.textContent = ct('vq_round', 'Round') + ' ' + vqRound.n;
+      if (rn) rn.textContent = (vqQueue && vqQueue.label ? vqQueue.label + ' · ' : '') +
+        ct('vq_round', 'Round') + ' ' + vqRound.n;
+      if (window.KA_VQPage && KA_VQPage.onPaint) KA_VQPage.onPaint(vqRound, vqQueue);
       var set = function (id, v) { var el = vqEl(id); if (el) el.textContent = v; };
       set('vq-t-right', vqSession.right);
       set('vq-t-wrong', vqSession.wrong);
@@ -9516,7 +9556,7 @@ function generateNewQuestion() {
 
     function vqResetSession() {
       vqSession = { asked: 0, right: 0, wrong: 0, skipped: 0, streak: 0, best: 0, cleared: 0 };
-      vqRound = { n: 1, results: [], missed: {}, seq: 0 };
+      vqRound = vqNewRound(1);
       vqPaintRound();
       vqPaintStats();
     }
@@ -9529,7 +9569,9 @@ function generateNewQuestion() {
       }
       vqNext();
     }
-    window.KA_VocabQuiz = { skip: vqSkip, reset: vqResetSession, paintRound: vqPaintRound };
+    window.KA_VocabQuiz = { skip: vqSkip, reset: vqResetSession, paintRound: vqPaintRound,
+      start: vqStartQueue, queue: function () { return vqQueue; },
+      leaveQueue: function () { vqQueue = null; vqRound = vqNewRound(vqRound.n); vqPaintRound(); } };
 
     // A card's identity has to survive the deck being reordered or added to,
     // so it is the word itself rather than its index.
@@ -9635,6 +9677,15 @@ function generateNewQuestion() {
 
     // ---- choosing the next question ---------------------------------------
     function vqPick() {
+      // A handed-over list comes first, in its own order. "Meaning" is asked
+      // when it is on, since that is what the flashcards' city counts.
+      while (vqQueue && vqQueue.cards.length) {
+        var qc = vqQueue.cards.shift();
+        var skills = vqSkillsFor(qc);
+        var sk = skills.indexOf('meaning') !== -1 ? 'meaning' : skills[Math.floor(Math.random() * skills.length)];
+        var qid = vqId(qc, sk);
+        return { card: qc, skill: sk, id: qid, state: KA_Memory.state(qid), due: KA_Memory.isDue(qid) };
+      }
       var pool = vqPool();
       var usedFallback = false;
       if (!pool.length) { pool = vqPoolAll(); usedFallback = true; }
@@ -10005,6 +10056,7 @@ function generateNewQuestion() {
         speak.style.display = canHear ? '' : 'none';
       }
       vqPaintScopeRow();
+      if (window.KA_VQPage && KA_VQPage.onQuestion) KA_VQPage.onQuestion(q);
       try { input.focus(); } catch (e) {}
     }
 
@@ -10067,6 +10119,7 @@ function generateNewQuestion() {
       if (ansSpk) ansSpk.style.display = (window.KA_Listen && KA_Listen.available()) ? '' : 'none';
       vqPaintStats();
       vqPaintScopeRow();
+      if (window.KA_VQPage && KA_VQPage.onVerdict) KA_VQPage.onVerdict(right, !!shown, q);
       try { vqEl('vq-next-btn').focus(); } catch (e) {}
     }
 
@@ -10336,6 +10389,9 @@ function generateNewQuestion() {
       });
 
       if (window.KA_Speech) KA_Speech.onReady(function () { if (vqQuestion) vqRender(); });
+      // Sent over from Night Owl? Then quiz exactly those words first.
+      var handed = window.KA_Words && KA_Words.takeQueue ? KA_Words.takeQueue() : null;
+      if (handed) { vqQueue = { cards: handed.cards, label: handed.label, total: handed.cards.length }; vqRound = vqNewRound(1); }
       vqNext();
       vqPaintStats();
       vqPaintRound();
