@@ -1,0 +1,311 @@
+/* ============================================================
+   活用 TV (the Conjugator) and Rewind (the Deconjugator).
+
+   The page is a photograph of a room with an old CRT television, and the
+   question is drawn onto the TV's screen. Everything about where the screen
+   is comes from a handful of numbers — the screen's position in the photo as
+   fractions of its width and height — so the overlay stays on the glass at
+   any window size:
+
+     --sx --sy --sw --sh   the screen, as fractions of the photo
+     --cx                  the TV's centre, used when the photo is zoomed in
+     --vx --vy             the VCR's display
+     --p                   which part of the photo stays when it is trimmed
+                           top and bottom (0 = keep the top, 1 = keep the bottom)
+
+   The answer box, the buttons, the feedback and the settings sit under the
+   TV, like a remote on the table.
+   ============================================================ */
+
+body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
+.tv-page {
+  --iw: 100vw; --ix: 0px;
+  --hi: calc(var(--iw) * 0.4242);                 /* the photo is 2560 x 1086 */
+  --hc: clamp(calc(var(--hi) * (var(--sh) + 0.12)), calc(100vh - 290px), var(--hi));
+  --off: calc((var(--hi) - var(--hc)) * var(--p));
+  --u: calc(var(--iw) * var(--sw) / 100);          /* 1% of the screen's width */
+  position: relative; padding-top: 0 !important; min-height: 100vh;
+  background: var(--tv-bg); color: #f3e6cf; font-family: 'Outfit', sans-serif; overflow-x: hidden;
+}
+.tv-page .jp { font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+.tv-page ~ .site-footer { margin-top: 0; }
+
+/* ---- the room ---- */
+.tv-room {
+  position: relative; margin-top: 75px; height: var(--hc); overflow: hidden;
+  background: var(--tv-bg) var(--img) var(--ix) calc(-1 * var(--off)) / var(--iw) auto no-repeat;
+}
+.tv-room::after { content: ""; position: absolute; inset: auto 0 0 0; height: 90px; background: linear-gradient(transparent, var(--tv-bg)); pointer-events: none; z-index: 1; }
+
+/* ---- the title, in the empty part of the room ---- */
+.tv-ttl { position: absolute; z-index: 5; top: calc(75px + 26px); left: var(--tx); }
+.tv-ttl-row { display: flex; align-items: center; gap: 10px; }
+.tv-seal { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 6px; background: var(--seal); color: #fff;
+  font-size: 1.3rem; font-weight: 700; transform: rotate(-4deg); margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+.tv-eyebrow { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 800; color: #ffb38a; text-shadow: 0 1px 6px #000; }
+.tv-ttl h1 { margin: 2px 0 10px; font-size: 2.6rem; line-height: 1; font-weight: 800; color: #fff; text-shadow: 0 2px 14px rgba(0,0,0,.8); }
+.tv-live { display: block; margin-top: 6px; font: 800 0.8rem 'Outfit', sans-serif; letter-spacing: 0.18em; color: var(--live); }
+.tv-live::before { content: "●"; margin-right: 6px; animation: tv-blink 1.4s steps(1) infinite; }
+.tv-link { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 13px; border-radius: 999px; font-weight: 700; font-size: 0.78rem;
+  background: rgba(10,10,14,.65); border: 1.5px solid rgba(255,255,255,.7); color: #fff; white-space: nowrap; text-decoration: none; transition: border-color .15s; }
+.tv-link:hover, .tv-link:focus-visible { border-color: var(--live); outline: none; }
+.tv-link .jp { color: var(--live); }
+
+/* ---- the screen ---- */
+.tv-scr {
+  position: absolute; z-index: 2;
+  left: calc(var(--ix) + var(--iw) * var(--sx)); top: calc(var(--hi) * var(--sy) - var(--off));
+  width: calc(var(--iw) * var(--sw)); height: calc(var(--hi) * var(--sh));
+  border-radius: 9% / 11%; overflow: hidden; color: #eaf6ff;
+  padding: calc(var(--u) * 5) calc(var(--u) * 6.5) calc(var(--u) * 4.5);
+  display: flex; flex-direction: column; gap: calc(var(--u) * 1.2);
+  background: radial-gradient(ellipse at 50% 42%, var(--s1) 0%, var(--s2) 62%, var(--s3) 100%);
+  box-shadow: inset 0 0 calc(var(--u) * 9) rgba(0,0,0,.75), 0 0 calc(var(--u) * 10) var(--glow);
+  transition: box-shadow .25s;
+}
+.tv-scr::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(rgba(0,0,0,.25) 0 1px, transparent 1px 3px); pointer-events: none; z-index: 3; }
+.tv-scr::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at 28% 12%, rgba(255,255,255,.16), transparent 42%); pointer-events: none; z-index: 4; }
+.tv-scr.is-right { box-shadow: inset 0 0 calc(var(--u) * 9) rgba(0,0,0,.7), 0 0 calc(var(--u) * 12) rgba(125,255,154,.55); }
+.tv-scr.is-wrong { box-shadow: inset 0 0 calc(var(--u) * 9) rgba(0,0,0,.7), 0 0 calc(var(--u) * 12) rgba(255,90,74,.6); }
+.tv-osd { display: flex; justify-content: space-between; gap: 8px; font: 700 max(10px, calc(var(--u) * 3.2)) 'Courier New', monospace;
+  color: #7dff9a; text-shadow: 0 0 6px rgba(125,255,154,.8); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.tv-osd > * { overflow: hidden; text-overflow: ellipsis; }
+.tv-word { font-weight: 700; line-height: 1.15; white-space: nowrap; color: #fff;
+  font-size: min(calc(var(--u) * var(--vs, 15)), calc(var(--u) * 86 / var(--len, 3)));
+  text-shadow: 0 0 calc(var(--u) * 4) rgba(160,220,255,.7), calc(var(--u) * .5) 0 0 rgba(255,60,60,.35), calc(var(--u) * -.5) 0 0 rgba(60,180,255,.35); }
+.tv-sub { font-size: max(11px, calc(var(--u) * 3.3)); color: #b7dcf0; line-height: 1.3; }
+.tv-grow { flex: 1 1 auto; min-height: 0; }
+.tv-cap { background: var(--capc); border-radius: calc(var(--u) * 1.6); padding: calc(var(--u) * 1.6) calc(var(--u) * 3); box-shadow: 0 0 calc(var(--u) * 5) var(--capc);
+  color: #fff; font-size: max(11px, calc(var(--u) * 3)); line-height: 1.3; }
+.tv-echo { min-height: calc(var(--u) * 8); display: flex; align-items: center; gap: calc(var(--u) * 1.6);
+  border: max(1px, calc(var(--u) * .4)) solid rgba(125,255,154,.6); border-radius: calc(var(--u) * 1.4); padding: 0 calc(var(--u) * 2.6);
+  background: rgba(0,0,0,.35); font: 600 max(12px, calc(var(--u) * 4)) 'Noto Serif JP', 'Noto Serif CJK JP', serif; color: #7dff9a; text-shadow: 0 0 6px rgba(125,255,154,.8); overflow: hidden; white-space: nowrap; }
+.tv-echo::after { content: ""; flex: 0 0 auto; width: max(2px, calc(var(--u) * 1.4)); height: 1.1em; background: #7dff9a; animation: tv-blink 1s steps(1) infinite; }
+.tv-echo.is-right { color: #b9ffcb; border-color: #7dff9a; }
+.tv-echo.is-wrong { color: #ffd1cc; border-color: #ff5a4a; text-shadow: 0 0 6px rgba(255,90,74,.8); }
+.tv-echo.is-right::after, .tv-echo.is-wrong::after, .tv-echo.is-shown::after { display: none; }
+.tv-echo.is-shown { color: #ffe3a3; border-color: #ffcf6b; text-shadow: 0 0 6px rgba(255,207,107,.7); }
+.tv-stamp { position: absolute; z-index: 5; right: calc(var(--u) * 6); top: calc(var(--u) * 13); font: 700 max(14px, calc(var(--u) * 6)) 'Noto Serif JP', serif;
+  padding: calc(var(--u) * .8) calc(var(--u) * 2.4); border: max(2px, calc(var(--u) * .7)) solid currentColor; border-radius: calc(var(--u) * 1.4);
+  transform: rotate(-8deg) scale(.6); opacity: 0; transition: transform .2s cubic-bezier(.3,1.6,.5,1), opacity .15s; pointer-events: none; }
+.tv-scr.is-right .tv-stamp, .tv-scr.is-wrong .tv-stamp, .tv-scr.is-shown .tv-stamp { opacity: 1; transform: rotate(-8deg) scale(1); }
+.tv-scr.is-right .tv-stamp { color: #7dff9a; text-shadow: 0 0 10px #7dff9a; }
+.tv-scr.is-wrong .tv-stamp { color: #ff6a5a; text-shadow: 0 0 10px #ff5a4a; }
+.tv-scr.is-shown .tv-stamp { color: #ffcf6b; }
+/* between episodes, the channel shows a test card */
+.tv-end { position: absolute; inset: 0; z-index: 6; display: none; flex-direction: column; align-items: center; justify-content: center; gap: calc(var(--u) * 2);
+  background: repeating-linear-gradient(90deg, #d8d8d8 0 14.28%, #d8d800 14.28% 28.56%, #00d8d8 28.56% 42.84%, #00d800 42.84% 57.12%, #d800d8 57.12% 71.4%, #d80000 71.4% 85.68%, #0000d8 85.68% 100%); }
+.tv-end b { background: rgba(0,0,0,.8); color: #fff; padding: calc(var(--u) * 1.6) calc(var(--u) * 4); border-radius: calc(var(--u) * 1.2); font: 700 max(14px, calc(var(--u) * 6)) 'Noto Serif JP', serif; }
+.tv-end small { background: rgba(0,0,0,.8); color: #7dff9a; padding: calc(var(--u) * .8) calc(var(--u) * 2.4); border-radius: calc(var(--u) * 1); font: 700 max(10px, calc(var(--u) * 3)) 'Courier New', monospace; letter-spacing: .1em; text-transform: uppercase; }
+.tv-page.is-ended .tv-end { display: flex; }
+
+/* what the Conjugator's own elements look like on the glass */
+.tv-scr .verb-type { margin: 0; color: #7dff9a; font-size: inherit; letter-spacing: .06em; font-weight: 700; }
+.tv-scr .verb-kanji { margin: 0; }
+.tv-scr .verb-info { font-size: max(11px, calc(var(--u) * 3.3)); color: #b7dcf0; }
+.tv-badges { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 1.2); min-height: 0; margin: 0; }
+.tv-badges:not(:has(> [style*="inline"])) { display: none; }
+.tv-page .tv-badges .q-badge, .tv-page .dj-badges .dj-tag { font: 700 max(9px, calc(var(--u) * 2.5)) 'Outfit', sans-serif; letter-spacing: .06em; padding: calc(var(--u) * .5) calc(var(--u) * 1.6);
+  border-radius: 999px; background: rgba(0,0,0,.4); color: #ffcf6b; border: 1px solid rgba(255,207,107,.6); text-transform: uppercase; }
+.tv-page .tv-badges .q-badge.quiz { color: #8fe3ff; border-color: rgba(143,227,255,.6); }
+.tv-page .tv-badges #lock-off { background: none; border: 0; padding: 0 0 0 .4em; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+.tv-cap .prompt-form { color: #fff; font-size: inherit; margin: 0; line-height: 1.25; font-weight: 700; }
+.tv-cap .prompt-task { display: block; margin: 0 0 1px; color: rgba(255,255,255,.8); font-size: max(9px, calc(var(--u) * 2.4)); letter-spacing: .12em; }
+.tv-cap .prompt-phrase { display: block; color: #fff; font-size: max(12px, calc(var(--u) * 4.2)); line-height: 1.2; font-weight: 700; }
+.tv-cap .prompt-examples { margin: calc(var(--u) * .8) 0 0; padding: calc(var(--u) * .6) 0 0; border-top: 1px solid rgba(255,255,255,.25); color: rgba(255,255,255,.85);
+  font-size: max(10px, calc(var(--u) * 2.6)); line-height: 1.9; gap: 0 calc(var(--u) * 1.4); flex-direction: row; align-items: baseline; }
+.tv-cap .prompt-examples .ex-label { color: #ffe3a3; font-size: inherit; align-self: baseline; }
+.tv-cap .prompt-examples .ex-sep { display: inline; color: rgba(255,255,255,.35); }
+.tv-cap .prompt-examples .ex-item { white-space: nowrap; }
+.tv-cap .prompt-examples rt { color: rgba(255,255,255,.7); }
+/* the verb-type question carries its own instructions */
+.tv-cap .prompt-form > span[style] { font-size: max(10px, calc(var(--u) * 2.6)) !important; line-height: 1.4 !important; margin-top: 2px !important; color: rgba(255,255,255,.88) !important; }
+.tv-cap .prompt-form > span[style] strong { color: #fff; }
+@media (max-width: 1400px) { .tv-cap .prompt-examples { display: none; } }
+
+/* the VCR's little display */
+.tv-vcr { position: absolute; z-index: 2; left: calc(var(--ix) + var(--iw) * var(--vx)); top: calc(var(--hi) * var(--vy) - var(--off)); transform: translate(-50%, -50%);
+  font: 700 max(9px, calc(var(--iw) * .0075)) 'Courier New', monospace; color: #7dff9a; text-shadow: 0 0 6px #7dff9a; background: #050806; padding: 1px 5px; border-radius: 2px; white-space: nowrap; }
+
+@keyframes tv-blink { 50% { opacity: 0; } }
+
+/* ---- under the TV ---- */
+.tv-below { position: relative; z-index: 6; width: min(840px, calc(100% - 32px)); margin: -46px auto 0; padding-bottom: 60px; }
+.tv-answer { display: flex; gap: 10px; margin: 0 0 10px; }
+.tv-page .tv-answer .answer-input {
+  flex: 1; margin: 0; height: 56px; padding: 0 18px; text-align: left; font-size: 1.3rem; border-radius: 12px;
+  background: #0a0c0f; border: 2px solid #33414d; color: #8fe3ff; box-shadow: inset 0 3px 10px rgba(0,0,0,.6), 0 10px 26px rgba(0,0,0,.45);
+}
+.tv-page .tv-answer .answer-input::placeholder { color: #4d6270; }
+.tv-page .tv-answer .answer-input:focus { border-color: var(--live); outline: none; }
+.tv-page .tv-answer .answer-input:disabled { background: #0a0c0f; color: #56707e; }
+.tv-page .tv-answer .romaji-toggle { width: 56px; height: 56px; border-radius: 12px; border: 2px solid #33414d; background: #1c2229; color: #8fe3ff; }
+.tv-page .tv-answer .romaji-toggle.off { background: #0a0c0f; color: #56707e; border-color: #26313a; }
+
+.tv-remote { display: flex; gap: 10px; padding: 10px; border-radius: 16px; background: linear-gradient(#2c2622, #1b1714); border: 2px solid #4a3d33; box-shadow: 0 14px 30px rgba(0,0,0,.5); }
+.tv-page .tv-remote .check-btn, .tv-page .tv-remote .skip-btn {
+  flex: 1 1 0; width: auto; margin: 0; height: 50px; padding: 0 10px; border: 0; border-radius: 12px; font: 800 0.95rem 'Outfit', sans-serif;
+  background: linear-gradient(#f3e6cf, #d8c7a6); color: #1a1410; box-shadow: 0 4px 0 #8a7250; transition: transform .08s, box-shadow .08s, filter .15s;
+}
+.tv-page .tv-remote .check-btn.primary, .tv-page .tv-remote .check-btn.continue { background: radial-gradient(circle at 50% 30%, var(--g1), var(--g2)); color: #fff; box-shadow: 0 4px 0 var(--g3); }
+.tv-page .tv-remote .check-btn.primary:disabled { opacity: .55; filter: saturate(.6); cursor: default; }
+.tv-page .tv-remote .check-btn.next { background: radial-gradient(circle at 50% 30%, #8ef0a8, #3fae63); color: #0c2414; box-shadow: 0 4px 0 #1f6b39; }
+.tv-page .tv-remote button:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.4); }
+.tv-page .tv-remote button:not(:disabled):hover { filter: brightness(1.06); }
+
+.tv-status { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 10px 2px 0; font-size: 0.8rem; color: #cdbd9f; }
+.tv-page .tv-status .hint-btn { color: #f3e6cf; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.2); border-radius: 999px; padding: 0.3rem 0.85rem; font-size: .8rem; margin: 0; }
+.tv-page .tv-status .hint-btn:hover { border-color: #ffcf6b; color: #fff; }
+.tv-lamps { display: flex; gap: 5px; align-items: center; }
+.tv-lamps i { width: 10px; height: 20px; border-radius: 3px; background: #2a2a30; }
+.tv-lamps i.ok { background: #7dff9a; box-shadow: 0 0 6px #7dff9a; }
+.tv-lamps i.no { background: #ff5a4a; box-shadow: 0 0 6px #ff5a4a; }
+.tv-lamps i.skip { background: transparent; border: 1.5px dashed #777; }
+.tv-lamps i.here { box-shadow: inset 0 0 0 1.5px #f3e6cf; }
+.tv-streak { white-space: nowrap; }
+.tv-streak b { color: #ffcf6b; font-size: .95rem; }
+.tv-send { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+  background: rgba(10,10,14,.6); border: 1.5px solid var(--other); color: #fff; font: 700 .76rem 'Outfit', sans-serif; white-space: nowrap; }
+.tv-send[hidden] { display: none; }
+.tv-send:hover { background: rgba(255,255,255,.08); }
+
+/* a list handed over from the other page */
+.tv-queue { display: flex; align-items: center; gap: 10px; margin: 10px 0 0; padding: 8px 12px; border-radius: 12px; font-size: .82rem;
+  background: rgba(10,10,14,.6); border: 1.5px solid var(--other); color: #fff; }
+.tv-queue[hidden] { display: none; }
+.tv-queue button { margin-left: auto; background: none; border: 1.5px solid rgba(255,255,255,.4); color: #fff; border-radius: 999px; padding: 3px 10px; font: 700 .74rem 'Outfit', sans-serif; cursor: pointer; }
+
+/* feedback, hints and the round summary: printed on paper, like a TV guide */
+.tv-page .feedback, .tv-page .hint-box, .tv-page .session-summary {
+  margin: 12px 0 0; border-radius: 14px; background: #f6efe2; color: #2b2320; text-align: left; box-shadow: 0 12px 28px rgba(0,0,0,.4); border: 0;
+}
+.tv-page .feedback { padding: 1rem 1.2rem; border-left: 6px solid #b9a98a; }
+.tv-page .feedback.correct { border-left-color: #3fae63; background: #eef7ee; }
+.tv-page .feedback.incorrect { border-left-color: #d8362a; background: #fbefec; }
+.tv-page .feedback.warning { border-left-color: #e6a756; background: #fdf3e3; }
+.tv-page .feedback-answer { font-size: 1.35rem; }
+.tv-page .hint-box { border-left: 6px solid #ffcf6b; padding: 1rem 1.2rem; }
+.tv-page .session-summary { padding: 1.4rem 1.2rem; text-align: center; border-top: 6px solid var(--g2); }
+
+/* ---- the two channels ---- */
+.tv-page.is-onair { --img: url(tv-hero.jpg); --tv-bg: #140f0c;
+  --sx: .3737; --sy: .2396; --sw: .2156; --sh: .4193; --cx: .4815; --vx: .485; --vy: .885; --p: .41;
+  --tx: calc(var(--ix) + var(--iw) * .69);
+  --s1: #1f5a7a; --s2: #0f2f45; --s3: #07141f; --glow: rgba(140,200,255,.35); --capc: rgba(214,58,43,.93);
+  --live: #ff6a5a; --seal: #e04a3b; --g1: #ff7a6b; --g2: #d8362a; --g3: #7e1c14; --other: #8f9dff; }
+.tv-page.is-vhs { --img: url(vhs-hero.jpg); --tv-bg: #070b16;
+  --sx: .3905; --sy: .1882; --sw: .2192; --sh: .4111; --cx: .5; --vx: .4995; --vy: .7035; --p: .32;
+  --tx: max(16px, calc(var(--ix) + var(--iw) * .06));
+  --s1: #1c2f86; --s2: #0f1a55; --s3: #060a26; --glow: rgba(80,110,255,.4); --capc: rgba(46,70,190,.93);
+  --live: #7dff9a; --seal: #3a4fc9; --g1: #7f95ff; --g2: #3a4fc9; --g3: #1f2a7a; --other: #ff6a5a; }
+.tv-page.is-vhs .tv-set { background: linear-gradient(#1c2130, #121622); border-color: #2f3a55; }
+.tv-page.is-vhs .tv-remote { background: linear-gradient(#1f2433, #141824); border-color: #2f3a55; }
+
+/* ---- the remote's settings: ① ② ③ ---- */
+.tv-set { margin: 14px 0 0; border-radius: 14px; overflow: hidden; color: #f3e6cf;
+  background: linear-gradient(#2a2420, #1b1714); border: 2px solid #4a3d33; box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(0,0,0,.4); }
+.tv-set-head { display: flex; align-items: center; gap: .9rem; padding: 7px 7px 7px 14px; }
+.tv-set-title { font: 700 .82rem 'Outfit', sans-serif; white-space: nowrap; }
+.tv-set-sum { display: flex; align-items: center; gap: .9rem; min-width: 0; flex-wrap: wrap; }
+.tv-set-part { display: inline-flex; align-items: center; gap: 6px; font: 600 .78rem 'Outfit', sans-serif; white-space: nowrap; }
+.tv-set-part b { font-weight: 600; }
+.tv-set-part.is-narrow b { color: #ffcf6b; }
+.tv-set-n { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; flex: 0 0 auto; background: var(--seal); color: #fff; font: 800 .62rem/1 'Outfit', sans-serif; }
+.tv-set-lcd { margin-left: auto; display: inline-flex; align-items: baseline; gap: 7px; white-space: nowrap; background: #08090b; border: 1px solid #2c3036; border-radius: 8px; padding: 4px 10px; }
+.tv-set-lcd b { font: 700 1.1rem/1 'Courier New', monospace; color: #7dff9a; text-shadow: 0 0 8px rgba(125,255,154,.6); letter-spacing: .04em; }
+.tv-set-lcd small { font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: #9aa3b8; font-weight: 800; }
+.tv-set-btn { flex: 0 0 auto; height: 32px; padding: 0 12px 0 14px; border-radius: 10px; border: 0; cursor: pointer; white-space: nowrap;
+  background: #f3e6cf; color: #1a1410; font: 700 .8rem 'Outfit', sans-serif; box-shadow: 0 3px 0 #8a7250; display: inline-flex; align-items: center; gap: 6px; }
+.tv-set-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #8a7250; }
+.tv-set-btn .chev { font-size: .7rem; transition: transform .15s; }
+.tv-set-done { display: none; }
+.tv-set.open .tv-set-change { display: none; }
+.tv-set.open .tv-set-done { display: inline; }
+.tv-set.open .tv-set-btn .chev { transform: rotate(180deg); }
+.tv-set.open .tv-set-head { border-bottom: 1px solid #3a3029; }
+.tv-set.open .tv-set-sum { display: none; }
+.tv-set-body { display: none; grid-template-columns: 1fr 1fr 1fr; }
+.tv-set.open .tv-set-body { display: grid; }
+.tv-set-col { padding: 12px 14px 14px; min-width: 0; }
+.tv-set-col + .tv-set-col { border-left: 1px solid #3a3029; }
+.tv-set-lbl { display: flex; align-items: center; gap: 7px; font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: #bfae8f; font-weight: 800; }
+.tv-set-note { font-size: .7rem; color: #a8987c; line-height: 1.35; margin: 5px 0 10px; }
+.tv-set-stack { display: flex; flex-direction: column; gap: 9px; align-items: stretch; }
+.tv-page .tv-set select, .tv-page .tv-set .form-select {
+  width: 100%; min-width: 0 !important; flex: none !important; margin: 0 !important; height: 34px; padding: 0 .7rem; border-radius: 10px;
+  background: #1a1613; border: 1.5px solid #4a3d33; color: #f3e6cf; font: 600 .8rem 'Outfit', sans-serif;
+}
+.tv-page .tv-set select:focus { outline: none; border-color: #ffcf6b; }
+.tv-page .tv-set select option, .tv-page .tv-set select optgroup { background: #1a1613; color: #f3e6cf; }
+.tv-set-tog { display: flex; align-items: flex-start; gap: 8px; font-size: .78rem; color: #e6d7bb; line-height: 1.35; cursor: pointer; }
+.tv-set-tog input { margin-top: 2px; accent-color: var(--g2); }
+.tv-set .dj-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tv-page .tv-set .dj-chip { background: #1a1613; border: 1.5px solid #4a3d33; color: #cdbd9f; border-radius: 999px; padding: .28rem .7rem; font: 600 .76rem 'Outfit', sans-serif; cursor: pointer; }
+.tv-page .tv-set .dj-chip:hover { border-color: #ffcf6b; color: #fff; }
+.tv-page .tv-set .dj-chip.on { background: #f3e6cf; border-color: #f3e6cf; color: #1a1410; }
+.tv-set-sub { font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: #8f8068; font-weight: 800; margin: 4px 0 -2px; }
+
+/* the small print: report, reset, shortcuts */
+.tv-extras { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; font-size: .78rem; color: #a8987c; }
+.tv-page .tv-extras button:not(.info-chip), .tv-page .tv-extras .report-btn, .tv-page .tv-extras .reset-btn {
+  background: rgba(255,255,255,.05) !important; border: 1.5px solid rgba(255,255,255,.18) !important; color: #e6d7bb !important;
+  border-radius: 999px !important; padding: .32rem .8rem !important; font: 600 .76rem 'Outfit', sans-serif !important; cursor: pointer; box-shadow: none !important; }
+.tv-page .tv-extras button:hover { border-color: #ffcf6b !important; color: #fff !important; }
+.tv-page .tv-extras .info-chip { margin-left: auto; }
+
+/* ---- smaller screens: the photo is zoomed in on the TV, the title gets a bar of its own ---- */
+@media (max-width: 1500px) {
+  .tv-page { --iw: max(100vw, 1500px); --ix: calc(50vw - var(--cx) * var(--iw)); }
+}
+@media (max-width: 1200px) {
+  .tv-ttl { position: static; display: flex; align-items: center; gap: 12px; margin: 75px auto 0; padding: 12px 16px; width: min(840px, 100%); }
+  .tv-ttl .tv-seal { margin: 0; width: 38px; height: 38px; font-size: 1.1rem; }
+  .tv-ttl .tv-eyebrow { display: none; }
+  .tv-ttl h1 { margin: 0; font-size: 1.7rem; }
+  .tv-ttl .tv-live { margin-top: 3px; font-size: .64rem; }
+  .tv-ttl .tv-link { margin-left: auto; }
+  .tv-room { margin-top: 0; }
+}
+@media (max-width: 700px) {
+  .tv-page { --iw: 235vw; --hc: calc(var(--hi) * 0.8); }
+  .tv-below { margin-top: -30px; }
+  .tv-remote { flex-wrap: wrap; }
+  .tv-set-head { flex-wrap: wrap; gap: .6rem .9rem; }
+  .tv-set-sum { order: 5; flex: 1 1 100%; gap: .5rem .9rem; }
+  .tv-set-lcd small { display: none; }
+  .tv-set-body { grid-template-columns: 1fr; }
+  .tv-set-col + .tv-set-col { border-left: 0; border-top: 1px solid #3a3029; }
+  .tv-send { margin-left: 0; }
+}
+@media (max-width: 640px) {
+  .tv-ttl { margin-top: 109px; }
+  .tv-ttl h1 { font-size: 1.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tv-live::before, .tv-echo::after { animation: none; }
+  .tv-stamp { transition: none; }
+}
+
+/* Rewind's page keeps its own <style> for the old layout; on the glass these win */
+.tv-scr .dj-word { color: #fff; margin: 0; font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; word-break: keep-all; }
+.tv-scr .dj-prompt { margin: 0; color: #b7dcf0; font-size: max(11px, calc(var(--u) * 3.3)); }
+.tv-scr .dj-badges { justify-content: flex-start; margin: 0; min-height: 0; gap: calc(var(--u) * 1.2); }
+.tv-scr .dj-badges:empty { display: none; }
+.tv-page .dj-answer.tv-answer { max-width: none; margin: 0 0 10px; }
+.tv-osd #tv-osd-r { margin-left: auto; }
+
+/* ---- How it works: a teletext page on the TV ---- */
+.tv-tt { position: absolute; inset: 0; z-index: 8; background: #000; color: #fff; display: flex; flex-direction: column; gap: calc(var(--u) * 1.6);
+  padding: calc(var(--u) * 5) calc(var(--u) * 6) calc(var(--u) * 4.5); font: 700 max(11px, calc(var(--u) * 3.3))/1.4 'Courier New', 'Noto Sans CJK JP', monospace; }
+.tt-head { display: flex; justify-content: space-between; color: #ffff00; letter-spacing: .04em; }
+.tt-bar { background: #0000d8; color: #ffff00; padding: calc(var(--u) * .6) calc(var(--u) * 2); letter-spacing: .12em; text-transform: uppercase; }
+.tt-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
+.tt-body b { color: #ffff00; font-weight: 700; }
+.tt-n { color: #00ffff; }
+.tt-keys { display: flex; gap: calc(var(--u) * 1.6); flex-wrap: wrap; }
+.tt-keys button { border: 0; padding: calc(var(--u) * .6) calc(var(--u) * 2); font: inherit; cursor: pointer; }
+.tt-keys button:disabled { opacity: .35; cursor: default; }
+.tt-red { background: #d80000; color: #fff; }
+.tt-green { background: #00d800; color: #000; }
+.tt-yellow { background: #d8d800; color: #000; }
+.tv-page.is-teletext .tv-help-btn { border-color: #ffff00; color: #ffff00; }
