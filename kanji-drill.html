@@ -266,6 +266,10 @@
     .kd-opt.is-on .kd-dot { background: radial-gradient(var(--wok-red) 0 3.5px, #fff 4.5px); }
     .kd-opt b { display: block; font-size: 0.86rem; }
     .kd-opt span { display: block; font-size: 0.76rem; color: #6d625a; line-height: 1.35; margin-top: 2px; }
+    .kd-say { display: flex; align-items: center; gap: 8px; margin: -2px 0 10px 26px; font-size: 0.8rem; font-weight: 700; color: var(--wok-ink); cursor: pointer; }
+    .kd-say input { width: 16px; height: 16px; margin: 0; accent-color: var(--wok-red); cursor: pointer; }
+    .kd-say.is-off { opacity: 0.45; cursor: default; }
+    .kd-say.is-off input { cursor: default; }
     .kd-set-note { font-size: 0.72rem; color: #8b8273; margin: 2px 0 0; line-height: 1.35; }
     /* the quick "right, next" moment when skipping ahead */
     .kd-flash { position: absolute; left: 50%; top: -15px; transform: translateX(-50%); z-index: 2; white-space: nowrap;
@@ -499,6 +503,7 @@
           <p class="kd-set-h" id="kd-set-h" data-i18n="kd_set_title">Kitchen settings</p>
           <p class="kd-set-q" data-i18n="kd_set_q">When I get one right…</p>
           <button type="button" class="kd-opt" data-auto="show"><i class="kd-dot"></i><span><b data-i18n="kd_set_show">Show me the answer card</b><span data-i18n="kd_set_show_d">See the meaning, readings and an example word, then press Enter. Best while a block is new.</span></span></button>
+          <label class="kd-say" id="kd-say-row"><input type="checkbox" id="kd-say"><span data-i18n="kd_set_say">Say the reading out loud</span></label>
           <button type="button" class="kd-opt" data-auto="fast"><i class="kd-dot"></i><span><b data-i18n="kd_set_fast">Go straight to the next kanji</b><span data-i18n="kd_set_fast_d">A quick green flash, then the next one. For reviewing kanji you already know.</span></span></button>
           <p class="kd-set-note" data-i18n="kd_set_note">A wrong answer always stops, so you can see the right one.</p>
         </div>
@@ -686,6 +691,7 @@
     function newQuestion() {
       if (!dataReady()) return;
       clearTimeout(state.autoTimer);
+      if (window.KA_Listen) KA_Listen.stop();
       var card = document.querySelector('.drill-card');
       if (card) card.classList.remove('is-right', 'is-wrong');
       var flash = document.querySelector('.kd-flash');
@@ -955,6 +961,12 @@
           vocabHtml +
         '</div>';
       wireHear(fb, item);
+      // Say the main reading as the card opens, so the sound sticks to the
+      // meaning (the Say-it-out-loud setting; on unless it was switched off).
+      if (state.autoNext !== 'fast' && state.sayIt && canHear() && window.kanjiMainSpeech) {
+        var hearBtn = fb.querySelector('.kd-hear[data-hear="readings"]');
+        try { KA_Listen.speak(window.kanjiMainSpeech(item), hearBtn); } catch (e) {}
+      }
 
       var check = $('drill-check');
       check.style.display = 'block';
@@ -1279,8 +1291,19 @@
       // Kitchen settings (the gear in the score bar). Remembered per browser.
       state.autoNext = 'show';
       try { if (localStorage.getItem('kanjiDrillAutoNext') === 'fast') state.autoNext = 'fast'; } catch (e) {}
-      var gear = $('kd-gear'), panel = $('kd-set');
+      state.sayIt = true;
+      try { if (localStorage.getItem('kanjiDrillSay') === '0') state.sayIt = false; } catch (e) {}
+      var gear = $('kd-gear'), panel = $('kd-set'), say = $('kd-say'), sayRow = $('kd-say-row');
+      say.addEventListener('change', function () {
+        state.sayIt = say.checked;
+        try { localStorage.setItem('kanjiDrillSay', state.sayIt ? '1' : '0'); } catch (e) {}
+      });
       function paintSet() {
+        // Saying the reading only makes sense when the answer card is shown.
+        var fast = state.autoNext === 'fast';
+        say.checked = state.sayIt && !fast;
+        say.disabled = fast;
+        sayRow.classList.toggle('is-off', fast);
         panel.querySelectorAll('.kd-opt').forEach(function (b) {
           var on = b.getAttribute('data-auto') === state.autoNext;
           b.classList.toggle('is-on', on);
