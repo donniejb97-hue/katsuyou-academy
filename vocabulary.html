@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
   <script src="analytics.js"></script>
-  <title>Japanese Vocabulary Flashcards | Katsuyō Academy</title>
+  <title>学生 Night Owl — Japanese Vocabulary Flashcards | Katsuyō Academy</title>
   <meta name="description" content="Build your Japanese vocabulary with interactive flashcards organized by category and JLPT level.">
   <link rel="canonical" href="https://katsuyoacademy.com/vocabulary">
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="words-theme.css">
+  <link rel="stylesheet" href="night-theme.css">
 </head>
 <body data-page="vocabulary">
 
@@ -39,8 +40,8 @@
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
         <a class="nav-link" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
         <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
-        <a class="nav-link active" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
-        <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
+        <a class="nav-link active" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Night Owl</a>
+        <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Night Shift</a>
         <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">The WoK</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
@@ -106,15 +107,36 @@
         #page-vocabulary .vocab-search-hit { grid-template-columns: 1fr 1fr; }
         #page-vocabulary .vs-en { grid-column: 1 / -1; }
       }
+      /* ---- Night shift: Tokyo from the rooftop is the header. The painting
+         keeps its own shape (2560 x 1086), so wider screens see more of the
+         city; the Word Book rides up over its dark bottom edge. ---- */
+      #page-vocabulary.wd-page { padding-top: 0; background-color: #1f1a21; }
+      #page-vocabulary .vb-night { position: relative; margin-top: 75px;   /* just under the fixed nav */
+        height: clamp(320px, 36.8vw, 760px);   /* trims a little sky */
+        background: #1f1a21 url(book-hero.jpg) center bottom / cover no-repeat; }
+      #page-vocabulary .vb-night::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+        height: clamp(60px, 5vw, 120px); background: linear-gradient(rgba(31,26,33,0), #1f1a21); }
+      #page-vocabulary .wd-wrap { position: relative; z-index: 2; margin-top: calc(-1 * clamp(190px, 19vw, 400px)); }
+      #page-vocabulary .wd-title, #page-vocabulary .wd-eyebrow { text-shadow: 0 1px 3px #000, 0 2px 14px rgba(0,0,0,0.9); }
+      #page-vocabulary .wd-eyebrow { color: #ff8f80; }   /* the ink red is lost against the city lights */
+      #page-vocabulary .wd-hero-right { background: rgba(20,18,28,0.72); padding: 6px 10px; border-radius: 14px;
+        -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+      @media (max-width: 640px) {
+        #page-vocabulary .vb-night { margin-top: 109px; height: 62vw; background-position: 62% bottom; }
+        #page-vocabulary .wd-wrap { margin-top: -24vw; }
+      }
     </style>
+
+    <!-- the painting: Tokyo at night from a rooftop, train on the curve -->
+    <div class="vb-night" aria-hidden="true"></div>
 
     <div class="wd-wrap">
 
       <div class="wd-hero">
-        <div class="wd-seal">語</div>
+        <div class="wd-seal is-gakusei" title="学生 — gakusei, student">学生</div>
         <div>
-          <div class="wd-eyebrow"><span data-i18n="wb_eyebrow">Words</span> · 単語</div>
-          <h1 class="wd-title" data-i18n="wb_title">Word Book</h1>
+          <div class="wd-eyebrow"><span data-i18n="wb_eyebrow">Vocabulary flashcards</span> · 学生</div>
+          <h1 class="wd-title" data-i18n="wb_title">Night Owl</h1>
         </div>
         <div class="wd-hero-right">
           <span class="wd-sub" id="wb-sub"></span>
@@ -128,8 +150,14 @@
         </div>
       </div>
 
-      <!-- the rail: one station per deck -->
-      <div class="wd-rail-wrap" id="wb-rail" aria-label="Decks"></div>
+      <!-- the night line: one stop per deck -->
+      <div class="nt-line">
+        <div class="nt-note" data-i18n="nt_line">The night line — pick a stop</div>
+        <div class="wd-rail-wrap" id="wb-rail" aria-label="Decks"></div>
+      </div>
+
+      <!-- a short deck handed over from Night Shift -->
+      <div class="nt-focus" id="wb-focus" hidden></div>
 
       <div id="vocab-info-overlay" class="cheat-overlay" role="dialog" aria-modal="true" aria-labelledby="vocab-info-title">
         <div class="cheat-box" style="max-width: 540px;">
@@ -143,6 +171,7 @@
       <!-- the sheet. The ids inside are what app.js writes the card into;
            the squares are drawn from them by the page script below. -->
       <div class="wd-sheet" id="flashcard-vocab" onclick="flipCardVocab()">
+        <i class="nt-band" aria-hidden="true"></i>
         <div class="wd-mark" aria-hidden="true"></div>
         <span class="ka-split" id="vocab-listen-split" style="display: none;">
           <button type="button" class="wd-hear" id="vocab-listen" title="Listen" aria-label="Listen" onclick="event.stopPropagation()">🔊</button>
@@ -209,19 +238,29 @@
         <button type="button" id="vocab-voice-preview" data-i18n="talk_voice_preview">▶ Preview</button>
       </div>
 
-      <div class="wd-strip-h">
-        <button type="button" class="wd-strip-toggle" id="wb-strip-toggle" aria-expanded="false" aria-controls="wb-stamps">
-          <span class="wd-strip-chev" aria-hidden="true">▾</span>
-          <span data-i18n="wb_this_deck">This deck</span> · <span id="wb-deck-name" class="jp"></span>
+      <!-- your city tonight: one window per word in this deck -->
+      <div class="nt-city">
+        <div class="wd-strip-h">
+          <button type="button" class="wd-strip-toggle" id="wb-strip-toggle" aria-expanded="true" aria-controls="wb-stamps">
+            <span class="wd-strip-chev" aria-hidden="true">▾</span>
+            <span data-i18n="nt_city">Your city tonight</span> · <span id="wb-deck-name" class="jp"></span>
+          </button>
           <span class="wd-strip-count" id="wb-strip-count"></span>
-        </button>
-        <span class="wd-legend">
-          <span><i style="background:var(--wd-green)"></i><span data-i18n="wb_known">known</span></span>
-          <span><i style="background:var(--wd-ink);border:2px solid var(--wd-red);box-sizing:border-box"></i><span data-i18n="kw_s_shaky">shaky</span></span>
-          <span><i style="background:var(--wd-ink-2);border:1.5px solid var(--wd-line);box-sizing:border-box"></i><span data-i18n="kw_s_new">new</span></span>
-        </span>
+        </div>
+        <div class="wd-stamps nt-sky" id="wb-stamps"></div>
+        <div class="nt-legend" id="wb-legend">
+          <span><i class="is-got"></i><span data-i18n="nt_leg_got">got it</span></span>
+          <span><i class="is-still"></i><span data-i18n="nt_leg_still">still learning</span></span>
+          <span><i></i><span data-i18n="nt_leg_new">not seen yet</span></span>
+          <span class="nt-legend-tip" data-i18n="nt_leg_tap">tap a window to jump to that word</span>
+        </div>
       </div>
-      <div class="wd-stamps is-folded" id="wb-stamps"></div>
+
+      <!-- take them to the vending machines -->
+      <div class="nt-send" id="wb-send">
+        <span class="nt-send-h" data-i18n="nt_take">Quiz them in 学生 Night Shift</span>
+        <div class="nt-send-row" id="wb-send-row"></div>
+      </div>
 
       <!-- kept for app.js -->
       <span id="cards-studied-vocab" style="display:none;">0</span>
@@ -232,7 +271,7 @@
   </div>
 
   <script>
-    // ---- the Word Book's page script: draws what app.js decides ----------
+    // ---- 学生 Night Owl's page script: draws what app.js decides ----------
     (function () {
       'use strict';
       var railHost, currentCard = null, currentOpts = {};
@@ -292,32 +331,117 @@
         paintStamps();
       }
 
+      // ---- your city tonight -------------------------------------------
+      // One window per word in the deck, in the deck's own order so a window
+      // stays where it is. Gold = got it, pink = still learning, dark = not
+      // seen yet. Buildings are cut from the list at stable, varied widths.
+      var lastLit = null;   // the word just graded, so its window can flash
+      function cityCards() {
+        if (!window.KA_Vocab || !window.KA_Words) return [];
+        var f = KA_Vocab.focus && KA_Vocab.focus();
+        return f ? f.cards : KA_Words.deckCards(KA_Vocab.deck());
+      }
       function paintStamps() {
         var host = $('wb-stamps');
         if (!host || !window.KA_Vocab || !window.KA_Words) return;
-        var cards = KA_Vocab.cards();
+        var cards = cityCards();
         var cur = KA_Vocab.current();
         var counts = { solid: 0, shaky: 0, 'new': 0 };
-        var html = '';
-        for (var i = 0; i < cards.length; i++) {
-          var c = cards[i], st = KA_Words.status(c);
-          counts[st]++;
-          html += '<button type="button" class="wd-stamp st-' + st + (c === cur ? ' is-here' : '') + '" data-i="' + i +
-            '" style="--c:' + KA_Words.stampColour(c) + ';--tilt:' + KA_Words.tilt(c) + 'deg" title="' +
-            esc((c.kanji || c.katakana || c.japanese) + ' · ' + c.english) + '">' + esc(KA_Words.stampChar(c)) + '</button>';
+        // Buildings: about a dozen for a small deck, more for a big one, each
+        // a stable width and height so the skyline doesn't jump around.
+        // A big deck (All decks is 941 words) gets smaller windows and wider
+        // buildings, so the whole city still fits in one skyline.
+        var dense = cards.length > 300;
+        host.classList.toggle('is-dense', dense);
+        var per = Math.max(3, Math.ceil(cards.length / (dense ? 15 : 12)));
+        var COLS = dense ? [5, 7, 4, 8, 6, 5, 9, 6, 4, 7, 6, 10] : [2, 3, 2, 4, 3, 2, 5, 3, 2, 4, 3, 6];
+        var html = '', i = 0, b = 0;
+        while (i < cards.length) {
+          var cols, cap;
+          if (dense) {
+            // pick a height first, then as many columns as that height needs
+            var ROWS = [10, 14, 8, 17, 12, 9, 15, 11, 13, 7];
+            var rows = ROWS[b % ROWS.length];
+            cap = Math.round(per * (0.7 + ((b * 37) % 7) / 10));
+            cols = Math.max(2, Math.ceil(cap / rows));
+          } else {
+            cols = Math.min(COLS[b % COLS.length], Math.max(2, Math.ceil(per / 2)));
+            cap = Math.max(cols, Math.round(per * (0.6 + ((b * 37) % 9) / 10)));
+          }
+          var n = Math.min(cap, cards.length - i);
+          // a leftover too small for its own building joins this one
+          if (cards.length - i - n > 0 && cards.length - i - n < per * 0.6) {
+            n = cards.length - i;
+            if (dense) cols = Math.max(cols, Math.ceil(n / 17));
+          }
+          html += '<div class="nt-bld" style="--cols:' + cols + '">';
+          for (var k = 0; k < n; k++, i++) {
+            var c = cards[i], st = KA_Words.status(c), id = KA_Words.cardId(c);
+            counts[st]++;
+            html += '<button type="button" class="nt-win st-' + st + (c === cur ? ' is-here' : '') +
+              (lastLit && lastLit === id ? ' is-flash' : '') + '" data-id="' + esc(id) + '" title="' +
+              esc((c.kanji || c.katakana || c.japanese) + ' · ' + c.english) + '"></button>';
+          }
+          html += '</div>';
+          b++;
         }
         host.innerHTML = html;
+        lastLit = null;
         var known = $('wb-known');
-        if (known) known.textContent = counts.solid + ' ' + ct('wb_known', 'known') + (counts.shaky ? ' · ' + counts.shaky + ' ' + ct('kw_s_shaky', 'shaky').toLowerCase() : '');
+        if (known) known.textContent = counts.solid + ' ' + ct('wb_known', 'known') + (counts.shaky ? ' · ' + counts.shaky + ' ' + ct('nt_leg_still', 'still learning') : '');
         var bar = $('wb-bar');
         if (bar) bar.style.width = (cards.length ? Math.round(counts.solid / cards.length * 100) : 0) + '%';
         var cnt = $('wb-strip-count');
-        if (cnt) cnt.textContent = '· ' + cards.length + ' · ' + counts.solid + ' ' + ct('wb_known', 'known') + (counts.shaky ? ' · ' + counts.shaky + ' ' + ct('kw_s_shaky', 'shaky').toLowerCase() : '');
+        if (cnt) cnt.innerHTML = ct('nt_lit', '{n} of {t} windows lit')
+          .replace('{n}', '<b>' + counts.solid + '</b>').replace('{t}', cards.length);
         var name = $('wb-deck-name');
         if (name) {
+          var f = KA_Vocab.focus && KA_Vocab.focus();
           var d = KA_Words.deck(KA_Vocab.deck());
-          name.textContent = (d.jp ? d.jp + ' ' : '') + KA_Words.deckName(KA_Vocab.deck());
+          name.textContent = f ? ct('nt_misses', 'your misses') : (d.jp ? d.jp + ' ' : '') + KA_Words.deckName(KA_Vocab.deck());
         }
+        paintSend(cards);
+        paintFocus();
+      }
+
+      // ---- quiz them in Night Shift ---------------------------------------
+      function paintSend(cards) {
+        var row = $('wb-send-row');
+        if (!row || !window.KA_Words) return;
+        var f = KA_Vocab.focus && KA_Vocab.focus();
+        var deck = KA_Vocab.deck();
+        var dn = f ? ct('nt_misses', 'your misses') : KA_Words.deckName(deck);
+        var shaky = cards.filter(function (c) { return KA_Words.status(c) === 'shaky'; });
+        var fresh = cards.filter(function (c) { return KA_Words.status(c) === 'new'; });
+        var allShaky = KA_Words.deckCards('all').filter(function (c) { return KA_Words.status(c) === 'shaky'; });
+        var btns = [];
+        var add = function (key, label, list, lab2) {
+          if (!list.length) return;
+          btns.push('<button type="button" class="nt-go" data-send="' + key + '">' + esc(label) + ' <b>' + list.length + '</b></button>');
+          sends[key] = { cards: list, label: lab2 };
+        };
+        sends = {};
+        add('shaky', ct('nt_q_shaky', 'The still-learning ones'), shaky, dn + ' · ' + ct('nt_leg_still', 'still learning'));
+        add('new', ct('nt_q_new', 'The ones I haven’t seen'), fresh, dn + ' · ' + ct('nt_leg_new', 'not seen yet'));
+        add('deck', f ? ct('nt_q_misses', 'All my misses') : ct('nt_q_deck', 'This whole deck'), cards, dn);
+        if (deck !== 'all' || f) add('every', ct('nt_q_all', 'Every still-learning word'), allShaky, ct('nt_leg_still', 'still learning'));
+        row.innerHTML = btns.join('');
+        $('wb-send').hidden = !btns.length;
+      }
+      var sends = {};
+
+      // ---- a deck handed over from Night Shift ----------------------------
+      function paintFocus() {
+        var box = $('wb-focus');
+        if (!box || !window.KA_Vocab) return;
+        var f = KA_Vocab.focus && KA_Vocab.focus();
+        box.hidden = !f;
+        if (!f) return;
+        box.innerHTML = '<span class="nt-focus-can" aria-hidden="true"></span><span>' +
+          esc(ct('nt_focus', 'Studying the words you missed in Night Shift ({n})').replace('{n}', f.cards.length)) +
+          '</span><button type="button" class="nt-focus-end" id="wb-focus-end">' + esc(ct('nt_focus_end', 'Back to the whole deck')) + '</button>';
+        var end = $('wb-focus-end');
+        if (end) end.addEventListener('click', function () { KA_Vocab.endFocus(); });
       }
 
       function onDeck(key) {
@@ -326,6 +450,7 @@
       }
 
       function onGrade(card, right) {
+        if (window.KA_Words) lastLit = KA_Words.cardId(card);
         if (railHost && window.KA_Words) KA_Words.paintRail(railHost, KA_Vocab.deck());
       }
 
@@ -360,11 +485,11 @@
           new MutationObserver(sync).observe(split, { attributes: true, attributeFilter: ['style'] });
         }
         // the strip starts folded, and remembers whichever way you left it
-        var STRIP_KEY = 'katsuyo-vocab-strip';
+        var STRIP_KEY = 'katsuyo-vocab-city';
         var tg = $('wb-strip-toggle'), strip = $('wb-stamps');
         if (tg && strip) {
-          var open = false;
-          try { open = localStorage.getItem(STRIP_KEY) === 'open'; } catch (e) {}
+          var open = true;
+          try { open = localStorage.getItem(STRIP_KEY) !== 'closed'; } catch (e) {}
           var paintFold = function () {
             strip.classList.toggle('is-folded', !open);
             tg.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -378,10 +503,16 @@
         }
         var stamps = $('wb-stamps');
         if (stamps) stamps.addEventListener('click', function (e) {
-          var b = e.target.closest('.wd-stamp');
-          if (!b || !window.KA_Vocab) return;
-          var card = KA_Vocab.cards()[Number(b.dataset.i)];
+          var b = e.target.closest('.nt-win');
+          if (!b || !window.KA_Vocab || !window.KA_Words) return;
+          var card = KA_Words.byId(b.dataset.id);
           if (card) KA_Vocab.goTo(card);
+        });
+        var sendRow = $('wb-send-row');
+        if (sendRow) sendRow.addEventListener('click', function (e) {
+          var b = e.target.closest('[data-send]');
+          var s1 = b && sends[b.dataset.send];
+          if (s1 && window.KA_Words) KA_Words.sendToQuiz(s1.cards, s1.label);
         });
         // ✓ / ✗ from the keyboard, like the arrows: J = got it, K = still learning
         document.addEventListener('keydown', function (e) {
@@ -390,6 +521,13 @@
           if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
           if (e.key === 'j' || e.key === 'J') { e.preventDefault(); if (window.KA_Vocab) KA_Vocab.grade(true); }
           if (e.key === 'k' || e.key === 'K') { e.preventDefault(); if (window.KA_Vocab) KA_Vocab.grade(false); }
+          if ((e.key === '[' || e.key === ']') && window.KA_Vocab && railHost && railHost.__decks) {
+            e.preventDefault();
+            var ds = railHost.__decks.map(function (d) { return d.key; });
+            var at = ds.indexOf(KA_Vocab.deck());
+            var to = ds[(at + (e.key === ']' ? 1 : ds.length - 1)) % ds.length];
+            if (to) KA_Vocab.setDeck(to);
+          }
         });
         // repaint names when the language changes
         window.addEventListener('katsuyo:lang', function () {

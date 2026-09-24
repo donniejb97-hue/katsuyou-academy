@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
   <script src="analytics.js"></script>
-  <title>Vocabulary Quiz — Japanese Words, Readings & Meanings | Katsuyō Academy</title>
+  <title>学生 Night Shift — Japanese Vocabulary Quiz | Katsuyō Academy</title>
   <meta name="description" content="Drill 941 Japanese vocabulary cards three ways — meaning, reading and production — with spaced repetition that brings back what you get wrong.">
   <link rel="canonical" href="https://katsuyoacademy.com/vocabquiz">
   <link rel="icon" type="image/png" href="open_book.png">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="words-theme.css">
+  <link rel="stylesheet" href="night-theme.css">
 </head>
 <body data-page="vocabquiz">
 
@@ -39,8 +40,8 @@
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
         <a class="nav-link" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
         <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
-        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Vocabulary</a>
-        <a class="nav-link active" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Vocab Quiz</a>
+        <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Night Owl</a>
+        <a class="nav-link active" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Night Shift</a>
         <a class="nav-link" data-page="kanji" href="/kanji" data-i18n="nav_kanji">The WoK</a>
         <span style="color: var(--accent); opacity: 0.8; user-select: none; font-weight: 400; padding: 0 0.4rem; font-size: 1.3rem; line-height: 1;">|</span>
         <a class="nav-link" data-page="about" href="/about" data-i18n="nav_contact">Contact</a>
@@ -183,21 +184,46 @@
         #page-vocabquiz .dojo-kanji-tip { border-bottom: none; cursor: default; }
         #page-vocabquiz .vq-input { font-size: 1.4rem; }
       }
+      /* ---- Night shift: the vending-machine street is the header. The page
+         starts under the nav, the painting keeps its own shape (2560 x 941) so
+         wider screens see more of the street, and the quiz rides up over the
+         bottom of the painting, where it fades into the night. ---- */
+      #page-vocabquiz.wd-page { padding-top: 0; background-color: #141620; }
+      #page-vocabquiz .vq-night { position: relative; margin-top: 75px;   /* just under the fixed nav */
+        height: clamp(320px, 36.8vw, 760px);
+        background: #141620 url(quiz-hero.jpg) center bottom / cover no-repeat; }
+      #page-vocabquiz .vq-night::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+        height: clamp(80px, 7vw, 170px); background: linear-gradient(rgba(20,22,32,0), #141620); }
+      #page-vocabquiz .wd-wrap { position: relative; z-index: 2; margin-top: calc(-1 * clamp(150px, 15vw, 330px)); }
+      #page-vocabquiz .wd-title, #page-vocabquiz .wd-eyebrow { text-shadow: 0 1px 3px #000, 0 2px 14px rgba(0,0,0,0.9); }
+      #page-vocabquiz .wd-eyebrow { color: #ff8f80; }
+      #page-vocabquiz .wd-hero-right { background: rgba(20,22,32,0.72); padding: 6px 10px; border-radius: 14px;
+        -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+      #page-vocabquiz .wd-hero-right:empty, #page-vocabquiz .wd-hero-right:has(.wd-sub:empty:only-child) { background: none; padding: 0; }
+      @media (max-width: 640px) {
+        #page-vocabquiz .vq-night { margin-top: 109px; height: 62vw; background-position: 72% bottom; }
+        #page-vocabquiz .wd-wrap { margin-top: -24vw; }
+      }
     </style>
+
+    <!-- the painting: three vending machines and a cat, late at night -->
+    <div class="vq-night" aria-hidden="true"></div>
 
     <div class="wd-wrap">
 
       <div class="wd-hero">
-        <div class="wd-seal">問</div>
+        <div class="wd-seal is-gakusei" title="学生 — gakusei, student">学生</div>
         <div>
-          <div class="wd-eyebrow"><span data-i18n="vq_eyebrow">Practice</span> · 練習</div>
-          <h1 class="wd-title" data-i18n="vq_title">Word Quiz</h1>
+          <div class="wd-eyebrow"><span data-i18n="vq_eyebrow">Vocabulary quiz</span> · 学生</div>
+          <h1 class="wd-title" data-i18n="vq_title">Night Shift</h1>
         </div>
         <div class="wd-hero-right"><span class="wd-sub" id="vq-round-n"></span></div>
       </div>
 
       <!-- what to ask, and the filters that narrow the deck -->
       <div class="vq-toolbar" id="vq-bar">
+        <a class="nt-back" href="/vocabulary" title="学生 Night Owl" aria-label="Back to 学生 Night Owl"
+           data-i18n-title="vq_to_cards" data-i18n-label="vq_to_cards">&larr; <span class="jp" aria-hidden="true">学生</span><span>Night Owl</span></a>
         <div class="vq-chips" id="vq-skill-chips"></div>
         <button type="button" class="wd-chip is-quiet vq-bar-btn" id="vq-filter-btn"
                 aria-expanded="false" aria-controls="vq-filters">
@@ -218,22 +244,27 @@
         <div class="vq-filters-note" data-i18n="vq_filters_note">Leave these alone and the quiz mixes the whole deck, bringing back what you've missed more often.</div>
       </div>
 
+      <!-- the machine: its display is the question, its keypad the answer,
+           and its tray the round -->
       <div class="wd-sheet vq-card" style="cursor:default">
-        <button type="button" class="wd-hear" id="vq-speak" title="Listen" aria-label="Listen">🔊</button>
-        <div class="vq-card-top">
-          <span class="vq-skill" id="vq-skill"></span>
-          <span class="vq-pill vq-new" id="vq-state"></span>
-        </div>
-
-        <div class="vq-prompt-row">
-          <div>
-            <div class="vq-prompt-main jp" id="vq-prompt-main"></div>
-            <div class="vq-prompt-sub jp" id="vq-prompt-sub"></div>
+        <div class="vq-display">
+          <button type="button" class="wd-hear" id="vq-speak" title="Listen" aria-label="Listen">🔊</button>
+          <div class="vq-card-top">
+            <span class="vq-skill" id="vq-skill"></span>
+            <span class="vq-pill vq-new" id="vq-state"></span>
           </div>
-        </div>
-        <div class="vq-lang jp" id="vq-lang">
-          <span class="vq-lang-tag jp" id="vq-lang-tag">あ</span>
-          <span id="vq-ask"></span>
+
+          <div class="vq-prompt-row">
+            <div>
+              <div class="vq-prompt-main jp" id="vq-prompt-main"></div>
+              <div class="vq-prompt-sub jp" id="vq-prompt-sub"></div>
+            </div>
+          </div>
+          <div class="vq-lang jp" id="vq-lang">
+            <span class="vq-lang-tag jp" id="vq-lang-tag">あ</span>
+            <span id="vq-ask"></span>
+          </div>
+          <span class="nt-gakon" id="vq-gakon" aria-hidden="true">ガコン!</span>
         </div>
 
         <div class="vq-input-row" id="vq-input-row">
@@ -265,14 +296,18 @@
             <button type="button" class="vq-btn primary" id="vq-next-btn" data-i18n="vq_next">Next →</button>
           </span>
         </div>
+
+        <!-- the round of ten: a can drops into the tray for every answer -->
+        <div class="wd-stops-row nt-tray">
+          <span class="nt-tray-lbl" data-i18n="nt_tray">tonight</span>
+          <div class="wd-stops" id="vq-stops"></div>
+          <span class="nt-tray-n"><b id="vq-stop-label">1 / 10</b><small data-i18n="nt_cans">cans in the tray</small></span>
+        </div>
       </div>
 
-      <!-- the round: ten stops on the rail -->
-      <div class="wd-stops-row">
-        <span data-i18n="vq_stops">Stops</span>
-        <div class="wd-stops" id="vq-stops"></div>
-        <span id="vq-stop-label">1 / 10</span>
-      </div>
+      <!-- the receipt, printed at the end of each round -->
+      <div class="nt-receipt-wrap" id="vq-receipt" hidden></div>
+
 
       <div class="wd-tiles">
         <div class="wd-tile"><b id="vq-t-right">0</b><span data-i18n="kd_right_lbl">Right</span></div>
@@ -289,7 +324,7 @@
       <div class="vq-stats" id="vq-stats"></div>
 
       <div class="wd-foot-link">
-        <a href="/vocabulary" data-i18n="vq_to_cards">← Back to the Word Book</a>
+        <a href="/vocabulary" data-i18n="vq_to_cards">← Back to 学生 Night Owl</a>
       </div>
 
     </div>
@@ -327,6 +362,85 @@
       on('vq-speak',       function () { vqSpeakPrompt(); });
       on('vq-answer-speak',function () { vqSpeakAnswer(); });
     });
+
+    // ---- 学生 Night Shift: the machine's lights, the ガコン, the receipt ----
+    (function () {
+      'use strict';
+      var $ = function (id) { return document.getElementById(id); };
+      var ct = function (k, f) { return window.KA_ct ? KA_ct(k, f) : f; };
+      var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      var card = function () { return document.querySelector('.vq-card'); };
+      var gakonTimer = null, lastRound = null;
+
+      function onQuestion() {
+        var c = card();
+        if (c) c.classList.remove('is-right', 'is-wrong');
+        var g = $('vq-gakon');
+        if (g) g.classList.remove('is-on');
+      }
+      function onVerdict(right, shown) {
+        var c = card();
+        if (c) { c.classList.toggle('is-right', right); c.classList.toggle('is-wrong', !right); }
+        var g = $('vq-gakon');
+        if (g && right) {
+          // restart the drop animation
+          g.classList.remove('is-on'); void g.offsetWidth; g.classList.add('is-on');
+          clearTimeout(gakonTimer);
+          gakonTimer = setTimeout(function () { g.classList.remove('is-on'); }, 1600);
+        }
+      }
+      function onPaint(round) {
+        // The receipt stays up until the next round's first answer.
+        var r = $('vq-receipt');
+        if (r && !r.hidden && round.results.length > 0) r.hidden = true;
+      }
+
+      function onRoundDone(info) {
+        lastRound = info;
+        var box = $('vq-receipt');
+        if (!box) return;
+        var misses = [], seen = {};
+        var lines = info.items.map(function (it) {
+          var c = it.card || {}, w = c.kanji || c.katakana || c.japanese || '';
+          var mark = it.result === true ? '✓' : it.result === false ? '✗' : '–';
+          if (it.result === false && window.KA_Words) {
+            var id = KA_Words.cardId(c);
+            if (!seen[id]) { seen[id] = 1; misses.push(c); }
+          }
+          return '<div class="nt-rl' + (it.result === false ? ' is-x' : it.result === null ? ' is-skip' : '') + '">' +
+            '<span><span class="jp">' + esc(w) + '</span> ' + esc(c.english || '') + '</span><span>' + mark + '</span></div>';
+        }).join('');
+        var done = info.queueDone, q = info.queue;
+        var head = q && q.label ? esc(q.label) : ct('vq_round', 'Round') + ' ' + info.n;
+        var acts = '';
+        if (misses.length && done) acts += '<button type="button" class="nt-rb is-red" data-act="again">' +
+          esc(ct('nt_again', 'Quiz the misses again ({n})').replace('{n}', misses.length)) + '</button>';
+        else acts += '<button type="button" class="nt-rb is-red" data-act="more">' + esc(ct('nt_another', 'Another round')) + '</button>';
+        if (misses.length) acts += '<button type="button" class="nt-rb" data-act="owl">' + esc(ct('nt_study_misses', 'Study the misses in Night Owl')) + '</button>';
+        if (done || !misses.length) acts += '<a class="nt-rb is-ghost" href="/vocabulary">' + esc(ct('vq_to_cards', '← Back to 学生 Night Owl')) + '</a>';
+        var left = q && !done ? '<div class="nt-rleft">' + esc(ct('nt_left', 'Words still to go: {n}').replace('{n}', q.left)) + '</div>' : '';
+        box.innerHTML =
+          '<div class="nt-receipt"><h5><span class="jp">学生</span> NIGHT SHIFT · <span class="jp">領収書</span></h5>' +
+          '<div class="nt-rsub">' + head + '</div>' + lines +
+          '<div class="nt-rtot"><span>' + esc(ct('nt_total', 'Total')) + '</span><span>' + info.right + ' / ' + info.size + '</span></div>' +
+          left + '</div><div class="nt-racts">' + acts + '</div>';
+        box.hidden = false;
+        box.__misses = misses;
+        box.__label = head;
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest('#vq-receipt [data-act]');
+        if (!b) return;
+        var box = $('vq-receipt'), misses = box.__misses || [];
+        var act = b.getAttribute('data-act');
+        if (act === 'more') { box.hidden = true; try { $('vq-input').focus(); } catch (err) {} }
+        if (act === 'again' && window.KA_VocabQuiz) { box.hidden = true; KA_VocabQuiz.start(misses, ct('nt_misses', 'your misses')); }
+        if (act === 'owl' && window.KA_Words) KA_Words.sendToOwl(misses, box.__label);
+      });
+
+      window.KA_VQPage = { onQuestion: onQuestion, onVerdict: onVerdict, onPaint: onPaint, onRoundDone: onRoundDone };
+    })();
   </script>
 
 <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>

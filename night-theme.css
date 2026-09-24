@@ -1,0 +1,334 @@
+/* ============================================================
+   NIGHT — 学生 Night Owl (vocabulary.html) and 学生 Night Shift (vocabquiz.html).
+
+   Loaded after words-theme.css. The two paintings are the headers; under
+   them everything is lit the way the scenes are:
+
+     Night Owl    the rooftop over Tokyo. The decks are a night train line,
+                  the card is the notebook on the ledge, and your progress is
+                  a skyline whose windows light up as you learn.
+     Night Shift  the vending machines. The question glows on the machine's
+                  display, you answer on its keypad, and every answer drops a
+                  can into the tray; a receipt prints at the end of a round.
+   ============================================================ */
+
+:root {
+  --nt-gold: #ffd98a;
+  --nt-gold-2: #ffb85c;
+  --nt-pink: #ff7b8f;
+  --nt-glass: rgba(20, 18, 28, 0.72);
+  --nt-line: #3a3346;
+  --nt-mute: #a39cb4;
+  --nt-blue: #62c3ff;
+  --nt-can-blue: #3fb3ff;
+  --nt-can-red: #ff5a4f;
+  --nt-led-green: #3fe07a;
+}
+
+/* the 学生 seal: two characters, so a little wider */
+.wd-seal.is-gakusei { width: auto; height: auto; padding: 0.3rem 0.55rem; font-size: 1.45rem; letter-spacing: 0.02em; line-height: 1.1; }
+
+/* ================================================================
+   NIGHT OWL
+   ================================================================ */
+
+/* ---- the night line (was the paper station rail) ---- */
+#page-vocabulary.wd-page .nt-line {
+  background: var(--nt-glass); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 0.7rem 0.4rem 0.2rem; margin: 0.2rem 0 1.1rem;
+}
+#page-vocabulary.wd-page .nt-note { font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--nt-mute); padding: 0 0.9rem; font-weight: 700; }
+#page-vocabulary.wd-page .nt-line .wd-rail-wrap { margin: 0; padding: 0 0.4rem; background: none; border-radius: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+#page-vocabulary.wd-page .wd-rail { height: 96px; padding-top: 30px; }
+#page-vocabulary.wd-page .wd-rail::before { top: 42px; height: 6px; background: var(--nt-line); }
+#page-vocabulary.wd-page .wd-rail-fill { top: 42px; height: 6px; background: linear-gradient(90deg, var(--nt-gold), var(--nt-gold-2)); box-shadow: 0 0 10px var(--nt-gold-2); }
+/* each stop is a lamp that fills with gold as you learn the deck */
+#page-vocabulary.wd-page .wd-stn-stamp {
+  width: 28px; height: 28px; border-radius: 50%; transform: none; background: #2a2433; border: 2px solid #5c5470;
+}
+#page-vocabulary.wd-page .wd-stn-stamp::before { background: linear-gradient(#ffe7a8, var(--nt-gold-2)); }
+#page-vocabulary.wd-page .wd-stn.is-done .wd-stn-stamp { border-color: var(--nt-gold); box-shadow: 0 0 12px rgba(255, 200, 110, 0.55); }
+#page-vocabulary.wd-page .wd-stn:hover .wd-stn-stamp { transform: scale(1.12); }
+#page-vocabulary.wd-page .wd-stn.is-here .wd-stn-stamp {
+  width: 30px; height: 30px; margin-top: -1px; transform: none; background: #2a2433; border: 2px solid #fff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.15), 0 0 16px var(--nt-gold);
+}
+#page-vocabulary.wd-page .wd-stn.is-here .wd-stn-stamp::before { display: block; }
+#page-vocabulary.wd-page .wd-stn.is-here .wd-stn-stamp::after { content: none; }
+#page-vocabulary.wd-page .wd-stn-label b { font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; color: #f4efe4; }
+#page-vocabulary.wd-page .wd-stn-label { color: #8f89a0; }
+/* the little night train sits over the stop you are on, with its count */
+#page-vocabulary.wd-page .wd-train {
+  top: 0; background: var(--nt-gold); color: #241b12; border-radius: 6px; font-size: 0.68rem; padding: 1px 8px;
+  box-shadow: 0 0 14px rgba(255, 200, 110, 0.5);
+}
+#page-vocabulary.wd-page .wd-train::after {
+  content: ""; left: 50%; bottom: -12px; width: 34px; height: 10px; border: 0; transform: translateX(-50%);
+  border-radius: 6px 6px 3px 3px; background: linear-gradient(#ece7f4, #b8b0c9);
+  box-shadow: inset 5px 0 0 -2px var(--nt-gold), inset -5px 0 0 -2px var(--nt-gold);
+}
+
+/* ---- a short deck handed over from Night Shift ---- */
+#page-vocabulary.wd-page .nt-focus {
+  display: flex; align-items: center; gap: 0.7rem; margin: -0.4rem 0 1rem; padding: 0.6rem 0.8rem;
+  background: var(--nt-glass); border: 1px solid var(--nt-pink); border-radius: 12px; color: #ffd0d7; font-size: 0.85rem;
+}
+#page-vocabulary.wd-page .nt-focus[hidden] { display: none; }
+#page-vocabulary.wd-page .nt-focus-can { flex: none; width: 12px; height: 22px; border-radius: 4px 4px 3px 3px; background: var(--nt-can-red); box-shadow: 0 0 10px var(--nt-can-red); }
+#page-vocabulary.wd-page .nt-focus-end {
+  margin-left: auto; border: 1.5px solid #ffd0d7; background: transparent; color: #fff; border-radius: 999px;
+  padding: 0.3rem 0.8rem; font: 700 0.75rem 'Outfit', sans-serif; cursor: pointer; white-space: nowrap;
+}
+#page-vocabulary.wd-page .nt-focus-end:hover { background: #ffd0d7; color: #241b12; }
+
+/* ---- the notebook (was the manuscript sheet) ---- */
+#page-vocabulary.wd-page .wd-sheet {
+  border: 0; border-radius: 6px 14px 14px 6px; padding: 1.7rem 3.4rem 1.4rem 4.2rem;
+  background-color: #f7f1e3;
+  background-image:
+    linear-gradient(90deg, transparent 2.9rem, #e8a19a 2.9rem, #e8a19a calc(2.9rem + 2px), transparent calc(2.9rem + 2px)),
+    repeating-linear-gradient(#f7f1e3 0 33px, #d8e2ee 33px 34px);
+  box-shadow: 0 0 0 1px #d9cfbb, 0 18px 40px rgba(0, 0, 0, 0.45), 0 0 60px rgba(255, 190, 110, 0.12);
+}
+#page-vocabulary.wd-page .wd-sheet::after {       /* the cover's edge */
+  content: ""; position: absolute; right: -7px; top: 0; bottom: 0; width: 12px; border-radius: 0 8px 8px 0;
+  background: linear-gradient(90deg, #3a3346, #26212e); pointer-events: none;
+}
+#page-vocabulary.wd-page .nt-band {                /* the elastic band */
+  position: absolute; right: 1.6rem; top: -4px; bottom: -4px; width: 10px; border-radius: 3px; background: #3a3346; pointer-events: none;
+}
+#page-vocabulary.wd-page .wd-sheet .wd-hear { right: 2.6rem; }
+/* the word is written straight onto the lines, no squares */
+#page-vocabulary.wd-page .wd-cell { border: 0; margin: 0; width: auto; min-width: calc(var(--cell, 72px) * 0.78); font-size: calc(var(--cell, 72px) * 0.9); }
+#page-vocabulary.wd-page .wd-cell::after { content: none; }
+#page-vocabulary.wd-page .wd-cells { margin-top: 0.8rem; }
+#page-vocabulary.wd-page .wd-answer { border-top: 1px dashed #c9bfae; }
+#page-vocabulary.wd-page .wd-mark { left: 3.6rem; }
+/* the verdict buttons: “got it” glows like the string lights */
+#page-vocabulary.wd-page #wb-no { background: transparent; border-color: #8f89a0; color: #e5dff0; }
+#page-vocabulary.wd-page #wb-no:hover { border-color: var(--nt-pink); color: #fff; box-shadow: none; }
+#page-vocabulary.wd-page #wb-flip { border-color: #e5dff0; }
+#page-vocabulary.wd-page #wb-yes { background: linear-gradient(#ffe29a, #ffc25c); border-color: transparent; color: #241b12; box-shadow: 0 0 18px rgba(255, 194, 92, 0.45); }
+#page-vocabulary.wd-page #wb-yes:hover { box-shadow: 0 0 26px rgba(255, 194, 92, 0.7); }
+#page-vocabulary.wd-page .wd-foot .wd-bar { border-color: #5c5470; background: #231f2b; }
+#page-vocabulary.wd-page .wd-foot .wd-bar i { background: linear-gradient(90deg, var(--nt-gold), var(--nt-gold-2)); }
+
+/* ---- your city tonight (was the stamp strip) ---- */
+#page-vocabulary.wd-page .nt-city {
+  background: var(--nt-glass); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px;
+  padding: 0.3rem 1rem 0.8rem; margin-top: 1.2rem;
+}
+#page-vocabulary.wd-page .nt-city .wd-strip-h { margin: 0.6rem 0 0.7rem; }
+#page-vocabulary.wd-page .nt-city .wd-strip-count { margin-left: auto; text-transform: none; letter-spacing: 0.02em; color: #cfc6d8; font-size: 0.78rem; }
+#page-vocabulary.wd-page .nt-city .wd-strip-count b { color: var(--nt-gold); }
+#page-vocabulary.wd-page .nt-sky { display: flex; align-items: flex-end; gap: 6px; flex-wrap: wrap; }
+#page-vocabulary.wd-page .nt-bld {
+  flex: 1 1 0; min-width: min-content; display: grid; grid-template-columns: repeat(var(--cols, 3), 9px); gap: 3px; justify-content: center; align-content: start;
+  padding: 6px 5px 5px; background: #231f2b; border: 1px solid #332d3d; border-bottom: 0; border-radius: 3px 3px 0 0;
+}
+#page-vocabulary.wd-page .nt-win {
+  width: 9px; height: 10px; border-radius: 1px; border: 0; padding: 0; margin: 0; cursor: pointer;
+  background: #3a3346; transition: transform 0.1s, background 0.3s, box-shadow 0.3s;
+}
+#page-vocabulary.wd-page .nt-win:hover { transform: scale(1.5); z-index: 1; }
+#page-vocabulary.wd-page .nt-win.st-solid { background: var(--nt-gold); box-shadow: 0 0 5px var(--nt-gold-2); }
+#page-vocabulary.wd-page .nt-win.st-shaky { background: var(--nt-pink); box-shadow: 0 0 5px #ff5a6f; }
+#page-vocabulary.wd-page .nt-win.is-here { outline: 2px solid #fff; outline-offset: 1px; }
+#page-vocabulary.wd-page .nt-win.is-flash { animation: nt-light 1.2s ease-out; }
+@keyframes nt-light { 0% { transform: scale(2.6); box-shadow: 0 0 22px 6px var(--nt-gold); } 100% { transform: scale(1); } }
+#page-vocabulary.wd-page .nt-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.6rem; font-size: 0.72rem; color: #8f89a0; }
+#page-vocabulary.wd-page .nt-legend i { display: inline-block; width: 9px; height: 10px; border-radius: 1px; margin-right: 5px; vertical-align: -1px; background: #3a3346; }
+#page-vocabulary.wd-page .nt-legend i.is-got { background: var(--nt-gold); } #page-vocabulary.wd-page .nt-legend i.is-still { background: var(--nt-pink); }
+#page-vocabulary.wd-page .nt-legend-tip { margin-left: auto; }
+#page-vocabulary.wd-page .wd-stamps.is-folded + .nt-legend { display: none; }
+
+/* ---- quiz them in Night Shift ---- */
+#page-vocabulary.wd-page .nt-send { margin-top: 0.9rem; }
+#page-vocabulary.wd-page .nt-send[hidden] { display: none; }
+#page-vocabulary.wd-page .nt-send-h { display: block; font-size: 0.66rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--nt-mute); font-weight: 700; margin-bottom: 0.5rem; }
+#page-vocabulary.wd-page .nt-send-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+#page-vocabulary.wd-page .nt-go {
+  display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.9rem; border-radius: 10px; cursor: pointer;
+  background: #e8ecf2; color: #1a1d2e; border: 0; font: 800 0.8rem 'Outfit', sans-serif; box-shadow: 0 3px 0 #8f9bb0;
+}
+#page-vocabulary.wd-page .nt-go::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--nt-led-green); box-shadow: 0 0 6px var(--nt-led-green); }
+#page-vocabulary.wd-page .nt-go b { background: #1a1d2e; color: #fff; border-radius: 99px; padding: 0 0.45rem; font-size: 0.72rem; }
+#page-vocabulary.wd-page .nt-go:hover { transform: translateY(-1px); box-shadow: 0 4px 0 #8f9bb0, 0 0 14px rgba(98, 195, 255, 0.5); }
+#page-vocabulary.wd-page .wd-quiz-link { display: none; }
+
+/* ================================================================
+   NIGHT SHIFT
+   ================================================================ */
+
+/* ---- back to Night Owl, and the mode buttons as the machine's buttons ---- */
+#page-vocabquiz.wd-page .nt-back {
+  display: inline-flex; align-items: center; gap: 0.35rem; height: 34px; padding: 0 0.85rem 0 0.7rem; border-radius: 999px;
+  background: var(--nt-glass); border: 1.5px solid #cfd6e4; color: #fff; font: 700 0.8rem 'Outfit', sans-serif; text-decoration: none; white-space: nowrap;
+}
+#page-vocabquiz.wd-page .nt-back .jp { color: var(--nt-gold); font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+#page-vocabquiz.wd-page .nt-back:hover { border-color: var(--nt-gold); }
+#page-vocabquiz.wd-page #vq-skill-chips .vq-chip {
+  gap: 0.5rem; background: #e8ecf2; color: #1a1d2e; border: 0; border-radius: 10px; padding: 0.5rem 0.9rem 0.5rem 0.7rem;
+  box-shadow: 0 3px 0 #8f9bb0;
+}
+#page-vocabquiz.wd-page #vq-skill-chips .vq-chip::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: #b7c0cf; }
+#page-vocabquiz.wd-page #vq-skill-chips .vq-chip.on { background: #fff; color: #1a1d2e; box-shadow: 0 3px 0 #8f9bb0, 0 0 16px rgba(98, 195, 255, 0.55); }
+#page-vocabquiz.wd-page #vq-skill-chips .vq-chip.on::before { background: var(--nt-led-green); box-shadow: 0 0 8px var(--nt-led-green); }
+#page-vocabquiz.wd-page .vq-bar-btn { background: var(--nt-glass); }
+#page-vocabquiz.wd-page .vq-bar-main { color: #cfd6e4; text-shadow: 0 1px 3px #000; }
+#page-vocabquiz.wd-page .vq-filters { background: rgba(20, 22, 32, 0.9); border-color: #2b3350; }
+
+/* ---- the machine ---- */
+#page-vocabquiz.wd-page .vq-card {
+  background: linear-gradient(#e9edf3, #cdd4de); border: 0; border-radius: 18px; padding: 16px; color: #1a1d2e;
+  box-shadow: 0 0 0 3px #2b3350, 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 70px rgba(80, 170, 255, 0.25);
+  transition: box-shadow 0.25s;
+}
+#page-vocabquiz.wd-page .vq-card.is-right { box-shadow: 0 0 0 3px var(--nt-led-green), 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(63, 224, 122, 0.5); }
+#page-vocabquiz.wd-page .vq-card.is-wrong { box-shadow: 0 0 0 3px var(--nt-can-red), 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 90, 79, 0.45); }
+/* its display is the question */
+#page-vocabquiz.wd-page .vq-display {
+  position: relative; background: linear-gradient(#0e1a2b, #11243a); border-radius: 12px; padding: 1rem 1.3rem 1.1rem;
+  color: #fff; box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6); overflow: hidden;
+}
+#page-vocabquiz.wd-page .vq-display .wd-hear { right: 0.8rem; top: 0.8rem; background: #1f3552; color: #cfe9ff; }
+#page-vocabquiz.wd-page .vq-display .wd-hear:hover { background: var(--nt-can-red); }
+#page-vocabquiz.wd-page .vq-skill { color: #7fbfe6; }
+#page-vocabquiz.wd-page .vq-prompt-main { color: #fff; text-shadow: 0 0 18px var(--nt-blue); }
+#page-vocabquiz.wd-page .vq-prompt-sub { color: #9fdcff; letter-spacing: 0.08em; }
+#page-vocabquiz.wd-page .vq-lang { color: #7f9cbc; }
+#page-vocabquiz.wd-page .vq-display .dojo-kanji-tip { border-bottom-color: #3f5f86; }
+#page-vocabquiz.wd-page .vq-new { color: #9fb0d0; border-color: #3a4a66; }
+/* ガコン! on a right answer */
+#page-vocabquiz.wd-page .nt-gakon {
+  position: absolute; right: 1rem; bottom: 1rem; background: var(--nt-led-green); color: #0b2616; font: 900 1.25rem 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif;
+  padding: 0.3rem 0.8rem; border-radius: 10px; transform: rotate(-6deg) scale(0.6); opacity: 0; pointer-events: none;
+  box-shadow: 0 0 30px var(--nt-led-green);
+}
+#page-vocabquiz.wd-page .nt-gakon.is-on { animation: nt-gakon 1.6s ease-out forwards; }
+@keyframes nt-gakon {
+  0% { opacity: 0; transform: rotate(-6deg) translateY(-18px) scale(0.6); }
+  18% { opacity: 1; transform: rotate(-6deg) translateY(0) scale(1.08); }
+  30% { transform: rotate(-6deg) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(-6deg) scale(1); }
+}
+/* its keypad is the answer: a green LCD strip and lit buttons */
+#page-vocabquiz.wd-page .vq-input-row { margin-top: 0.9rem; align-items: center; }
+#page-vocabquiz.wd-page .vq-input {
+  background: #c9e7d2; color: #123321; border: 0; border-radius: 10px; padding: 0.55rem 0.9rem; font-size: 1.35rem;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.25); caret-color: #123321;
+}
+#page-vocabquiz.wd-page .vq-input:focus { box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(98, 195, 255, 0.5); }
+#page-vocabquiz.wd-page .vq-input::placeholder { color: #5f8a6d; }
+#page-vocabquiz.wd-page .vq-kana-toggle { width: 46px; height: 46px; background: #1a1d2e; color: #fff; border: 0; }
+#page-vocabquiz.wd-page .vq-kana-toggle.kata { background: var(--nt-blue); color: #0b1a2b; }
+#page-vocabquiz.wd-page .vq-btn-row { margin-top: 0.8rem; }
+#page-vocabquiz.wd-page #vq-check-row, #page-vocabquiz.wd-page #vq-next-row { width: 100%; }
+#page-vocabquiz.wd-page .vq-btn { flex: 1; border: 0; border-radius: 12px; padding: 0.75rem 1rem; font-size: 0.95rem; background: #fff; color: #1a1d2e; box-shadow: 0 4px 0 #8f9bb0; }
+#page-vocabquiz.wd-page .vq-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 0 #8f9bb0; }
+#page-vocabquiz.wd-page .vq-btn.primary { background: var(--nt-can-red); color: #fff; box-shadow: 0 5px 0 #b3342c, 0 0 20px rgba(255, 90, 79, 0.4); }
+#page-vocabquiz.wd-page .vq-btn.primary:hover { box-shadow: 0 6px 0 #b3342c, 0 0 26px rgba(255, 90, 79, 0.55); }
+#page-vocabquiz.wd-page #vq-skip-btn { flex: 0.6; background: #2b3350; color: #fff; box-shadow: 0 4px 0 #161a2a; }
+/* the verdict sits on the machine's front */
+#page-vocabquiz.wd-page .vq-feedback { margin-top: 0.8rem; border-top: 0; padding: 0.7rem 0.9rem; background: #fff; border-radius: 10px; box-shadow: inset 0 0 0 1px #c3cbd8; }
+#page-vocabquiz.wd-page .vq-answer-speak { background: #1a1d2e; }
+
+/* ---- the tray: one can per answer in the round ---- */
+#page-vocabquiz.wd-page .nt-tray {
+  margin: 0.9rem 0 0; min-height: 66px; border-radius: 12px; background: #1a1d2e; box-shadow: inset 0 3px 8px #000;
+  padding: 0 0.9rem; gap: 0.7rem; color: #9fb0d0;
+}
+#page-vocabquiz.wd-page .nt-tray-lbl { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: #6f7d9c; writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 700; }
+#page-vocabquiz.wd-page .nt-tray .wd-stops { justify-content: flex-start; gap: 9px; }
+#page-vocabquiz.wd-page .nt-tray .wd-stops::before { content: none; }
+#page-vocabquiz.wd-page .nt-tray .wd-stop {
+  width: 20px; height: 38px; border-radius: 6px 6px 4px 4px; transform: none; box-shadow: none;
+  background: transparent; border: 1.5px dashed #3a4060;
+}
+#page-vocabquiz.wd-page .nt-tray .wd-stop::before { content: ""; position: absolute; left: 3px; right: 3px; top: 3px; height: 3px; border-radius: 2px; background: transparent; }
+#page-vocabquiz.wd-page .nt-tray .wd-stop.is-right { background: var(--nt-can-blue); border: 0; }
+#page-vocabquiz.wd-page .nt-tray .wd-stop.is-wrong { background: var(--nt-can-red); border: 0; }
+#page-vocabquiz.wd-page .nt-tray .wd-stop.is-right::before, #page-vocabquiz.wd-page .nt-tray .wd-stop.is-wrong::before { background: rgba(255, 255, 255, 0.55); }
+#page-vocabquiz.wd-page .nt-tray .wd-stop.is-skip { width: 20px; height: 38px; border-radius: 6px 6px 4px 4px; background: transparent; border: 1.5px dashed #6f7d9c; opacity: 0.5; }
+#page-vocabquiz.wd-page .nt-tray .wd-stop.is-here { width: 20px; height: 38px; background: transparent; border: 1.5px solid #9fb0d0; box-shadow: 0 0 10px rgba(159, 176, 208, 0.35); animation: nt-slot 1.4s ease-in-out infinite; }
+@keyframes nt-slot { 50% { box-shadow: 0 0 2px rgba(159, 176, 208, 0.1); } }
+/* the can that just dropped lies on its side */
+#page-vocabquiz.wd-page .nt-tray .wd-stop.is-right:has(+ .is-here), #page-vocabquiz.wd-page .nt-tray .wd-stop.is-wrong:has(+ .is-here) {
+  transform: rotate(-80deg) translate(-6px, 4px); animation: nt-drop 0.5s ease-out;
+}
+@keyframes nt-drop { 0% { transform: translateY(-40px); } 70% { transform: rotate(-80deg) translate(-6px, 6px); } 100% { transform: rotate(-80deg) translate(-6px, 4px); } }
+#page-vocabquiz.wd-page .nt-tray-n { margin-left: auto; text-align: right; font-size: 0.7rem; line-height: 1.2; }
+#page-vocabquiz.wd-page .nt-tray-n b { display: block; font-size: 1.2rem; color: #fff; }
+
+/* ---- the counters, as LED digits ---- */
+#page-vocabquiz.wd-page .wd-tiles { margin-top: 1rem; }
+#page-vocabquiz.wd-page .wd-tile { background: #0b0d16; border: 1px solid #2b3350; color: #9fb0d0; box-shadow: none; }
+#page-vocabquiz.wd-page .wd-tile b { font-family: 'Courier New', monospace; font-size: 1.5rem; color: var(--nt-blue); text-shadow: 0 0 8px var(--nt-can-blue); }
+#page-vocabquiz.wd-page .wd-tile span { color: #6f7d9c; }
+#page-vocabquiz.wd-page .wd-tile:nth-child(1) b { color: #7dffb0; text-shadow: 0 0 8px var(--nt-led-green); }
+#page-vocabquiz.wd-page .wd-tile:nth-child(2) b { color: #ff7a70; text-shadow: 0 0 8px var(--nt-can-red); }
+#page-vocabquiz.wd-page .wd-tile.is-reset { background: transparent; color: #9fb0d0; border-color: #2b3350; }
+#page-vocabquiz.wd-page .wd-miss { background: #1a1d2e; }
+
+/* ---- the receipt ---- */
+#page-vocabquiz.wd-page .nt-receipt-wrap { margin: 1rem auto 0.4rem; max-width: 420px; }
+#page-vocabquiz.wd-page .nt-receipt-wrap[hidden] { display: none; }
+#page-vocabquiz.wd-page .nt-receipt {
+  background: #fffdf6; color: #1a1d2e; border-radius: 4px; padding: 0.9rem 1rem 1.2rem; font: 0.8rem 'Courier New', monospace;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); transform: rotate(-0.6deg); animation: nt-print 0.6s ease-out;
+  -webkit-mask: linear-gradient(#000 0 calc(100% - 8px), transparent 0), radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) 0 100% / 14px 8px repeat-x;
+  mask: linear-gradient(#000 0 calc(100% - 8px), transparent 0), radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) 0 100% / 14px 8px repeat-x;
+}
+@keyframes nt-print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+#page-vocabquiz.wd-page .nt-receipt h5 { margin: 0 0 0.2rem; text-align: center; letter-spacing: 0.14em; font-size: 0.8rem; }
+#page-vocabquiz.wd-page .nt-receipt .jp { font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+#page-vocabquiz.wd-page .nt-rsub { text-align: center; color: #6a7384; font-size: 0.72rem; margin-bottom: 0.5rem; }
+#page-vocabquiz.wd-page .nt-rl { display: flex; justify-content: space-between; gap: 0.6rem; border-bottom: 1px dotted #bbb; padding: 0.15rem 0; }
+#page-vocabquiz.wd-page .nt-rl.is-x { color: #c8392b; }
+#page-vocabquiz.wd-page .nt-rl.is-skip { color: #8a93a6; }
+#page-vocabquiz.wd-page .nt-rtot { display: flex; justify-content: space-between; font-weight: 800; font-size: 0.95rem; margin-top: 0.5rem; }
+#page-vocabquiz.wd-page .nt-rleft { text-align: center; font-size: 0.72rem; color: #6a7384; margin-top: 0.4rem; }
+#page-vocabquiz.wd-page .nt-racts { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem; }
+#page-vocabquiz.wd-page .nt-rb {
+  flex: 1 1 10rem; text-align: center; padding: 0.6rem 0.8rem; border-radius: 10px; border: 0; cursor: pointer; text-decoration: none;
+  font: 800 0.8rem 'Outfit', sans-serif; background: #e8ecf2; color: #1a1d2e; box-shadow: 0 3px 0 #8f9bb0;
+}
+#page-vocabquiz.wd-page .nt-rb.is-red { background: var(--nt-can-red); color: #fff; box-shadow: 0 3px 0 #b3342c; }
+#page-vocabquiz.wd-page .nt-rb.is-ghost { background: transparent; color: #cfd6e4; box-shadow: inset 0 0 0 1.5px #3a4060; }
+
+@media (max-width: 640px) {
+  .wd-seal.is-gakusei { font-size: 1.15rem; padding: 0.25rem 0.45rem; }
+  #page-vocabulary.wd-page .wd-sheet { padding: 1.3rem 2.4rem 1.1rem 3rem; background-image:
+    linear-gradient(90deg, transparent 2.1rem, #e8a19a 2.1rem, #e8a19a calc(2.1rem + 2px), transparent calc(2.1rem + 2px)),
+    repeating-linear-gradient(#f7f1e3 0 29px, #d8e2ee 29px 30px); }
+  #page-vocabulary.wd-page .nt-band { right: 1rem; }
+  #page-vocabulary.wd-page .wd-sheet .wd-hear { right: 1.8rem; }
+  #page-vocabulary.wd-page .wd-mark { left: 2.6rem; }
+  #page-vocabulary.wd-page .nt-legend-tip { display: none; }
+  #page-vocabquiz.wd-page .vq-card { padding: 10px; }
+  #page-vocabquiz.wd-page .vq-display { padding: 0.8rem 0.9rem 0.9rem; }
+  #page-vocabquiz.wd-page .nt-tray .wd-stops { gap: 5px; }
+  #page-vocabquiz.wd-page .nt-tray .wd-stop, #page-vocabquiz.wd-page .nt-tray .wd-stop.is-here, #page-vocabquiz.wd-page .nt-tray .wd-stop.is-skip { width: 15px; height: 30px; }
+  #page-vocabquiz.wd-page .nt-tray-lbl { display: none; }
+  #page-vocabquiz.wd-page #vq-check-row { flex-wrap: wrap; }
+  #page-vocabquiz.wd-page #vq-check-row .vq-btn { flex: 1 1 auto; padding: 0.7rem 0.7rem; }
+  #page-vocabquiz.wd-page #vq-check-row #vq-check-btn { flex-basis: 100%; }
+  #page-vocabulary.wd-page .nt-city .wd-strip-h { flex-wrap: wrap; }
+  #page-vocabulary.wd-page .nt-city .wd-strip-count { margin-left: 1.5rem; flex-basis: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #page-vocabulary.wd-page .nt-win.is-flash, #page-vocabquiz.wd-page .nt-gakon.is-on, #page-vocabquiz.wd-page .nt-receipt,
+  #page-vocabquiz.wd-page .nt-tray .wd-stop { animation: none !important; }
+  #page-vocabquiz.wd-page .nt-gakon.is-on { opacity: 1; transform: rotate(-6deg); }
+}
+
+/* the footer follows the night directly, with no strip of page background */
+.wd-page ~ .site-footer { margin-top: 0; }
+#page-vocabulary.wd-page .nt-sky.is-dense { gap: 4px; justify-content: space-between; }
+#page-vocabulary.wd-page .nt-sky.is-dense .nt-bld { flex: 0 0 auto; grid-template-columns: repeat(var(--cols, 3), 5px); gap: 2px; padding: 4px 3px 3px; }
+#page-vocabulary.wd-page .nt-sky.is-dense .nt-win { width: 5px; height: 6px; }
+@media (max-width: 640px) {
+  #page-vocabulary.wd-page .nt-sky.is-dense .nt-bld { grid-template-columns: repeat(var(--cols, 3), 4px); gap: 1px; padding: 3px 2px 2px; }
+  #page-vocabulary.wd-page .nt-sky.is-dense .nt-win { width: 4px; height: 5px; }
+}

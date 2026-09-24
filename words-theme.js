@@ -1,5 +1,5 @@
 /* ============================================================
-   words-theme.js — what the Word Book and the Word Quiz share.
+   words-theme.js — what 学生 Night Owl (flashcards) and 学生 Night Shift (quiz) share.
 
    Decks are the vocabulary topics, drawn as stations on one rail. A word's
    status comes from KA_Memory's "meaning" entry — the same entry the quiz
@@ -190,6 +190,49 @@
     }
   }
 
+  /* ---------- hand-offs between the two pages ----------
+     Like the WoK and the Kitchen: Night Owl writes a list of words and opens
+     Night Shift, which quizzes exactly those, ten at a time. Night Shift's
+     receipt can send its misses back to Night Owl as a short study deck.
+     Each list is taken once, and only if it is fresh, so a stale one never
+     turns up on a later visit. */
+  var QUEUE_KEY = 'katsuyo-vocab-queue', FOCUS_KEY = 'katsuyo-vocab-focus', FRESH_MS = 2 * 3600 * 1000;
+  function byId(id) {
+    var all = list();
+    for (var i = 0; i < all.length; i++) if (cardId(all[i]) === id) return all[i];
+    return null;
+  }
+  function put(key, cards, label) {
+    try {
+      localStorage.setItem(key, JSON.stringify({ ids: cards.map(cardId), label: label || '', at: Date.now() }));
+      return true;
+    } catch (e) { return false; }
+  }
+  function take(key) {
+    var raw = null;
+    try { raw = localStorage.getItem(key); localStorage.removeItem(key); } catch (e) { return null; }
+    if (!raw) return null;
+    try {
+      var q = JSON.parse(raw);
+      if (!q || !q.ids || !q.ids.length || Date.now() - (q.at || 0) > FRESH_MS) return null;
+      var cards = q.ids.map(byId).filter(Boolean);
+      return cards.length ? { cards: cards, label: q.label || '' } : null;
+    } catch (e) { return null; }
+  }
+  function shuffled(a) {
+    a = a.slice();
+    for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+    return a;
+  }
+  function sendToQuiz(cards, label) {
+    if (!cards || !cards.length) return;
+    if (put(QUEUE_KEY, shuffled(cards), label)) window.location.href = '/vocabquiz?from=owl';
+  }
+  function sendToOwl(cards, label) {
+    if (!cards || !cards.length) return;
+    if (put(FOCUS_KEY, cards, label)) window.location.href = '/vocabulary?from=shift';
+  }
+
   window.KA_Words = {
     DECKS: DECKS,
     COLOURS: COLOURS,
@@ -207,6 +250,11 @@
     tilt: function (card) { return tilt(hash(card)); },
     renderRail: renderRail,
     paintRail: paintRail,
-    renderStops: renderStops
+    renderStops: renderStops,
+    byId: byId,
+    sendToQuiz: sendToQuiz,
+    sendToOwl: sendToOwl,
+    takeQueue: function () { return take(QUEUE_KEY); },
+    takeFocus: function () { return take(FOCUS_KEY); }
   };
 })();
