@@ -90,3 +90,6 @@
   .howto-inner { padding: 12px 12px 10px; }
   .howto-list { font-size: 0.8rem; }
 }
+
+/* the first point is the quick start: set apart so it reads first */
+.howto-list li:first-child { background: rgba(200, 57, 43, 0.07); border-radius: 6px; padding: 5px 7px; margin-left: -3px; }

@@ -266,6 +266,14 @@
     .kd-pip.is-now   { background: var(--wok-ink); border-color: var(--wok-ink); color: var(--wok-paper); }
 
     .drill-card { border: 2px solid var(--wok-ink); border-radius: 22px; box-shadow: var(--wok-shadow-lg); }
+    /* After an answer the card lights up: a soft green outline when right,
+       red when wrong. A skipped ("Show me the answer") card stays neutral. */
+    .drill-card { transition: box-shadow 0.25s ease, border-color 0.25s ease; }
+    .drill-card.is-right { border-color: #2f8f5b;
+      box-shadow: 0 0 0 4px rgba(58, 161, 126, 0.35), 0 0 22px rgba(58, 161, 126, 0.35), var(--wok-shadow-lg); }
+    .drill-card.is-wrong { border-color: var(--wok-red);
+      box-shadow: 0 0 0 4px rgba(200, 57, 43, 0.28), 0 0 22px rgba(200, 57, 43, 0.3), var(--wok-shadow-lg); }
+    @media (prefers-reduced-motion: reduce) { .drill-card { transition: none; } }
     .kd-hear { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.4rem 0.8rem; border-radius: 999px;
       border: 1.5px solid var(--wok-ink); background: #fff; color: var(--wok-ink); font-family: inherit;
       font-size: 0.76rem; font-weight: 700; cursor: pointer; line-height: 1; }
@@ -642,6 +650,8 @@
     // ---------- question generation ----------
     function newQuestion() {
       if (!dataReady()) return;
+      var card = document.querySelector('.drill-card');
+      if (card) card.classList.remove('is-right', 'is-wrong');
       var item;
       // Distractors come from the drill's own pool, or — in a round handed
       // over by the wall, which has no range — from the round's block.
@@ -867,6 +877,8 @@
 
     function showFeedback(right, skipped) {
       var item = state.current.item;
+      var card = document.querySelector('.drill-card');
+      if (card) { card.classList.toggle('is-right', !!right); card.classList.toggle('is-wrong', !right && !skipped); }
       var fb = $('drill-feedback');
       fb.className = 'drill-feedback show ' + (right ? 'good' : (skipped ? 'warn' : 'bad'));
       fb.style.setProperty('--stamp', KA_Kanji.colour(item.id));
@@ -1196,12 +1208,18 @@
       });
       input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
+          // Handled here, and only here: checking moves focus to the Next
+          // button, so without this the same keypress would bubble up to the
+          // document listener below and skip straight past the answer.
+          e.preventDefault();
+          e.stopPropagation();
           if (state.answered) newQuestion();
           else checkDrillAnswer();
         }
       });
       document.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && state.answered && document.activeElement !== input) {
+        if (e.key === 'Enter' && state.answered && e.target !== input && document.activeElement !== input) {
+          e.preventDefault();
           newQuestion();
         }
       });
