@@ -244,6 +244,32 @@
     .kd-score b { font-weight: 800; }
     .kd-reset { margin-left: auto; border: 0; background: none; font-family: inherit; font-size: 0.78rem;
       font-weight: 700; color: var(--wok-red-dark); text-decoration: underline; cursor: pointer; padding: 0.2rem 0; }
+    /* Kitchen settings: a small gear at the end of the score bar, opening a panel. */
+    .kd-status { position: relative; }
+    .kd-gear { flex: none; width: 30px; height: 30px; margin-left: 0.2rem; border-radius: 50%; border: 1.5px solid var(--wok-ink);
+      background: #fff; color: var(--wok-ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+    .kd-gear:hover, .kd-gear[aria-expanded="true"] { background: var(--wok-ink); color: var(--wok-paper); }
+    .kd-gear svg { width: 16px; height: 16px; }
+    .kd-set { position: absolute; right: -6px; top: calc(100% + 12px); width: 340px; max-width: calc(100vw - 2rem); z-index: 30;
+      background: #fffdf7; border: 2px solid var(--wok-ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--wok-ink);
+      padding: 14px 16px 12px; text-align: left; box-sizing: border-box; }
+    .kd-set[hidden] { display: none; }
+    .kd-set::before { content: ""; position: absolute; right: 14px; top: -9px; width: 14px; height: 14px; background: #fffdf7;
+      border-left: 2px solid var(--wok-ink); border-top: 2px solid var(--wok-ink); transform: rotate(45deg); }
+    .kd-set-h { margin: 0 0 2px; font-size: 0.66rem; letter-spacing: 0.18em; color: var(--wok-red); text-transform: uppercase; font-weight: 800; }
+    .kd-set-q { font-weight: 800; font-size: 0.95rem; margin: 0 0 10px; color: var(--wok-ink); }
+    .kd-opt { display: flex; gap: 10px; align-items: flex-start; width: 100%; padding: 9px 10px; margin: 0 0 8px; box-sizing: border-box;
+      border: 1.5px solid #d8cfbf; border-radius: 10px; background: #fff; cursor: pointer; font-family: inherit; text-align: left; color: var(--wok-ink); }
+    .kd-opt:hover { border-color: var(--wok-ink); }
+    .kd-opt.is-on { border-color: var(--wok-ink); background: #f4efe4; }
+    .kd-opt .kd-dot { flex: none; width: 16px; height: 16px; margin-top: 2px; border-radius: 50%; border: 2px solid var(--wok-ink); box-sizing: border-box; background: #fff; }
+    .kd-opt.is-on .kd-dot { background: radial-gradient(var(--wok-red) 0 3.5px, #fff 4.5px); }
+    .kd-opt b { display: block; font-size: 0.86rem; }
+    .kd-opt span { display: block; font-size: 0.76rem; color: #6d625a; line-height: 1.35; margin-top: 2px; }
+    .kd-set-note { font-size: 0.72rem; color: #8b8273; margin: 2px 0 0; line-height: 1.35; }
+    /* the quick "right, next" moment when skipping ahead */
+    .kd-flash { position: absolute; left: 50%; top: -15px; transform: translateX(-50%); z-index: 2; white-space: nowrap;
+      background: #e9f5ee; border: 1.5px solid #2f8f5b; color: #1f6b43; font-weight: 700; font-size: 0.8rem; border-radius: 999px; padding: 4px 12px; }
     .kd-round { display: flex; align-items: center; gap: 0.6rem; margin-left: auto; }
     .kd-round[hidden] { display: none; }
     .kd-status.is-round .kd-reset { margin-left: 0; }
@@ -467,12 +493,21 @@
           <span class="kd-round-count" id="kd-round-count"></span>
         </div>
         <button type="button" class="kd-reset" id="kd-reset" onclick="resetDrill()" data-i18n="reset">↺ Reset Score</button>
+        <button type="button" class="kd-gear" id="kd-gear" aria-expanded="false" aria-controls="kd-set"
+                title="Settings" aria-label="Settings" data-i18n-title="kd_set_btn" data-i18n-label="kd_set_btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3 1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8 1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+        <div class="kd-set" id="kd-set" hidden role="dialog" aria-labelledby="kd-set-h">
+          <p class="kd-set-h" id="kd-set-h" data-i18n="kd_set_title">Kitchen settings</p>
+          <p class="kd-set-q" data-i18n="kd_set_q">When I get one right…</p>
+          <button type="button" class="kd-opt" data-auto="show"><i class="kd-dot"></i><span><b data-i18n="kd_set_show">Show me the answer card</b><span data-i18n="kd_set_show_d">See the meaning, readings and an example word, then press Enter. Best while a block is new.</span></span></button>
+          <button type="button" class="kd-opt" data-auto="fast"><i class="kd-dot"></i><span><b data-i18n="kd_set_fast">Go straight to the next kanji</b><span data-i18n="kd_set_fast_d">A quick green flash, then the next one. For reviewing kanji you already know.</span></span></button>
+          <p class="kd-set-note" data-i18n="kd_set_note">A wrong answer always stops, so you can see the right one.</p>
+        </div>
       </div>
 
       <div id="drill-card-wrap">
       <div class="drill-card">
         <span class="drill-klc-id" id="drill-klc-id"></span>
-        <button type="button" class="kd-hear kd-hear-card" id="drill-hear" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg><span data-i18n="kw_hear">Hear the readings</span></button>
+        <button type="button" class="kd-hear kd-hear-card" id="drill-hear" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg><span data-i18n="kd_hear">Hear the reading</span></button>
         <div class="drill-question-tag" id="drill-tag">What is the keyword?</div>
         <div class="drill-question jp" id="drill-question">日</div>
       </div>
@@ -531,7 +566,7 @@
     var state = {
       answer: 'type',            // 'type' | 'pick' — how you answer in Kanji → Keyword
       mode: 'kanji2keyword',
-      lo: 1, hi: 500,        // the drill range, now any span rather than 3 fixed sets
+      lo: 1, hi: 100,        // the drill range; starts on the first block of 100
       onlyWrong: false,      // "only the ones I've got wrong", read from the shared store
       correct: 0, total: 0, streak: 0, best: 0,
       current: null,
@@ -650,8 +685,11 @@
     // ---------- question generation ----------
     function newQuestion() {
       if (!dataReady()) return;
+      clearTimeout(state.autoTimer);
       var card = document.querySelector('.drill-card');
       if (card) card.classList.remove('is-right', 'is-wrong');
+      var flash = document.querySelector('.kd-flash');
+      if (flash) flash.remove();
       var item;
       // Distractors come from the drill's own pool, or — in a round handed
       // over by the wall, which has no range — from the round's block.
@@ -879,6 +917,18 @@
       var item = state.current.item;
       var card = document.querySelector('.drill-card');
       if (card) { card.classList.toggle('is-right', !!right); card.classList.toggle('is-wrong', !right && !skipped); }
+      if (right && state.autoNext === 'fast') {
+        // Right, and the cook wants pace: a green flash, then the next kanji.
+        // The answer card is not shown; Enter skips the wait.
+        var f = document.createElement('div');
+        f.className = 'kd-flash';
+        f.textContent = tt('kd_flash', '✓ Correct — next…');
+        if (card) card.appendChild(f);
+        $('drill-skip').style.display = 'none';
+        $('drill-check').disabled = true;
+        state.autoTimer = setTimeout(function () { if (state.answered) newQuestion(); }, 700);
+        return;
+      }
       var fb = $('drill-feedback');
       fb.className = 'drill-feedback show ' + (right ? 'good' : (skipped ? 'warn' : 'bad'));
       fb.style.setProperty('--stamp', KA_Kanji.colour(item.id));
@@ -901,7 +951,7 @@
         '<div class="drill-detail">' +
           '<div class="row"><span class="lbl">ON</span><span class="jp">' + on + '</span>' +
           '<span class="lbl">KUN</span><span class="jp">' + kun + '</span>' +
-          '<button type="button" class="kd-hear" data-hear="readings">' + ICON + tt('kw_hear', 'Hear the readings') + '</button></div>' +
+          '<button type="button" class="kd-hear" data-hear="readings">' + ICON + tt('kd_hear', 'Hear the reading') + '</button></div>' +
           vocabHtml +
         '</div>';
       wireHear(fb, item);
@@ -1002,7 +1052,7 @@
       root.querySelectorAll('.kd-hear').forEach(function (btn) {
         var which = btn.getAttribute('data-hear');
         KA_Listen.attach(btn, function () {
-          if (which === 'readings') return window.kanjiReadingSpeech ? window.kanjiReadingSpeech(item) : '';
+          if (which === 'readings') return window.kanjiMainSpeech ? window.kanjiMainSpeech(item) : '';
           var v = (item.vocabulary || [])[0];
           return v ? v.word : '';
         });
@@ -1103,7 +1153,7 @@
         var z = Math.min(a + 99, 2300);
         var o = document.createElement('option');
         o.value = a + '-' + z;
-        o.textContent = a + '\u2013' + z;
+        o.textContent = a + '\u2013' + z + (a === 1 ? ' \u00b7 ' + tt('kd_r_start', 'start here') : '');
         g.appendChild(o);
       }
       opt('custom', tt('kd_r_custom', 'Custom range\u2026'));
@@ -1226,6 +1276,33 @@
       $('drill-check').addEventListener('click', function () {
         if (state.answered) newQuestion();
       });
+      // Kitchen settings (the gear in the score bar). Remembered per browser.
+      state.autoNext = 'show';
+      try { if (localStorage.getItem('kanjiDrillAutoNext') === 'fast') state.autoNext = 'fast'; } catch (e) {}
+      var gear = $('kd-gear'), panel = $('kd-set');
+      function paintSet() {
+        panel.querySelectorAll('.kd-opt').forEach(function (b) {
+          var on = b.getAttribute('data-auto') === state.autoNext;
+          b.classList.toggle('is-on', on);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      }
+      function openSet(open) {
+        panel.hidden = !open;
+        gear.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+      gear.addEventListener('click', function (e) { e.stopPropagation(); openSet(panel.hidden); });
+      panel.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var b = e.target.closest('.kd-opt');
+        if (!b) return;
+        state.autoNext = b.getAttribute('data-auto');
+        try { localStorage.setItem('kanjiDrillAutoNext', state.autoNext); } catch (err) {}
+        paintSet();
+      });
+      document.addEventListener('click', function () { if (!panel.hidden) openSet(false); });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) { openSet(false); gear.focus(); } });
+      paintSet();
       try {
         var m = localStorage.getItem('kanjiDrillMode');
         if (m === 'keyword2kanji') { state.mode = m; document.querySelectorAll('.mode-chip').forEach(function (c) { c.classList.toggle('on', c.getAttribute('data-mode') === m); }); }
@@ -1234,7 +1311,7 @@
       paintAnswerToggle();
       if (window.KA_Listen) {
         KA_Listen.attach($('drill-hear'), function () {
-          return (state.current && window.kanjiReadingSpeech) ? window.kanjiReadingSpeech(state.current.item) : '';
+          return (state.current && window.kanjiMainSpeech) ? window.kanjiMainSpeech(state.current.item) : '';
         });
         if (window.KA_Speech && KA_Speech.onReady) KA_Speech.onReady(paintHear);
         if (window.KA_Azure && KA_Azure.listVoices) KA_Azure.listVoices().then(paintHear);
