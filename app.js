@@ -9227,20 +9227,30 @@ function generateNewQuestion() {
     function kanjiReadingSpeech(card) {
       if (!card) return '';
       var parts = [];
+      // Strip the dictionary's marks — "-", "[-]", "*", "." — so only kana is spoken.
+      function clean(x) { return String(x).replace(/\[-?\]|[-‑*.\[\]\s]/g, ''); }
       (card.onyomi || []).forEach(function (o) {
-        var s = String(o).replace(/-/g, '').trim();
-        if (s) parts.push(s);
+        String(o).split(/[・,、]/).forEach(function (x) { var s = clean(x); if (s) parts.push(s); });
       });
-      String(card.kunyomi || '').split(/[・,、]/).forEach(function (k) {
-        var s = String(k).replace(/-/g, '').replace(/\./g, '').trim();
+      String(card.kunyomi || '').split(/[・,、=]/).forEach(function (k) {
+        var s = clean(k);
         if (s) parts.push(s);
       });
       var seen = {}, out = [];
       parts.forEach(function (p) { if (!seen[p]) { seen[p] = 1; out.push(p); } });
-      // Four is plenty. 生 has a dozen readings, and reciting them all is a
-      // lecture, not an answer.
-      return out.slice(0, 4).join('、');
+      // The wall is the reference: every reading, on first, then kun.
+      return out.join('、');
     }
+    // The Kanji Kitchen says one reading only: the one you would hear for the
+    // kanji on its own (山 やま, 食 たべる, 学 がく). kanji-data.js carries it
+    // as "main"; the first on-reading stands in if an entry has none.
+    window.kanjiMainSpeech = function (card) {
+      if (!card) return '';
+      if (card.main) return card.main;
+      var on = (card.onyomi || [])[0];
+      if (on) return String(on).split(/[・,、\s]+/)[0].replace(/[-*]/g, '');
+      return String(card.kunyomi || '').split(/[・,、]/)[0].replace(/[-.*\[\]\s]/g, '');
+    };
 
     function showKanjiCard() {
       if (filteredKanjiCards.length === 0) return;
