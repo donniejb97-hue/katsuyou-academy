@@ -66,10 +66,10 @@
         padding: 0.5rem 0; font-family: 'Outfit', sans-serif; font-size: 0.85rem; color: var(--wd-cream);
         transition: width 0.28s ease, padding 0.28s ease, opacity 0.2s ease;
       }
-      #page-vocabulary .wd-search-wrap.is-open .vocab-search { width: 20rem; opacity: 1; padding: 0.5rem 0.95rem 0.5rem 2.3rem; border-color: var(--wd-cream); }
+      #page-vocabulary .wd-search-wrap.is-open .vocab-search { width: 23rem; opacity: 1; padding: 0.5rem 0.95rem 0.5rem 2.3rem; border-color: var(--wd-cream); }
       #page-vocabulary .vocab-search:focus { outline: none; }
       #page-vocabulary .wd-search-btn { width: 34px; height: 34px; flex: 0 0 auto; border-radius: 50%; display: grid; place-items: center;
-        border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.08); color: #f5e9d2; cursor: pointer; padding: 0;
+        border: 1.5px solid rgba(255,255,255,0.4); background: rgba(20,18,28,0.55); color: #f5e9d2; cursor: pointer; padding: 0;
         transition: background 0.15s, border-color 0.15s; }
       #page-vocabulary .wd-search-btn:hover, #page-vocabulary .wd-search-btn:focus-visible { background: rgba(255,255,255,0.16); border-color: #f5e9d2; outline: none; }
       #page-vocabulary .wd-search-wrap.is-open .wd-search-btn { position: absolute; left: 4px; z-index: 2; width: 30px; height: 30px; border-color: transparent; background: none; }
@@ -136,7 +136,7 @@
       #page-vocabulary .wd-wrap { position: relative; z-index: 2; margin-top: calc(var(--nt-eye) - var(--nt-hero-h)); }
       #page-vocabulary .wd-hero { position: relative; z-index: 6; }   /* search results drop over the night line */
       /* the search is just the magnifying glass until it's clicked; no word count up here */
-      #page-vocabulary .wd-hero-right { padding: 4px; }
+      #page-vocabulary .wd-hero-right { padding: 0; background: none !important; -webkit-backdrop-filter: none; backdrop-filter: none; }
       #page-vocabulary #wb-sub { display: none; }
       #page-vocabulary .wd-title, #page-vocabulary .wd-eyebrow { text-shadow: 0 1px 3px #000, 0 2px 14px rgba(0,0,0,0.9); }
       #page-vocabulary .wd-eyebrow { color: #ff8f80; }   /* the ink red is lost against the city lights */
