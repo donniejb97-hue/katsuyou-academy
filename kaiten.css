@@ -1,0 +1,424 @@
+/* ==========================================================================
+   回転かな · Kaiten Kana — the kana drill as a conveyor-belt sushi bar.
+   Two views share one page: the belt (drill) and the Menu (progress chart).
+   Art: kaiten-room.jpg (the counter), kaiten-belt.jpg (a seamless top-down
+   belt tile), kaiten-wall.jpg (seamless slat wall), kaiten-board.jpg (plank).
+   ========================================================================== */
+.kk-page, .kk-ov, .kk-bov { --blue: #2f6fd6; --gold: #e2a23b; --red: #d8362a; --cream: #f6ead6; --ink: #1b130e; }
+:root {
+  --kk-washi: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .32 0 0 0 0 .18 0 0 0 .10 0'/%3E%3C/filter%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .45 0 0 0 0 .3 0 0 0 .16 -.04'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --kk-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='22'%3E%3Cg stroke='%23d9dcef' stroke-opacity='.33' stroke-width='1.2' fill='%23263664'%3E%3Cg id='s'%3E%3Ccircle r='21'/%3E%3Ccircle r='15.5' fill='none'/%3E%3Ccircle r='10' fill='none'/%3E%3Ccircle r='4.5' fill='none'/%3E%3C/g%3E%3Cuse href='%23s' x='44'/%3E%3Cuse href='%23s' x='22' y='11'/%3E%3Cuse href='%23s' y='22'/%3E%3Cuse href='%23s' x='44' y='22'/%3E%3C/g%3E%3C/svg%3E");
+}
+.kk-page {
+  --iw: max(100vw, 1500px);
+  --hi: calc(var(--iw) * .4242);            /* the photo is 2560 x 1086 */
+  position: relative; padding-top: 0 !important; min-height: 100vh; overflow-x: hidden;
+  background: #1b130e; color: var(--cream); font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+}
+.kk-page .jp, .kk-jp { font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+.kk-page button { font-family: inherit; cursor: pointer; }
+.kk-page [hidden] { display: none !important; }
+.kk-page ~ .site-footer { margin-top: 0; }
+.kk-sr { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; }
+
+/* ---- the way across: two keys, top left ---- */
+.kk-keys { position: absolute; z-index: 30; top: calc(75px + 16px); left: 16px; display: flex; padding: 5px; border-radius: 12px;
+  background: #120c08; border: 2px solid #5a3a22; box-shadow: 0 10px 22px rgba(0,0,0,.45); }
+.kk-key { display: flex; align-items: center; gap: 9px; padding: 7px 16px 7px 12px; border-radius: 8px; font: 800 .95rem 'Outfit', sans-serif;
+  color: #a8906f; white-space: nowrap; text-decoration: none; }
+.kk-key small { display: block; font: 800 .55rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .18em; opacity: .85; }
+.kk-key .led { width: 9px; height: 9px; border-radius: 50%; background: #3a2a1e; flex: none; }
+.kk-key:not(.on):hover, .kk-key:not(.on):focus-visible { color: #fff; background: rgba(255,255,255,.05); outline: none; }
+.kk-key.on { background: linear-gradient(#3a2a1e, #2a1d14); color: #fff; box-shadow: inset 0 2px 6px rgba(0,0,0,.6); cursor: default; }
+.kk-key.on .led { background: #ff9f5f; box-shadow: 0 0 8px #ff9f5f; }
+.kk-key.on small { color: #ffb36b; }
+
+/* ---- the room: the photo, cut off at the counter so it runs into the belt ---- */
+.kk-hero { --c0: .14; --c1: .775; position: relative; margin-top: 75px; overflow: hidden; background: #1b130e;
+  height: min(calc(var(--hi) * (var(--c1) - var(--c0))), max(300px, calc(100vh - 75px - 204px - 150px))); }
+.kk-hero.is-menu { --c1: .56; height: min(calc(var(--hi) * (var(--c1) - var(--c0))), 330px);
+  border-bottom: 14px solid #3b2413; border-image: linear-gradient(#7a5230, #4a2c15 45%, #24130a) 1; box-shadow: 0 10px 18px rgba(0,0,0,.65); }
+.kk-img { position: absolute; left: 50%; width: var(--iw); height: var(--hi); margin-left: calc(var(--iw) / -2); bottom: calc(var(--hi) * (var(--c1) - 1));
+  background: url(kaiten-room.jpg) center / 100% 100% no-repeat; transform: translate3d(var(--px, 0), var(--py, 0), 0) scale(1.025);
+  transform-origin: 50% 100%; transition: transform .6s cubic-bezier(.2,.7,.3,1); }
+.kk-hero::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(10,5,2,.45)); }
+.kk-glow { position: absolute; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(circle, rgba(255,196,120,.55), rgba(255,140,60,.18) 45%, transparent 70%); animation: kk-flick 3.2s infinite; }
+@keyframes kk-flick { 0%,100% { opacity: .75 } 12% { opacity: .95 } 20% { opacity: .7 } 33% { opacity: 1 } 47% { opacity: .8 } 61% { opacity: .92 } 74% { opacity: .72 } 88% { opacity: .97 } }
+.kk-motes { position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  transform: translate3d(calc(var(--px, 0) * 1.8), calc(var(--py, 0) * 1.8), 0); transition: transform .6s cubic-bezier(.2,.7,.3,1); }
+.kk-motes i { position: absolute; bottom: -10px; width: var(--s); height: var(--s); border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle, rgba(255,214,150,.95), rgba(255,170,90,0) 70%); animation: kk-rise var(--d) linear infinite; animation-delay: var(--dl); }
+@keyframes kk-rise { 0% { transform: translate(0,0); opacity: 0 } 12% { opacity: var(--o) } 50% { transform: translate(var(--dx), -45%) }
+  85% { opacity: var(--o) } 100% { transform: translate(0, calc(var(--h) * -1)); opacity: 0 } }
+/* the blank board in the photo carries the page name */
+.kk-sign { position: absolute; left: 31.4%; width: 37.3%; top: 37.3%; height: 11.8%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.kk-sign b { font: 900 calc(var(--iw) * .028) / 1 'Noto Serif JP', 'Noto Serif CJK JP', serif; color: #2a170a; letter-spacing: .2em; text-shadow: 0 1px 0 rgba(255,255,255,.35); }
+.kk-sign small { font: 800 calc(var(--iw) * .0068) 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .3em; color: #5a3a1c; text-transform: uppercase; }
+
+/* ---- the belt: the tile slides with the plates; the light stays put ---- */
+.kk-belt { --pw: 132px; --pt: 34px; position: relative; height: 204px; overflow: hidden; background: #2a1a10 url(kaiten-belt.jpg) repeat-x;
+  background-size: auto 100%; background-position: var(--bp, 0) 0; }
+.kk-belt::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background:
+  linear-gradient(rgba(0,0,0,.55), transparent 16px),
+  radial-gradient(ellipse 22% 60% at 50% 55%, rgba(255,196,120,.28), transparent 70%),
+  radial-gradient(ellipse 14% 70% at 12% 50%, rgba(255,170,90,.16), transparent 70%),
+  radial-gradient(ellipse 14% 70% at 88% 50%, rgba(255,170,90,.16), transparent 70%),
+  linear-gradient(90deg, rgba(10,5,2,.55), transparent 12%, transparent 88%, rgba(10,5,2,.55)); }
+.kk-belt::after { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 7px; z-index: 2; background: linear-gradient(#e9d2b0, #8a6a44 60%, #3a2414); box-shadow: 0 2px 4px rgba(0,0,0,.6); }
+.kk-express { position: absolute; top: 14px; left: 12px; z-index: 4; height: 20px; padding: 0 10px 0 12px; border-radius: 12px 22px 22px 12px; display: flex; align-items: center;
+  background: rgba(255,255,255,.92); border: 2px solid var(--blue); color: var(--blue); font: 800 .62rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+.kk-express.live { background: var(--blue); color: #fff; animation: kk-blink 1s steps(1) infinite; }
+@keyframes kk-blink { 50% { opacity: .6 } }
+.kk-seat { position: absolute; top: 7px; bottom: 0; left: 50%; width: 200px; margin-left: -100px; z-index: 1; border-left: 2px dashed rgba(255,213,138,.7); border-right: 2px dashed rgba(255,213,138,.7); }
+.kk-seat span { position: absolute; bottom: 4px; left: 0; right: 0; text-align: center; font: 800 .6rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .2em;
+  color: #ffe2a8; text-shadow: 0 1px 3px #000; text-transform: uppercase; }
+.kk-plate { position: absolute; left: 0; top: var(--pt); width: var(--pw); height: var(--pw); margin-left: calc(var(--pw) / -2); border-radius: 50%; z-index: 3;
+  background: radial-gradient(circle, #fff 0 52%, var(--pc) 53% 64%, #fff 65% 70%, var(--pc) 71%); box-shadow: 0 10px 14px rgba(0,0,0,.55), 0 2px 3px rgba(0,0,0,.4);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; will-change: transform; transition: opacity .45s, filter .3s; }
+.kk-plate b { font: 700 calc(var(--pw) * .36) / 1 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif; color: var(--ink); white-space: nowrap; }
+.kk-plate b.two { font-size: calc(var(--pw) * .25); }
+.kk-plate b.ro { font: 900 calc(var(--pw) * .22) / 1 'Outfit', sans-serif; }
+.kk-plate em { font: 800 calc(var(--pw) * .1) 'Outfit', 'Noto Sans JP', sans-serif; font-style: normal; color: var(--red); height: 1.1em; margin-top: 2px; }
+.kk-plate em.hint { color: #8a7a60; opacity: .8; }
+.kk-plate.target { outline: 4px dashed #ffd58a; outline-offset: 6px; }
+.kk-plate.eaten { transition: transform .45s cubic-bezier(.3,1.4,.5,1), opacity .45s; opacity: 0; }
+.kk-plate.gone { filter: grayscale(1) brightness(.6); }
+.kk-plate .pb { position: absolute; top: -4px; right: -12px; background: var(--red); color: #fff; font: 800 .62rem 'Outfit', 'Noto Sans JP', sans-serif; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+.kk-plate .pb.ex { background: var(--blue); }
+.kk-plate.wobble { animation: kk-wob .35s; }
+@keyframes kk-wob { 30% { transform: var(--tf) rotate(-8deg) } 70% { transform: var(--tf) rotate(8deg) } }
+.kk-belt.is-paused::before { background-color: rgba(0,0,0,.25); }
+
+/* ---- under the belt ---- */
+.kk-counter { width: min(900px, calc(100% - 32px)); margin: 16px auto 0; position: relative; }
+.kk-in { width: 100%; height: 60px; border-radius: 12px; background: var(--cream); border: 3px solid var(--red); padding: 0 18px; font: 700 1.5rem 'Outfit', sans-serif; color: #3a2618; outline: none; }
+.kk-in:focus { box-shadow: 0 0 0 4px rgba(216,54,42,.25); }
+.kk-shake { animation: kk-shake .3s; }
+@keyframes kk-shake { 25% { transform: translateX(-6px) } 75% { transform: translateX(6px) } }
+.kk-btns { display: flex; gap: 10px; margin-top: 10px; }
+.kk-btns button { flex: 1; height: 50px; border-radius: 12px; border: 0; font: 800 1rem 'Outfit', sans-serif; background: var(--cream); color: var(--ink); box-shadow: 0 4px 0 #9b8465; }
+.kk-btns button:active { transform: translateY(2px); box-shadow: 0 2px 0 #9b8465; }
+.kk-btns .a { background: var(--red); color: #fff; box-shadow: 0 4px 0 #7e1c14; }
+.kk-tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.kk-tile { height: 74px; border-radius: 12px; border: 0; background: var(--cream); font: 700 2.2rem 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif; color: var(--ink); box-shadow: 0 4px 0 #9b8465; position: relative; }
+.kk-tile small { position: absolute; top: 4px; left: 8px; font: 800 .62rem 'Outfit', sans-serif; color: #a08a6a; }
+.kk-tile.twin::after { content: attr(data-twin); position: absolute; top: 4px; right: 6px; font: 800 .5rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .1em; color: var(--red); text-transform: uppercase; }
+.kk-tile.bad { background: #f3c9c3; color: #8a2a20; }
+.kk-tile.hint { outline: 3px dashed var(--gold); outline-offset: 2px; }
+.kk-tiles.wait .kk-tile { opacity: .45; }
+
+/* side panels: the menu (How it works) left of the answer bar, the tally right of it */
+.kk-side { position: absolute; top: 0; width: 190px; }
+.kk-side-l { right: calc(100% + 22px); }
+.kk-side-r { left: calc(100% + 22px); }
+.kk-mbk { width: 100%; height: 150px; border: 0; background: none; padding: 0; position: relative; display: flex; align-items: flex-start; justify-content: center; gap: 10px; color: inherit; }
+.kk-mbk:focus { outline: none; }
+.kk-mbk:focus-visible .kk-cover { outline: 2px solid #ffd27a; outline-offset: 4px; }
+.kk-cover { width: 112px; height: 150px; position: relative; flex: none; border-radius: 2px 5px 5px 2px; transform: rotate(-3deg); transition: transform .25s;
+  background: var(--kk-wave) 0 0 / 22px 11px, #263664; box-shadow: inset -10px 0 12px -8px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.08), 0 12px 18px rgba(0,0,0,.55); }
+.kk-mbk:hover .kk-cover { transform: rotate(-1deg) translateY(-4px); }
+.kk-cover::before { content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 16px; background: linear-gradient(90deg, rgba(0,0,0,.25), rgba(255,255,255,.06)); border-left: 1px solid rgba(0,0,0,.35); }
+.kk-stitch { position: absolute; right: 8px; top: 8%; bottom: 8%; width: 1.5px; background: #e9dcc0; box-shadow: 0 0 1px rgba(0,0,0,.5); }
+.kk-stitch i { position: absolute; right: -8px; width: 9.5px; height: 1.5px; margin-top: -1px; background: #e9dcc0; box-shadow: 0 0 1px rgba(0,0,0,.5); }
+.kk-stitch i::before { content: ""; position: absolute; left: -2px; top: -1.5px; width: 4px; height: 4px; border-radius: 50%; background: #12192f; }
+.kk-slip { position: absolute; left: 14px; top: 12px; width: 30px; bottom: 22px; background: var(--kk-washi), #f6efdf; box-shadow: 0 1px 2px rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; font: 700 1.05rem / 1 'Noto Serif JP', 'Noto Serif CJK JP', serif; letter-spacing: .35em; color: #1e1510; border: 1px solid #c8b894; }
+.kk-slip::after { content: ""; position: absolute; inset: 3px; border: 1px solid rgba(160,40,20,.35); }
+.kk-hanko { display: grid; place-items: center; text-align: center; width: 22px; height: 22px; border-radius: 3px; background: #c8321f; color: #fff;
+  font: 700 .5rem / 1.05 'Noto Serif JP', 'Noto Serif CJK JP', serif; transform: rotate(8deg); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.4); opacity: .92; }
+.kk-cover .kk-hanko { position: absolute; left: 52px; bottom: 14px; }
+.kk-mbk-lbl { align-self: center; text-align: left; font: 800 .72rem / 1.35 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .12em; text-transform: uppercase; color: #d9c3a0; }
+.kk-mbk-lbl small { display: block; font: 600 .62rem 'Outfit', sans-serif; letter-spacing: .04em; text-transform: none; color: #8b7355; }
+.kk-tally { background: #120c08; border: 2px solid #5a3a22; border-radius: 12px; padding: 8px 12px; box-shadow: 0 10px 20px rgba(0,0,0,.45); }
+.kk-tally > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 3px 0; border-bottom: 1px dashed rgba(255,255,255,.1); font: 700 .8rem 'Outfit', 'Noto Sans JP', sans-serif; color: #d9c3a0; }
+.kk-tally > div:last-child { border: 0; }
+.kk-tally small { font: 600 .62rem 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif; color: #8b7355; margin-left: 3px; }
+.kk-tally b { font: 800 1.15rem 'Outfit', sans-serif; color: #fff; min-width: 2ch; text-align: right; }
+.kk-tally .kk-rush-row b { color: #ffcf6b; }
+html[lang="ja"] .kk-tally small { display: none; }
+
+/* ---- the ordering tablet: every setting ---- */
+.kk-tab { margin-top: 14px; border-radius: 18px; background: #0e0f14; border: 10px solid #2a2c33; box-shadow: 0 14px 30px rgba(0,0,0,.5); color: #fff; overflow: hidden; }
+.kk-tab-head { display: flex; flex-wrap: wrap; row-gap: 6px; align-items: center; gap: 9px; padding: 8px 8px 8px 14px; background: #16181f; }
+.kk-tab-t { font: 800 .82rem 'Outfit', sans-serif; white-space: nowrap; }
+.kk-tab-t small { display: block; font: 700 .56rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .16em; color: #ffb36b; }
+.kk-course-pill { font: 800 .66rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .08em; padding: 3px 9px; border-radius: 999px; background: #3a2a1e; color: #ffcf6b; white-space: nowrap; }
+.kk-part { display: inline-flex; align-items: center; gap: 5px; font: 600 .7rem 'Outfit', 'Noto Sans JP', sans-serif; white-space: nowrap; }
+.kk-part b { font-weight: 700; }
+.kk-part.g b { color: #ffcf6b; }
+.kk-n { display: inline-grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: var(--red); color: #fff; font: 800 .6rem / 1 'Outfit', sans-serif; flex: none; }
+.kk-bill { flex-shrink: 0; margin-left: auto; display: flex; align-items: baseline; gap: 6px; background: #000; border-radius: 8px; padding: 4px 10px; font: 700 1.05rem 'Courier New', monospace; color: #7dff9a; }
+.kk-bill small { font: 800 .54rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .14em; color: #9aa3b8; text-transform: uppercase; }
+.kk-tbtn { flex-shrink: 0; height: 32px; padding: 0 14px; border-radius: 10px; border: 0; background: var(--cream); color: var(--ink); font: 800 .8rem 'Outfit', sans-serif; }
+.kk-tab.open .kk-part { display: none; }
+.kk-courses { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px 14px; border-top: 1px solid #2a2c33; }
+.kk-course { text-align: left; border: 2px solid #2d3039; background: #181a21; color: #cfc6b8; border-radius: 12px; padding: 9px 12px; font: 600 .7rem / 1.35 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-course b { display: flex; align-items: baseline; gap: 6px; font: 800 .92rem 'Outfit', 'Noto Sans JP', sans-serif; color: #fff; margin-bottom: 2px; }
+.kk-course b .jp { font-size: .78rem; color: #ffb36b; }
+.kk-course.on { border-color: #ffcf6b; background: #2a2016; }
+.kk-course:hover { border-color: #5a4a3a; }
+.kk-tab-body { display: grid; grid-template-columns: 1fr 1.2fr 1.25fr 1fr; border-top: 1px solid #2a2c33; }
+.kk-col { padding: 12px 14px 14px; }
+.kk-col + .kk-col { border-left: 1px solid #2a2c33; }
+.kk-lbl { display: flex; align-items: center; gap: 7px; font: 800 .62rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .18em; text-transform: uppercase; color: #bfb3a0; white-space: nowrap; }
+.kk-lbl .jp { letter-spacing: .05em; color: #ffb36b; margin-left: auto; }
+.kk-note { font-size: .68rem; color: #8f8a80; line-height: 1.35; margin: 5px 0 9px; }
+.kk-sub { font: 800 .55rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .16em; text-transform: uppercase; color: #6f6a60; margin: 8px 0 5px; }
+.kk-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 4px 11px; border-radius: 9px; border: 0; background: #23252d; color: #cfc6b8;
+  font: 700 .74rem 'Outfit', 'Noto Sans JP', sans-serif; margin: 0 5px 6px 0; text-align: left; }
+.kk-btn::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #454857; flex: none; }
+.kk-btn:hover { background: #2d3039; }
+.kk-btn.on { background: var(--cream); color: var(--ink); }
+.kk-btn.on::before { background: #3aa17e; box-shadow: 0 0 6px #3aa17e; }
+.kk-btn[data-v="basic"].on::before { background: var(--blue); }
+.kk-btn[data-v="dakuten"].on::before { background: var(--gold); }
+.kk-btn[data-v="combos"].on::before { background: var(--red); }
+.kk-btn.plain::before { display: none; }
+.kk-btn.go { background: #3a2a1e; color: #ffcf6b; }
+.kk-btn.go::before { display: none; }
+.kk-btn:disabled { opacity: .4; cursor: default; }
+.kk-sel { width: 100%; height: 30px; border-radius: 9px; background: #23252d; color: var(--cream); font: 700 .74rem 'Outfit', 'Noto Sans JP', sans-serif; border: 0; padding: 0 8px; }
+.kk-sel:disabled { opacity: .4; }
+
+.kk-missed { margin-top: 14px; background: var(--cream); color: #2b1a10; border-radius: 14px; padding: 12px 14px; }
+.kk-missed h2 { margin: 0 0 8px; font: 800 .7rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #8b6b45; }
+.kk-missed .empty { font-size: .8rem; color: #a08a6a; }
+.kk-mk { display: inline-flex; align-items: center; gap: 6px; margin: 0 6px 6px 0; padding: 5px 10px; border-radius: 999px; background: #fff; border: 2px solid var(--red);
+  font: 700 .95rem 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif; color: #2b1a10; }
+.kk-mk small { font: 700 .7rem 'Outfit', sans-serif; color: #8b6b45; }
+.kk-mk .x { font: 800 .62rem 'Outfit', sans-serif; background: var(--red); color: #fff; border-radius: 6px; padding: 1px 5px; }
+.kk-mk.hot { background: #fdecea; }
+.kk-extras { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 40px; }
+.kk-chip { height: 34px; padding: 0 13px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.06);
+  border: 1.5px solid rgba(255,255,255,.22); color: var(--cream); font: 700 .78rem 'Outfit', 'Noto Sans JP', sans-serif; white-space: nowrap; }
+.kk-chip:hover { border-color: rgba(255,255,255,.5); }
+.kk-chip.on { border-color: #3aa17e; color: #8ff0c0; }
+.kk-chip:disabled { opacity: .4; cursor: default; }
+
+/* ---- The Menu: wooden tags on the wall ---- */
+.kk-sign.is-title b { font-size: calc(var(--iw) * .028); }
+.kk-wall { padding: 18px 0 60px; min-height: 60vh; background:
+  radial-gradient(ellipse 26% 420px at 6% 0, rgba(255,168,88,.26), transparent 72%),
+  radial-gradient(ellipse 26% 420px at 94% 0, rgba(255,168,88,.26), transparent 72%),
+  radial-gradient(ellipse 50% 60% at 50% 38%, rgba(255,196,130,.10), transparent 75%),
+  linear-gradient(rgba(10,5,2,.05), rgba(10,5,2,.45)),
+  url(kaiten-wall.jpg) center top / auto 640px repeat; }
+.kk-topbar, .kk-tray, .kk-boards, .kk-wall-foot { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+.kk-topbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.kk-seg { display: flex; background: rgba(18,12,8,.85); border: 2px solid #5a3a22; border-radius: 12px; padding: 4px; }
+.kk-seg button { padding: 7px 14px; border-radius: 8px; border: 0; background: none; font: 800 .85rem 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif; color: #a8906f; }
+.kk-seg button.on { background: var(--cream); color: var(--ink); }
+.kk-topbar .kk-chip { background: rgba(18,12,8,.82); }
+.kk-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .75rem; color: #d9c3a0; align-items: center; background: rgba(18,12,8,.7); padding: 6px 10px; border-radius: 10px; }
+.kk-legend i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: 5px; vertical-align: -2px; }
+.kk-stamp { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 3px; color: #fff; font: 700 .55rem 'Noto Serif JP', 'Noto Serif CJK JP', serif; margin-right: 5px; vertical-align: -3px; transform: rotate(-10deg); }
+.kk-progress { margin-left: auto; font: 700 .85rem 'Outfit', sans-serif; background: rgba(18,12,8,.7); padding: 6px 12px; border-radius: 10px; }
+.kk-progress b { color: #fff; font-size: 1.1rem; }
+.kk-tray { margin-top: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 12px; border-radius: 12px; background: rgba(18,12,8,.85);
+  border: 2px dashed #5a3a22; font-size: .8rem; color: #a8906f; min-height: 54px; }
+.kk-tray.has { border-style: solid; border-color: var(--blue); color: #fff; }
+.kk-tray .kk-mk { border-color: var(--blue); margin: 0; }
+.kk-tray .go { margin-left: auto; height: 34px; padding: 0 14px; border-radius: 10px; border: 0; background: var(--blue); color: #fff; font: 800 .82rem 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-boards { margin-top: 14px; display: grid; gap: 22px; }
+.kk-two { display: grid; grid-template-columns: 1fr 1.25fr; gap: 16px; }
+.kk-board { padding: 0 6px 10px; }
+.kk-board h3 { margin: 0 -6px 8px; padding: 12px 16px; border-radius: 6px; background: url(kaiten-board.jpg) center / cover; color: #2a170a;
+  box-shadow: 0 5px 0 #4a2c15, 0 12px 18px rgba(0,0,0,.55); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font: 900 1.2rem 'Noto Serif JP', 'Noto Serif CJK JP', serif; }
+.kk-board h3 small { color: #5a3a1c; font: 700 .75rem 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-plate-ic { width: 26px; height: 26px; border-radius: 50%; flex: none; background: radial-gradient(circle, #fff 0 45%, var(--pc) 46% 62%, #fff 63% 70%, var(--pc) 71%); }
+.kk-ord { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.kk-ord button { font: 800 .72rem 'Outfit', 'Noto Sans JP', sans-serif; padding: 6px 12px; border-radius: 999px; border: 0; background: #2a3a6a; color: #fff; box-shadow: 0 2px 0 #16203d; }
+.kk-ord button.q { border: 1.5px solid #2a3a6a; color: #2a3a6a; background: rgba(255,255,255,.35); box-shadow: none; }
+.kk-ord button:disabled { opacity: .35; cursor: default; }
+.kk-kg { display: grid; grid-auto-rows: 118px; column-gap: 8px; padding-top: 2px;
+  background: repeating-linear-gradient(to bottom, #d2a860 0 2px, #8a6230 2px 4px, #3a2412 4px 6px, transparent 6px 118px); }
+.kk-kt { --sw: 0deg; position: relative; height: 94px; margin-top: 16px; border: 0; border-radius: 4px 4px 8px 8px; transform-origin: 50% -16px; transform: rotate(var(--sw));
+  background: repeating-linear-gradient(91deg, rgba(110,70,30,.08) 0 1px, transparent 1px 7px), linear-gradient(90deg, #d6b884, #f0dcb2 38%, #e8cf9f 70%, #cdae78);
+  box-shadow: 0 3px 0 #7a5a36, 0 10px 16px rgba(0,0,0,.5); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 8px 2px 6px; color: #24160c; min-width: 0; }
+.kk-kg .kk-kt:nth-child(3n) { --sw: 1.4deg; }
+.kk-kg .kk-kt:nth-child(3n+1) { --sw: -1deg; }
+.kk-kt::before { content: ""; position: absolute; top: -16px; left: 50%; width: 2px; height: 18px; margin-left: -1px; background: linear-gradient(#1a0f07, #4a3018); }
+.kk-kt b { font: 700 1.6rem / 1.05 'Noto Serif JP', 'Noto Serif CJK JP', serif; color: #24160c; white-space: nowrap; }
+.kk-kt b.two { font-size: 1.1rem; line-height: 1.4; }
+.kk-kt i { font: 700 .62rem 'Outfit', sans-serif; font-style: normal; color: #7a5a36; letter-spacing: .06em; }
+.kk-kt u { text-decoration: none; font: 700 .56rem 'Outfit', sans-serif; color: #3a6a3a; }
+.kk-kt u s { text-decoration: none; color: #b02a1a; margin-left: 3px; }
+.kk-kt:hover, .kk-kt.swing { animation: kk-swing 1.1s ease-out; }
+@keyframes kk-swing { 15% { transform: rotate(5deg) } 35% { transform: rotate(-3.5deg) } 55% { transform: rotate(2deg) } 75% { transform: rotate(-1deg) } 100% { transform: rotate(var(--sw)) } }
+.kk-kt.seen::after { content: ""; position: absolute; bottom: 6px; right: 5px; width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 38%, var(--pc) 40% 62%, #fff 64% 70%, var(--pc) 72%); }
+.kk-kt .hk { position: absolute; top: 6px; right: 4px; width: 20px; height: 20px; border-radius: 4px; display: grid; place-items: center; font: 700 .66rem 'Noto Serif JP', 'Noto Serif CJK JP', serif;
+  color: #fff; transform: rotate(-12deg); box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.35); }
+.kk-kt.missed .hk { background: #c8321f; }
+.kk-kt.skip .hk { background: #c8901f; border-radius: 50%; }
+.kk-kt.unseen { filter: saturate(.35) brightness(.62); }
+.kk-kt.unseen u { color: #7a5a36; }
+.kk-kt.ordered { transform: translateY(-7px) rotate(var(--sw)); box-shadow: 0 0 0 3px var(--blue), 0 14px 20px rgba(0,0,0,.55); filter: none; }
+.kk-kt.ordered::before { background: var(--blue); }
+.kk-boards.hide-ro .kk-kt i, .kk-boards.hide-counts .kk-kt u { visibility: hidden; }
+.kk-wall-foot { margin-top: 26px; display: flex; justify-content: flex-end; }
+
+/* ---- overlays: cheat sheet, shortcuts, receipt ---- */
+.kk-ov { position: fixed; inset: 0; z-index: 1200; background: rgba(10,6,4,.72); display: grid; place-items: center; padding: 16px; }
+.kk-card { width: min(560px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--kk-washi), #fbf4e4; color: #2b1a10; border-radius: 14px;
+  padding: 22px 24px; box-shadow: 0 20px 50px rgba(0,0,0,.6); position: relative; font-family: 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-card h2 { margin: 0 0 4px; font: 900 1.3rem 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-card .eb { font: 800 .66rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .18em; color: #b0452f; text-transform: uppercase; }
+.kk-card .x { position: absolute; top: 12px; right: 12px; width: 32px; height: 32px; border-radius: 50%; border: 0; background: #e5d4b6; font-weight: 800; color: #2b1a10; }
+.kk-card kbd { background: #fff; border: 1px solid #cdb996; border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; font: 700 .78rem 'Outfit', sans-serif; white-space: nowrap; }
+.kk-card table { width: 100%; border-collapse: collapse; font-size: .9rem; margin-top: 10px; }
+.kk-card td { padding: 6px 0; border-bottom: 1px dashed #cdb996; vertical-align: top; }
+.kk-card td:last-child { text-align: right; font-weight: 800; padding-left: 10px; }
+.kk-card.keys td:first-child { width: 42%; }
+.kk-card.keys td:last-child { text-align: left; font-weight: 500; }
+.kk-card.receipt { width: min(390px, 100%); font-family: 'Courier New', monospace; background: #fffdf7; }
+.kk-card.receipt h2 { font-family: 'Noto Serif JP', 'Noto Serif CJK JP', serif; text-align: center; letter-spacing: .2em; }
+.kk-card.receipt .c { text-align: center; font-size: .8rem; color: #8b7355; margin-bottom: 6px; }
+.kk-card.receipt .rush { text-align: center; margin: 10px 0 4px; padding: 10px; border: 2px dashed #c8321f; border-radius: 8px; font-weight: 700; }
+.kk-card.receipt .rush b { display: block; font-size: 2rem; color: #c8321f; }
+.kk-act { display: flex; gap: 8px; margin-top: 14px; }
+.kk-act button { flex: 1; min-height: 40px; border-radius: 10px; border: 0; font: 800 .82rem 'Outfit', 'Noto Sans JP', sans-serif; background: #9b2a1a; color: #fff; }
+.kk-act button.q { background: #e5d4b6; color: #2b1a10; }
+.kk-act button:disabled { opacity: .4; }
+.kk-card.sheet { width: min(640px, 100%); }
+.kk-sheet-sec { margin-top: 14px; font: 800 .7rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .14em; text-transform: uppercase; color: #8b6b45; }
+.kk-sheet-grid { display: grid; grid-template-columns: 26px repeat(5, 1fr); gap: 4px; margin-top: 6px; }
+.kk-sheet-grid.c3 { grid-template-columns: 34px repeat(3, 1fr); }
+.kk-sheet-grid .hd { font: 800 .62rem 'Outfit', sans-serif; color: #a08a6a; display: grid; place-items: center; text-transform: uppercase; }
+.kk-sheet-grid .cell { border: 0; border-radius: 8px; background: #fff; box-shadow: 0 2px 0 #d9c7a4; padding: 3px 2px 2px; display: flex; flex-direction: column; align-items: center; color: #24160c; }
+.kk-sheet-grid .cell b { font: 700 1.15rem / 1.1 'Noto Sans JP', 'Noto Sans CJK JP', sans-serif; }
+.kk-sheet-grid .cell i { font: 700 .62rem 'Outfit', sans-serif; font-style: normal; color: #7a5a36; }
+.kk-sheet-grid .cell.cur { outline: 3px solid var(--red); outline-offset: 1px; background: #fff3ef; }
+.kk-sheet-grid .gap { visibility: hidden; }
+.kk-card .hint { font-size: .78rem; color: #8b7355; margin-top: 4px; }
+
+/* ---- How it works: a traditional お品書き that opens and turns its pages ---- */
+.kk-bov { position: fixed; inset: 0; z-index: 1300; background: rgba(8,5,3,.78); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 16px;
+  opacity: 0; transition: opacity .25s; }
+.kk-bov.on { opacity: 1; }
+.kk-book { --pw: min(430px, calc((100vw - 48px) / 2)); position: relative; width: calc(var(--pw) * 2); height: min(560px, calc(var(--pw) * 1.33), calc(100vh - 120px));
+  perspective: 2200px; transform: scale(.94); transition: transform .35s cubic-bezier(.2,.8,.3,1); }
+.kk-bov.on .kk-book { transform: none; }
+.kk-book::before { content: ""; position: absolute; inset: -12px -14px -14px; border-radius: 6px; background: var(--kk-wave) 0 0 / 22px 11px, #263664; box-shadow: 0 30px 60px rgba(0,0,0,.6); }
+.kk-pg { position: absolute; top: 0; width: var(--pw); height: 100%; overflow: hidden; }
+.kk-pg.l { left: 0; }
+.kk-pg.r { left: var(--pw); }
+.kk-face { position: absolute; inset: 0; background: var(--kk-washi), #f6efdf; color: #241a12; padding: 30px 30px 26px; display: flex; flex-direction: column; font-family: 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-pg.l .kk-face, .kk-leaf .back { box-shadow: inset -22px 0 26px -18px rgba(60,35,10,.45); }
+.kk-pg.r .kk-face, .kk-leaf .front { box-shadow: inset 22px 0 26px -18px rgba(60,35,10,.45); }
+.kk-face.blank { background: transparent; box-shadow: none !important; }
+.kk-leaf { position: absolute; top: 0; width: var(--pw); height: 100%; transform-style: preserve-3d; z-index: 5; display: none; }
+.kk-leaf.on { display: block; }
+.kk-leaf .front, .kk-leaf .back { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.kk-leaf .back { transform: rotateY(180deg); }
+.kk-leaf .shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, transparent, rgba(0,0,0,.18)); opacity: 0; }
+.kk-frame { position: absolute; inset: 14px; border: 1.5px solid #9b2a1a; pointer-events: none; }
+.kk-frame::after { content: ""; position: absolute; inset: 3px; border: 1px solid rgba(155,42,26,.45); }
+.kk-ph { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid rgba(36,26,18,.25); padding-bottom: 8px; margin-bottom: 6px; }
+.kk-ph b { font: 900 1.05rem 'Noto Serif JP', 'Noto Serif CJK JP', serif; letter-spacing: .25em; }
+.kk-ph small { font: 800 .6rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .2em; color: #9b2a1a; text-transform: uppercase; }
+.kk-dish { flex: 1; display: flex; gap: 14px; padding: 14px 2px; border-bottom: 1px dashed rgba(36,26,18,.22); min-height: 0; }
+.kk-dish:last-of-type { border-bottom: 0; }
+.kk-num { flex: none; width: 40px; height: 40px; border-radius: 50%; background: #9b2a1a; color: #fbf3e3; display: grid; place-items: center; font: 900 1.2rem 'Noto Serif JP', 'Noto Serif CJK JP', serif;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.35); }
+.kk-dish h4 { margin: 2px 0 2px; display: flex; align-items: baseline; gap: 8px; font: 800 1.08rem 'Outfit', 'Noto Sans JP', sans-serif; }
+.kk-dish h4 .jp { font: 700 .8rem 'Noto Serif JP', 'Noto Serif CJK JP', serif; color: #7a5a36; white-space: nowrap; }
+.kk-dish h4 .lead { flex: 1; min-width: 12px; border-bottom: 2px dotted rgba(36,26,18,.35); transform: translateY(-4px); }
+.kk-dish h4 .price { font: 800 .7rem 'Outfit', 'Noto Sans JP', sans-serif; padding: 2px 8px; border-radius: 999px; background: #241a12; color: #fbf3e3; letter-spacing: .06em; white-space: nowrap; }
+.kk-dish p { margin: 4px 0 0; font: 500 .9rem / 1.5 'Outfit', 'Noto Sans JP', sans-serif; color: #3a2a1c; }
+.kk-dish p b { color: #9b2a1a; }
+.kk-pf { margin-top: auto; display: flex; justify-content: space-between; font: 700 .66rem 'Noto Serif JP', 'Noto Serif CJK JP', serif; color: #8b7355; padding-top: 8px; }
+.kk-inside { background: var(--kk-wave) 0 0 / 22px 11px, #263664 !important; align-items: center; justify-content: center; gap: 14px; color: #f6efdf; }
+.kk-slip2 { background: var(--kk-washi), #f6efdf; color: #1e1510; padding: 26px 18px; writing-mode: vertical-rl; font: 900 2.1rem / 1 'Noto Serif JP', 'Noto Serif CJK JP', serif; letter-spacing: .4em;
+  box-shadow: 0 6px 14px rgba(0,0,0,.45); position: relative; border: 1px solid #c8b894; }
+.kk-slip2::after { content: ""; position: absolute; inset: 5px; border: 1px solid rgba(155,42,26,.45); }
+.kk-inside .sub { font: 800 .72rem 'Outfit', 'Noto Sans JP', sans-serif; letter-spacing: .3em; text-transform: uppercase; color: #d9dcef; }
+.kk-inside .kk-hanko { width: 40px; height: 40px; font-size: .78rem; transform: rotate(-6deg); }
+.kk-coverface { background: var(--kk-wave) 0 0 / 22px 11px, #263664 !important; align-items: center; justify-content: center; box-shadow: inset 18px 0 20px -12px rgba(0,0,0,.6) !important; }
+.kk-coverface .kk-slip2 { padding: 30px 20px; font-size: 2.4rem; letter-spacing: .45em; }
+.kk-endpage { align-items: center; text-align: center; gap: 10px; }
+.kk-endpage .stack { margin-top: auto; display: flex; flex-direction: column; align-items: center; }
+.kk-endpage .stack i { width: 120px; height: 26px; margin-top: -12px; border-radius: 50%; box-shadow: 0 4px 6px rgba(0,0,0,.25);
+  background: radial-gradient(ellipse at 50% 45%, #fff 0 46%, var(--c) 48% 60%, #f4f4f4 62% 68%, var(--c) 70%); }
+.kk-endpage b { margin-top: 6px; font: 900 2rem 'Noto Serif JP', 'Noto Serif CJK JP', serif; letter-spacing: .2em; }
+.kk-endpage p { font: 500 .95rem / 1.5 'Outfit', 'Noto Sans JP', sans-serif; color: #3a2a1c; max-width: 280px; margin: 0; }
+.kk-endpage button { margin-top: 10px; min-height: 42px; padding: 0 20px; border: 0; border-radius: 10px; background: #9b2a1a; color: #fff; font: 800 .9rem 'Outfit', 'Noto Sans JP', sans-serif; cursor: pointer; }
+.kk-endpage .kk-pf { width: 100%; }
+.kk-bctl { display: flex; align-items: center; gap: 14px; color: #d9c3a0; font: 700 .8rem 'Outfit', sans-serif; }
+.kk-bctl button { height: 38px; min-width: 44px; padding: 0 14px; border-radius: 10px; border: 2px solid #5a3a22; background: #120c08; color: #f6ead6; font: 800 .85rem 'Outfit', 'Noto Sans JP', sans-serif; cursor: pointer; }
+.kk-bctl button:disabled { opacity: .35; cursor: default; }
+.kk-dots { display: flex; gap: 6px; }
+.kk-dots i { width: 8px; height: 8px; border-radius: 50%; background: #5a3a22; }
+.kk-dots i.on { background: #e0a24a; }
+
+/* ---- smaller screens ---- */
+@media (max-width: 1400px) {
+  .kk-counter { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
+  .kk-counter > * { grid-column: 1 / -1; }
+  .kk-counter > .kk-side { position: static; width: auto; grid-row: 1; }
+  .kk-counter > .kk-side-l { grid-column: 1; }
+  .kk-counter > .kk-side-r { grid-column: 2; justify-self: end; }
+  .kk-mbk { height: auto; justify-content: flex-start; margin-bottom: 10px; }
+  .kk-cover { width: 30px; height: 40px; transform: rotate(-4deg); }
+  .kk-cover .kk-slip { left: 5px; top: 4px; bottom: 5px; width: 11px; font-size: .36rem; letter-spacing: .1em; border: 0; }
+  .kk-cover .kk-slip::after, .kk-cover .kk-hanko, .kk-cover .kk-stitch { display: none; }
+  .kk-cover::before { width: 6px; }
+  .kk-tally { display: flex; gap: 4px 16px; flex-wrap: wrap; padding: 8px 12px; margin: 0 0 10px; align-items: center; }
+  .kk-tally > div { border: 0; padding: 0; gap: 6px; }
+}
+/* short laptop screens: keep the answer bar on screen */
+@media (max-width: 1400px) {
+  .kk-hero { height: min(calc(var(--hi) * (var(--c1) - var(--c0))), max(240px, calc(100vh - 75px - 204px - 210px))); }
+}
+@media (max-height: 720px) and (min-width: 701px) {
+  .kk-belt { --pw: 112px; --pt: 22px; height: 164px; }
+  .kk-seat { width: 170px; margin-left: -85px; }
+}
+@media (max-width: 1000px) {
+  .kk-tab-body { grid-template-columns: 1fr 1fr; }
+  .kk-col:nth-child(3) { border-left: 0; }
+  .kk-col:nth-child(n+3) { border-top: 1px solid #2a2c33; }
+  .kk-courses { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .kk-page { --iw: 235vw; }
+  .kk-keys { position: static; margin: 109px 10px 0; width: auto; }
+  .kk-key { flex: 1; padding: 6px 10px; font-size: .92rem; }
+  .kk-hero { margin-top: 8px; }
+  .kk-belt { --pw: 96px; --pt: 26px; height: 154px; }
+  .kk-seat { width: 140px; margin-left: -70px; }
+  .kk-express { font-size: 0; padding: 0 8px; }
+  .kk-express::before { content: "🚄"; font-size: .7rem; }
+  .kk-in { font-size: 1.2rem; }
+  .kk-btns button { font-size: .85rem; height: 46px; }
+  .kk-tile { height: 60px; font-size: 1.8rem; }
+  .kk-counter > .kk-side-r { grid-column: 1 / -1; grid-row: 2; justify-self: stretch; }
+  .kk-tally { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+  .kk-tally > div { flex-direction: column-reverse; gap: 0; font-size: .7rem; }
+  .kk-tally > div.kk-rush-row { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: 8px; }
+  .kk-tally small { display: none; }
+  .kk-tab-head .kk-part { display: none; }
+  .kk-tab-body { grid-template-columns: 1fr; }
+  .kk-col + .kk-col { border-left: 0 !important; border-top: 1px solid #2a2c33; }
+  .kk-two { grid-template-columns: 1fr; }
+  .kk-kg { grid-template-columns: repeat(8, 1fr) !important; grid-auto-rows: 104px; background-size: auto 104px; }
+  .kk-kt { height: 82px; }
+  .kk-kt b { font-size: 1.3rem; }
+  .kk-progress { margin-left: 0; }
+  .kk-sheet-grid .cell b { font-size: 1.1rem; }
+  .kk-book { --pw: min(430px, calc(100vw - 40px)); width: var(--pw); }
+  .kk-pg.l { display: none; }
+  .kk-pg.r { left: 0; }
+  .kk-leaf { left: 0 !important; }
+  .kk-face { padding: 26px 22px 20px; }
+  .kk-dish p { font-size: .84rem; }
+}
+@media (max-width: 640px) {
+  .kk-keys { margin-top: 109px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kk-glow, .kk-motes i, .kk-kt:hover, .kk-kt.swing, .kk-express.live { animation: none; }
+  .kk-img, .kk-motes { transition: none; }
+}
