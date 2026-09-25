@@ -21,8 +21,8 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 .tv-page {
   --iw: 100vw; --ix: 0px;
   --hi: calc(var(--iw) * 0.4242);                 /* the photo is 2560 x 1086 */
-  --hc: clamp(calc(var(--hi) * (var(--sh) + 0.12)), calc(100vh - 290px), var(--hi));
-  --off: calc((var(--hi) - var(--hc)) * var(--p));
+  --hc: clamp(calc(var(--hi) * (var(--tb) - var(--ta))), calc(100vh - 290px), var(--hi));
+  --off: max(0px, min(calc(var(--hi) * var(--ta)), calc(var(--hi) * var(--tb) - var(--hc))));
   --u: calc(var(--iw) * var(--sw) / 100);          /* 1% of the screen's width */
   position: relative; padding-top: 0 !important; min-height: 100vh;
   background: var(--tv-bg); color: #f3e6cf; font-family: 'Outfit', sans-serif; overflow-x: hidden;
@@ -35,7 +35,7 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
   position: relative; margin-top: 75px; height: var(--hc); overflow: hidden;
   background: var(--tv-bg) var(--img) var(--ix) calc(-1 * var(--off)) / var(--iw) auto no-repeat;
 }
-.tv-room::after { content: ""; position: absolute; inset: auto 0 0 0; height: 90px; background: linear-gradient(transparent, var(--tv-bg)); pointer-events: none; z-index: 1; }
+.tv-room::after { content: ""; position: absolute; inset: auto 0 0 0; height: 36px; background: linear-gradient(transparent, var(--tv-bg)); pointer-events: none; z-index: 1; }
 
 /* ---- the title, in the empty part of the room ---- */
 .tv-ttl { position: absolute; z-index: 5; top: calc(75px + 26px); left: var(--tx); }
@@ -130,7 +130,7 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 @keyframes tv-blink { 50% { opacity: 0; } }
 
 /* ---- under the TV ---- */
-.tv-below { position: relative; z-index: 6; width: min(840px, calc(100% - 32px)); margin: -46px auto 0; padding-bottom: 60px; }
+.tv-below { position: relative; z-index: 6; width: min(840px, calc(100% - 32px)); margin: 10px auto 0; padding-bottom: 60px; }
 .tv-answer { display: flex; gap: 10px; margin: 0 0 10px; }
 .tv-page .tv-answer .answer-input {
   flex: 1; margin: 0; height: 56px; padding: 0 18px; text-align: left; font-size: 1.3rem; border-radius: 12px;
@@ -189,12 +189,14 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 
 /* ---- the two channels ---- */
 .tv-page.is-onair { --img: url(tv-hero.jpg); --tv-bg: #140f0c;
-  --sx: .3737; --sy: .2396; --sw: .2156; --sh: .4193; --cx: .4815; --vx: .485; --vy: .885; --p: .41;
+  --sx: .3737; --sy: .2396; --sw: .2156; --sh: .4193; --cx: .4815; --vx: .5006; --vy: .9273; --p: .41; --ta: .215; --tb: .975;
+  --vcr-w: calc(var(--iw) * .0527); --vcr-h: calc(var(--hi) * .0206);
   --tx: calc(var(--ix) + var(--iw) * .69);
   --s1: #1f5a7a; --s2: #0f2f45; --s3: #07141f; --glow: rgba(140,200,255,.35); --capc: rgba(214,58,43,.93);
   --live: #ff6a5a; --seal: #e04a3b; --g1: #ff7a6b; --g2: #d8362a; --g3: #7e1c14; --other: #8f9dff; }
 .tv-page.is-vhs { --img: url(vhs-hero.jpg); --tv-bg: #070b16;
-  --sx: .3905; --sy: .1882; --sw: .2192; --sh: .4111; --cx: .5; --vx: .4995; --vy: .7035; --p: .32;
+  --sx: .3905; --sy: .1882; --sw: .2192; --sh: .4111; --cx: .5; --vx: .4996; --vy: .7020; --p: .32; --ta: .165; --tb: .775;
+  --vcr-w: calc(var(--iw) * .0508); --vcr-h: calc(var(--hi) * .0229);
   --tx: max(16px, calc(var(--ix) + var(--iw) * .06));
   --s1: #1c2f86; --s2: #0f1a55; --s3: #060a26; --glow: rgba(80,110,255,.4); --capc: rgba(46,70,190,.93);
   --live: #7dff9a; --seal: #3a4fc9; --g1: #7f95ff; --g2: #3a4fc9; --g3: #1f2a7a; --other: #ff6a5a; }
@@ -259,7 +261,7 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 }
 @media (max-width: 700px) {
   .tv-page { --iw: 235vw; --hc: calc(var(--hi) * 0.8); }
-  .tv-below { margin-top: -30px; }
+  .tv-below { margin-top: 8px; }
   .tv-remote { flex-wrap: wrap; }
   .tv-set-head { flex-wrap: wrap; gap: .6rem .9rem; }
   .tv-set-sum { order: 5; flex: 1 1 100%; gap: .5rem .9rem; }
@@ -328,3 +330,8 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
 /* the word always fits the glass (Rewind's own <style> sizes .dj-word, so this needs the extra class) */
 .tv-scr .tv-word { font-size: min(calc(var(--u) * var(--vs, 15)), calc(var(--u) * 84 / var(--len, 3))); line-height: 1.15; }
 @media (max-width: 700px) { .tv-below { padding-bottom: 110px; } }   /* room to scroll the settings above Katsu's button */
+
+/* the VCR's display fills its window when the page gives it a size */
+.tv-page .tv-vcr { width: var(--vcr-w); height: var(--vcr-h); display: flex; align-items: center; justify-content: center; padding: 0;
+  border-radius: 3px; background: linear-gradient(#030504, #0a100c); box-shadow: inset 0 0 0 1px rgba(125,255,154,.18), inset 0 2px 6px rgba(0,0,0,.8);
+  font-size: max(9px, calc(var(--hi) * .02)); letter-spacing: .12em; }
