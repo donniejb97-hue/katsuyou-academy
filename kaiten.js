@@ -136,6 +136,9 @@
   var plates = [], express = [], again = [], spawnCount = 0, seqIdx = 0, lastSpawn = null;
   var paused = false, hiddenPause = false, overlayOpen = 0, view = 'belt', uid = 0;
   var bp = 0, last = 0, tgt = null, autoV = 70;
+  var vel = 0, track = null;             // the belt's actual speed eases toward the wanted one
+  var SMOOTH = true;                     /*DEMO-FLAG*/
+  var BELT_TILE = 1110 / 264;            // kaiten-belt.jpg: width / height, seamless end to end
   var rush = null;                      // { left: seconds, eaten: n, course }
 
   var belt, seatEl, geoCache = null;
@@ -144,7 +147,8 @@
     var w = belt.clientWidth, pw = parseFloat(getComputedStyle(belt).getPropertyValue('--pw')) || 132;
     var seat = seatEl.offsetWidth || 200;
     var gapF = COURSES[S.course] ? COURSES[S.course].gap : 1.9;
-    geoCache = { w: w, pw: pw, seatStart: w / 2 - seat / 2, seatMid: w / 2, gap: pw * gapF };
+    geoCache = { w: w, pw: pw, seatStart: w / 2 - seat / 2, seatMid: w / 2, gap: pw * gapF, tp: belt.clientHeight * BELT_TILE };
+    if (track) track.style.setProperty('--tp', Math.ceil(geoCache.tp) + 'px');
     return geoCache;
   }
   window.addEventListener('resize', function () { geoCache = null; });
@@ -213,7 +217,18 @@
     plates.push(p); place(p);
     $('kk-express').classList.toggle('live', c.tag === 'ex' || express.length > 0);
   }
-  function place(p) { var tf = 'translateX(' + p.x.toFixed(1) + 'px)'; p.el.style.setProperty('--tf', tf); if (p.state !== 'eaten') p.el.style.transform = tf; }
+  // Plates and the belt move with transforms only: the compositor slides them, nothing is
+  // repainted or re-styled per frame.
+  function place(p) {
+    p.tf = SMOOTH ? 'translate3d(' + p.x.toFixed(2) + 'px,0,0)' : 'translateX(' + p.x.toFixed(1) + 'px)';
+    if (!SMOOTH) p.el.style.setProperty('--tf', p.tf);
+    if (p.state !== 'eaten') p.el.style.transform = p.tf;
+  }
+  function moveBelt(g) {
+    if (!SMOOTH) { belt.style.setProperty('--bp', bp.toFixed(1) + 'px'); return; }
+    var off = bp % g.tp; if (off > 0) off -= g.tp;
+    track.style.transform = 'translate3d(' + off.toFixed(2) + 'px,0,0)';
+  }
   function clearBelt() { plates.forEach(function (p) { p.el.remove(); }); plates = []; tgt = null; }
   function resetBelt() {
     clearBelt(); geoCache = null; lastSpawn = null;
@@ -226,7 +241,8 @@
   }
   function paintTarget() {
     var tp = target();
-    plates.forEach(function (p) { p.el.classList.toggle('target', p === tp); });
+    if (SMOOTH && tp === tgt) return;                  // nothing changed: touch no classes this frame
+    for (var i = 0; i < plates.length; i++) plates[i].el.classList.toggle('target', plates[i] === tp);
     if (tp !== tgt) { tgt = tp; if (tp) tp.since = 0; $('kk-in').value = ''; if (S.mode === 'r2k') buildTiles(); }
   }
   function speedNow() {
@@ -235,22 +251,40 @@
     return v;
   }
   function running() { return !paused && !hiddenPause && !overlayOpen && view === 'belt'; }
+  // Frame timestamps wobble by a millisecond or two; moving by the raw gap makes the belt shimmer.
+  // Snap each step to whole display frames (60, 120, 144 Hz alike), so motion is even and
+  // still keeps real time when a frame is genuinely dropped.
+  var frameT = 1 / 60;
+  function stepOf(raw) {
+    if (raw > frameT * 0.7 && raw < frameT * 1.35) frameT += (raw - frameT) * 0.05;   // learn the display's rate
+    var n = Math.max(1, Math.round(raw / frameT));
+    return Math.min(0.05, n * frameT);
+  }
   function tick(now) {
-    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    var raw = (now - last) / 1000; last = now;
+    var dt = SMOOTH ? stepOf(raw) : Math.min(0.05, raw);
     if (running()) {
       var g = geo(), tp = target();
-      var dx = speedNow() * dt * (tp ? 1 : 4);            // the belt hurries when nothing is at your seat
-      if (tp && S.wait && !rush && tp.x - dx < g.seatMid) dx = Math.max(0, tp.x - g.seatMid);  // …and waits there on request
-      bp -= dx; belt.style.setProperty('--bp', bp.toFixed(1) + 'px');
+      var dx;
+      if (SMOOTH) {
+        var want = speedNow() * (tp ? 1 : 4);               // the belt hurries when nothing is at your seat
+        if (tp && S.wait && !rush) want = Math.min(want, Math.max(0, tp.x - g.seatMid) * 6);  // …and glides to a stop there on request
+        vel += (want - vel) * Math.min(1, dt * 7);           // speeding up and slowing down take a moment, like a real belt
+        dx = vel * dt;
+      } else dx = speedNow() * dt * (tp ? 1 : 4);
+      if (tp && S.wait && !rush && tp.x - dx < g.seatMid) dx = Math.max(0, tp.x - g.seatMid);
+      bp -= dx; moveBelt(g);
       // a new plate only comes on once the last one is a full gap away, so plates never stack
       var lastX = -1e9;
       for (var i = 0; i < plates.length; i++) if (plates[i].state !== 'eaten' && plates[i].x > lastX) lastX = plates[i].x;
       if (lastX <= g.w + g.pw - g.gap) spawn(g.w + g.pw);
-      plates.forEach(function (p) {
+      // plain loops, no new arrays or closures per frame: nothing for the garbage collector to pause on
+      for (var j = 0; j < plates.length; j++) {
+        var p = plates[j];
         p.x -= dx; place(p);
         if (p.state === 'on' && p.x < g.seatStart - g.pw * 0.3) miss(p);
-      });
-      plates = plates.filter(function (p) { if (p.x < -g.pw) { p.el.remove(); return false; } return true; });
+      }
+      for (var k = plates.length - 1; k >= 0; k--) if (plates[k].x < -g.pw) { plates[k].el.remove(); plates.splice(k, 1); }
       paintTarget();
       if (tgt && S.hint && !rush && !tgt.shown && !tgt.hinted) {
         tgt.since += dt * 1000;
@@ -263,7 +297,7 @@
 
   function eat(p) {
     p.state = 'eaten'; p.el.classList.remove('target'); p.el.classList.add('eaten');
-    p.el.style.transform = p.el.style.getPropertyValue('--tf') + ' translateY(-230px) scale(.4)';
+    p.el.style.transform = p.tf + ' translateY(-230px) scale(.4)';
     servedN++; eatenN++; eatenBy[p.c.set]++;
     if (!p.shown && !p.wrong && !p.hinted) {
       bump(p.c, 'c'); score++; streak++;
@@ -368,7 +402,8 @@
     if (window.scrollY > top + 40) window.scrollTo({ top: top, behavior: reduced ? 'auto' : 'smooth' });
     focusIn();
   }
-  function paintRush() { if (rush) $('kk-rush-left').textContent = Math.max(0, Math.ceil(rush.left)) + ' s'; }
+  var rushShown = '';
+  function paintRush() { if (!rush) return; var t = Math.max(0, Math.ceil(rush.left)) + ' s'; if (t !== rushShown) { rushShown = t; $('kk-rush-left').textContent = t; } }
   function rushBests() { try { return JSON.parse(load('kaitenRushBest', '{}')) || {}; } catch (e) { return {}; } }
   function endRush() {
     var r = rush; rush = null; $('kk-rush-row').hidden = true;
@@ -728,6 +763,8 @@
   // ---------------------------------------------------------------- wiring
   function init() {
     belt = $('kk-belt'); seatEl = $('kk-seat');
+    track = document.createElement('div'); track.className = 'kk-track'; belt.insertBefore(track, belt.firstChild);
+    belt.classList.toggle('smooth', SMOOTH);
     var inp = $('kk-in');
     inp.addEventListener('input', function () { tryEat(false); });
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); tryEat(true); } });
@@ -827,7 +864,8 @@
     else focusIn();
     window.KA_KAITEN = { S: S, target: function () { var p = target(); return p && { r: p.c.it.r, ch: p.c.ch, set: p.c.set }; }, setView: setView, resetBelt: resetBelt,
       plates: function () { return plates.filter(function (p) { return p.state !== 'eaten'; }).map(function (p) { return p.x; }); }, rush: function () { return rush; },
-      endRush: function () { if (rush) { rush.left = 0; } }, stats: function () { return { score: score, streak: streak, miss: missN, served: servedN }; } };
+      endRush: function () { if (rush) { rush.left = 0; } },
+      setSmooth: function (on) { SMOOTH = !!on; belt.classList.toggle('smooth', SMOOTH); geoCache = null; vel = speedNow(); plates.forEach(place); moveBelt(geo()); }, /*DEMO-HOOK*/ stats: function () { return { score: score, streak: streak, miss: missN, served: servedN }; } };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

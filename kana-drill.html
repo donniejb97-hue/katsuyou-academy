@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
-  <script src="analytics.js"></script>
   <title>回転かな Kaiten Kana — Hiragana &amp; Katakana Practice | Katsuyō Academy</title>
   <meta name="description" content="Kana on a conveyor-belt sushi bar: type the reading before the plate passes your seat. Hiragana and katakana, three courses, rush hour, native audio and a menu of everything you've learned.">
   <link rel="canonical" href="https://katsuyoacademy.com/kana-drill">
@@ -193,6 +192,32 @@
     'floating-chat.donateButton.background-color': '#f45d22',
     'floating-chat.donateButton.text-color': '#fff'
   });
+</script>
+
+<!-- DEMO ONLY: compare the old and the new belt -->
+<div id="demo-panel" style="position:fixed;left:14px;bottom:14px;z-index:9999;background:rgba(18,12,8,.94);color:#f3e9d6;border:2px solid #5a3a22;border-radius:12px;padding:10px 12px;font:600 13px Outfit,system-ui,sans-serif;box-shadow:0 10px 24px rgba(0,0,0,.5);max-width:300px">
+  <div style="font:800 11px Outfit,system-ui;letter-spacing:.14em;color:#ffcf8a;margin-bottom:6px">DEMO · BELT ENGINE</div>
+  <div style="display:flex;gap:6px;margin-bottom:8px">
+    <button id="dp-new" style="flex:1;border:0;border-radius:8px;padding:7px 8px;font:800 12px Outfit,system-ui;cursor:pointer">Smooth (new)</button>
+    <button id="dp-old" style="flex:1;border:0;border-radius:8px;padding:7px 8px;font:800 12px Outfit,system-ui;cursor:pointer">Old</button>
+  </div>
+  <div id="dp-stats" style="font:600 12px/1.5 Outfit,system-ui;color:#d9c3a0">measuring…</div>
+</div>
+<script>
+(function(){
+  var on=true;
+  function paint(){ var n=document.getElementById('dp-new'),o=document.getElementById('dp-old');
+    n.style.background=on?'#2f7a52':'#3a2a1e'; n.style.color='#fff'; o.style.background=on?'#3a2a1e':'#a8281e'; o.style.color='#fff'; }
+  function set(v){ on=v; if(window.KA_KAITEN&&KA_KAITEN.setSmooth) KA_KAITEN.setSmooth(v); paint(); frames=[]; }
+  document.getElementById('dp-new').onclick=function(){set(true)};
+  document.getElementById('dp-old').onclick=function(){set(false)};
+  paint();
+  var frames=[],lastT=0;
+  (function f(t){ if(lastT) frames.push([t,t-lastT]); lastT=t; while(frames.length&&t-frames[0][0]>5000) frames.shift(); requestAnimationFrame(f); })(0);
+  setInterval(function(){ if(frames.length<10) return; var sum=0,h=0; frames.forEach(function(x){sum+=x[1]; if(x[1]>25) h++;});
+    document.getElementById('dp-stats').innerHTML=(on?'<b style="color:#7fd29a">Smooth engine</b>':'<b style="color:#ff9f8a">Old engine</b>')+
+      '<br>'+Math.round(1000*frames.length/sum)+' fps · <b>'+h+'</b> dropped frames in the last 5 s'; },500);
+})();
 </script>
 </body>
 </html>

@@ -60,7 +60,14 @@
 /* ---- the belt: the tile slides with the plates; the light stays put ---- */
 .kk-belt { --pw: 132px; --pt: 34px; position: relative; height: 204px; overflow: hidden; background: #2a1a10 url(kaiten-belt.jpg) repeat-x;
   background-size: auto 100%; background-position: var(--bp, 0) 0; }
-.kk-belt::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background:
+/* the texture rides on its own layer and slides with a transform — no repaint per frame */
+.kk-track { position: absolute; top: 0; bottom: 0; left: 0; width: calc(100% + var(--tp, 900px)); z-index: 0; pointer-events: none; display: none;
+  background: url(kaiten-belt.jpg) repeat-x 0 0 / auto 100%; will-change: transform; backface-visibility: hidden; }
+.kk-belt.smooth { background-image: none; }
+.kk-belt.smooth .kk-track { display: block; }
+.kk-plate { backface-visibility: hidden; }
+.kk-belt.smooth { contain: layout paint; }          /* nothing on the belt can make the page around it re-lay-out */
+.kk-belt::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background:
   linear-gradient(rgba(0,0,0,.55), transparent 16px),
   radial-gradient(ellipse 22% 60% at 50% 55%, rgba(255,196,120,.28), transparent 70%),
   radial-gradient(ellipse 14% 70% at 12% 50%, rgba(255,170,90,.16), transparent 70%),
