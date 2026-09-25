@@ -137,7 +137,6 @@
   var paused = false, hiddenPause = false, overlayOpen = 0, view = 'belt', uid = 0;
   var bp = 0, last = 0, tgt = null, autoV = 70;
   var vel = 0, track = null;             // the belt's actual speed eases toward the wanted one
-  var SMOOTH = true;                     /*DEMO-FLAG*/
   var BELT_TILE = 1110 / 264;            // kaiten-belt.jpg: width / height, seamless end to end
   var rush = null;                      // { left: seconds, eaten: n, course }
 
@@ -220,12 +219,10 @@
   // Plates and the belt move with transforms only: the compositor slides them, nothing is
   // repainted or re-styled per frame.
   function place(p) {
-    p.tf = SMOOTH ? 'translate3d(' + p.x.toFixed(2) + 'px,0,0)' : 'translateX(' + p.x.toFixed(1) + 'px)';
-    if (!SMOOTH) p.el.style.setProperty('--tf', p.tf);
+    p.tf = 'translate3d(' + p.x.toFixed(2) + 'px,0,0)';
     if (p.state !== 'eaten') p.el.style.transform = p.tf;
   }
   function moveBelt(g) {
-    if (!SMOOTH) { belt.style.setProperty('--bp', bp.toFixed(1) + 'px'); return; }
     var off = bp % g.tp; if (off > 0) off -= g.tp;
     track.style.transform = 'translate3d(' + off.toFixed(2) + 'px,0,0)';
   }
@@ -241,7 +238,7 @@
   }
   function paintTarget() {
     var tp = target();
-    if (SMOOTH && tp === tgt) return;                  // nothing changed: touch no classes this frame
+    if (tp === tgt) return;                  // nothing changed: touch no classes this frame
     for (var i = 0; i < plates.length; i++) plates[i].el.classList.toggle('target', plates[i] === tp);
     if (tp !== tgt) { tgt = tp; if (tp) tp.since = 0; $('kk-in').value = ''; if (S.mode === 'r2k') buildTiles(); }
   }
@@ -262,16 +259,13 @@
   }
   function tick(now) {
     var raw = (now - last) / 1000; last = now;
-    var dt = SMOOTH ? stepOf(raw) : Math.min(0.05, raw);
+    var dt = stepOf(raw);
     if (running()) {
       var g = geo(), tp = target();
-      var dx;
-      if (SMOOTH) {
-        var want = speedNow() * (tp ? 1 : 4);               // the belt hurries when nothing is at your seat
-        if (tp && S.wait && !rush) want = Math.min(want, Math.max(0, tp.x - g.seatMid) * 6);  // …and glides to a stop there on request
-        vel += (want - vel) * Math.min(1, dt * 7);           // speeding up and slowing down take a moment, like a real belt
-        dx = vel * dt;
-      } else dx = speedNow() * dt * (tp ? 1 : 4);
+      var want = speedNow() * (tp ? 1 : 4);               // the belt hurries when nothing is at your seat
+      if (tp && S.wait && !rush) want = Math.min(want, Math.max(0, tp.x - g.seatMid) * 6);  // …and glides to a stop there on request
+      vel += (want - vel) * Math.min(1, dt * 7);           // speeding up and slowing down take a moment, like a real belt
+      var dx = vel * dt;
       if (tp && S.wait && !rush && tp.x - dx < g.seatMid) dx = Math.max(0, tp.x - g.seatMid);
       bp -= dx; moveBelt(g);
       // a new plate only comes on once the last one is a full gap away, so plates never stack
@@ -764,7 +758,6 @@
   function init() {
     belt = $('kk-belt'); seatEl = $('kk-seat');
     track = document.createElement('div'); track.className = 'kk-track'; belt.insertBefore(track, belt.firstChild);
-    belt.classList.toggle('smooth', SMOOTH);
     var inp = $('kk-in');
     inp.addEventListener('input', function () { tryEat(false); });
     inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); tryEat(true); } });
@@ -864,8 +857,7 @@
     else focusIn();
     window.KA_KAITEN = { S: S, target: function () { var p = target(); return p && { r: p.c.it.r, ch: p.c.ch, set: p.c.set }; }, setView: setView, resetBelt: resetBelt,
       plates: function () { return plates.filter(function (p) { return p.state !== 'eaten'; }).map(function (p) { return p.x; }); }, rush: function () { return rush; },
-      endRush: function () { if (rush) { rush.left = 0; } },
-      setSmooth: function (on) { SMOOTH = !!on; belt.classList.toggle('smooth', SMOOTH); geoCache = null; vel = speedNow(); plates.forEach(place); moveBelt(geo()); }, /*DEMO-HOOK*/ stats: function () { return { score: score, streak: streak, miss: missN, served: servedN }; } };
+      endRush: function () { if (rush) { rush.left = 0; } }, stats: function () { return { score: score, streak: streak, miss: missN, served: servedN }; } };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
