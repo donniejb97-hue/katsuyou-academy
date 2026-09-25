@@ -111,10 +111,11 @@
 
   var S = { course: 'regular', mode: 'k2r', tiles: 2, order: 'random', script: 'h', sets: { basic: true, dakuten: false, combos: false },
             line: '', unseen: false, weak: false, speed: 'normal', wait: false, hint: false, loop: true, oneChance: false,
-            sheets: true, snap: true, sound: true };
+            sheets: true, snap: true };
   try {
     var st = JSON.parse(load('kaitenSettings', 'null'));
     if (st && typeof st === 'object') for (var k in S) if (st[k] !== undefined) S[k] = st[k];
+    // the belt is silent on purpose: taps on the cheat sheet, the missed list and the Menu still play the recordings
   } catch (e) {}
   // settings the old Kana Drill kept on their own
   var rows = parseInt(load('kanaDrillChoiceRows', ''), 10); if (rows >= 1 && rows <= 3) S.tiles = rows;
@@ -260,7 +261,6 @@
     requestAnimationFrame(tick);
   }
 
-  function say(c) { if (S.sound && typeof playKanaAudio === 'function') { try { playKanaAudio(c.it.h); } catch (e) {} } }
   function eat(p) {
     p.state = 'eaten'; p.el.classList.remove('target'); p.el.classList.add('eaten');
     p.el.style.transform = p.el.style.getPropertyValue('--tf') + ' translateY(-230px) scale(.4)';
@@ -272,7 +272,7 @@
       if (streak > best) { best = streak; save('kanaDrillBest', String(best)); }
       if (S.speed === 'auto') autoV = Math.min(170, autoV + 4);
     }
-    say(p.c); hud();
+    hud();
     setTimeout(function () { p.el.remove(); }, 500);
     $('kk-in').value = '';
   }
@@ -290,7 +290,7 @@
     if (S.speed === 'auto') autoV = Math.max(45, autoV - 15);
     var em = p.el.querySelector('em'); if (em) { em.className = ''; em.textContent = S.mode === 'r2k' ? p.c.ch : p.c.it.r; }
     if (S.loop) { again.push({ c: copy(p.c), due: spawnCount + 2 }); p.el.insertAdjacentHTML('beforeend', '<span class="pb">↻</span>'); }
-    say(p.c); hud();
+    hud();
   }
   function wrong(p) {
     if (!p.wrong && !p.shown && !p.hinted) { bump(p.c, 'm'); noteMiss(p.c); }
@@ -307,7 +307,7 @@
     if (S.course === 'master') { streak = 0; hud(); }
     var em = p.el.querySelector('em'); em.className = ''; em.textContent = S.mode === 'r2k' ? p.c.ch : p.c.it.r;
     if (S.mode === 'r2k') [].forEach.call($('kk-tiles').children, function (b) { b.classList.toggle('hint', b.getAttribute('data-ch') === p.c.ch); });
-    say(p.c); focusIn();
+    focusIn();
   }
   function giveHint(p) {
     p.hinted = true; bump(p.c, 's');
