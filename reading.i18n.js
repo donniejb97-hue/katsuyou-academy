@@ -325,6 +325,118 @@
       rd_no_audio: 'このブラウザでは音声を再生できません。'
     }
   };
+  // ---- Reading Room (巻物の間) — the Scroll Room skin ----
+  var RR = {
+    en: {
+      rr_sign_sub: 'THE SCROLL ROOM · 読解',
+      rr_k_shelf_s: '本棚 · THE SHELF', rr_k_shelf: 'All scrolls', rr_k_read_s: '巻物 · READING', rr_k_open: 'Open a scroll', rr_k_this: 'This scroll',
+      rr_read_n: '{done} / {total} read', rr_mine_n: 'Your stories · {n}',
+      rr_shelf_h: '本棚 · THE {level} SHELF', rr_mine_h: 'あなたの巻物 · YOUR STORIES', rr_mine_by: 'written for you by Katsu',
+      rr_cab_prog: '<b>{done}</b> of {total} read at this level',
+      rr_mine_empty: 'No scrolls here yet. Commission one at the desk — it’s saved here for you.',
+      rr_cm_eb: '✨ COMMISSION A SCROLL',
+      rr_cm_p: 'Katsu writes a brand-new story just for you, at your level. It’s saved on your own shelf, <b>あなたの巻物 · Your stories</b>.',
+      rr_cm_topic: 'TOPIC · OPTIONAL', rr_cm_ph: 'e.g. a rainy day in Kyoto', rr_cm_lv: 'Written at', rr_cm_lv_hint: '· pick a level above to change it',
+      rr_cm_btn: 'Write my scroll ✍',
+      rr_how: '<b>How it works.</b> Pick a level, then a scroll. Read it to the end; the <b>問題へ</b> button rolls it up and brings out the questions. Your best score is stamped on the scroll’s tag.',
+      rr_now_scroll: '{level} · SCROLL {i} OF {n}', rr_now_mine: 'YOUR STORY · {level}', rr_best: 'Best: {b}',
+      rr_prev: '‹ Previous', rr_next: 'Next ›',
+      rr_tate: '縦 Vertical', rr_yoko: '横 Horizontal', rr_both: '⇆ Side by side', rr_one: '⇆ One at a time',
+      rr_toq: '問題へ · Questions →', rr_tos: '← Back to the story',
+      rr_hint_tate: 'scroll, drag or use ‹ › to unroll', rr_hint_yoko: 'scroll down to read on', rr_end: '読了 · you’ve reached the end',
+      rr_words_h: '📖 WORDS ON THIS SCROLL · TAP TO HEAR', rr_tap: 'tap to hear',
+      rr_pick_note: 'Pick one answer for each question.', rr_back_shelf: 'Back to the shelf',
+      rr_read_on: 'Read on', rr_read_back: 'Back'
+    },
+    de: {
+      rr_sign_sub: 'DER ROLLENRAUM · 読解',
+      rr_k_shelf_s: '本棚 · DAS REGAL', rr_k_shelf: 'Alle Rollen', rr_k_read_s: '巻物 · LESEN', rr_k_open: 'Rolle öffnen', rr_k_this: 'Diese Rolle',
+      rr_read_n: '{done} / {total} gelesen', rr_mine_n: 'Ihre Geschichten · {n}',
+      rr_shelf_h: '本棚 · REGAL {level}', rr_mine_h: 'あなたの巻物 · IHRE GESCHICHTEN', rr_mine_by: 'von Katsu für Sie geschrieben',
+      rr_cab_prog: '<b>{done}</b> von {total} auf dieser Stufe gelesen',
+      rr_mine_empty: 'Hier liegen noch keine Rollen. Bestellen Sie eine am Pult – sie wird hier für Sie aufbewahrt.',
+      rr_cm_eb: '✨ EINE ROLLE BESTELLEN',
+      rr_cm_p: 'Katsu schreibt eine ganz neue Geschichte nur für Sie, auf Ihrer Stufe. Sie wird in Ihrem eigenen Regal gespeichert: <b>あなたの巻物 · Ihre Geschichten</b>.',
+      rr_cm_topic: 'THEMA · OPTIONAL', rr_cm_ph: 'z. B. ein Regentag in Kyoto', rr_cm_lv: 'Geschrieben auf', rr_cm_lv_hint: '· oben eine Stufe wählen, um sie zu ändern',
+      rr_cm_btn: 'Meine Rolle schreiben ✍',
+      rr_how: '<b>So funktioniert es.</b> Wählen Sie eine Stufe und dann eine Rolle. Lesen Sie bis zum Ende; die Schaltfläche <b>問題へ</b> rollt sie ein und holt die Fragen hervor. Ihr bestes Ergebnis wird auf das Etikett der Rolle gestempelt.',
+      rr_now_scroll: '{level} · ROLLE {i} VON {n}', rr_now_mine: 'IHRE GESCHICHTE · {level}', rr_best: 'Bestwert: {b}',
+      rr_prev: '‹ Zurück', rr_next: 'Weiter ›',
+      rr_tate: '縦 Vertikal', rr_yoko: '横 Horizontal', rr_both: '⇆ Nebeneinander', rr_one: '⇆ Einzeln',
+      rr_toq: '問題へ · Fragen →', rr_tos: '← Zurück zur Geschichte',
+      rr_hint_tate: 'scrollen, ziehen oder ‹ › zum Aufrollen', rr_hint_yoko: 'nach unten scrollen, um weiterzulesen', rr_end: '読了 · Sie sind am Ende angekommen',
+      rr_words_h: '📖 WÖRTER IN DIESER ROLLE · ZUM ANHÖREN TIPPEN', rr_tap: 'zum Anhören tippen',
+      rr_pick_note: 'Wählen Sie bei jeder Frage eine Antwort.', rr_back_shelf: 'Zurück zum Regal',
+      rr_read_on: 'Weiterlesen', rr_read_back: 'Zurück'
+    },
+    fr: {
+      rr_sign_sub: 'LA SALLE DES ROULEAUX · 読解',
+      rr_k_shelf_s: '本棚 · L’ÉTAGÈRE', rr_k_shelf: 'Tous les rouleaux', rr_k_read_s: '巻物 · LECTURE', rr_k_open: 'Ouvrir un rouleau', rr_k_this: 'Ce rouleau',
+      rr_read_n: '{done} / {total} lus', rr_mine_n: 'Vos histoires · {n}',
+      rr_shelf_h: '本棚 · ÉTAGÈRE {level}', rr_mine_h: 'あなたの巻物 · VOS HISTOIRES', rr_mine_by: 'écrites pour vous par Katsu',
+      rr_cab_prog: '<b>{done}</b> sur {total} lus à ce niveau',
+      rr_mine_empty: 'Aucun rouleau pour l’instant. Commandez-en un au bureau — il sera rangé ici pour vous.',
+      rr_cm_eb: '✨ COMMANDER UN ROULEAU',
+      rr_cm_p: 'Katsu écrit une toute nouvelle histoire rien que pour vous, à votre niveau. Elle est rangée sur votre propre étagère : <b>あなたの巻物 · Vos histoires</b>.',
+      rr_cm_topic: 'SUJET · FACULTATIF', rr_cm_ph: 'ex. : un jour de pluie à Kyoto', rr_cm_lv: 'Écrit au niveau', rr_cm_lv_hint: '· choisissez un niveau ci-dessus pour le changer',
+      rr_cm_btn: 'Écrire mon rouleau ✍',
+      rr_how: '<b>Comment ça marche.</b> Choisissez un niveau, puis un rouleau. Lisez-le jusqu’au bout ; le bouton <b>問題へ</b> l’enroule et fait apparaître les questions. Votre meilleur score est tamponné sur l’étiquette du rouleau.',
+      rr_now_scroll: '{level} · ROULEAU {i} SUR {n}', rr_now_mine: 'VOTRE HISTOIRE · {level}', rr_best: 'Record : {b}',
+      rr_prev: '‹ Précédent', rr_next: 'Suivant ›',
+      rr_tate: '縦 Vertical', rr_yoko: '横 Horizontal', rr_both: '⇆ Côte à côte', rr_one: '⇆ Un à la fois',
+      rr_toq: '問題へ · Questions →', rr_tos: '← Retour à l’histoire',
+      rr_hint_tate: 'faites défiler, glissez ou utilisez ‹ › pour dérouler', rr_hint_yoko: 'faites défiler pour continuer', rr_end: '読了 · vous êtes arrivé à la fin',
+      rr_words_h: '📖 MOTS DE CE ROULEAU · TOUCHEZ POUR ÉCOUTER', rr_tap: 'touchez pour écouter',
+      rr_pick_note: 'Choisissez une réponse pour chaque question.', rr_back_shelf: 'Retour à l’étagère',
+      rr_read_on: 'Continuer', rr_read_back: 'Revenir'
+    },
+    zh: {
+      rr_sign_sub: '卷轴之间 · 読解',
+      rr_k_shelf_s: '本棚 · 书架', rr_k_shelf: '全部卷轴', rr_k_read_s: '巻物 · 阅读', rr_k_open: '打开卷轴', rr_k_this: '当前卷轴',
+      rr_read_n: '已读 {done} / {total}', rr_mine_n: '你的故事 · {n}',
+      rr_shelf_h: '本棚 · {level} 书架', rr_mine_h: 'あなたの巻物 · 你的故事', rr_mine_by: '由 Katsu 为你而写',
+      rr_cab_prog: '本级已读 <b>{done}</b> / {total}',
+      rr_mine_empty: '这里还没有卷轴。在右边的订单上订一卷吧——它会保存在这里。',
+      rr_cm_eb: '✨ 定制卷轴',
+      rr_cm_p: 'Katsu 会按你的级别，专门为你写一篇全新的故事，并放在你自己的书架上：<b>あなたの巻物 · 你的故事</b>。',
+      rr_cm_topic: '主题 · 可选', rr_cm_ph: '例如：京都的雨天', rr_cm_lv: '级别', rr_cm_lv_hint: '· 在上方选择级别即可更改',
+      rr_cm_btn: '为我写一卷 ✍',
+      rr_how: '<b>使用方法：</b>先选级别，再选一卷。读到最后，点 <b>問題へ</b> 卷起卷轴并显示问题。你的最高分会盖在卷轴的标签上。',
+      rr_now_scroll: '{level} · 第 {i} / {n} 卷', rr_now_mine: '你的故事 · {level}', rr_best: '最高：{b}',
+      rr_prev: '‹ 上一卷', rr_next: '下一卷 ›',
+      rr_tate: '縦 竖排', rr_yoko: '横 横排', rr_both: '⇆ 并排', rr_one: '⇆ 单独显示',
+      rr_toq: '問題へ · 问题 →', rr_tos: '← 回到故事',
+      rr_hint_tate: '滚动、拖动或用 ‹ › 展开', rr_hint_yoko: '向下滚动继续阅读', rr_end: '読了 · 已读到最后',
+      rr_words_h: '📖 本卷生词 · 点击收听', rr_tap: '点击收听',
+      rr_pick_note: '每道题选一个答案。', rr_back_shelf: '回到书架',
+      rr_read_on: '继续阅读', rr_read_back: '返回'
+    },
+    ja: {
+      rr_sign_sub: 'よみものの部屋 · 読解',
+      rr_k_shelf_s: '本棚 · ほんだな', rr_k_shelf: 'すべての巻物', rr_k_read_s: '巻物 · よむ', rr_k_open: '巻物をひらく', rr_k_this: 'この巻物',
+      rr_read_n: '{done} / {total} 読了', rr_mine_n: '自分の物語 · {n}',
+      rr_shelf_h: '本棚 · {level}', rr_mine_h: 'あなたの巻物', rr_mine_by: 'カツがあなたのために書いた物語',
+      rr_cab_prog: 'このレベルで <b>{done}</b> / {total} 読了',
+      rr_mine_empty: 'まだ巻物がありません。右の注文書で一巻たのんでみましょう — ここに保存されます。',
+      rr_cm_eb: '✨ 巻物を注文する',
+      rr_cm_p: 'カツがあなたのレベルに合わせて、新しい物語を書きます。自分の棚<b>「あなたの巻物」</b>に保存されます。',
+      rr_cm_topic: 'お題 · 任意', rr_cm_ph: '例：京都の雨の日', rr_cm_lv: 'レベル', rr_cm_lv_hint: '· 上のレベル札で変更できます',
+      rr_cm_btn: '巻物を書いてもらう ✍',
+      rr_how: '<b>使い方：</b>レベルを選び、巻物を一つ選びます。最後まで読んだら <b>問題へ</b> で巻物を巻き、設問に進みます。最高点は巻物の札に押されます。',
+      rr_now_scroll: '{level} · {n} 巻中 {i} 巻目', rr_now_mine: 'あなたの巻物 · {level}', rr_best: '最高点：{b}',
+      rr_prev: '‹ 前へ', rr_next: '次へ ›',
+      rr_tate: '縦書き', rr_yoko: '横書き', rr_both: '⇆ 並べて表示', rr_one: '⇆ 一つずつ',
+      rr_toq: '問題へ →', rr_tos: '← 本文にもどる',
+      rr_hint_tate: 'スクロール・ドラッグ・‹ › で広げる', rr_hint_yoko: '下にスクロールして続きを読む', rr_end: '読了 · 最後まで読みました',
+      rr_words_h: '📖 この巻物のことば · タップで再生', rr_tap: 'タップで再生',
+      rr_pick_note: '各設問で答えを一つ選んでください。', rr_back_shelf: '本棚にもどる',
+      rr_read_on: '先を読む', rr_read_back: '戻る'
+    }
+  };
+  for (var l2 in RR) {
+    if (!I18N[l2]) I18N[l2] = {};
+    for (var k2 in RR[l2]) I18N[l2][k2] = RR[l2][k2];
+  }
   for (var lang in S) {
     if (!I18N[lang]) I18N[lang] = {};
     for (var k in S[lang]) I18N[lang][k] = S[lang][k];

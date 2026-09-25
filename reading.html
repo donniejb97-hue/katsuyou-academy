@@ -5,202 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Analytics: Clarity + Google, both configured in analytics.js -->
   <script src="analytics.js"></script>
-  <title>Reading Practice — Graded Japanese Stories N5–N1 | Katsuyō Academy</title>
+  <title>Reading Room — Graded Japanese Stories N5–N1 | Katsuyō Academy</title>
   <meta name="description" content="Graded Japanese reading practice from JLPT N5 to N1. Short stories with kana, furigana or kanji, audio, word lists, and comprehension questions graded instantly.">
   <link rel="canonical" href="https://katsuyoacademy.com/reading">
   <link rel="icon" type="image/png" href="open_book.png">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    .rd-page { max-width: 760px; margin: 0 auto; padding: 2rem; }
-    .rd-header { margin-bottom: 1.5rem; }
-    .rd-desc { color: var(--text-light); line-height: 1.7; max-width: 60ch; }
-
-    /* ---- chips (same language as the drills) ---- */
-    .rd-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
-    .rd-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); min-width: 60px; }
-    .rd-chip { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 1rem; border-radius: 999px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-    .rd-chip:hover { border-color: var(--accent-soft); }
-    .rd-chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-    .rd-chip small { opacity: 0.6; margin-left: 0.3rem; font-weight: 400; }
-    .rd-levels { margin-bottom: 1.5rem; }
-
-    /* ---- library ---- */
-    .rd-progress { font-size: 0.9rem; color: var(--text-light); margin-bottom: 1rem; }
-    .rd-progress strong { color: var(--ink); }
-    .rd-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.9rem; }
-    .rd-card { background: white; border: 1.5px solid transparent; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); padding: 1.1rem 1.2rem; cursor: pointer; text-align: left; font-family: inherit; color: var(--text); transition: transform 0.15s, border-color 0.15s; display: flex; flex-direction: column; gap: 0.5rem; }
-    .rd-card:hover { transform: translateY(-2px); border-color: var(--accent-soft); }
-    .rd-card-num { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--accent); }
-    .rd-card-title { font-size: 1.2rem; color: var(--ink); line-height: 1.6; }
-    .rd-card-meta { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; font-size: 0.8rem; color: var(--text-light); margin-top: auto; }
-    /* the character/question line is what gives way when the card is narrow —
-       a badge that wraps stops being a pill and becomes a blob */
-    .rd-card-meta > span:first-child { min-width: 0; }
-    .rd-badge { flex: 0 0 auto; white-space: nowrap; font-size: 0.75rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--paper-warm); color: var(--text-light); }
-    .rd-badge.done { background: rgba(122,158,126,0.18); color: #3f5c42; }
-    .rd-badge.perfect { background: rgba(201,169,98,0.22); color: #7a5f1f; }
-
-    /* ---- story view ---- */
-    .rd-back { background: none; border: none; color: var(--accent); font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; padding: 0; margin-bottom: 1rem; }
-    .rd-back:hover { text-decoration: underline; }
-    .rd-story-head { display: flex; align-items: baseline; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .rd-level-tag { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; color: white; background: var(--accent); padding: 0.25rem 0.7rem; border-radius: 999px; }
-    .rd-story-title { font-size: 1.8rem; color: var(--ink); line-height: 1.6; margin: 0; }
-    .rd-toolbar { display: flex; gap: 0.75rem 1.25rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
-    .rd-tool { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text); padding: 0.45rem 1rem; border-radius: 999px; font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
-    .rd-tool:hover { border-color: var(--accent-soft); }
-    .rd-tool.on { background: var(--sage); border-color: var(--sage); color: white; }
-
-    .rd-text { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 2rem 2.2rem; margin-bottom: 1.25rem; font-size: 1.25rem; line-height: 2.3; color: var(--ink); }
-    .rd-text p { margin: 0 0 1rem; }
-    .rd-text p:last-child { margin-bottom: 0; }
-    .rd-text ruby rt, .rd-q ruby rt, .rd-opt ruby rt, .rd-vocab ruby rt, .rd-card-title ruby rt, .rd-story-title ruby rt { font-size: 0.5em; color: var(--text-light); font-family: 'Noto Serif JP', serif; }
-    .rd-sent { border-radius: 4px; transition: background 0.3s; }
-    .rd-sent.hl { background: rgba(201,169,98,0.35); box-shadow: 0 0 0 3px rgba(201,169,98,0.35); }
-
-    .rd-vocab { background: var(--paper-warm); border-radius: 12px; padding: 1.1rem 1.4rem; margin-bottom: 1.5rem; display: none; }
-    .rd-vocab.show { display: block; }
-    .rd-vocab h2 { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin: 0 0 0.6rem; }
-    .rd-vocab-list { display: block; }
-    .rd-vocab-item { display: flex; gap: 0.8rem; align-items: baseline; line-height: 1.95;
-      padding: 0.1rem 0; }
-    .rd-vocab-item .vw { font-size: 1.05rem; color: var(--ink); min-width: 7rem; }
-    .rd-vocab-item .vr { font-size: 0.95rem; color: var(--accent); min-width: 7.5rem; }
-    .rd-vocab-item .vg { color: var(--text-light); font-size: 0.9rem; }
-
-    /* hover translation, on the word itself */
-    .rd-w { position: relative; cursor: help;
-      border-bottom: 1px dotted rgba(196, 92, 74, 0.45); }
-    .rd-w::after {
-      content: attr(data-r) " \00b7 " attr(data-g);
-      position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%);
-      margin-bottom: 0.45rem; background: var(--ink); color: var(--paper);
-      border-radius: 7px; padding: 0.32rem 0.65rem; font-size: 0.75rem;
-      font-family: 'Outfit', sans-serif; font-weight: 400; white-space: nowrap;
-      line-height: 1.4; pointer-events: none; opacity: 0; visibility: hidden;
-      transition: opacity 0.12s ease; z-index: 40;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.22); }
-    .rd-w:hover::after { opacity: 1; visibility: visible; }
-    @media (max-width: 640px) {
-      .rd-w::after { display: none; }
-      .rd-w { border-bottom: none; cursor: default; }
-      .rd-vocab-item { flex-wrap: wrap; gap: 0.5rem; }
-      .rd-vocab-item .vw, .rd-vocab-item .vr { min-width: 0; }
-    }
-
-    /* ---- questions ---- */
-    .rd-qhead { display: flex; justify-content: space-between; align-items: baseline; margin: 2rem 0 0.9rem; }
-    .rd-qhead h2 { font-size: 1.3rem; color: var(--ink); margin: 0; }
-    .rd-qcount { font-size: 0.85rem; color: var(--text-light); }
-    .rd-q { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); padding: 1.2rem 1.4rem; margin-bottom: 0.9rem; border-left: 4px solid transparent; }
-    .rd-q.right { border-left-color: var(--sage); }
-    .rd-q.wrong { border-left-color: var(--accent); }
-    .rd-q.part { border-left-color: var(--gold); }
-    .rd-q-text { font-size: 1.1rem; color: var(--ink); line-height: 2.1; margin-bottom: 0.7rem; }
-    .rd-q-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--accent); margin-right: 0.4rem; }
-    .rd-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
-    .rd-opt { background: white; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; padding: 0.55rem 0.9rem; font-size: 1rem; line-height: 2; text-align: left; cursor: pointer; transition: all 0.15s; color: var(--ink); }
-    .rd-opt:hover:not(:disabled) { border-color: var(--accent-soft); }
-    .rd-opt.picked { border-color: var(--ink); background: rgba(26,26,46,0.06); }
-    .rd-opt:disabled { cursor: default; }
-    .rd-opt.correct { background: rgba(122,158,126,0.18); border-color: var(--sage); }
-    .rd-opt.miss { background: rgba(196,92,74,0.12); border-color: var(--accent); }
-    .rd-opt.dim { opacity: 0.5; }
-    .rd-q-after { margin-top: 0.7rem; font-size: 0.9rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-    .rd-q-verdict.good { color: #3f5c42; font-weight: 600; }
-    .rd-q-verdict.bad { color: #8a3d2f; font-weight: 600; }
-    .rd-show-ev { background: none; border: 1px solid rgba(201,169,98,0.8); color: #7a5f1f; border-radius: 999px; padding: 0.2rem 0.75rem; font-family: inherit; font-size: 0.82rem; cursor: pointer; }
-    .rd-show-ev:hover { background: rgba(201,169,98,0.15); }
-
-    /* ---- segmented switch, used by the settings panel and the question head ---- */
-    .rd-seg, .rd-qmode { display: inline-flex; border: 1.5px solid rgba(0,0,0,0.15); border-radius: 999px; overflow: hidden; background: white; }
-    .rd-seg button, .rd-qmode button { border: none; background: none; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--text-light); padding: 0.4rem 0.95rem; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-    .rd-seg button.on, .rd-qmode button.on { background: var(--ink); color: var(--paper); }
-    .rd-seg button:not(.on):hover, .rd-qmode button:not(.on):hover { color: var(--ink); }
-    .rd-seg .jp, .rd-qmode .jp { font-size: 0.95em; margin-right: 0.3rem; }
-
-    /* ---- the ⚙ panel on the library page ---- */
-    .rd-gear { border: 1.5px solid rgba(0,0,0,0.15); background: white; color: var(--text-light); width: 2.3rem; height: 2.3rem; border-radius: 999px; font-size: 1rem; line-height: 1; cursor: pointer; transition: all 0.15s; }
-    .rd-gear:hover { border-color: var(--accent-soft); color: var(--ink); }
-    .rd-gear.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
-    .rd-settings { background: var(--paper-warm); border-radius: 12px; padding: 1rem 1.2rem; margin: 0.9rem 0 1.5rem; display: none; }
-    .rd-settings.open { display: block; }
-    .rd-set-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
-    .rd-set-row + .rd-set-row { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(0,0,0,0.07); }
-    .rd-set-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-light); min-width: 86px; }
-    .rd-set-hint { font-size: 0.78rem; color: var(--text-light); margin-top: 0.55rem; }
-    .rd-qhead .rd-qhead-r { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-    .rd-write-hint { font-size: 0.85rem; color: var(--text-light); margin: -0.35rem 0 0.9rem; }
-
-    .rd-write-row { display: flex; gap: 0.5rem; align-items: stretch; }
-    .rd-write-in { flex: 1 1 auto; min-width: 0; padding: 0.7rem 0.9rem; border: 2px solid rgba(0,0,0,0.12); border-radius: 10px; font-family: inherit; font-size: 1.05rem; line-height: 1.8; color: var(--ink); background: white; outline: none; }
-    .rd-write-in:focus { border-color: var(--accent-soft); }
-    /* Hiragana is the quiet default, katakana is gold (the same signal Talk and
-       the quiz use), off is grey — the mode reads without having to notice
-       which character is on the key. */
-    .rd-write-kana { flex: 0 0 auto; width: 2.6rem; border: 2px solid rgba(0,0,0,0.12); background: white; color: var(--text); border-radius: 10px; font-family: 'Noto Serif JP', serif; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
-    .rd-write-kana:hover { border-color: var(--accent-soft); }
-    .rd-write-kana.kata { border-color: var(--gold); background: rgba(201,169,98,0.18); color: #7a5f1f; }
-    .rd-write-kana.off { border-color: rgba(0,0,0,0.1); background: transparent; color: var(--text-light); }
-    .rd-wrote { font-size: 1.05rem; line-height: 1.9; color: var(--ink); background: var(--paper-warm); border-radius: 10px; padding: 0.6rem 0.9rem; }
-    .rd-mark { margin-top: 0.6rem; font-size: 0.92rem; line-height: 1.6; }
-    .rd-mark.good { color: #3f5c42; }
-    .rd-mark.part { color: #7a5f1f; }
-    .rd-mark.bad { color: #8a3d2f; }
-    .rd-model { margin-top: 0.5rem; font-size: 1rem; line-height: 2; color: var(--text); }
-    .rd-model span { font-family: 'Outfit', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-right: 0.45rem; }
-
-    .rd-result { border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1.25rem 0; display: none; text-align: center; }
-    .rd-result.show { display: block; }
-    .rd-result.great { background: rgba(201,169,98,0.18); border: 1px solid var(--gold); }
-    .rd-result.good { background: rgba(122,158,126,0.15); border: 1px solid var(--sage); }
-    .rd-result.low { background: rgba(196,92,74,0.08); border: 1px solid var(--accent-soft); }
-    .rd-result-score { font-size: 2.2rem; font-weight: 700; color: var(--ink); line-height: 1.2; }
-    .rd-result-msg { color: var(--text); margin-top: 0.3rem; }
-
-    .rd-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.5rem; }
-    .rd-btn { flex: 1; padding: 1rem; font-family: inherit; font-size: 1rem; font-weight: 600; border-radius: 10px; border: none; cursor: pointer; transition: all 0.15s; min-width: 150px; }
-    .rd-btn.primary { background: var(--accent); color: white; }
-    .rd-btn.primary:hover:not(:disabled) { background: var(--accent-soft); }
-    .rd-btn.primary:disabled { opacity: 0.45; cursor: default; }
-    .rd-btn.ghost { background: white; border: 1.5px solid rgba(0,0,0,0.15); color: var(--text); }
-    .rd-btn.ghost:hover { border-color: var(--accent-soft); }
-
-    /* ---- AI story generator ---- */
-    .rd-gen { background: var(--ink); color: var(--paper); border-radius: 12px; padding: 1.2rem 1.4rem; margin-bottom: 1.75rem; }
-    .rd-gen-head { display: flex; gap: 0.6rem; align-items: baseline; flex-wrap: wrap; margin-bottom: 0.75rem; }
-    .rd-gen-head strong { font-size: 1.05rem; }
-    .rd-gen-head span { font-size: 0.85rem; opacity: 0.7; }
-    .rd-gen-row { display: flex; gap: 0.6rem; flex-wrap: wrap; }
-    .rd-topic { flex: 1 1 240px; padding: 0.8rem 1rem; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: var(--paper); font-family: inherit; font-size: 0.95rem; outline: none; }
-    .rd-topic::placeholder { color: rgba(250,249,247,0.55); }
-    .rd-topic:focus { border-color: var(--gold); }
-    .rd-gen-btn { flex: 0 0 auto; min-width: 170px; padding: 0.8rem 1.2rem; }
-    .rd-dice { flex: 0 0 auto; width: 3rem; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: var(--paper); font-size: 1.15rem; cursor: pointer; transition: all 0.15s; }
-    .rd-dice:hover { border-color: var(--gold); background: rgba(201,169,98,0.2); }
-    .rd-gen-note { font-size: 0.8rem; opacity: 0.7; margin-top: 0.6rem; }
-    .rd-gen-note.err { opacity: 1; color: #f3b2a6; }
-    .rd-spin { display: inline-block; width: 0.9em; height: 0.9em; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: rd-spin 0.8s linear infinite; vertical-align: -0.1em; margin-right: 0.45rem; }
-    @keyframes rd-spin { to { transform: rotate(360deg); } }
-    @media (prefers-reduced-motion: reduce) { .rd-spin { animation: none; } }
-    .rd-section-h { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin: 0 0 0.7rem; }
-    #rd-mine { margin-bottom: 1.75rem; }
-    .rd-card.ai { border-color: rgba(201,169,98,0.5); }
-    .rd-card-top { display: flex; justify-content: space-between; align-items: center; }
-    .rd-del { background: none; border: none; color: var(--text-light); font-size: 1.1rem; line-height: 1; cursor: pointer; padding: 0.1rem 0.3rem; border-radius: 6px; }
-    .rd-del:hover { color: var(--accent); background: var(--paper-warm); }
-    .rd-ai-note { font-size: 0.82rem; color: var(--text-light); margin: -0.4rem 0 1rem; }
-
-    .rd-hidden { display: none !important; }
-
-    @media (max-width: 600px) {
-      .rd-page { padding: 1.25rem 1rem; }
-      .rd-text { padding: 1.3rem 1.2rem; font-size: 1.15rem; }
-      .rd-opts { grid-template-columns: 1fr; }
-      .rd-story-title { font-size: 1.45rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="reading-room.css">
 </head>
 <body data-page="reading">
 
@@ -226,7 +37,7 @@
         <a class="nav-link" data-page="kana-drill" href="/kana-drill" data-i18n="nav_kana_drill">Kaiten Kana</a>
         <a class="nav-link" data-page="kanji-drill" href="/kanji-drill" data-i18n="nav_kanji_drill">Kanji Kitchen</a>
         <a class="nav-link" data-page="talk" href="/talk" data-i18n="nav_talk">Talk</a>
-        <a class="nav-link active" data-page="reading" href="/reading" data-i18n="nav_reading">Reading</a>
+        <a class="nav-link active" data-page="reading" href="/reading" data-i18n="nav_reading">Reading Room</a>
         <a class="nav-link" data-page="datedojo" href="/datedojo" data-i18n="nav_dates">Dates</a>
         <a class="nav-link" data-page="vocabulary" href="/vocabulary" data-i18n="nav_vocab">Night Owl</a>
         <a class="nav-link" data-page="vocabquiz" href="/vocabquiz" data-i18n="nav_vocab_quiz">Night Shift</a>
@@ -244,113 +55,62 @@
     </div>
   </nav>
 
-  <div id="page-reading" class="page active">
-    <div class="rd-page">
+  <div id="page-reading" class="page active rr-page rr">
+    <div class="stage" id="rr-stage">
+      <div class="room"><div class="shoji"></div><div class="kamoi"></div><div class="floor"><i></i></div></div>
+      <div class="deskbg"></div>
 
-      <!-- ===== Library ===== -->
-      <section id="rd-library">
-        <div class="rd-header">
-          <div class="page-tag" data-i18n="rd_tag">Reading Practice</div>
-          <h1 class="page-title"><span class="jp">読解</span> — <span data-i18n="rd_title">Reading</span></h1>
-          <p class="rd-desc" data-i18n="rd_desc">Short graded stories from N5 to N1. Read, listen, then answer the questions — they're graded instantly, and your best score is saved.</p>
-        </div>
+      <div class="keys" id="rr-keys">
+        <button class="key on" type="button" data-go="shelf"><i></i><span><small data-i18n="rr_k_shelf_s">本棚 · THE SHELF</small><span data-i18n="rr_k_shelf">All scrolls</span></span></button>
+        <button class="key" type="button" data-go="read" id="rr-key-read" disabled><i></i><span><small data-i18n="rr_k_read_s">巻物 · READING</small><span id="rr-key-title">Open a scroll</span></span></button>
+      </div>
+      <h1 class="sign">巻物の間<small data-i18n="rr_sign_sub">THE SCROLL ROOM · 読解</small></h1>
 
-        <div class="rd-row rd-levels" id="rd-levels">
-          <span class="rd-label" data-i18n="rd_level">Level</span>
-          <button class="rd-gear" id="rd-gear" type="button" aria-expanded="false"
-                  data-i18n-title="rd_settings_title" title="Reading options">⚙</button>
-        </div>
-
-        <div class="rd-settings" id="rd-settings">
-          <div class="rd-set-row">
-            <span class="rd-set-label" data-i18n="rd_set_text">Show text as</span>
-            <span class="rd-seg" id="rd-set-modes"></span>
+      <!-- ================= THE SHELF ================= -->
+      <section class="shelfview" id="rr-shelf">
+        <div class="plaques" id="rr-plaques"></div>
+        <div class="cabinet"><div class="cab-h"><span id="rr-cab-h"></span><span id="rr-cab-p"></span></div><div class="grid" id="rr-grid"></div></div>
+        <aside class="desk">
+          <div class="cm" id="rr-cm"><span class="jk t"></span><span class="jk b"></span>
+            <div class="eb" data-i18n="rr_cm_eb">✨ COMMISSION A SCROLL</div>
+            <h3>新しい巻物</h3>
+            <p data-i18n-html="rr_cm_p">Katsu writes a brand-new story just for you, at your level. It’s saved on your own shelf, <b>あなたの巻物 · Your stories</b>.</p>
+            <label for="rr-topic" data-i18n="rr_cm_topic">TOPIC · OPTIONAL</label>
+            <div class="row">
+              <input id="rr-topic" maxlength="80" autocomplete="off" placeholder="e.g. a rainy day in Kyoto" data-i18n-placeholder="rr_cm_ph">
+              <button class="dice" id="rr-dice" type="button" data-i18n-title="rd_dice_title" title="Suggest a topic" aria-label="Suggest a topic">🎲</button>
+            </div>
+            <div class="lvl"><span data-i18n="rr_cm_lv">Written at</span> <b id="rr-cm-lv">N5</b> <span class="lvh" data-i18n="rr_cm_lv_hint">· pick a level above to change it</span></div>
+            <button class="btn red" id="rr-create" type="button">Write my scroll ✍</button>
+            <div class="note" id="rr-cm-note"></div>
           </div>
-          <div class="rd-set-row" id="rd-set-answers">
-            <span class="rd-set-label" data-i18n="rd_set_answers">Answers</span>
-            <span class="rd-seg" id="rd-set-write">
-              <button type="button" data-m="pick"><span class="jp">選択</span><span data-i18n="rd_mode_pick">Choose</span></button>
-              <button type="button" data-m="write"><span class="jp">記述</span><span data-i18n="rd_mode_write">Write</span></button>
-            </span>
-          </div>
-          <div class="rd-set-hint" id="rd-set-hint"></div>
-        </div>
-
-        <div class="rd-gen">
-          <div class="rd-gen-head">
-            <strong data-i18n="rd_gen_title">✨ Create a new story</strong>
-            <span id="rd-gen-sub"></span>
-          </div>
-          <div class="rd-gen-row">
-            <input type="text" id="rd-topic" class="rd-topic" maxlength="80" autocomplete="off"
-                   placeholder="Topic (optional) — e.g. a rainy day in Kyoto" data-i18n-placeholder="rd_gen_ph">
-            <button class="rd-dice" id="rd-dice" type="button" data-i18n-title="rd_dice_title" title="Suggest a topic">🎲</button>
-            <button class="rd-btn primary rd-gen-btn" id="rd-gen-btn" data-i18n="rd_gen_btn">Create story</button>
-          </div>
-          <div class="rd-gen-note" id="rd-gen-note"></div>
-        </div>
-
-        <div id="rd-mine-wrap" class="rd-hidden">
-          <h2 class="rd-section-h" data-i18n="rd_mine">Your stories</h2>
-          <div class="rd-list" id="rd-mine"></div>
-          <h2 class="rd-section-h" data-i18n="rd_library">Library</h2>
-        </div>
-
-        <div class="rd-progress" id="rd-progress"></div>
-        <div class="rd-list" id="rd-list"></div>
+          <div class="howbox" data-i18n-html="rr_how"><b>How it works.</b> Pick a level, then a scroll. Read it to the end; the <b>問題へ</b> button rolls it up and brings out the questions. Your best score is stamped on the scroll’s tag.</div>
+        </aside>
       </section>
 
-      <!-- ===== Story ===== -->
-      <section id="rd-story" class="rd-hidden">
-        <button class="rd-back" id="rd-back" data-i18n="rd_back">← All stories</button>
-
-        <div class="rd-story-head">
-          <span class="rd-level-tag" id="rd-level-tag">N5</span>
-          <h1 class="rd-story-title jp" id="rd-story-title"></h1>
+      <!-- ================= READING ================= -->
+      <section class="readview" id="rr-read" hidden>
+        <div class="nav2">
+          <div class="now" id="rr-now"></div>
+          <div class="pn"><button type="button" id="rr-prev"></button><button type="button" id="rr-next"></button></div>
         </div>
-        <p class="rd-ai-note rd-hidden" id="rd-ai-note" data-i18n="rd_ai_note">✨ Written by AI just for you — it can occasionally make a small mistake.</p>
-
-        <div class="rd-toolbar">
-          <div class="rd-row" id="rd-modes"></div>
-          <div class="rd-row">
-            <button class="rd-tool" id="rd-listen">🔊 Listen</button>
-            <button class="rd-tool" id="rd-words-btn" data-i18n="rd_words">📖 Words</button>
-          </div>
+        <div class="center" id="rr-center">
+          <div class="hand story" id="rr-story"><div class="doc">
+            <div class="strip"><span class="metaL"><span class="lvseal" id="rr-seal"></span><span id="rr-meta"></span></span>
+              <span class="tools"><span class="seg" id="rr-dir"></span><span class="seg" id="rr-modes"></span><button class="btn ghost" type="button" id="rr-listen"></button><button class="btn ghost bothB" type="button" id="rr-both"></button><button class="btn red" type="button" id="rr-toq"></button></span></div>
+            <div class="article jp" id="rr-article"></div>
+            <div class="prog"><span class="hint" id="rr-hint"></span><span class="bar2"><i id="rr-bar"></i></span><span id="rr-pct">0%</span></div>
+          </div><span class="rod r"><button type="button" id="rr-back" aria-label="Back">›</button></span><span class="rl"><i class="curl"></i><span class="rod l"><button type="button" id="rr-fwd" aria-label="Read on">‹</button></span></span><span class="shade"></span></div>
+          <div class="hand sheet rolled" id="rr-sheet" hidden><div class="doc">
+            <div class="strip"><button class="btn ghost" type="button" id="rr-tos"></button><span class="tools"><span class="seg" id="rr-ans"></span></span></div>
+            <div class="qwrap" id="rr-qwrap"><h4><span>問題 · <span data-i18n="rd_questions">Questions</span></span> <small id="rr-qn"></small></h4><p class="whint" id="rr-whint" hidden data-i18n="rd_write_hint">Answer in Japanese in your own words — Katsu marks what you write.</p><div class="qs" id="rr-qs"></div></div>
+            <div class="qfoot" id="rr-qfoot"></div>
+          </div><span class="rod r"></span><span class="rl"><i class="curl"></i><span class="rod l"></span></span><span class="shade"></span></div>
         </div>
-
-        <div class="rd-text jp" id="rd-text"></div>
-
-        <div class="rd-vocab" id="rd-vocab">
-          <h2><span data-i18n="rd_words_h">Words in this story</span> · <span id="rd-vocab-count"></span></h2>
-          <div class="rd-vocab-list" id="rd-vocab-list"></div>
-        </div>
-
-        <div class="rd-qhead">
-          <h2><span class="jp">しつもん</span> · <span data-i18n="rd_questions">Questions</span></h2>
-          <span class="rd-qhead-r">
-            <span class="rd-qmode" id="rd-qmode">
-              <button type="button" data-m="pick"><span class="jp">選択</span><span data-i18n="rd_mode_pick">Choose</span></button>
-              <button type="button" data-m="write"><span class="jp">記述</span><span data-i18n="rd_mode_write">Write</span></button>
-            </span>
-            <span class="rd-qcount" id="rd-qcount"></span>
-          </span>
-        </div>
-        <p class="rd-write-hint rd-hidden" id="rd-write-hint" data-i18n="rd_write_hint">Answer in Japanese — Katsu marks what you write.</p>
-        <div id="rd-questions"></div>
-
-        <div class="rd-result" id="rd-result">
-          <div class="rd-result-score" id="rd-result-score"></div>
-          <div class="rd-result-msg" id="rd-result-msg"></div>
-        </div>
-
-        <div class="rd-actions">
-          <button class="rd-btn primary" id="rd-check" disabled data-i18n="rd_check">Check answers</button>
-          <button class="rd-btn ghost rd-hidden" id="rd-retry" data-i18n="rd_retry">↺ Try again</button>
-          <button class="rd-btn primary rd-hidden" id="rd-next">Next story →</button>
-        </div>
+        <div class="side"><div class="panel"><h5 data-i18n="rr_words_h">📖 WORDS ON THIS SCROLL · TAP TO HEAR</h5><div class="wbox" id="rr-wbox"></div></div></div>
       </section>
-
     </div>
+    <div class="gloss" id="rr-gloss" hidden></div>
   </div>
 
   <!-- Back to Top Button -->
@@ -371,12 +131,17 @@
 
   <script>
   // ==========================================================================
-  // READING — graded stories with instantly graded comprehension questions.
+  // READING ROOM — 巻物の間, the Scroll Room.
   //
   // Stories live in reading-data.js. Japanese is written with readings in
   // brackets, the same notation the rest of the site uses: 東京[とうきょう].
   // One source string gives all three display modes:
   //   kana  → とうきょう     furi → <ruby>東京<rt>とうきょう</rt></ruby>     kanji → 東京
+  //
+  // Two views share one stage: the shelf (a cabinet of rolled scrolls, one
+  // shelf per level plus あなたの巻物 for stories Katsu wrote on request) and
+  // the reading desk (the story as an unrolling handscroll, the questions on a
+  // second scroll). Look and layout are in reading-room.css.
   // ==========================================================================
   (function () {
     'use strict';
@@ -390,10 +155,12 @@
     };
     var DEFAULT_MODE = { N5: 'kana', N4: 'furi', N3: 'furi', N2: 'kanji', N1: 'kanji' };
     var MODE_KEY = { kana: 'rd_mode_kana', furi: 'rd_mode_furi', kanji: 'rd_mode_kanji' };
+    var MODE_FACE = { kana: 'かな', furi: 'ふりがな', kanji: '漢字' };
+    var TIES = { N5: '#2f7a52', N4: '#2f5f9e', N3: '#8a4b9e', N2: '#a8281e', N1: '#2b1a10', mine: '#8a6a2a' };
+    var KN = '一二三四五六七八九十';
     var STORE = 'katsuyoReading';
 
     var READING_RE = /([々〆ヶ一-龯豈-﫿]+)\[([^\]]+)\]/g;
-
     var STORIES = (typeof READING_STORIES !== 'undefined') ? READING_STORIES : [];
 
     // Stories written by AI on request live in this browser only.
@@ -410,42 +177,42 @@
     function allStories() { return STORIES.concat(mine); }
     function findStory(id) { return allStories().filter(function (x) { return x.id === id; })[0]; }
 
-    var saved = { level: 'N5', mode: {}, best: {}, write: {}, panel: false, kana: 'kana' };
+    // shelf: which shelf is showing (a level or 'mine'); dir: 横 or 縦 writing
+    var saved = { level: 'N5', shelf: 'N5', mode: {}, best: {}, write: {}, kana: 'kana', dir: 'yoko' };
     try {
       var raw = JSON.parse(localStorage.getItem(STORE) || 'null');
       if (raw && typeof raw === 'object') {
         if (LEVELS.indexOf(raw.level) !== -1) saved.level = raw.level;
+        saved.shelf = (raw.shelf === 'mine' || LEVELS.indexOf(raw.shelf) !== -1) ? raw.shelf : saved.level;
         if (raw.mode && typeof raw.mode === 'object') saved.mode = raw.mode;
         if (raw.best && typeof raw.best === 'object') saved.best = raw.best;
         if (raw.write && typeof raw.write === 'object') saved.write = raw.write;
-        saved.panel = !!raw.panel;
         if (raw.kana === 'kana' || raw.kana === 'katakana' || raw.kana === 'off') saved.kana = raw.kana;
+        if (raw.dir === 'tate' || raw.dir === 'yoko') saved.dir = raw.dir;
       }
     } catch (e) { /* storage unavailable — fine */ }
-
-    function persist() {
-      try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch (e) {}
-    }
+    function persist() { try { localStorage.setItem(STORE, JSON.stringify(saved)); } catch (e) {} }
 
     var state = {
-      level: saved.level,
-      story: null,
-      order: [],      // per question: shuffled option indexes
-      picks: [],      // per question: chosen original option index, or null
-      written: [],    // per question: the sentence typed, in write mode
-      marks: null,    // per question: {verdict, note} once the AI has marked
-      marking: false,
-      graded: false,
-      speaking: false
+      level: saved.level,   // the level new stories are written at
+      story: null,          // the scroll on the desk (kept after going back to the shelf)
+      reading: false,       // is the desk showing?
+      view: 'story',        // 'story' | 'quiz' — which scroll is unrolled
+      both: false,          // side by side
+      order: [], picks: [], written: [], marks: null,
+      marking: false, graded: false, speaking: false
     };
 
+    var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     function $(id) { return document.getElementById(id); }
+    function all(sel) { return Array.prototype.slice.call(document.querySelectorAll(sel)); }
     function tr(key) { return (typeof t === 'function') ? t(key) : key; }
-
+    function fmt(key, o) { var s = tr(key); for (var k in o) s = s.split('{' + k + '}').join(o[k]); return s; }
     function esc(s) {
       return String(s == null ? '' : s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
+    function live() { return typeof VERCEL_BACKEND_URL === 'string' && !!VERCEL_BACKEND_URL; }
 
     function modeFor(level) {
       var m = saved.mode[level];
@@ -461,46 +228,32 @@
       if (mode === 'kanji') return s.replace(READING_RE, '$1');
       return s.replace(READING_RE, '<ruby>$1<rt>$2</rt></ruby>');
     }
+    function plainKana(src) { return String(src).replace(READING_RE, '$2').replace(/ /g, ''); }
+    function plainReading(src) { return String(src || '').replace(READING_RE, '$2'); }
+    function plainKanji(src) { return String(src || '').replace(READING_RE, '$1'); }
+    function charCount(s) { return plainKanji(s.text.join('')).replace(/ /g, '').length; }
 
-    // The story's own vocabulary, hoverable inside the text. The word list under
-    // the passage stays — but a reader who does not recognise a word wants the
-    // meaning where the word is, not in a panel they have to go and open.
-    //
-    // Matching happens on the SOURCE string, before rendering, because both the
-    // text and the vocabulary entry carry the same bracket notation. Trying to
-    // match rendered HTML would mean matching across <ruby> tags.
-    function vocabIndex(story) {
-      return (story.vocab || []).slice()
-        .sort(function (a, b) { return b.w.length - a.w.length; });  // longest first
-    }
-
-    function jpWords(src, mode, vlist) {
-      if (!vlist || !vlist.length) return jp(src, mode);
-      var out = '';
-      var rest = String(src);
-      var guard = 0;
+    // The story's own vocabulary, marked inside the text so a word can be looked
+    // up where it stands. Matching happens on the SOURCE string, before
+    // rendering, because text and vocabulary carry the same bracket notation.
+    function jpWords(src, mode, story) {
+      var vl = (story.vocab || []).map(function (v, i) { return { w: v.w, i: i }; })
+        .sort(function (a, b) { return b.w.length - a.w.length; });
+      if (!vl.length) return jp(src, mode);
+      var out = '', rest = String(src), guard = 0;
       while (rest && guard++ < 400) {
         var at = -1, hit = null;
-        for (var i = 0; i < vlist.length; i++) {
-          var k = rest.indexOf(vlist[i].w);
-          if (k !== -1 && (at === -1 || k < at)) { at = k; hit = vlist[i]; }
+        for (var i = 0; i < vl.length; i++) {
+          var k = rest.indexOf(vl[i].w);
+          if (k !== -1 && (at === -1 || k < at)) { at = k; hit = vl[i]; }
         }
         if (hit === null) { out += jp(rest, mode); break; }
         if (at > 0) out += jp(rest.slice(0, at), mode);
-        out += '<span class="rd-w" data-r="' + esc(plainKana(hit.w)) +
-               '" data-g="' + esc(gloss(hit)) + '">' + jp(hit.w, mode) + '</span>';
+        out += '<span class="v" data-v="' + hit.i + '">' + jp(hit.w, mode) + '</span>';
         rest = rest.slice(at + hit.w.length);
       }
       return out;
     }
-
-    // 新[あたら]しい → あたらしい, for the tooltip's reading half.
-    function plainKana(src) {
-      return String(src).replace(READING_RE, '$2').replace(/ /g, '');
-    }
-
-    function plainReading(src) { return String(src || '').replace(READING_RE, '$2'); }
-    function plainKanji(src) { return String(src || '').replace(READING_RE, '$1'); }
 
     // Sentences end at 。！？ — but not inside 「quotes」, so dialogue stays whole.
     function sentences(par) {
@@ -520,200 +273,198 @@
       return out;
     }
 
-    function storiesAt(level) {
-      return STORIES.filter(function (s) { return s.level === level; });
-    }
-
+    function storiesAt(level) { return STORIES.filter(function (s) { return s.level === level; }); }
     function shuffled(n) {
       var a = [];
       for (var i = 0; i < n; i++) a.push(i);
-      for (var j = a.length - 1; j > 0; j--) {
-        var k = Math.floor(Math.random() * (j + 1));
-        var tmp = a[j]; a[j] = a[k]; a[k] = tmp;
-      }
+      for (var j = a.length - 1; j > 0; j--) { var k = Math.floor(Math.random() * (j + 1)); var tmp = a[j]; a[j] = a[k]; a[k] = tmp; }
       return a;
     }
-
     function gloss(v) {
       var g = v.g || {};
       if (typeof g === 'string') return g;
       return g[(typeof LANG === 'string') ? LANG : 'en'] || g.en || g._ || '';
     }
-
-    // ======================= library =======================
-    function renderLevels() {
-      var row = $('rd-levels');
-      Array.prototype.slice.call(row.querySelectorAll('.rd-chip')).forEach(function (c) { c.remove(); });
-      LEVELS.forEach(function (lv) {
-        var n = storiesAt(lv).length;
-        var b = document.createElement('button');
-        b.className = 'rd-chip' + (lv === state.level ? ' on' : '');
-        b.innerHTML = lv + '<small>' + n + '</small>';
-        b.onclick = function () { setLevel(lv); };
-        // before the ⚙, so the gear stays at the end of the row
-        row.insertBefore(b, $('rd-gear'));
-      });
+    function say(text) {
+      if (!window.KA_Voice) return;
+      window.KA_Voice.speak(text).catch(function () {});
     }
 
-    function setLevel(lv) {
-      state.level = lv;
-      saved.level = lv;
-      persist();
-      renderLevels();
-      renderSettings();
-      renderLibrary();
+    // ======================= the shelf =======================
+    function shelfList() { return saved.shelf === 'mine' ? mine : storiesAt(saved.shelf); }
+
+    function stamp(s) {
+      var b = saved.best[s.id], n = s.q.length;
+      if (b == null) return '<span class="st">' + esc(tr('rd_new')) + '</span>';
+      return '<span class="st ' + (b === n ? 'done' : 'low') + '">' + (b === n ? '★ ' : '✓ ') + b + '/' + n + '</span>';
     }
 
-    // ── the ⚙ panel ──────────────────────────────────────────────────────
-    // The same two settings the story view carries, surfaced before you open a
-    // story — otherwise nobody discovers 記述 exists. Both are per level, so the
-    // panel always describes the level currently selected above it.
-    function renderSettings() {
-      var lv = state.level;
-      var open = !!saved.panel;
-      $('rd-settings').classList.toggle('open', open);
-      $('rd-gear').classList.toggle('on', open);
-      $('rd-gear').setAttribute('aria-expanded', open ? 'true' : 'false');
-      if (!open) return;
+    function paintShelf() {
+      var optLv = saved.shelf === 'mine' ? state.level : saved.shelf;
+      var html = LEVELS.map(function (lv) {
+        var list = storiesAt(lv), done = list.filter(function (s) { return saved.best[s.id] != null; }).length;
+        return '<button type="button" class="pl' + (saved.shelf === lv ? ' on' : '') + '" data-lv="' + lv + '"><b>' + lv + '</b><small>' +
+          esc(fmt('rr_read_n', { done: done, total: list.length })) + '</small><span class="bar"><i style="width:' + (list.length ? 100 * done / list.length : 0) + '%"></i></span></button>';
+      }).join('') +
+      '<button type="button" class="pl mine' + (saved.shelf === 'mine' ? ' on' : '') + '" data-lv="mine"><b>あなたの巻物</b><small>' + esc(fmt('rr_mine_n', { n: mine.length })) + '</small></button>';
 
-      var box = $('rd-set-modes');
-      box.innerHTML = '';
-      var cur = modeFor(lv);
-      LEVEL_MODES[lv].forEach(function (m) {
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = m === cur ? 'on' : '';
-        btn.textContent = tr(MODE_KEY[m]);
-        btn.onclick = function () {
-          saved.mode[lv] = m;
-          persist();
-          renderSettings();
-          if (state.story && state.story.level === lv) renderStory();
-        };
-        box.appendChild(btn);
-      });
+      html += '<span class="opts"><span>' + esc(tr('rd_set_text')) + '</span> <span class="seg">' + LEVEL_MODES[optLv].map(function (m) {
+        return '<button type="button" data-mode="' + m + '" data-lvl="' + optLv + '" title="' + esc(tr(MODE_KEY[m])) + '" class="' + (modeFor(optLv) === m ? 'on' : '') + '">' + MODE_FACE[m] + '</button>';
+      }).join('') + '</span>';
+      if (live()) html += ' <span>' + esc(tr('rd_set_answers')) + '</span> <span class="seg">' + ['pick', 'write'].map(function (m) {
+        return '<button type="button" data-ans="' + m + '" data-lvl="' + optLv + '" class="' + ((m === 'write') === !!saved.write[optLv] ? 'on' : '') + '">' +
+          (m === 'pick' ? '選択 ' : '記述 ') + esc(tr(m === 'pick' ? 'rd_mode_pick' : 'rd_mode_write')) + '</button>';
+      }).join('') + '</span>';
+      html += '</span>';
+      $('rr-plaques').innerHTML = html;
 
-      // No backend, no marking — so don't offer a mode that can't be graded.
-      var live = typeof VERCEL_BACKEND_URL === 'string' && !!VERCEL_BACKEND_URL;
-      $('rd-set-answers').classList.toggle('rd-hidden', !live);
-      var write = !!saved.write[lv];
-      Array.prototype.forEach.call($('rd-set-write').querySelectorAll('button'), function (btn) {
-        btn.classList.toggle('on', (btn.getAttribute('data-m') === 'write') === write);
-        btn.onclick = function () {
-          var on = btn.getAttribute('data-m') === 'write';
-          if (on === !!saved.write[lv]) return;
-          if (state.story && state.story.level === lv) harvestWritten();
-          saved.write[lv] = on;
-          persist();
-          renderSettings();
-          if (state.story && state.story.level === lv && !state.marking) {
-            if (state.graded) resetAnswers();
-            renderQuestions();
-            paintModeSwitch();
-          }
-        };
-      });
-      $('rd-set-hint').textContent = live
-        ? tr('rd_set_hint').replace('{level}', lv)
-        : tr('rd_set_hint_offline').replace('{level}', lv);
-    }
-
-    function badge(id, total) {
-      var b = saved.best[id];
-      if (b == null) return '<span class="rd-badge">' + esc(tr('rd_new')) + '</span>';
-      var cls = b === total ? 'rd-badge perfect' : 'rd-badge done';
-      return '<span class="' + cls + '">' + (b === total ? '★ ' : '') + b + '/' + total + '</span>';
-    }
-
-    function renderLibrary() {
-      var list = storiesAt(state.level);
-      var mode = modeFor(state.level);
+      var list = shelfList(), mineShelf = saved.shelf === 'mine';
       var done = list.filter(function (s) { return saved.best[s.id] != null; }).length;
-      $('rd-progress').innerHTML = esc(tr('rd_progress'))
-        .replace('{done}', '<strong>' + done + '</strong>')
-        .replace('{total}', '<strong>' + list.length + '</strong>');
+      $('rr-cab-h').textContent = mineShelf ? tr('rr_mine_h') : fmt('rr_shelf_h', { level: saved.shelf });
+      $('rr-cab-p').innerHTML = mineShelf ? esc(tr('rr_mine_by')) : fmt('rr_cab_prog', { done: done, total: list.length });
 
-      var box = $('rd-list');
-      box.innerHTML = '';
-      if (!list.length) box.innerHTML = '<p class="rd-desc">' + esc(tr('rd_empty')) + '</p>';
-      list.forEach(function (s, i) {
-        box.appendChild(storyCard(s, s.level + ' · ' + String(i + 1).padStart(2, '0'), mode));
-      });
+      var n = list.length, pad = n < 5 ? 5 - n : (5 - n % 5) % 5;
+      $('rr-grid').innerHTML = (n ? list.map(function (s, i) {
+        var tie = mineShelf ? TIES.mine : TIES[s.level];
+        return '<div class="slot"><button type="button" class="sc' + (state.story === s ? ' cur' : '') + '" data-open="' + esc(s.id) + '" style="--tie:' + tie + '">' +
+          (mineShelf ? '<span class="x" role="button" tabindex="0" data-del="' + esc(s.id) + '" title="' + esc(tr('rd_delete')) + '" aria-label="' + esc(tr('rd_delete')) + '">✕</span>' : '') +
+          '<span class="roll"><span class="tie"></span><span class="num">' + (mineShelf ? '✨' : String(i + 1).padStart(2, '0')) + '</span></span>' +
+          '<span class="label"><b class="jp">' + jp(s.title, modeFor(s.level)) + '</b><small>' + charCount(s) + '字 · ' + s.q.length + '問' +
+          (mineShelf ? ' · ' + s.level : '') + ' ' + stamp(s) + '</small></span></button></div>';
+      }).join('') : '<div class="mine-empty" style="grid-column:1/-1">' + esc(tr('rr_mine_empty')) + '</div>') +
+        new Array((n ? pad : 5) + 1).join('<div class="slot empty"></div>');
 
-      var myList = mine.filter(function (s) { return s.level === state.level; });
-      $('rd-mine-wrap').classList.toggle('rd-hidden', !myList.length);
-      var mb = $('rd-mine');
-      mb.innerHTML = '';
-      myList.forEach(function (s) {
-        mb.appendChild(storyCard(s, '✨ ' + s.level, mode));
-      });
+      $('rr-cm-lv').textContent = state.level;
       paintGen();
     }
 
-    function storyCard(s, label, mode) {
-      var card = document.createElement('div');
-      card.className = 'rd-card' + (s.ai ? ' ai' : '');
-      card.setAttribute('role', 'button');
-      card.tabIndex = 0;
-      var chars = plainKanji(s.text.join('')).replace(/ /g, '').length;
-      card.innerHTML =
-        '<span class="rd-card-top"><span class="rd-card-num">' + esc(label) + '</span>' +
-        (s.ai ? '<button class="rd-del" title="' + esc(tr('rd_delete')) + '" aria-label="' + esc(tr('rd_delete')) + '">×</button>' : '') +
-        '</span>' +
-        '<span class="rd-card-title jp">' + jp(s.title, mode) + '</span>' +
-        '<span class="rd-card-meta"><span>' + chars + ' ' + esc(tr('rd_chars')) + ' · ' + s.q.length + ' ' + esc(tr('rd_qs')) + '</span>' +
-        badge(s.id, s.q.length) + '</span>';
-      card.onclick = function () { openStory(s.id); };
-      card.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStory(s.id); } };
-      var del = card.querySelector('.rd-del');
-      if (del) del.onclick = function (e) {
-        e.stopPropagation();
-        mine = mine.filter(function (x) { return x.id !== s.id; });
-        delete saved.best[s.id];
-        persistMine(); persist();
-        renderLibrary();
-      };
-      return card;
+    function setShelf(lv) {
+      saved.shelf = lv;
+      if (lv !== 'mine') { state.level = lv; saved.level = lv; }
+      persist();
+      paintShelf();
     }
 
-    // ======================= story =======================
-    function openStory(id, fromHash) {
+    // ======================= views =======================
+    var KEYS_HOME = null;
+    function placeKeys(v) {   // while reading, the tabs sit in the story row and double as "back to the shelf"
+      var k = $('rr-keys'); if (!KEYS_HOME) KEYS_HOME = { p: k.parentNode, n: k.nextSibling };
+      if (v === 'read') { var n2 = document.querySelector('.rr .nav2'); if (k.parentNode !== n2) n2.insertBefore(k, n2.firstChild); }
+      else if (k.parentNode !== KEYS_HOME.p) KEYS_HOME.p.insertBefore(k, KEYS_HOME.n);
+      $('rr-key-read').disabled = !state.story;
+      $('rr-key-title').textContent = v === 'read' ? tr('rr_k_this') : (state.story ? plainKanji(state.story.title).replace(/ /g, '').slice(0, 14) : tr('rr_k_open'));
+      all('.rr .key').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-go') === v); });
+    }
+
+    function setView(v, keep) {
+      state.reading = v === 'read';
+      placeKeys(v);
+      $('rr-shelf').hidden = v !== 'shelf';
+      $('rr-read').hidden = v !== 'read';
+      $('rr-stage').classList.toggle('at-desk', v === 'read');
+      if (v === 'shelf') { stopAudio(); paintShelf(); }
+      if (!keep) window.scrollTo(0, 0);
+    }
+
+    function openStory(id, opt) {
+      opt = opt || {};
       var s = findStory(id);
       if (!s) return;
       stopAudio();
       state.story = s;
-      if (s.level !== state.level) { state.level = s.level; saved.level = s.level; persist(); }
+      if (!s.ai) { state.level = s.level; saved.level = s.level; saved.shelf = s.level; }
+      else saved.shelf = 'mine';
+      persist();
       resetAnswers();
-      $('rd-library').classList.add('rd-hidden');
-      $('rd-story').classList.remove('rd-hidden');
-      // the word list starts open, so the button starts lit
-      $('rd-vocab').classList.add('show');
-      $('rd-words-btn').classList.add('on');
-      renderStory();
-      if (!fromHash && location.hash !== '#' + id) {
+      state.view = 'story';
+      setView('read', opt.keep);
+      var sh = $('rr-sheet'), sy = $('rr-story');
+      if (!state.both) { sh.hidden = true; sh.classList.add('rolled'); sy.hidden = false; }
+      sy.classList.remove('rolling-up');
+      sy.classList.add('noanim', 'rolled'); void sy.offsetWidth; sy.classList.remove('noanim');
+      paintRead();
+      var a = $('rr-article'); a.scrollLeft = 0; a.scrollTop = 0;
+      progress();
+      requestAnimationFrame(function () { requestAnimationFrame(function () { sy.classList.remove('rolled'); }); });
+      if (!opt.fromHash && location.hash !== '#' + id) {
         try { history.pushState(null, '', '#' + id); } catch (e) { location.hash = id; }
       }
-      window.scrollTo(0, 0);
     }
 
     function closeStory(fromHash) {
-      stopAudio();
-      state.story = null;
-      $('rd-story').classList.add('rd-hidden');
-      $('rd-library').classList.remove('rd-hidden');
-      renderLevels();
-      renderLibrary();
+      setView('shelf');
       if (!fromHash && location.hash) {
         try { history.pushState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; }
       }
-      window.scrollTo(0, 0);
     }
 
-    // Where the correct answer sits, dealt rather than left to chance. Five
-    // independent shuffles will cheerfully drop four right answers into the
-    // same corner — it reads as broken, and the eye starts answering by
-    // position instead of by Japanese. Positions come out of a bag that refills
-    // only once empty, so every slot is used before any slot is used twice.
+    function siblings() { var s = state.story; return s.ai ? mine : storiesAt(s.level); }
+
+    // ======================= the desk =======================
+    function paintRead() {
+      var s = state.story, mode = modeFor(s.level), sib = siblings(), i = sib.indexOf(s);
+      var tie = s.ai ? TIES.mine : TIES[s.level];
+      ['rr-now', 'rr-story', 'rr-sheet'].forEach(function (id) { $(id).style.setProperty('--tie', tie); });
+      $('rr-now').innerHTML = '<span class="eb">' + esc(s.ai ? fmt('rr_now_mine', { level: s.level }) : fmt('rr_now_scroll', { level: s.level, i: i + 1, n: sib.length })) + '</span>' +
+        '<b class="jp">' + jp(s.title, mode) + '</b><small>' + charCount(s) + '字 · ' + s.q.length + ' ' + esc(tr('rd_qs')) + '</small>' +
+        '<small class="bestS">' + esc(fmt('rr_best', { b: saved.best[s.id] != null ? saved.best[s.id] + ' / ' + s.q.length : '—' })) + '</small>';
+      $('rr-prev').textContent = tr('rr_prev'); $('rr-next').textContent = tr('rr_next');
+      $('rr-prev').disabled = i <= 0; $('rr-next').disabled = i < 0 || i >= sib.length - 1;
+      $('rr-seal').innerHTML = s.level + '<br>読解';
+      $('rr-meta').textContent = (s.ai ? 'あなたの巻物' : '巻物 · ' + s.id.toUpperCase()) + ' · ' + charCount(s) + '字';
+      $('rr-dir').innerHTML = [['tate', 'rr_tate'], ['yoko', 'rr_yoko']].map(function (m) {
+        return '<button type="button" data-dir="' + m[0] + '" class="' + (saved.dir === m[0] ? 'on' : '') + '">' + esc(tr(m[1])) + '</button>';
+      }).join('');
+      $('rr-modes').innerHTML = LEVEL_MODES[s.level].map(function (m) {
+        return '<button type="button" data-mode="' + m + '" data-lvl="' + s.level + '" title="' + esc(tr(MODE_KEY[m])) + '" class="' + (m === mode ? 'on' : '') + '">' + MODE_FACE[m] + '</button>';
+      }).join('');
+
+      var a = $('rr-article'), sn = 0;
+      a.classList.toggle('yoko', saved.dir === 'yoko');
+      a.innerHTML = '<h2>' + jp(s.title, mode) + '</h2>' + s.text.map(function (par) {
+        return '<p>' + sentences(par).map(function (sen) {
+          return '<span class="s" data-s="' + (sn++) + '" data-src="' + esc(sen.trim()) + '">' + jpWords(sen, mode, s) + '</span>';
+        }).join('') + '</p>';
+      }).join('') + '<span class="end">〔終〕</span>';
+
+      $('rr-wbox').innerHTML = (s.vocab || []).map(function (v, vi) {
+        return '<div class="wl" data-v="' + vi + '" role="button" tabindex="0"><span><b>' + esc(plainKanji(v.w).replace(/ /g, '')) + '</b><small>' + esc(plainKana(v.w)) + '</small></span><small>' + esc(gloss(v)) + '</small></div>';
+      }).join('');
+      document.querySelector('.rr .side').hidden = !(s.vocab && s.vocab.length);
+
+      $('rr-listen').hidden = !window.KA_Voice;
+      paintListen();
+      $('rr-both').textContent = tr(state.both ? 'rr_one' : 'rr_both');
+      $('rr-toq').textContent = tr('rr_toq');
+      $('rr-tos').textContent = tr('rr_tos');
+      $('rr-fwd').setAttribute('aria-label', tr('rr_read_on'));
+      $('rr-back').setAttribute('aria-label', tr('rr_read_back'));
+      paintSheet();
+      progress();
+    }
+
+    function progress() {
+      if (!state.story) return;
+      var a = $('rr-article'), yoko = saved.dir === 'yoko';
+      var max = yoko ? Math.max(0, a.scrollHeight - a.clientHeight) : Math.max(0, a.scrollWidth - a.clientWidth);
+      var p = max ? Math.min(1, Math.abs(yoko ? a.scrollTop : a.scrollLeft) / max) : 1;
+      $('rr-bar').style.width = (p * 100).toFixed(1) + '%'; $('rr-pct').textContent = Math.round(p * 100) + '%';
+      $('rr-fwd').disabled = p >= .995; $('rr-back').disabled = p <= .005;
+      var fits = max < 4, done = !fits && p >= .98;
+      document.querySelector('.rr .prog').classList.toggle('fits', fits);
+      $('rr-fwd').style.visibility = $('rr-back').style.visibility = (fits || yoko) ? 'hidden' : '';
+      $('rr-hint').textContent = done ? tr('rr_end') : tr(yoko ? 'rr_hint_yoko' : 'rr_hint_tate');
+      $('rr-toq').classList.toggle('glow', done && state.view === 'story' && !state.both);
+    }
+    function unroll(dir) {
+      var a = $('rr-article');
+      if (saved.dir === 'yoko') a.scrollBy({ top: dir * a.clientHeight * .82, behavior: reduced ? 'auto' : 'smooth' });
+      else a.scrollBy({ left: -dir * a.clientWidth * .82, behavior: reduced ? 'auto' : 'smooth' });
+    }
+
+    // Where the correct answer sits, dealt rather than left to chance: positions
+    // come out of a bag that refills only once empty, so every slot is used
+    // before any slot is used twice.
     function slotPlan(qs) {
       var bags = {};
       return qs.map(function (q) {
@@ -722,17 +473,11 @@
         return bags[n].pop();
       });
     }
-
     function resetAnswers() {
-      var s = state.story;
-      var slots = slotPlan(s.q);
+      var s = state.story, slots = slotPlan(s.q);
       state.order = s.q.map(function (q, qi) {
-        // the wrong options, in random order, filling the slots left over
-        var rest = shuffled(q.o.length - 1).map(function (x) { return x + 1; });
-        var out = [];
-        for (var pos = 0; pos < q.o.length; pos++) {
-          out[pos] = (pos === slots[qi]) ? 0 : rest.pop();
-        }
+        var rest = shuffled(q.o.length - 1).map(function (x) { return x + 1; }), out = [];
+        for (var pos = 0; pos < q.o.length; pos++) out[pos] = (pos === slots[qi]) ? 0 : rest.pop();
         return out;
       });
       state.picks = s.q.map(function () { return null; });
@@ -741,135 +486,16 @@
       state.graded = false;
     }
 
-    function renderStory() {
-      var s = state.story;
-      var mode = modeFor(s.level);
+    // ── written answers ───────────────────────────────────────────────────
+    // Multiple choice is free and instant, but you can score 5/5 on it by
+    // elimination. In 記述 mode you write the answer in Japanese and Katsu marks it.
+    function writeMode() { return live() && !!saved.write[state.story ? state.story.level : state.level]; }
 
-      $('rd-level-tag').textContent = s.level;
-      $('rd-story-title').innerHTML = jp(s.title, mode);
-      $('rd-ai-note').classList.toggle('rd-hidden', !s.ai);
-      $('rd-next').textContent = s.ai ? tr('rd_another') : tr('rd_next');
-
-      // display-mode chips
-      var modes = $('rd-modes');
-      modes.innerHTML = '';
-      LEVEL_MODES[s.level].forEach(function (m) {
-        var b = document.createElement('button');
-        b.className = 'rd-chip' + (m === mode ? ' on' : '');
-        b.textContent = tr(MODE_KEY[m]);
-        b.onclick = function () {
-          saved.mode[s.level] = m;
-          persist();
-          renderStory();
-          renderSettings();
-        };
-        modes.appendChild(b);
-      });
-
-      // text, split into sentences so an answer can point back at its line
-      var html = '';
-      var vl = vocabIndex(s);
-      s.text.forEach(function (par) {
-        html += '<p>' + sentences(par).map(function (sen) {
-          return '<span class="rd-sent" data-src="' + esc(sen.trim()) + '">' +
-                 jpWords(sen, mode, vl) + '</span>';
-        }).join('') + '</p>';
-      });
-      $('rd-text').innerHTML = html;
-
-      // words
-      var vbox = $('rd-vocab-list');
-      vbox.innerHTML = '';
-      (s.vocab || []).forEach(function (v) {
-        var row = document.createElement('div');
-        row.className = 'rd-vocab-item';
-        // Three aligned columns — the word, its reading, then the meaning. The
-        // reading gets a column of its own because in kanji mode it is the half
-        // the reader is actually missing.
-        row.innerHTML =
-          '<span class="jp vw">' + jp(v.w, 'kanji') + '</span>' +
-          '<span class="jp vr">' + esc(plainKana(v.w)) + '</span>' +
-          '<span class="vg">' + esc(gloss(v)) + '</span>';
-        vbox.appendChild(row);
-      });
-      var vh = $('rd-vocab-count');
-      if (vh) vh.textContent = (s.vocab || []).length;
-      $('rd-words-btn').classList.toggle('rd-hidden', !(s.vocab && s.vocab.length));
-
-      $('rd-listen').classList.toggle('rd-hidden', !window.KA_Voice);
-      paintListen();
-      paintModeSwitch();
-      renderQuestions();
-    }
-
-    // ── Writing the answers instead of picking them ────────────────────────
-    // Multiple choice is the default because it is free and instant. But you
-    // can score 5/5 on it by elimination without ever producing a sentence, so
-    // there is a second mode where you write the answer in Japanese and the AI
-    // marks it. Available at EVERY level on purpose: reading outruns writing
-    // for almost everyone who learns from input, so tying production to reading
-    // level would get it backwards in both directions.
-    function writeMode() { return !!saved.write[state.story ? state.story.level : 'N5']; }
-
-    // The shared rōmaji converter finishes a word by writing straight into the
-    // input (an idle ん, a commit on blur), which fires no 'input' event — so a
-    // mirrored copy goes stale by exactly the last character. Read the boxes
-    // themselves before anything that consumes the answers.
-    function harvestWritten() {
-      if (!state.story || state.graded) return;
-      state.story.q.forEach(function (q, qi) {
-        // A trailing lone "n" is still a Latin n while the field is open — it
-        // could yet become に or ん. flush() settles it as ん, which is what
-        // pressing Check means.
-        var k = writeKanaInputs[qi];
-        if (k) try { k.flush(); } catch (e) {}
-        var el = $('rd-w-' + qi);
-        if (el) state.written[qi] = el.value;
-      });
-    }
-
-    function currentScore() {
-      if (!writeMode()) return state.picks.filter(function (p) { return p === 0; }).length;
-      return (state.marks || []).filter(function (m) { return m.verdict === 'ok'; }).length;
-    }
-
-    function setWriteMode(on) {
-      harvestWritten();
-      saved.write[state.story.level] = !!on;
-      persist();
-      // Picks and written answers live in separate arrays, so switching keeps
-      // both: look at the other mode, come back, your sentences are still
-      // there. Only a finished grade is dropped, because a grade belongs to
-      // the mode it was given in.
-      if (state.graded) resetAnswers();
-      renderQuestions();
-      paintModeSwitch();
-      renderSettings();
-    }
-
-    function paintModeSwitch() {
-      var wrap = $('rd-qmode');
-      if (!wrap) return;
-      var on = writeMode();
-      Array.prototype.forEach.call(wrap.querySelectorAll('button'), function (b) {
-        b.classList.toggle('on', (b.getAttribute('data-m') === 'write') === on);
-      });
-      var hint = $('rd-write-hint');
-      if (hint) hint.classList.toggle('rd-hidden', !on);
-      // No backend, no marking — so don't offer a mode that can't be graded.
-      var live = typeof VERCEL_BACKEND_URL === 'string' && !!VERCEL_BACKEND_URL;
-      wrap.classList.toggle('rd-hidden', !live);
-      if (!live && on) { saved.write[state.story.level] = false; }
-    }
-
-    // \u3042 \u2192 \u30a2 \u2192 A, the same key the vocabulary quiz uses. Katakana is its own
-    // mode rather than something guessed from the text: \u30b3\u30fc\u30d2\u30fc and \u3053\u3053 both
-    // start ko-, so nothing in the r\u014dmaji says which script was meant.
-    var KANA_FACE = { kana: '\u3042', katakana: '\u30a2', off: 'A' };
+    var KANA_FACE = { kana: 'あ', katakana: 'ア', off: 'A' };
     var KANA_NEXT = { kana: 'katakana', katakana: 'off', off: 'kana' };
     var KANA_HINT = { kana: 'rd_kana_hint', katakana: 'rd_kana_kata', off: 'rd_kana_off' };
     var writeKana = KANA_FACE[saved.kana] ? saved.kana : 'kana';
-    var writeKanaInputs = {};   // question index → the KA_KanaInput handle
+    var writeKanaInputs = {};
 
     function paintKanaKey(btn) {
       btn.textContent = KANA_FACE[writeKana];
@@ -878,231 +504,148 @@
       btn.classList.toggle('off', writeKana === 'off');
       btn.setAttribute('aria-pressed', writeKana === 'off' ? 'false' : 'true');
     }
-
-    function writtenAnswer(q, qi) {
-      var wrap = document.createElement('div');
-      wrap.className = 'rd-write';
-      if (state.graded) {
-        var mk = state.marks && state.marks[qi];
-        var vcls = mk ? (mk.verdict === 'ok' ? 'good' : mk.verdict === 'part' ? 'part' : 'bad') : 'bad';
-        wrap.innerHTML =
-          '<div class="rd-wrote jp">' + esc(state.written[qi] || '—') + '</div>' +
-          '<div class="rd-mark ' + vcls + '">' +
-            (mk ? (mk.verdict === 'ok' ? '\u2713 ' : mk.verdict === 'part' ? '\u25b3 ' : '\u2717 ') + esc(mk.note || '')
-                : esc(tr('rd_mark_none'))) +
-          '</div>' +
-          '<div class="rd-model jp"><span>' + esc(tr('rd_model_answer')) + '</span> ' + jp(q.o[0], 'kanji') + '</div>';
-        if (vcls !== 'good' && q.ev) {
-          var after = document.createElement('div');
-          after.className = 'rd-q-after';
-          var ev = document.createElement('button');
-          ev.className = 'rd-show-ev';
-          ev.textContent = tr('rd_show_ev');
-          ev.onclick = function () { highlight(q.ev); };
-          after.appendChild(ev);
-          wrap.appendChild(after);
-        }
-        return wrap;
-      }
-      var row = document.createElement('div');
-      row.className = 'rd-write-row';
-      var input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'rd-write-in jp';
-      input.id = 'rd-w-' + qi;
-      input.value = state.written[qi] || '';
-      input.autocomplete = 'off'; input.spellcheck = false;
-      input.onblur = function () {
-        state.written[qi] = this.value;
-      };
-      input.oninput = function () {
-        state.written[qi] = this.value;
-        var n = state.written.filter(function (a) { return a && a.trim(); }).length;
-        $('rd-qcount').textContent = tr('rd_answered').replace('{n}', n).replace('{total}', state.story.q.length);
-        $('rd-check').disabled = n < state.story.q.length;
-      };
-      row.appendChild(input);
-      var kana = document.createElement('button');
-      kana.type = 'button';
-      kana.className = 'rd-write-kana';
-      kana.onclick = function () {
-        writeKana = KANA_NEXT[writeKana];
-        saved.kana = writeKana;
-        persist();
-        // every question's key shows the same mode, so repaint them all
-        Array.prototype.forEach.call(document.querySelectorAll('.rd-write-kana'), paintKanaKey);
-        try { input.focus(); } catch (e) {}
-      };
-      paintKanaKey(kana);
-      row.appendChild(kana);
-      wrap.appendChild(row);
-      // the site's shared r\u014dmaji converter, same as the quiz and Talk \u2014 which
-      // is what makes \u30b8\u30e5\u30fc\u30b9 reachable from juusu without a Japanese keyboard
-      if (window.KA_KanaInput) {
-        writeKanaInputs[qi] = KA_KanaInput.attach(input, {
-          enabled: function () { return writeKana !== 'off'; },
-          convert: function (text, final) { return KA_KanaInput.convert(text, final, writeKana); }
-        });
-      }
-      return wrap;
-    }
-
-    function renderQuestions() {
-      var s = state.story;
-      var mode = modeFor(s.level);
-      var box = $('rd-questions');
-      box.innerHTML = '';
-      writeKanaInputs = {};
-
-      s.q.forEach(function (q, qi) {
-        var card = document.createElement('div');
-        card.className = 'rd-q';
-        var picked = state.picks[qi];
-        var right = writeMode()
-          ? !!(state.marks && state.marks[qi] && state.marks[qi].verdict === 'ok')
-          : picked === 0;
-        var part = writeMode() && state.marks && state.marks[qi] && state.marks[qi].verdict === 'part';
-        if (state.graded) card.classList.add(right ? 'right' : part ? 'part' : 'wrong');
-
-        var qt = document.createElement('div');
-        qt.className = 'rd-q-text jp';
-        qt.innerHTML = '<span class="rd-q-num">' + (qi + 1) + '.</span>' + jp(q.q, mode);
-        card.appendChild(qt);
-
-        if (writeMode()) {
-          card.appendChild(writtenAnswer(q, qi));
-          box.appendChild(card);
-          return;
-        }
-
-        var opts = document.createElement('div');
-        opts.className = 'rd-opts';
-        state.order[qi].forEach(function (oi) {
-          var b = document.createElement('button');
-          b.className = 'rd-opt jp';
-          b.innerHTML = jp(q.o[oi], mode);
-          if (state.graded) {
-            b.disabled = true;
-            if (oi === 0) b.classList.add('correct');
-            else if (oi === picked) b.classList.add('miss');
-            else b.classList.add('dim');
-          } else {
-            if (oi === picked) b.classList.add('picked');
-            b.onclick = function () {
-              state.picks[qi] = oi;
-              renderQuestions();
-            };
-          }
-          opts.appendChild(b);
-        });
-        card.appendChild(opts);
-
-        if (state.graded) {
-          var after = document.createElement('div');
-          after.className = 'rd-q-after';
-          var v = document.createElement('span');
-          v.className = 'rd-q-verdict ' + (right ? 'good' : 'bad');
-          v.textContent = right ? tr('rd_right') : (picked == null ? tr('rd_blank') : tr('rd_wrong'));
-          after.appendChild(v);
-          // Only on a question you missed. Getting it right and still being
-          // offered the answer reads as a hint you did not need, and on a 5/5
-          // it puts a row of them under a perfect score.
-          if (!right && q.ev) {
-            var ev = document.createElement('button');
-            ev.className = 'rd-show-ev';
-            ev.textContent = tr('rd_show_ev');
-            ev.onclick = function () { highlight(q.ev); };
-            after.appendChild(ev);
-          }
-          card.appendChild(after);
-        }
-        box.appendChild(card);
+    // The shared rōmaji converter finishes a word by writing straight into the
+    // input, which fires no 'input' event — read the boxes themselves.
+    function harvestWritten() {
+      if (!state.story || state.graded) return;
+      state.story.q.forEach(function (q, qi) {
+        var k = writeKanaInputs[qi];
+        if (k) try { k.flush(); } catch (e) {}
+        var el = $('rr-w-' + qi);
+        if (el) state.written[qi] = el.value;
       });
-
-      var answered = writeMode()
+    }
+    function answeredCount() {
+      return writeMode()
         ? state.written.filter(function (a) { return a && a.trim(); }).length
         : state.picks.filter(function (p) { return p != null; }).length;
-      $('rd-qcount').textContent = tr('rd_answered').replace('{n}', answered).replace('{total}', s.q.length);
-      $('rd-check').disabled = state.graded || answered < s.q.length || state.marking;
-      $('rd-check').classList.toggle('rd-hidden', state.graded);
-      $('rd-retry').classList.toggle('rd-hidden', !state.graded);
-      $('rd-next').classList.toggle('rd-hidden', !state.graded);
-      if (!state.graded) $('rd-result').className = 'rd-result';
+    }
+    function paintCount() {
+      var s = state.story, n = answeredCount();
+      $('rr-qn').textContent = fmt('rd_answered', { n: n, total: s.q.length });
+      var c = $('rr-check'); if (c) c.disabled = state.graded || state.marking || n < s.q.length;
+    }
+    function currentScore() {
+      if (!writeMode()) return state.picks.filter(function (p) { return p === 0; }).length;
+      return (state.marks || []).filter(function (m) { return m.verdict === 'ok'; }).length;
     }
 
-    function highlight(ev) {
-      var list = Array.isArray(ev) ? ev : [ev];
-      var spans = $('rd-text').querySelectorAll('.rd-sent');
-      var first = null;
-      Array.prototype.forEach.call(spans, function (sp) {
-        var on = list.indexOf(sp.getAttribute('data-src')) !== -1;
-        sp.classList.toggle('hl', on);
-        if (on && !first) first = sp;
+    function paintSheet() {
+      var s = state.story; if (!s) return;
+      var mode = modeFor(s.level), w = writeMode();
+      writeKanaInputs = {};
+      $('rr-ans').innerHTML = live() ? ['pick', 'write'].map(function (m) {
+        return '<button type="button" data-ans="' + m + '" data-lvl="' + s.level + '" class="' + ((m === 'write') === w ? 'on' : '') + '">' +
+          (m === 'pick' ? '選択 ' : '記述 ') + esc(tr(m === 'pick' ? 'rd_mode_pick' : 'rd_mode_write')) + '</button>';
+      }).join('') : '';
+      $('rr-whint').hidden = !w || state.graded;
+
+      $('rr-qs').innerHTML = s.q.map(function (q, qi) {
+        var pick = state.picks[qi], mk = state.marks && state.marks[qi];
+        var right = w ? !!(mk && mk.verdict === 'ok') : pick === 0;
+        var part = w && mk && mk.verdict === 'part';
+        var body, fb = '';
+        if (w) {
+          if (state.graded) {
+            body = '<div class="wr"><div class="wrote jp">' + esc(state.written[qi] || '—') + '</div>' +
+              '<div class="mark ' + (right ? 'ok' : part ? 'part' : 'no') + '">' +
+              (mk ? (right ? '✓ ' : part ? '△ ' : '✗ ') + esc(mk.note || '') : esc(tr('rd_mark_none'))) + '</div>' +
+              '<div class="model jp"><span>' + esc(tr('rd_model_answer')) + '</span> ' + jp(q.o[0], 'kanji') + '</div></div>';
+            if (!right && q.ev) fb = '<div class="fb"><button type="button" data-ev="' + qi + '">' + esc(tr('rd_show_ev')) + '</button></div>';
+          } else {
+            body = '<div class="wr"><div class="wrow"><input type="text" class="win jp" id="rr-w-' + qi + '" data-q="' + qi + '" autocomplete="off" spellcheck="false" value="' + esc(state.written[qi] || '') + '">' +
+              '<button type="button" class="wkana" data-kana="1"></button></div></div>';
+          }
+        } else {
+          body = '<div class="ops">' + state.order[qi].map(function (oi) {
+            var c = state.graded ? (oi === 0 ? 'right' : oi === pick ? 'wrong' : 'dim') : (oi === pick ? 'pick' : '');
+            return '<button type="button" class="jp ' + c + '" data-q="' + qi + '" data-o="' + oi + '"' + (state.graded ? ' disabled' : '') + '>' + jp(q.o[oi], mode) + '</button>';
+          }).join('') + '</div>';
+          if (state.graded) fb = '<div class="fb">' + (right ? '<span class="ok">' + esc(tr('rd_right')) + '</span>'
+            : '<span class="no">' + esc(tr(pick == null ? 'rd_blank' : 'rd_wrong')) + '</span>') +
+            (!right && q.ev ? '<button type="button" data-ev="' + qi + '">' + esc(tr('rd_show_ev')) + '</button>' : '') + '</div>';
+        }
+        return '<div class="q' + (state.graded ? (right ? ' is-right' : part ? ' is-part' : ' is-wrong') : '') + '"><div class="qt"><b>問' + (KN[qi] || qi + 1) + '</b><span class="jp">' + jp(q.q, mode) + '</span></div>' + body + fb + '</div>';
+      }).join('');
+
+      // wire the writing boxes: the site's shared rōmaji converter, same as the quiz and Talk
+      if (w && !state.graded) all('#rr-qs .win').forEach(function (input) {
+        var qi = +input.getAttribute('data-q');
+        input.addEventListener('input', function () { state.written[qi] = input.value; paintCount(); });
+        input.addEventListener('blur', function () { state.written[qi] = input.value; });
+        var key = input.parentNode.querySelector('.wkana');
+        paintKanaKey(key);
+        key.onclick = function () {
+          writeKana = KANA_NEXT[writeKana]; saved.kana = writeKana; persist();
+          all('#rr-qs .wkana').forEach(paintKanaKey);
+          try { input.focus(); } catch (e) {}
+        };
+        if (window.KA_KanaInput) {
+          writeKanaInputs[qi] = KA_KanaInput.attach(input, {
+            enabled: function () { return writeKana !== 'off'; },
+            convert: function (text, final) { return KA_KanaInput.convert(text, final, writeKana); }
+          });
+        }
       });
-      if (first) {
-        first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        setTimeout(function () { first.classList.remove('hl'); }, 4000);
-        // keep every highlighted sentence lit for the same time
-        setTimeout(function () {
-          Array.prototype.forEach.call(spans, function (sp) { sp.classList.remove('hl'); });
-        }, 4000);
+
+      var foot;
+      if (state.graded) {
+        var score = currentScore(), n = s.q.length, ratio = score / n, sib = siblings(), i = sib.indexOf(s);
+        var nextBtn = s.ai ? '<button type="button" class="btn red" data-next>' + esc(tr('rd_another')) + '</button>'
+          : i >= 0 && i < sib.length - 1 ? '<button type="button" class="btn red" data-next>' + esc(tr('rd_next')) + '</button>'
+          : '<button type="button" class="btn red" data-go="shelf">' + esc(tr('rr_back_shelf')) + '</button>';
+        foot = '<span class="result ' + (ratio === 1 ? 'great' : ratio >= .6 ? 'good' : 'low') + '"><span class="big">' + score + '/' + n + '</span>' +
+          esc(tr(ratio === 1 ? 'rd_msg_perfect' : ratio >= .6 ? 'rd_msg_good' : 'rd_msg_low')) + '</span>' +
+          '<button type="button" class="btn ghost" data-retry>' + esc(tr('rd_retry')) + '</button>' + nextBtn;
+      } else {
+        foot = '<button type="button" class="btn red" id="rr-check">' + (state.marking ? '<span class="spin"></span>' + esc(tr('rd_marking')) : esc(tr('rd_check'))) + '</button>' +
+          '<span class="note" id="rr-foot-note">' + esc(state.failKey ? tr(state.failKey) : tr(w ? 'rd_write_hint' : 'rr_pick_note')) + '</span>';
       }
+      $('rr-qfoot').innerHTML = foot;
+      paintCount();
+    }
+    function paintNowBest() {
+      var s = state.story, sm = document.querySelector('#rr-now .bestS');
+      if (sm) sm.textContent = fmt('rr_best', { b: saved.best[s.id] + ' / ' + s.q.length });
     }
 
     function grade() {
       if (state.graded || state.marking) return;
       harvestWritten();
+      if (answeredCount() < state.story.q.length) return;
       if (writeMode()) { gradeWritten(); return; }
       finishGrade(state.picks.filter(function (p) { return p === 0; }).length);
     }
 
-    // Shared tail of both modes: save the best score, tell Katsu about the
-    // misses, paint the result band.
+    // Shared tail of both modes: save the best score, tell Katsu about the misses.
     function finishGrade(score) {
       var s = state.story;
-      var total = s.q.length;
-      state.graded = true;
-
+      state.graded = true; state.failKey = null;
       var prev = saved.best[s.id];
       if (prev == null || score > prev) { saved.best[s.id] = score; persist(); }
-
-      // Hand the misses to Katsu so "what did I get wrong?" works from any page.
       if (window.KatsuMistakes) {
         s.q.forEach(function (q, qi) {
-          var mine_;
+          var a;
           if (writeMode()) {
             var mk = state.marks && state.marks[qi];
             if (mk && mk.verdict === 'ok') return;
-            mine_ = state.written[qi] || '';
+            a = state.written[qi] || '';
           } else {
             var p = state.picks[qi];
             if (p === 0) return;
-            mine_ = p == null ? '' : plainKanji(q.o[p]);
+            a = p == null ? '' : plainKanji(q.o[p]);
           }
-          window.KatsuMistakes.log({
-            q: plainKanji(q.q),
-            a: mine_,
-            c: plainKanji(q.o[0]),
-            note: s.level + ' 「' + plainKanji(s.title) + '」'
-          });
+          window.KatsuMistakes.log({ q: plainKanji(q.q), a: a, c: plainKanji(q.o[0]), note: s.level + ' 「' + plainKanji(s.title) + '」' });
         });
       }
       if (window.KA_Track) window.KA_Track.event('reading_complete_' + s.level.toLowerCase());
-
-      renderQuestions();
-      var res = $('rd-result');
-      var ratio = score / total;
-      res.className = 'rd-result show ' + (ratio === 1 ? 'great' : ratio >= 0.6 ? 'good' : 'low');
-      $('rd-result-score').textContent = score + ' / ' + total;
-      $('rd-result-msg').textContent = ratio === 1 ? tr('rd_msg_perfect') : ratio >= 0.6 ? tr('rd_msg_good') : tr('rd_msg_low');
-      res.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      paintSheet();
+      if (saved.best[s.id] != null) paintNowBest();
+      $('rr-qwrap').scrollTop = 0;
     }
 
-    // ── AI marking ─────────────────────────────────────────────────────────
     // One request for the whole set: the marker sees the passage, so it can
-    // accept an answer worded differently from the model one and reject one
-    // that only looks similar. A half-credit verdict exists because that is
-    // what a teacher would give, but it does not count toward the score.
+    // accept an answer worded differently from the model one.
     function buildMarkPrompt() {
       var s = state.story;
       var lang = (typeof explainLanguage === 'function') ? explainLanguage() : 'English';
@@ -1119,19 +662,16 @@
         '- note: one short sentence in ' + lang + '. For "ok", say what was right in a few words. ' +
         'For "part" and "no", say what is missing or wrong. Never longer than 20 words. ' +
         'If the Japanese has a mistake worth fixing, name it in the note even when the verdict is "ok".';
-
       var body = s.text.map(function (p) { return plainKanji(p); }).join('\n');
       var qs = s.q.map(function (q, i) {
         return (i + 1) + '. Question: ' + plainKanji(q.q) +
                '\n   Model answer: ' + plainKanji(q.o[0]) +
                '\n   Student wrote: ' + ((state.written[i] || '').trim() || '(blank)');
       }).join('\n');
-
       var user = 'Passage (' + s.level + '):\n' + body + '\n\nAnswers to mark:\n' + qs +
         '\n\nReturn the JSON object only, with exactly ' + s.q.length + ' marks.';
       return { system: system, user: user, maxTokens: 700 };
     }
-
     function parseMarks(text, n) {
       var s = String(text || '').replace(/```(?:json)?/g, '');
       var a = s.indexOf('{'), b = s.lastIndexOf('}');
@@ -1145,66 +685,100 @@
         return { verdict: v, note: String(m && m.note || '').slice(0, 200) };
       });
     }
-
     function gradeWritten() {
       var s = state.story;
-      state.marking = true;
-      $('rd-check').disabled = true;
-      $('rd-check').innerHTML = '<span class="rd-spin"></span>' + esc(tr('rd_marking'));
-
-      var p = buildMarkPrompt();
-      requestStory(p).then(function (text) {
+      state.marking = true; state.failKey = null;
+      paintSheet();
+      requestStory(buildMarkPrompt()).then(function (text) {
         return parseMarks(text, s.q.length);
       }).then(function (marks) {
         state.marking = false;
-        $('rd-check').textContent = tr('rd_check');
+        if (state.story !== s) return;
         state.marks = marks;
         finishGrade(marks.filter(function (m) { return m.verdict === 'ok'; }).length);
       }).catch(function (err) {
         state.marking = false;
         console.error('Reading marker:', err);
-        $('rd-check').textContent = tr('rd_check');
-        $('rd-check').disabled = false;
-        var res = $('rd-result');
-        res.className = 'rd-result show low';
-        $('rd-result-score').textContent = '—';
-        $('rd-result-msg').textContent = tr('rd_mark_fail');
+        if (state.story !== s) return;
+        state.failKey = 'rd_mark_fail';
+        paintSheet();
       });
     }
 
     function nextStory() {
-      if (state.story.ai) {
+      var s = state.story;
+      if (s.ai) {
         // An AI story's "next" is a fresh one at the same level.
-        var lv = state.story.level;
+        state.level = s.level; saved.level = s.level; persist();
         closeStory();
-        setLevel(lv);
-        $('rd-topic').value = '';
+        $('rr-topic').value = '';
         generate();
         return;
       }
-      var list = storiesAt(state.story.level);
-      var i = list.indexOf(state.story);
-      if (i >= 0 && i + 1 < list.length) openStory(list[i + 1].id);
+      var list = storiesAt(s.level), i = list.indexOf(s);
+      if (i >= 0 && i + 1 < list.length) switchTo(list[i + 1]);
       else {
-        var li = LEVELS.indexOf(state.story.level);
-        // Finished the level: go back to its list so the progress is visible.
         closeStory();
-        if (li >= 0 && typeof showToast === 'function') showToast(tr('rd_level_done'), 'success');
+        if (typeof showToast === 'function') showToast(tr('rd_level_done'), 'success');
       }
+    }
+
+    // ── rolling one scroll up and the other out ───────────────────────────
+    function roll(el, up, cb) {
+      el.classList.toggle('rolling-up', !!up);
+      el.classList.toggle('rolled', up);
+      setTimeout(function () { cb && cb(); }, reduced ? 0 : (up ? 720 : 900));
+    }
+    function show(view, then, stay) {
+      if (state.both || view === state.view) { then && then(); return; }
+      var from = view === 'quiz' ? $('rr-story') : $('rr-sheet'), to = view === 'quiz' ? $('rr-sheet') : $('rr-story');
+      state.view = view; progress();
+      roll(from, true, function () {
+        from.hidden = true; to.hidden = false;
+        to.classList.remove('rolling-up');
+        to.classList.add('noanim', 'rolled'); void to.offsetWidth; to.classList.remove('noanim');
+        requestAnimationFrame(function () { requestAnimationFrame(function () { roll(to, false, then); }); });
+        if (!stay) window.scrollTo({ top: $('rr-center').getBoundingClientRect().top + window.pageYOffset - 100, behavior: reduced ? 'auto' : 'smooth' });
+      });
+    }
+    function setBoth(on) {
+      state.both = on; $('rr-center').classList.toggle('both', on);
+      var st = $('rr-story'), sh = $('rr-sheet');
+      if (on) { st.hidden = sh.hidden = false; st.classList.remove('rolled'); sh.classList.remove('rolled'); $('rr-center').insertBefore(sh, st); }
+      else { $('rr-center').insertBefore(st, sh); var off = state.view === 'quiz' ? st : sh; off.hidden = true; off.classList.add('rolled'); }
+      paintRead();
+    }
+    // Previous / Next keep the page where it is
+    function switchTo(s) {
+      var y = window.pageYOffset;
+      var go = function () { openStory(s.id, { keep: true }); window.scrollTo(0, y); };
+      if (state.view === 'quiz' && !state.both) show('story', go, true); else go();
+    }
+
+    function evidence(qi) {
+      var ev = state.story.q[qi].ev, list = Array.isArray(ev) ? ev : [ev];
+      show('story', function () {
+        all('#rr-article .s.ev').forEach(function (e) { e.classList.remove('ev'); });
+        var first = null;
+        all('#rr-article .s').forEach(function (sp) {
+          if (list.indexOf(sp.getAttribute('data-src')) !== -1) { sp.classList.add('ev'); first = first || sp; }
+        });
+        if (first) first.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduced ? 'auto' : 'smooth' });
+        setTimeout(progress, 600);
+      });
     }
 
     // ======================= audio =======================
     function paintListen() {
-      $('rd-listen').textContent = state.speaking ? tr('rd_stop') : tr('rd_listen');
-      $('rd-listen').classList.toggle('on', state.speaking);
+      var b = $('rr-listen'); if (!b) return;
+      b.textContent = state.speaking ? tr('rd_stop') : tr('rd_listen');
+      b.classList.toggle('on', state.speaking);
     }
-
     function stopAudio() {
       if (window.KA_Voice) window.KA_Voice.stop();
       state.speaking = false;
-      if ($('rd-listen')) paintListen();
+      paintListen();
     }
-
     function toggleListen() {
       if (!window.KA_Voice || !state.story) return;
       if (state.speaking) { stopAudio(); return; }
@@ -1270,49 +844,30 @@
       'マリア', 'トム', 'リー', 'アンナ', 'カルロス', 'ソフィー', 'ミン', 'ルーカス'];
 
     function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-    function genToday() {
-      var d = new Date();
-      return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
-    }
+    function genToday() { var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
     function genUsed() {
-      try {
-        var g = JSON.parse(localStorage.getItem(GEN_COUNT_KEY) || 'null');
-        return (g && g.day === genToday()) ? (g.n || 0) : 0;
-      } catch (e) { return 0; }
+      try { var g = JSON.parse(localStorage.getItem(GEN_COUNT_KEY) || 'null'); return (g && g.day === genToday()) ? (g.n || 0) : 0; }
+      catch (e) { return 0; }
     }
-    function genBump() {
-      try { localStorage.setItem(GEN_COUNT_KEY, JSON.stringify({ day: genToday(), n: genUsed() + 1 })); } catch (e) {}
-    }
+    function genBump() { try { localStorage.setItem(GEN_COUNT_KEY, JSON.stringify({ day: genToday(), n: genUsed() + 1 })); } catch (e) {} }
 
+    var genErr = null;
     function paintGen(errKey, errDetail) {
-      $('rd-gen-sub').textContent = tr('rd_gen_sub').replace('{level}', state.level);
-      var btn = $('rd-gen-btn');
-      var left = Math.max(0, GEN_DAILY_LIMIT - genUsed());
-      if (generating) {
-        btn.disabled = true;
-        btn.innerHTML = '<span class="rd-spin"></span>' + esc(tr('rd_gen_busy'));
-      } else {
-        btn.disabled = left === 0;
-        btn.textContent = tr('rd_gen_btn');
-      }
-      var note = $('rd-gen-note');
-      if (errKey) {
-        note.className = 'rd-gen-note err';
-        note.textContent = tr(errKey) + (errDetail ? ' (' + errDetail + ')' : '');
-      } else {
-        note.className = 'rd-gen-note';
-        note.textContent = generating ? tr('rd_gen_wait') :
-          (left === 0 ? tr('rd_gen_limit') : tr('rd_gen_left').replace('{n}', left));
-      }
+      if (errKey !== undefined) genErr = errKey ? { k: errKey, d: errDetail } : null;
+      var btn = $('rr-create'), left = Math.max(0, GEN_DAILY_LIMIT - genUsed());
+      $('rr-cm').classList.toggle('busy', generating);
+      if (generating) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span>' + esc(tr('rd_gen_busy')); }
+      else { btn.disabled = left === 0 || !live(); btn.textContent = tr('rr_cm_btn'); }
+      var note = $('rr-cm-note');
+      note.classList.toggle('err', !!genErr);
+      note.textContent = genErr ? tr(genErr.k) + (genErr.d ? ' (' + genErr.d + ')' : '')
+        : generating ? tr('rd_gen_wait') : (left === 0 ? tr('rd_gen_limit') : fmt('rd_gen_left', { n: left }));
     }
 
     function buildGenPrompt(level, topic) {
       var spec = GEN_SPEC[level];
       var lang = (typeof explainLanguage === 'function') ? explainLanguage() : 'English';
-      var recent = mine.filter(function (s) { return s.level === level; }).slice(0, 8)
-        .map(function (s) { return plainKanji(s.title); });
-
+      var recent = mine.filter(function (s) { return s.level === level; }).slice(0, 8).map(function (s) { return plainKanji(s.title); });
       var system =
         'You write graded Japanese reading passages for learners on Katsuyō Academy. ' +
         'Reply with ONE JSON object and nothing else — no code fences, no commentary.\n' +
@@ -1329,7 +884,6 @@
         '- ev: copy, character for character with its brackets, the ONE complete sentence of the text that proves the answer, ending with 。 ！ or ？.\n' +
         '- vocab: 6–8 words from the text a learner at this level may not know. w: dictionary form in bracket notation. g: a short gloss in ' + lang + '.\n' +
         '- Content is kind, everyday or cultural, suitable for all ages. Invent the characters.';
-
       var user =
         'Level: JLPT ' + level + '.\n' +
         'Length: ' + spec.len + ' Japanese characters of text (not counting readings).\n' +
@@ -1340,7 +894,6 @@
         'Main character: ' + pick(GEN_NAMES) + '. Also: ' + pick(GEN_TWISTS) + '.\n' +
         (recent.length ? 'Make it clearly different from these earlier stories: ' + recent.join('、') + '.\n' : '') +
         'Return the JSON object only.';
-
       return { system: system, user: user, maxTokens: spec.tokens };
     }
 
@@ -1349,15 +902,12 @@
       var a = s.indexOf('{'), b = s.lastIndexOf('}');
       if (a === -1 || b <= a) throw new Error('no JSON');
       var d = JSON.parse(s.slice(a, b + 1));
-
       function str(x) { return typeof x === 'string' ? x.replace(/\s*\n\s*/g, '').trim() : ''; }
       var title = str(d.title);
       var paras = (Array.isArray(d.text) ? d.text : [d.text]).map(str).filter(Boolean);
       if (!title || !paras.length) throw new Error('missing text');
-
       var allSent = [];
       paras.forEach(function (p) { sentences(p).forEach(function (x) { allSent.push(x.trim()); }); });
-
       var qs = (Array.isArray(d.q) ? d.q : []).map(function (q) {
         if (!q) return null;
         var opts = (Array.isArray(q.o) ? q.o : []).map(str).filter(Boolean);
@@ -1371,23 +921,18 @@
         return { q: str(q.q), o: opts.slice(0, 4), ev: ev || undefined };
       }).filter(Boolean);
       if (qs.length < 3) throw new Error('too few questions');
-
       var lang = (typeof LANG === 'string') ? LANG : 'en';
       var vocab = (Array.isArray(d.vocab) ? d.vocab : []).map(function (v) {
         if (!v || !str(v.w)) return null;
         var g = {}; g[lang] = str(v.g); g._ = str(v.g);
         return { w: str(v.w), g: g };
       }).filter(Boolean).slice(0, 10);
-
-      return {
-        id: 'ai-' + Date.now().toString(36),
-        level: level, ai: true, created: Date.now(),
-        title: title, text: paras, vocab: vocab, q: qs.slice(0, 6)
-      };
+      return { id: 'ai-' + Date.now().toString(36), level: level, ai: true, created: Date.now(),
+        title: title, text: paras, vocab: vocab, q: qs.slice(0, 6) };
     }
 
     function requestStory(p) {
-      if (typeof VERCEL_BACKEND_URL !== 'string' || !VERCEL_BACKEND_URL) return Promise.reject(new Error('no backend'));
+      if (!live()) return Promise.reject(new Error('no backend'));
       return fetch(VERCEL_BACKEND_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1404,14 +949,12 @@
       if (generating) return;
       if (genUsed() >= GEN_DAILY_LIMIT) { paintGen('rd_gen_limit'); return; }
       var level = state.level;
-      var topic = $('rd-topic').value.trim().slice(0, 80);
+      var topic = $('rr-topic').value.trim().slice(0, 80);
       generating = true;
-      paintGen();
+      paintGen(null);
       genBump();
-
       var attempt = function (n) {
-        var p = buildGenPrompt(level, topic);
-        return requestStory(p).then(function (text) {
+        return requestStory(buildGenPrompt(level, topic)).then(function (text) {
           return parseStory(text, level);
         }).catch(function (err) {
           // One quiet retry for a malformed reply; network/server errors surface at once.
@@ -1419,15 +962,14 @@
           throw err;
         });
       };
-
       attempt(0).then(function (story) {
         generating = false;
         mine.unshift(story);
         mine = mine.slice(0, MINE_MAX);
         persistMine();
-        $('rd-topic').value = '';
+        $('rr-topic').value = '';
         if (window.KA_Track) window.KA_Track.event('reading_generate_' + level.toLowerCase());
-        paintGen();
+        paintGen(null);
         openStory(story.id);
       }).catch(function (err) {
         generating = false;
@@ -1441,78 +983,142 @@
     // Lets Katsu answer "what does this sentence mean?" about the open story.
     window.KatsuPageContext = function () {
       var s = state.story;
-      if (!s) return '';
+      if (!s || !state.reading) return '';
       var body = plainKanji(s.text.join('\n'));
       if (body.length > 1800) body = body.slice(0, 1800) + '…';
       var ctx = 'The student is reading the ' + s.level + ' story "' + plainKanji(s.title) +
-        '" on the Reading page. Story text:\n' + body +
+        '" on the Reading Room page. Story text:\n' + body +
         '\nHelp with vocabulary, grammar and meaning in this text when asked. ' +
         'Do not give away the answers to its comprehension questions before the student has checked them.';
-      if (state.graded) {
-        var sc = currentScore();
-        ctx += '\nThey have checked their answers and scored ' + sc + '/' + s.q.length + ', so explaining answers is fine now.';
-      }
+      if (state.graded) ctx += '\nThey have checked their answers and scored ' + currentScore() + '/' + s.q.length + ', so explaining answers is fine now.';
       return ctx;
     };
 
     // ======================= wiring =======================
     function fromHash() {
       var id = decodeURIComponent(location.hash.slice(1));
-      if (id && findStory(id)) openStory(id, true);
-      else if (state.story) closeStory(true);
+      if (id && findStory(id)) openStory(id, { fromHash: true });
+      else if (state.reading) closeStory(true);
     }
 
     window.refreshReadingI18n = function () {
-      renderLevels();
-      renderSettings();
-      if (state.story) {
-        renderStory();
-        if (state.graded) {
-          var s = state.story;
-          var score = currentScore();
-          var ratio = score / s.q.length;
-          $('rd-result-msg').textContent = ratio === 1 ? tr('rd_msg_perfect') : ratio >= 0.6 ? tr('rd_msg_good') : tr('rd_msg_low');
-        }
-      } else renderLibrary();
+      if (state.reading && state.story) paintRead(); else paintShelf();
+      placeKeys(state.reading ? 'read' : 'shelf');
     };
 
+    function onClick(e) {
+      var t = e.target;
+      if (!t.closest || !t.closest('.rr')) return;
+      var del = t.closest('[data-del]');
+      if (del) {
+        e.stopPropagation();
+        var id = del.getAttribute('data-del'), gone = findStory(id);
+        mine = mine.filter(function (x) { return x.id !== id; });
+        delete saved.best[id];
+        persistMine(); persist();
+        if (state.story === gone) state.story = null;
+        placeKeys('shelf'); paintShelf();
+        return;
+      }
+      var go = t.closest('[data-go]');
+      if (go && !go.disabled) {
+        var v = go.getAttribute('data-go');
+        if (v === 'read') { if (state.story && !state.reading) openStory(state.story.id); }
+        else if (state.reading) closeStory();
+        return;
+      }
+      var lv = t.closest('[data-lv]'); if (lv) { setShelf(lv.getAttribute('data-lv')); return; }
+      var op = t.closest('[data-open]'); if (op) { openStory(op.getAttribute('data-open')); return; }
+      var dr = t.closest('[data-dir]');
+      if (dr) { saved.dir = dr.getAttribute('data-dir'); persist(); paintRead(); $('rr-article').scrollTop = 0; $('rr-article').scrollLeft = 0; progress(); return; }
+      var m = t.closest('[data-mode]');
+      if (m) { saved.mode[m.getAttribute('data-lvl')] = m.getAttribute('data-mode'); persist(); if (state.reading) paintRead(); else paintShelf(); return; }
+      var an = t.closest('[data-ans]');
+      if (an) {
+        var lvl = an.getAttribute('data-lvl'), on = an.getAttribute('data-ans') === 'write';
+        if (on === !!saved.write[lvl] || state.marking) return;
+        if (state.reading) harvestWritten();
+        saved.write[lvl] = on; persist();
+        // picks and written answers live in separate arrays, so switching keeps both;
+        // only a finished grade is dropped, because it belongs to the mode it was given in
+        if (state.reading) { if (state.graded) resetAnswers(); state.failKey = null; paintSheet(); } else paintShelf();
+        return;
+      }
+      if (t.closest('#rr-fwd')) { unroll(1); return; }
+      if (t.closest('#rr-back')) { unroll(-1); return; }
+      if (t.closest('#rr-prev') || t.closest('#rr-next')) {
+        var sib = siblings(), i = sib.indexOf(state.story) + (t.closest('#rr-prev') ? -1 : 1);
+        if (sib[i]) switchTo(sib[i]);
+        return;
+      }
+      if (t.closest('[data-next]')) { nextStory(); return; }
+      if (t.closest('#rr-listen')) { toggleListen(); return; }
+      if (t.closest('#rr-toq')) { if (state.both) return; if (state.speaking) stopAudio(); show('quiz'); return; }
+      if (t.closest('#rr-tos')) { show('story'); return; }
+      if (t.closest('#rr-both')) { setBoth(!state.both); return; }
+      var o = t.closest('.ops button[data-o]');
+      if (o && !state.graded) { state.picks[+o.getAttribute('data-q')] = +o.getAttribute('data-o'); paintSheet(); return; }
+      if (t.closest('#rr-check')) { grade(); return; }
+      if (t.closest('[data-retry]')) {
+        resetAnswers(); state.failKey = null;
+        all('#rr-article .s.ev').forEach(function (x) { x.classList.remove('ev'); });
+        paintSheet(); $('rr-qwrap').scrollTop = 0; return;
+      }
+      var ev = t.closest('[data-ev]'); if (ev) { evidence(+ev.getAttribute('data-ev')); return; }
+      var v2 = t.closest('[data-v]'); if (v2 && state.story) { var w = state.story.vocab[+v2.getAttribute('data-v')]; if (w) say(plainReading(w.w).replace(/ /g, '')); return; }
+      if (t.closest('#rr-dice')) {
+        var d = $('rr-dice'), box = $('rr-topic'), had = box.value.trim(), nx;
+        do { nx = pick(GEN_TOPICS); } while (nx === had);
+        box.value = nx;
+        d.classList.remove('roll2'); void d.offsetWidth; d.classList.add('roll2');
+        try { box.focus(); box.setSelectionRange(nx.length, nx.length); } catch (e2) {}
+        return;
+      }
+      if (t.closest('#rr-create')) { generate(); return; }
+    }
+
     function init() {
-      $('rd-gen-btn').onclick = function () { generate(); };
-      $('rd-topic').addEventListener('keydown', function (e) { if (e.key === 'Enter') generate(); });
-      // The die fills the box rather than firing a request: you see the topic
-      // you are about to spend a story on, and can edit or re-roll it first.
-      $('rd-dice').onclick = function () {
-        var box = $('rd-topic'), had = box.value.trim(), next = pick(GEN_TOPICS);
-        while (next === had) next = pick(GEN_TOPICS);
-        box.value = next;
-        try { box.focus(); box.setSelectionRange(next.length, next.length); } catch (e) {}
-      };
-      Array.prototype.forEach.call(document.querySelectorAll('#rd-qmode button'), function (b) {
-        b.onclick = function () {
-          if (!state.story || state.marking) return;
-          setWriteMode(b.getAttribute('data-m') === 'write');
-        };
+      document.addEventListener('click', onClick);
+      document.addEventListener('keydown', function (e) {
+        var tg = e.target;
+        if ((e.key === 'Enter' || e.key === ' ') && tg.matches && tg.matches('.rr [data-del], .rr .wl')) { e.preventDefault(); tg.click(); return; }
+        if (tg.id === 'rr-topic' && e.key === 'Enter') { generate(); return; }
+        if (/INPUT|TEXTAREA|SELECT/.test(tg.tagName) || !state.reading) return;
+        if (e.key === 'ArrowLeft' && state.view === 'story') { e.preventDefault(); unroll(1); }
+        if (e.key === 'ArrowRight' && state.view === 'story') { e.preventDefault(); unroll(-1); }
       });
-      $('rd-back').onclick = function () { closeStory(); };
-      $('rd-gear').onclick = function () {
-        saved.panel = !saved.panel;
-        persist();
-        renderSettings();
-      };
-      $('rd-check').onclick = grade;
-      $('rd-retry').onclick = function () { resetAnswers(); renderQuestions(); window.scrollTo({ top: $('rd-text').offsetTop - 90, behavior: 'smooth' }); };
-      $('rd-next').onclick = nextStory;
-      $('rd-listen').onclick = toggleListen;
-      $('rd-words-btn').onclick = function () {
-        var on = !$('rd-vocab').classList.contains('show');
-        $('rd-vocab').classList.toggle('show', on);
-        this.classList.toggle('on', on);
-      };
+      var art = $('rr-article');
+      art.addEventListener('scroll', progress, { passive: true });
+      // a mouse wheel unrolls a vertical scroll sideways
+      art.addEventListener('wheel', function (e) {
+        if (saved.dir === 'yoko' || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+        var before = art.scrollLeft; art.scrollLeft -= e.deltaY; if (art.scrollLeft !== before) e.preventDefault();
+      }, { passive: false });
+      var drag = null;
+      art.addEventListener('mousedown', function (e) { if (saved.dir === 'yoko' || e.target.closest('.v,button')) return; drag = { x: e.clientX, l: art.scrollLeft }; art.style.cursor = 'grabbing'; });
+      window.addEventListener('mousemove', function (e) { if (drag) art.scrollLeft = drag.l - (e.clientX - drag.x); });
+      window.addEventListener('mouseup', function () { drag = null; art.style.cursor = ''; });
+      window.addEventListener('resize', progress);
+      // hovering a word in the list lights it up in the text; hovering it in the text shows its meaning
+      document.addEventListener('mouseover', function (e) {
+        if (!e.target.closest) return;
+        var w = e.target.closest('.rr .wl');
+        all('#rr-article .v.lit').forEach(function (x) { x.classList.remove('lit'); });
+        if (w) all('#rr-article .v[data-v="' + w.getAttribute('data-v') + '"]').forEach(function (x) { x.classList.add('lit'); });
+        var v = e.target.closest('#rr-article .v'), g = $('rr-gloss');
+        if (!v || drag || !state.story) { g.hidden = true; return; }
+        var voc = state.story.vocab[+v.getAttribute('data-v')];
+        if (!voc) { g.hidden = true; return; }
+        g.innerHTML = '<b>' + esc(plainKanji(voc.w).replace(/ /g, '')) + '</b><small>' + esc(plainKana(voc.w)) + '</small><br>' + esc(gloss(voc)) +
+          '<br><span class="tap">' + esc(tr('rr_tap')) + '</span>';
+        var r = v.getBoundingClientRect(); g.hidden = false;
+        g.style.left = Math.max(8, Math.min(window.innerWidth - 250, r.right + 8)) + 'px';
+        g.style.top = Math.max(80, r.top - 10) + 'px';
+      });
       window.addEventListener('popstate', fromHash);
       window.addEventListener('hashchange', fromHash);
-      renderLevels();
-      renderSettings();
-      renderLibrary();
+      if (saved.shelf !== 'mine') state.level = saved.shelf;
+      setView('shelf', true);
       fromHash();
     }
 
