@@ -486,3 +486,14 @@
 @media (max-width:600px){.rr-page{padding-top:100px}
 .rr .stage{min-height:calc(100vh - 100px)}}
 @media (max-width:900px){.rr .hand{height:max(560px,calc(100vh - 110px))}}
+.rr .clip{position:absolute;inset:0;overflow:hidden;transform:translate3d(0,0,0);transition:transform var(--dur) var(--ease);will-change:transform;border-radius:2px}
+.rr .clip > .doc{clip-path:none!important;transform:translate3d(0,0,0);transition:transform var(--dur) var(--ease);will-change:transform}
+.rr .hand.rolled .clip{transform:translate3d(100%,0,0)}
+.rr .hand.rolled .clip > .doc{transform:translate3d(-100%,0,0)}
+.rr .shade{clip-path:none!important;transform-origin:100% 50%;transform:scaleX(1);transition:transform var(--dur) var(--ease),opacity var(--dur) var(--ease);will-change:transform}
+.rr .hand.rolled .shade{transform:scaleX(0);opacity:0}
+.rr .hand.noanim .clip,.rr .hand.noanim .clip > .doc{transition:none}
+.rr .article{will-change:transform;overscroll-behavior:contain}
+@media (prefers-reduced-motion:reduce){.rr .clip,.rr .clip > .doc,.rr .shade{transition:none!important}}
+.rr .bar2 i{width:100%!important;transform:scaleX(0);transform-origin:100% 50%;transition:transform .15s}
+.rr .article.yoko ~ .prog .bar2 i{transform-origin:0 50%}

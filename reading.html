@@ -95,17 +95,17 @@
           <div class="pn"><button type="button" id="rr-prev"></button><button type="button" id="rr-next"></button></div>
         </div>
         <div class="center" id="rr-center">
-          <div class="hand story" id="rr-story"><div class="doc">
+          <div class="hand story" id="rr-story"><div class="clip"><div class="doc">
             <div class="strip"><span class="metaL"><span class="lvseal" id="rr-seal"></span><span id="rr-meta"></span></span>
               <span class="tools"><span class="seg" id="rr-dir"></span><span class="seg" id="rr-modes"></span><button class="btn ghost" type="button" id="rr-listen"></button><button class="btn ghost bothB" type="button" id="rr-both"></button><button class="btn red" type="button" id="rr-toq"></button></span></div>
             <div class="article jp" id="rr-article"></div>
             <div class="prog"><span class="hint" id="rr-hint"></span><span class="bar2"><i id="rr-bar"></i></span><span id="rr-pct">0%</span></div>
-          </div><span class="rod r"><button type="button" id="rr-back" aria-label="Back">›</button></span><span class="rl"><i class="curl"></i><span class="rod l"><button type="button" id="rr-fwd" aria-label="Read on">‹</button></span></span><span class="shade"></span></div>
-          <div class="hand sheet rolled" id="rr-sheet" hidden><div class="doc">
+          </div></div><span class="rod r"><button type="button" id="rr-back" aria-label="Back">›</button></span><span class="rl"><i class="curl"></i><span class="rod l"><button type="button" id="rr-fwd" aria-label="Read on">‹</button></span></span><span class="shade"></span></div>
+          <div class="hand sheet rolled" id="rr-sheet" hidden><div class="clip"><div class="doc">
             <div class="strip"><button class="btn ghost" type="button" id="rr-tos"></button><span class="tools"><span class="seg" id="rr-ans"></span></span></div>
             <div class="qwrap" id="rr-qwrap"><h4><span>問題 · <span data-i18n="rd_questions">Questions</span></span> <small id="rr-qn"></small></h4><p class="whint" id="rr-whint" hidden data-i18n="rd_write_hint">Answer in Japanese in your own words — Katsu marks what you write.</p><div class="qs" id="rr-qs"></div></div>
             <div class="qfoot" id="rr-qfoot"></div>
-          </div><span class="rod r"></span><span class="rl"><i class="curl"></i><span class="rod l"></span></span><span class="shade"></span></div>
+          </div></div><span class="rod r"></span><span class="rl"><i class="curl"></i><span class="rod l"></span></span><span class="shade"></span></div>
         </div>
         <div class="side"><div class="panel"><h5 data-i18n="rr_words_h">📖 WORDS ON THIS SCROLL · TAP TO HEAR</h5><div class="wbox" id="rr-wbox"></div></div></div>
       </section>
@@ -443,14 +443,22 @@
       progress();
     }
 
+    // Scroll events come faster than frames; measure once per frame, and only
+    // touch the page when something visible actually changed.
+    var progQueued = false, progLast = '';
+    function progressSoon() { if (progQueued) return; progQueued = true; requestAnimationFrame(function () { progQueued = false; progress(); }); }
     function progress() {
       if (!state.story) return;
       var a = $('rr-article'), yoko = saved.dir === 'yoko';
       var max = yoko ? Math.max(0, a.scrollHeight - a.clientHeight) : Math.max(0, a.scrollWidth - a.clientWidth);
       var p = max ? Math.min(1, Math.abs(yoko ? a.scrollTop : a.scrollLeft) / max) : 1;
-      $('rr-bar').style.width = (p * 100).toFixed(1) + '%'; $('rr-pct').textContent = Math.round(p * 100) + '%';
-      $('rr-fwd').disabled = p >= .995; $('rr-back').disabled = p <= .005;
       var fits = max < 4, done = !fits && p >= .98;
+      $('rr-bar').style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      var key = [Math.round(p * 100), p >= .995, p <= .005, fits, done, yoko, state.view, state.both].join();
+      if (key === progLast) return;
+      progLast = key;
+      $('rr-pct').textContent = Math.round(p * 100) + '%';
+      $('rr-fwd').disabled = p >= .995; $('rr-back').disabled = p <= .005;
       document.querySelector('.rr .prog').classList.toggle('fits', fits);
       $('rr-fwd').style.visibility = $('rr-back').style.visibility = (fits || yoko) ? 'hidden' : '';
       $('rr-hint').textContent = done ? tr('rr_end') : tr(yoko ? 'rr_hint_yoko' : 'rr_hint_tate');
@@ -1088,7 +1096,7 @@
         if (e.key === 'ArrowRight' && state.view === 'story') { e.preventDefault(); unroll(-1); }
       });
       var art = $('rr-article');
-      art.addEventListener('scroll', progress, { passive: true });
+      art.addEventListener('scroll', progressSoon, { passive: true });
       // a mouse wheel unrolls a vertical scroll sideways
       art.addEventListener('wheel', function (e) {
         if (saved.dir === 'yoko' || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
@@ -1098,7 +1106,7 @@
       art.addEventListener('mousedown', function (e) { if (saved.dir === 'yoko' || e.target.closest('.v,button')) return; drag = { x: e.clientX, l: art.scrollLeft }; art.style.cursor = 'grabbing'; });
       window.addEventListener('mousemove', function (e) { if (drag) art.scrollLeft = drag.l - (e.clientX - drag.x); });
       window.addEventListener('mouseup', function () { drag = null; art.style.cursor = ''; });
-      window.addEventListener('resize', progress);
+      window.addEventListener('resize', progressSoon);
       // hovering a word in the list lights it up in the text; hovering it in the text shows its meaning
       document.addEventListener('mouseover', function (e) {
         if (!e.target.closest) return;
