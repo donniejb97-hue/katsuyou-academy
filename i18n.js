@@ -173,7 +173,7 @@ var I18N = {
     kn_dakuten_d:"Add two dots <span class=\"jp\" style=\"font-size: 1.3rem;\">゛</span> (dakuten) to voice consonants (K→G, S→Z, T→D, H→B), or a circle <span class=\"jp\" style=\"font-size: 1.3rem;\">゜</span> (handakuten) for H→P",
     nav_privacy:'Privacy', footer_tag:'Free, and built by one learner.',
     nav_home:'Home', nav_kana:'Kana', nav_learn:'Learn', nav_group_learn:'Learn', nav_group_vocab:'Words', nav_group_practice:'Practice', nav_counters:'Counters', nav_dictionary:'Dictionary', nav_deconjugator:'Rewind', nav_new:'New', nav_adjectives:'Adjectives', nav_reference:'Reference', nav_conjugation:'Conjugation', nav_forms:'Forms', nav_verbs:'Verbs',
-    nav_conjugator:'活用 TV', nav_kana_drill:"Kaiten Kana", nav_kanji_drill:'Kanji Kitchen', nav_talk:'Talk', nav_reading:'Reading',
+    nav_conjugator:'活用 TV', nav_kana_drill:"Kaiten Kana", nav_kanji_drill:'Kanji Kitchen', nav_talk:'Talk', nav_reading:'Reading Room',
     nav_dates:'Dates', nav_vocab:"Night Owl",
     nav_vocab_quiz:"Night Shift",
     vq_show:'Show me',
@@ -1179,7 +1179,7 @@ var I18N = {
     kn_dakuten_d:"Zwei Striche <span class=\"jp\" style=\"font-size: 1.3rem;\">゛</span> (Dakuten) machen Konsonanten stimmhaft (K→G, S→Z, T→D, H→B), ein Kreis <span class=\"jp\" style=\"font-size: 1.3rem;\">゜</span> (Handakuten) steht für H→P",
     nav_privacy:'Datenschutz', footer_tag:'Kostenlos, gebaut von einem Lernenden.',
     nav_home:'Start', nav_kana:'Kana', nav_learn:'Lernen', nav_group_learn:'Lernen', nav_group_vocab:'Wörter', nav_group_practice:'Üben', nav_counters:'Zählwörter', nav_dictionary:'Wörterbuch', nav_deconjugator:'Rückspulen', nav_new:'Neu', nav_adjectives:'Adjektive', nav_reference:'Referenz', nav_conjugation:'Konjugation', nav_forms:'Formen', nav_verbs:'Verben',
-    nav_conjugator:'活用 TV', nav_kana_drill:"Kaiten Kana", nav_kanji_drill:'Kanji Kitchen', nav_talk:'Gespräch', nav_reading:'Lesen',
+    nav_conjugator:'活用 TV', nav_kana_drill:"Kaiten Kana", nav_kanji_drill:'Kanji Kitchen', nav_talk:'Gespräch', nav_reading:'Lesesaal',
     nav_dates:'Datum', nav_vocab:"Night Owl",
     nav_vocab_quiz:"Night Shift",
     vq_show:'Zeig mir',
@@ -2176,7 +2176,7 @@ var I18N = {
     kn_dakuten_d:"Deux traits <span class=\"jp\" style=\"font-size: 1.3rem;\">゛</span> (dakuten) sonorisent les consonnes (K→G, S→Z, T→D, H→B) ; un rond <span class=\"jp\" style=\"font-size: 1.3rem;\">゜</span> (handakuten) donne H→P",
     nav_privacy:'Confidentialité', footer_tag:'Gratuit, conçu par un apprenant.',
     nav_home:'Accueil', nav_kana:'Kana', nav_learn:'Apprendre', nav_group_learn:'Cours', nav_group_vocab:'Mots', nav_group_practice:'Pratique', nav_counters:'Compteurs', nav_dictionary:'Lexique', nav_deconjugator:'Rembobiner', nav_new:'Nouveau', nav_adjectives:'Adjectifs', nav_reference:'Référence', nav_conjugation:'Conjugaison', nav_forms:'Formes', nav_verbs:'Verbes',
-    nav_conjugator:'活用 TV', nav_kana_drill:"Kaiten Kana", nav_kanji_drill:'Kanji Kitchen', nav_talk:'Parler', nav_reading:'Lecture',
+    nav_conjugator:'活用 TV', nav_kana_drill:"Kaiten Kana", nav_kanji_drill:'Kanji Kitchen', nav_talk:'Parler', nav_reading:'Salle de lecture',
     nav_dates:'Dates', nav_vocab:"Night Owl",
     nav_vocab_quiz:"Night Shift",
     vq_show:'Montre-moi',
@@ -3173,7 +3173,7 @@ var I18N = {
     kn_dakuten_d:"加两点 <span class=\"jp\" style=\"font-size: 1.3rem;\">゛</span>（浊点）使辅音浊化（K→G、S→Z、T→D、H→B），加一个圈 <span class=\"jp\" style=\"font-size: 1.3rem;\">゜</span>（半浊点）则是 H→P",
     nav_privacy:'隐私', footer_tag:'免费，由一位学习者打造。',
     nav_home:'首页', nav_kana:'假名', nav_learn:'学习', nav_group_learn:'学习', nav_group_vocab:'词汇', nav_group_practice:'练习', nav_counters:'量词', nav_dictionary:'词典', nav_deconjugator:'逆推', nav_new:'新', nav_adjectives:'形容词', nav_reference:'语法参考', nav_conjugation:'动词变形', nav_forms:'形式', nav_verbs:'动词',
-    nav_conjugator:'活用 TV', nav_kana_drill:"回转假名", nav_kanji_drill:'Kanji Kitchen', nav_talk:'对话', nav_reading:'阅读',
+    nav_conjugator:'活用 TV', nav_kana_drill:"回转假名", nav_kanji_drill:'Kanji Kitchen', nav_talk:'对话', nav_reading:'阅览室',
     nav_dates:'日期', nav_vocab:"Night Owl",
     nav_vocab_quiz:"Night Shift",
     vq_show:'给我看',
@@ -4171,7 +4171,7 @@ var I18N = {
     kn_dakuten_d:"点を二つ <span class=\"jp\" style=\"font-size: 1.3rem;\">゛</span>（濁点）つけると子音が濁り（K→G・S→Z・T→D・H→B）、丸 <span class=\"jp\" style=\"font-size: 1.3rem;\">゜</span>（半濁点）をつけると H→P になります",
     nav_privacy:'プライバシー', footer_tag:'無料です。学習者がひとりで作りました。',
     nav_home:'ホーム', nav_kana:'かな', nav_learn:'学習', nav_group_learn:'学ぶ', nav_group_vocab:'単語', nav_group_practice:'練習', nav_counters:'助数詞', nav_dictionary:'辞書', nav_deconjugator:'逆引き', nav_new:'新', nav_adjectives:'形容詞', nav_reference:'資料', nav_conjugation:'活用', nav_forms:'活用形', nav_verbs:'動詞',
-    nav_conjugator:'活用 TV', nav_kana_drill:"回転かな", nav_kanji_drill:'Kanji Kitchen', nav_talk:'会話', nav_reading:'読解',
+    nav_conjugator:'活用 TV', nav_kana_drill:"回転かな", nav_kanji_drill:'Kanji Kitchen', nav_talk:'会話', nav_reading:'読書室',
     nav_dates:'日付', nav_vocab:"Night Owl",
     nav_vocab_quiz:"Night Shift",
     vq_show:'答えを見る',
@@ -5207,6 +5207,8 @@ function setLang(lang) {
        at 1200px, so with the full set of links the row cannot fit at any viewport
        width — without this the last links (Kanji, Contact) run off the edge. */
     '.nav-links{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}',
+    /* a little more room for the bar on desktop (the Reading Room label is longer) */
+    '@media (min-width:601px){.nav-inner{max-width:1320px;gap:2rem;}}',
     '.nav-links::-webkit-scrollbar{display:none;}',
     /* the switch rides along on the right; it needs the bar colour behind it so
        links don't show through as they scroll underneath */
