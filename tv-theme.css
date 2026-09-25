@@ -324,3 +324,7 @@ body:has(.tv-page) { background: var(--tv-bg, #140f0c); }
   background: #fff; border: 1.5px solid #3b82f6; color: #1e40af; font: 700 .85rem 'Outfit', sans-serif; transition: background .15s; }
 .conju-explain-btn:hover, .conju-explain-btn:focus-visible { background: #eff6ff; outline: none; }
 .tv-page .feedback-explanation:has(> .conju-explain-btn:only-child) { border-top: 0; padding-top: .4rem; margin-top: .4rem; }
+
+/* the word always fits the glass (Rewind's own <style> sizes .dj-word, so this needs the extra class) */
+.tv-scr .tv-word { font-size: min(calc(var(--u) * var(--vs, 15)), calc(var(--u) * 84 / var(--len, 3))); line-height: 1.15; }
+@media (max-width: 700px) { .tv-below { padding-bottom: 110px; } }   /* room to scroll the settings above Katsu's button */

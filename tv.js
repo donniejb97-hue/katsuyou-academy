@@ -145,8 +145,8 @@
       '<div class="tt-bar">' + esc(ct('howto_label', 'How it works')) + '</div>' +
       '<div class="tt-body"><span class="tt-n">' + (helpAt + 1) + '</span> ' + pages[helpAt] + '</div>' +
       '<div class="tt-keys">' +
-        '<button type="button" class="tt-red" data-tt="-1"' + (helpAt ? '' : ' disabled') + '>◀ ' + esc(ct('tv_help_prev', 'prev')) + '</button>' +
-        '<button type="button" class="tt-green" data-tt="1"' + (helpAt < n - 1 ? '' : ' disabled') + '>' + esc(ct('tv_help_next', 'next')) + ' ▶</button>' +
+        '<button type="button" class="tt-red" data-tt="-1"' + (helpAt ? '' : ' disabled') + '>◀︎ ' + esc(ct('tv_help_prev', 'prev')) + '</button>' +
+        '<button type="button" class="tt-green" data-tt="1"' + (helpAt < n - 1 ? '' : ' disabled') + '>' + esc(ct('tv_help_next', 'next')) + ' ▶︎</button>' +
         '<button type="button" class="tt-yellow" data-tt="0">' + esc(ct('tv_help_back', 'back to the show')) + '</button>' +
       '</div>';
   }
@@ -222,10 +222,10 @@
   function paintAll() {
     paintLamps(results, goal());
     var uniq = misses.length;
-    paintSend($('tv-send'), uniq, 'tv_send_rew', '◀◀ Rewind your misses ({n})');
+    paintSend($('tv-send'), uniq, 'tv_send_rew', '◀︎◀︎ Rewind your misses ({n})');
     var left = (queue ? queue.items.length : 0) + (onTape ? 1 : 0);
     var osd = $('tv-osd-r');
-    if (osd) osd.textContent = left ? '◀◀ ' + ct('tv_tape', 'tape') + ' · ' + left : '▶ ' + ct('tv_onair', 'ON AIR');
+    if (osd) osd.textContent = left ? '◀︎◀︎ ' + ct('tv_tape', 'tape') + ' · ' + left : '▶︎ ' + ct('tv_onair', 'ON AIR');
     paintQueue(left ? { items: new Array(left) } : null, 'tv_from_rew', 'Tape from Rewind: your misses — {n} to go', function () {
       queue = null; onTape = false; paintAll(); generateNewQuestion();
     });
@@ -301,7 +301,7 @@
       if (acts && misses.length) {
         var b = document.createElement('button');
         b.type = 'button'; b.className = 'skip-btn'; b.style.margin = '0';
-        b.textContent = ct('tv_send_rew', '◀◀ Rewind your misses ({n})').replace('{n}', misses.length);
+        b.textContent = ct('tv_send_rew', '◀︎◀︎ Rewind your misses ({n})').replace('{n}', misses.length);
         b.onclick = sendMisses;
         acts.appendChild(b);
       }

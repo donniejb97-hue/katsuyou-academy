@@ -61,14 +61,14 @@
     <!-- the page name, and the way across: PLAY is 活用 TV, REW is Rewind -->
     <nav class="tv-keys" aria-label="活用 TV / Rewind">
       <h1 class="tv-sr" data-i18n="conj_title">活用 TV</h1>
-      <a class="tv-key on" href="/conjugator" aria-current="page"><span class="led"></span><span><small>▶ PLAY · 活用</small><span class="jp">活用</span> TV</span></a>
-      <a class="tv-key" href="/deconjugator"><span class="led"></span><span><small>◀◀ REW · 逆活用</small>Rewind</span></a>
+      <a class="tv-key on" href="/conjugator" aria-current="page"><span class="led"></span><span><small>▶︎ PLAY · 活用</small><span class="jp">活用</span> TV</span></a>
+      <a class="tv-key" href="/deconjugator"><span class="led"></span><span><small>◀︎◀︎ REW · 逆活用</small>Rewind</span></a>
     </nav>
 
     <!-- the room; the question is drawn onto the TV's screen -->
     <div class="tv-room" aria-hidden="false">
       <div class="tv-scr" id="tv-scr">
-        <div class="tv-osd"><span id="verb-type" class="verb-type">Godan Verb</span><span id="tv-osd-r">▶ ON AIR</span></div>
+        <div class="tv-osd"><span id="verb-type" class="verb-type">Godan Verb</span><span id="tv-osd-r">▶︎ ON AIR</span></div>
         <div class="question-badges tv-badges">
           <!-- shown when the Dictionary handed this page a verb to stay on -->
           <span id="lock-badge" class="q-badge" style="display: none;">
@@ -113,7 +113,7 @@
         <div class="tv-remote">
           <button id="check-btn" class="check-btn primary" onclick="checkAnswer()" disabled>Check Answer</button>
           <button id="skip-btn" class="skip-btn" onclick="skipQuestion()" data-i18n="tv_show">Show me</button>
-          <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="tv_next">Next ▶</button>
+          <button id="next-btn" class="check-btn next" onclick="generateNewQuestion()" data-i18n="tv_next">Next ▶︎</button>
         </div>
 
         <div class="tv-status">

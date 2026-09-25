@@ -149,14 +149,14 @@
     <!-- the page name, and the way across: PLAY is 活用 TV, REW is Rewind -->
     <nav class="tv-keys" aria-label="活用 TV / Rewind">
       <h1 class="tv-sr" data-i18n="dj_title">Rewind</h1>
-      <a class="tv-key" href="/conjugator"><span class="led"></span><span><small>▶ PLAY · 活用</small><span class="jp">活用</span> TV</span></a>
-      <a class="tv-key on" href="/deconjugator" aria-current="page"><span class="led"></span><span><small>◀◀ REW · 逆活用</small>Rewind</span></a>
+      <a class="tv-key" href="/conjugator"><span class="led"></span><span><small>▶︎ PLAY · 活用</small><span class="jp">活用</span> TV</span></a>
+      <a class="tv-key on" href="/deconjugator" aria-current="page"><span class="led"></span><span><small>◀︎◀︎ REW · 逆活用</small>Rewind</span></a>
     </nav>
 
     <!-- the room; the tape plays on the TV's screen -->
     <div class="tv-room">
       <div class="tv-scr" id="tv-scr">
-        <div class="tv-osd"><span>◀◀ REW</span><span id="tv-osd-r"></span></div>
+        <div class="tv-osd"><span>◀︎◀︎ REW</span><span id="tv-osd-r"></span></div>
         <div class="dj-badges" id="dj-badges"></div>
         <div class="dj-word tv-word jp" id="dj-word">…</div>
         <div class="dj-prompt tv-sub" data-i18n="dj_ask">What is the dictionary form?</div>
@@ -179,9 +179,9 @@
       </div>
 
       <div class="tv-remote">
-        <button type="button" id="dj-check" class="check-btn primary" data-i18n="vhs_check">◀◀ Rewind</button>
+        <button type="button" id="dj-check" class="check-btn primary" data-i18n="vhs_check">◀︎◀︎ Rewind</button>
         <button type="button" id="dj-skip" class="skip-btn" data-i18n="tv_show">Show me</button>
-        <button type="button" id="dj-next" class="check-btn next" style="display:none" data-i18n="tv_next">Next ▶</button>
+        <button type="button" id="dj-next" class="check-btn next" style="display:none" data-i18n="tv_next">Next ▶︎</button>
       </div>
 
       <div class="tv-status">
@@ -693,7 +693,7 @@
     function goal(){ return parseInt(val('dj-goal'), 10) || 0; }
     function progress() {
       var g = goal();
-      $('dj-progress').textContent = g ? inRound + ' / ' + g : '◀◀ ' + inRound;
+      $('dj-progress').textContent = g ? inRound + ' / ' + g : '◀︎◀︎ ' + inRound;
     }
     function roundCheck() {
       var g = goal();
@@ -705,7 +705,7 @@
         inRound + ' ' + tr('dj_asked', 'asked') + ', ' + pct + '% ' +
         tr('dj_overall', 'correct overall') + '.' +
         (misses.length ? '<div class="summary-actions"><button type="button" class="skip-btn" id="dj-sum-send" style="margin:0">' +
-          esc(tr('vhs_send_tv', '▶ Practise your misses in 活用 TV ({n})').replace('{n}', misses.length)) + '</button></div>' : '');
+          esc(tr('vhs_send_tv', '▶︎ Practise your misses in 活用 TV ({n})').replace('{n}', misses.length)) + '</button></div>' : '');
       var ss = $('dj-sum-send'); if (ss) ss.onclick = sendMisses;
       inRound = 0; results = [];
     }
@@ -762,9 +762,9 @@
     function paintTv() {
       if (!TV) return;
       TV.paintLamps(results, goal() || 10);
-      TV.paintSend($('tv-send'), misses.length, 'vhs_send_tv', '▶ Practise your misses in 活用 TV ({n})');
+      TV.paintSend($('tv-send'), misses.length, 'vhs_send_tv', '▶︎ Practise your misses in 活用 TV ({n})');
       var left = queue && queue.items ? queue.items.length + (cur && cur.fromTv ? 1 : 0) : (cur && cur.fromTv ? 1 : 0);
-      $('tv-osd-r').textContent = cur && cur.fromTv ? '▶ ' + tr('vhs_from_tv_osd', 'from 活用 TV') : '';
+      $('tv-osd-r').textContent = cur && cur.fromTv ? '▶︎ ' + tr('vhs_from_tv_osd', 'from 活用 TV') : '';
       TV.paintQueue(left ? { items: new Array(left) } : null, 'vhs_from_tv', 'Rewinding your misses from 活用 TV — {n} to go', function () {
         queue = null; if (cur) cur.fromTv = false; next();
       });
