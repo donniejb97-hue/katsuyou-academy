@@ -30,7 +30,11 @@
       K_LASTN = 'katsuyo-acct-lastn',    // kanji count when the button last glowed
       K_META = 'katsuyo-acct-meta',      // { uid, keys: { key: { h, t } } }
       K_SYNC = 'katsuyo-acct-synced',    // last good sync, ms
-      K_FLOW = 'katsuyo-acct-flow';      // what to do after an email link: { key: true }
+      K_FLOW = 'katsuyo-acct-flow',      // what to do after an email link: { key: true }
+      K_BACKUP = 'katsuyo-acct-backup',  // this computer before it was combined: { at, uid, data, n }
+      K_COMBINED = 'katsuyo-acct-combined', // accounts this computer's own progress was already added to: [uid]
+      K_BUSY = 'katsuyo-acct-combining'; // set while combining, so other tabs hold off syncing
+  var BACKUP_DAYS = 30;
 
   // What counts as progress: everything the site keeps under its own names.
   var TRACK = /^(katsu|ka_|kanji|talk)/i;
@@ -150,6 +154,7 @@
     opts = opts || {};
     var u = me(); if (!u) return Promise.resolve(false);
     if (pushing) return pushing;
+    if (Date.now() - (+get(K_BUSY) || 0) < 90000) return Promise.resolve(false);   // another tab is combining
     var changes = scan(u.id);
     if (!Object.keys(changes).length && !opts.pull) return Promise.resolve(false);
     pushing = api('progress-put', { changes: changes, __keepalive: !!opts.keepalive }).then(function (r) {
@@ -200,6 +205,151 @@
     }
   }
 
+  // ---------------------------------------------------------------- combining
+  // The first time a computer that already has its own progress signs in to an
+  // account that also has progress, the two are added together instead of the
+  // account's copy replacing this one. Settings stay as the account has them.
+  // Before anything changes, this computer's copy is kept as a backup.
+  function jp_(s, d) { try { var v = JSON.parse(s); return v == null ? d : v; } catch (e) { return d; } }
+  function num(x) { return +x || 0; }
+  function byId(a, b, one) {          // per-entry maps: keep entries from both, `one` joins an entry both have
+    var A = jp_(a, {}), B = jp_(b, {}), out = {};
+    Object.keys(A).forEach(function (k) { out[k] = A[k]; });
+    Object.keys(B).forEach(function (k) {
+      var x = out[k], y = B[k];
+      if (x == null) out[k] = y;
+      else if (y != null && JSON.stringify(x) !== JSON.stringify(y)) out[k] = one(x, y);
+    });
+    return JSON.stringify(out);
+  }
+  function list(a, b, timeKey, max) { // logs: both lists, oldest first, each entry once
+    var seen = {}, out = [];
+    jp_(a, []).concat(jp_(b, [])).forEach(function (m) { var j = JSON.stringify(m); if (m && !seen[j]) { seen[j] = 1; out.push(m); } });
+    out.sort(function (x, y) { return num(x[timeKey]) - num(y[timeKey]); });
+    return JSON.stringify(out.slice(-max));
+  }
+  var MERGE = {
+    // [seen, wrong, streak, lastTs]: answers add up; the streak (how the kanji
+    // stands now) comes from whichever computer saw it last.
+    'katsuyo-kanji-progress': function (a, b) {
+      return byId(a, b, function (x, y) {
+        if (!Array.isArray(x) || !Array.isArray(y)) return Array.isArray(x) ? x : y;
+        var n = num(y[3]) > num(x[3]) ? y : x;
+        return [num(x[0]) + num(y[0]), num(x[1]) + num(y[1]), num(n[2]), Math.max(num(x[3]), num(y[3])) + 1];
+      });
+    },
+    // Words and quizzes: { s seen, m missed, k streak, d due, t last }
+    'ka_memory_v1': function (a, b) {
+      return byId(a, b, function (x, y) {
+        var n = num(y.t) > num(x.t) ? y : x;
+        return { s: num(x.s) + num(y.s), m: num(x.m) + num(y.m), k: num(n.k), d: num(n.d), t: Math.max(num(x.t), num(y.t)) + 1 };
+      });
+    },
+    // Conjugator weak spots: misses add up, and it needs winning back from the lower count.
+    'katsuyo-weakspots': function (a, b) {
+      return byId(a, b, function (x, y) { var o = Object.assign({}, x, y); o.misses = num(x.misses) + num(y.misses); o.hits = Math.min(num(x.hits), num(y.hits)); return o; });
+    },
+    'ka_dojo_weak': function (a, b) {
+      return byId(a, b, function (x, y) { var o = Object.assign({}, x, y); o.misses = num(x.misses) + num(y.misses); o.streak = Math.min(num(x.streak), num(y.streak)); o.due = Math.min(num(x.due), num(y.due)); o.q = x.q || y.q; return o; });
+    },
+    'katsuyo-mistakes': function (a, b) { return list(a, b, 'timestamp', 200); },
+    'katsuMistakes': function (a, b) { return list(a, b, 't', 20); },
+    'katsuyo-stats': function (a, b) {
+      var A = jp_(a, {}), B = jp_(b, {}), o = Object.assign({}, A);
+      ['correct', 'total', 'skipped'].forEach(function (k) { if (A[k] != null || B[k] != null) o[k] = num(A[k]) + num(B[k]); });
+      return JSON.stringify(o);
+    },
+    'katsuyo-best-streak': function (a, b) { return String(Math.max(num(a), num(b))); },
+    'kanjiDrillBest': function (a, b) { return String(Math.max(num(a), num(b))); },
+    'katsuyoDeconjugator': function (a, b) {
+      var A = jp_(a, {}), B = jp_(b, {}), o = Object.assign({}, A);
+      o.right = num(A.right) + num(B.right); o.total = num(A.total) + num(B.total); o.best = Math.max(num(A.best), num(B.best));
+      return JSON.stringify(o);
+    },
+    // Reading Room: the best score per story counts; its settings stay the account's.
+    'katsuyoReading': function (a, b) {
+      var A = jp_(a, {}), B = jp_(b, {}), o = Object.assign({}, A), best = Object.assign({}, A.best || {});
+      Object.keys(B.best || {}).forEach(function (id) { best[id] = best[id] == null ? B.best[id] : Math.max(num(best[id]), num(B.best[id])); });
+      o.best = best; return JSON.stringify(o);
+    },
+    // Stories written for you: keep both sets, newest first.
+    'katsuyoReadingAI': function (a, b) {
+      var seen = {}, out = [];
+      jp_(a, []).concat(jp_(b, [])).forEach(function (x) { if (x && x.id && !seen[x.id]) { seen[x.id] = 1; out.push(x); } });
+      out.sort(function (x, y) { return num(y.created) - num(x.created); });
+      return JSON.stringify(out.slice(0, 30));
+    }
+  };
+  function mergeOne(k, a, b) {
+    if (a == null) return b;
+    if (b == null || a === b) return a;
+    try {
+      if (MERGE[k]) return MERGE[k](a, b);
+      if (/^katsuyo-kanji-story-/.test(k)) return a + '\n\n' + b;   // your own kanji stories: keep both texts
+    } catch (e) {}
+    return a;   // a setting: the account's stays
+  }
+  // What the summary table counts, for one set of values { key: string }.
+  function tally(d) {
+    var kp = jp_(d['katsuyo-kanji-progress'], {}), mem = jp_(d['ka_memory_v1'], {}), words = {};
+    Object.keys(mem).forEach(function (id) { if (/^vocab:/.test(id)) words[id.split('|')[0]] = 1; });
+    return {
+      kanji: Object.keys(kp).length, words: Object.keys(words).length,
+      conj: num(jp_(d['katsuyo-stats'], {}).total),
+      stories: Object.keys(jp_(d['katsuyoReading'], {}).best || {}).length,
+      weak: Object.keys(jp_(d['katsuyo-weakspots'], {})).length + Object.keys(jp_(d['ka_dojo_weak'], {})).length
+    };
+  }
+  function combinedWith(uid) { return (getJ(K_COMBINED) || []).indexOf(uid) >= 0; }
+  function needsCombine(uid) {
+    var m = getJ(K_META);
+    if (m && m.uid === uid) return false;          // this computer already syncs with this account
+    if (combinedWith(uid)) return false;           // …or was added to it before (then undone)
+    return hasProgress();
+  }
+  // Resolves to the summary, or null when the account had nothing to combine with.
+  function combine(uid) {
+    var local = snapshot();
+    set(K_BUSY, String(Date.now()));
+    return api('progress-get').then(function (r) {
+      var srv = r.data || {}, acct = {};
+      Object.keys(srv).forEach(function (k) { if (TRACK.test(k) && !SKIP.test(k) && srv[k] && srv[k].v != null) acct[k] = String(srv[k].v); });
+      var ta = tally(acct);
+      if (!ta.kanji && !ta.words && !ta.conj && !ta.stories && !ta.weak) return null;   // nothing there yet: this computer's progress simply goes up
+      var tl = tally(local);
+      setJ(K_BACKUP, { at: Date.now(), uid: uid, data: local, n: tl.kanji });
+      var now = Date.now(), meta = { uid: uid, keys: {} }, merged = {};
+      var keys = Object.keys(acct).concat(Object.keys(local).filter(function (k) { return acct[k] == null; }));
+      keys.forEach(function (k) {
+        var v = mergeOne(k, acct[k], local[k]);
+        if (v == null) return;
+        merged[k] = v; set(k, v);
+        meta.keys[k] = (acct[k] === v && srv[k]) ? { h: hashOf(v), t: srv[k].t } : { h: hashOf(v), t: now, n: 1 };
+      });
+      setJ(K_META, meta);
+      var both = 0, A = jp_(acct['katsuyo-kanji-progress'], {}), L = jp_(local['katsuyo-kanji-progress'], {});
+      Object.keys(L).forEach(function (id) { if (A[id]) both++; });
+      var c = getJ(K_COMBINED) || []; if (c.indexOf(uid) < 0) c.push(uid); setJ(K_COMBINED, c);
+      return { here: tl, acct: ta, now: tally(merged), both: both, backup: !!get(K_BACKUP) };
+    }).then(function (x) { set(K_BUSY, null); return x; }, function (e) { set(K_BUSY, null); throw e; });
+  }
+  function backup() {
+    var b = getJ(K_BACKUP);
+    if (b && (!b.at || Date.now() - b.at > BACKUP_DAYS * 86400000)) { set(K_BACKUP, null); b = null; }
+    return b;
+  }
+  // Put this computer back the way the backup has it, and sign out here.
+  function undoCombine() {
+    var b = backup(); if (!b) return;
+    var done = function () {
+      set(K_AUTH, null); set(K_SYNC, null); set(K_META, null);
+      restore(b.data); set(K_BACKUP, null);
+      close(); paintBtn(); toast(T('un_done'));
+      setTimeout(function () { location.reload(); }, 1100);
+    };
+    api('signout', {}).then(done, done);
+  }
+
   // ---------------------------------------------------------------- avatars
   function avatarHTML(a, size, fallback) {
     var st = 'width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size * 0.5) + 'px';
@@ -213,7 +363,7 @@
 
   // ---------------------------------------------------------------- the button
   var ls, btn, tip, menu, veil, box, dockEl, homeParent, homeNext, current = null;
-  var PROGRESS_KEYS = ['katsuyo-stats', 'katsuyo-vocab-deck', 'katsuyo-vocab-city', 'katsuyoReading', 'ka_dojo_weak', 'katsuyo-weakspots', 'katsuyo-mistakes'];
+  var PROGRESS_KEYS = ['ka_memory_v1', 'katsuyo-stats', 'katsuyo-vocab-deck', 'katsuyo-vocab-city', 'katsuyoReading', 'ka_dojo_weak', 'katsuyo-weakspots', 'katsuyo-mistakes'];
   function hasProgress() { return kanjiCount() >= 5 || PROGRESS_KEYS.some(function (k) { return get(k) != null; }); }
 
   function mount() {
@@ -249,10 +399,18 @@
     window.addEventListener('katsuyo:lang', function () { paintBtn(); paintMenu(); if (current && !veil.hidden) current(); });
     // Another tab signed in or out (an email link opens in a new tab).
     window.addEventListener('storage', function (e) {
+      if (e.key === K_COMBINED && me()) {   // another tab just added this computer's progress to the account
+        if (!veil.hidden) close();
+        toast(T('in_reload')); setTimeout(function () { location.reload(); }, 900);
+        return;
+      }
+      if (e.key === K_BUSY && e.newValue == null && me()) { if (!veil.hidden && box.getAttribute('data-screen') === 'mail') { close(); toast(T('in_eb')); } pullOnLoad(); return; }
       if (e.key !== K_AUTH) return;
       paintBtn();
+      if (get(K_BUSY)) return;                // the other tab is combining; it tells us when it's done
       if (me() && !veil.hidden && box.getAttribute('data-screen') === 'mail') { close(); toast(T('in_eb')); pullOnLoad(); }
     });
+    backup();   // drops a backup older than 30 days
     paintBtn();
     handleHash();
     pullOnLoad();
@@ -599,10 +757,27 @@
   }
 
   // ---- after signing in ----
-  var needReload = false;
+  var needReload = false, combined = null;
   function signedIn(r, method) {
+    var uid = r.user && r.user.id;
+    if (uid && needsCombine(uid)) {
+      set(K_BUSY, String(Date.now()));   // before other tabs see the sign-in
+      saveAuth(r.token, r.user, method); paintBtn();
+      frame('combining', '<div class="ka-done"><div class="ka-big">🔄</div><h3>' + esc(T('cb_wait')) + '</h3></div>');
+      combine(uid).then(function (sum) {
+        combined = sum; if (sum) needReload = true;
+        afterSignIn(r);
+      }, function () {
+        set(K_AUTH, null); set(K_META, null); paintBtn();   // nothing was written yet
+        frame('combine-fail', '<div class="ka-done"><div class="ka-big">⚠️</div><p class="ka-sub">' + esc(T('cb_fail')) + '</p><button type="button" class="ka-b ka-red" data-close>' + esc(T('close')) + '</button></div>');
+      });
+      return;
+    }
     saveAuth(r.token, r.user, method);
     paintBtn();
+    afterSignIn(r);
+  }
+  function afterSignIn(r) {
     push({ pull: true }).then(function (changed) { if (changed) needReload = true; });
     var flow = getJ(K_FLOW); set(K_FLOW, null);
     if (flow && flow.key && passkeysSupported()) return showMakeKey(r.created);
@@ -610,11 +785,44 @@
     showDone();
   }
   function showDone() {
+    if (combined) return showCombined();
     var u = me() || {};
     frame('done', '<div class="ka-done">' + (u.username || u.avatar ? '<div class="ka-center">' + avatarHTML(u.avatar, 72, nameOf(u)) + '</div>' : '<div class="ka-big">✅</div>') +
       '<div class="ka-eb">' + esc(u.username ? T('in_eb_n', { name: u.username }) : T('in_eb')) + '</div><h3>' + esc(T('in_h')) + '</h3>' +
       '<p class="ka-sub">' + esc(T('in_p')) + '</p><button type="button" class="ka-b ka-red" data-close>' + esc(T('in_b')) + '</button></div>', showDone);
     afterClose = function () { if (needReload) { needReload = false; toast(T('in_reload')); setTimeout(function () { location.reload(); }, 700); } };
+  }
+
+  function showCombined() {
+    var s = combined, u = me() || {};
+    if (!s) return showDone();
+    var fmt = function (n) { try { return Number(n).toLocaleString(lang()); } catch (e) { return String(n); } };
+    var row = function (jp, label, key, sub) {
+      if (!s.here[key] && !s.acct[key] && key !== 'kanji') return '';
+      return '<tr><td><span class="jp">' + jp + '</span>' + esc(label) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</td><td>' + fmt(s.here[key]) + '</td><td>' + fmt(s.acct[key]) + '</td><td class="now">' + fmt(s.now[key]) + '</td></tr>';
+    };
+    frame('combined', '<div class="ka-done">' + (u.username || u.avatar ? '<div class="ka-center">' + avatarHTML(u.avatar, 72, nameOf(u)) + '</div>' : '<div class="ka-big">✅</div>') +
+      '<div class="ka-eb">' + esc(u.username ? T('in_eb_n', { name: u.username }) : T('in_eb')) + '</div><h3>' + esc(T('cb_h')) + '</h3>' +
+      '<p class="ka-sub">' + esc(T('cb_p')) + '</p></div>' +
+      '<div class="ka-cbwrap"><table class="ka-cb"><tr><th></th><th>' + esc(T('cb_here')) + '</th><th>' + esc(T('cb_acct')) + '</th><th>' + esc(T('cb_now')) + '</th></tr>' +
+      row('漢', T('cb_kanji'), 'kanji', s.both ? T('cb_both', { n: fmt(s.both) }) : '') + row('語', T('cb_words'), 'words') + row('活', T('cb_conj'), 'conj') +
+      row('読', T('cb_stories'), 'stories') + row('弱', T('cb_weak'), 'weak') +
+      '<tr class="ka-cbset"><td><span class="jp">⚙</span>' + esc(T('cb_set')) + '<small>' + esc(T('cb_set_p')) + '</small></td><td colspan="2">' + esc(T('cb_set_v')) + '</td><td>—</td></tr></table></div>' +
+      (s.backup ? '<div class="ka-cbbk"><span>💾</span><div><b>' + esc(T('cb_bk_h')) + '</b> ' + esc(T('cb_bk_p')) + '</div></div>' : '') +
+      '<div class="ka-cbfoot">' + (s.backup ? '<button type="button" class="ka-link ka-mute" data-go="undo">' + esc(T('cb_undo')) + '</button>' : '<span></span>') +
+      '<button type="button" class="ka-b ka-red" data-go="ok" autofocus>' + esc(T('cb_ok')) + '</button></div>', showCombined);
+    box.querySelector('[data-go=ok]').onclick = function () { combined = null; close(); };
+    var un = box.querySelector('[data-go=undo]'); if (un) un.onclick = function () { showUndo(showCombined); };
+    afterClose = function () { combined = null; if (needReload) { needReload = false; toast(T('in_reload')); setTimeout(function () { location.reload(); }, 700); } };
+  }
+  function showUndo(back) {
+    var b = backup(); if (!b) return back();
+    var d = ''; try { d = new Date(b.at).toLocaleString(lang(), { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { d = new Date(b.at).toLocaleString(); }
+    frame('undo', '<div class="ka-done"><div class="ka-big">↩</div><div class="ka-eb">' + esc(T('un_eb')) + '</div><h3>' + esc(T('un_h')) + '</h3>' +
+      '<p class="ka-sub">' + esc(T('un_p', { date: d })) + '</p><div class="ka-btns"><button type="button" class="ka-b" data-go="no">' + esc(T('cancel')) + '</button>' +
+      '<button type="button" class="ka-b ka-red" data-go="yes">' + esc(T('un_b')) + '</button></div></div>', function () { showUndo(back); });
+    box.querySelector('[data-go=no]').onclick = back;
+    box.querySelector('[data-go=yes]').onclick = function () { busy(this, true); afterClose = null; undoCombine(); };
   }
 
   // ---- profile ----
@@ -834,7 +1042,7 @@
         '<h6>' + esc(T('ap_signin_h')) + '</h6><ul class="ka-list"><li><span>✉️ ' + esc(T('ap_link')) + '</span></li>' +
         '<li><span>🔒 ' + esc(T(u.hasPassword ? 'ap_pw_on' : 'ap_pw_off')) + '</span><button type="button" class="ka-link" data-go="pw">' + esc(T(u.hasPassword ? 'ap_pw_change' : 'ap_pw_set')) + '</button></li></ul>' +
         '<h6>' + esc(T('ap_keys')) + '</h6><ul class="ka-list">' + (keys || '<li><span class="ka-mute">' + esc(T('ap_key_none')) + '</span></li>') + '</ul>' +
-        (passkeysSupported() ? '<button type="button" class="ka-b" data-go="addkey">' + esc(T('ap_key_add')) + '</button>' : '') + '</section>' +
+        (passkeysSupported() ? '<button type="button" class="ka-b" data-go="addkey">' + esc(T('ap_key_add')) + '</button>' : '') + backupHTML() + '</section>' +
       '<section><h6>' + esc(T('ap_data_h')) + '</h6><p class="ka-hint">' + esc(T('ap_dl_p')) + '</p><button type="button" class="ka-b" data-go="dl">⬇ ' + esc(T('ap_dl')) + '</button>' +
         '<p style="margin-top:1rem"><button type="button" class="ka-b" data-go="outall">' + esc(T('ap_outall')) + '</button></p>' +
         '<div class="ka-danger"><p class="ka-hint">' + esc(T('ap_del_p')) + '</p><button type="button" class="ka-b ka-dangerb" data-go="del">' + esc(T('ap_del')) + '</button></div></section></div>' +
@@ -859,6 +1067,23 @@
       api('signout-all', {}).then(function () { set(K_AUTH, null); close(); paintBtn(); toast(T('ap_outall_done')); }).catch(function (e) { say('#ka-msg', errText(e), true); });
     };
     box.querySelector('[data-go=del]').onclick = showDelete;
+    var bk = backup();
+    if (bk) {
+      box.querySelector('[data-bk=restore]').onclick = function () { showUndo(showAccPrivacy); };
+      box.querySelector('[data-bk=save]').onclick = function () {
+        var blob = new Blob([JSON.stringify({ app: 'katsuyo-academy', v: 1, saved: new Date(bk.at).toISOString(), data: bk.data }, null, 1)], { type: 'application/json' });
+        var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'katsuyo-backup-' + new Date(bk.at).toISOString().slice(0, 10) + '.json';
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      };
+      box.querySelector('[data-bk=del]').onclick = function () { set(K_BACKUP, null); showAccPrivacy(); };
+    }
+  }
+  function backupHTML() {
+    var b = backup(); if (!b) return '';
+    var d = ''; try { d = new Date(b.at).toLocaleString(lang(), { dateStyle: 'medium', timeStyle: 'short' }); } catch (e) { d = new Date(b.at).toLocaleString(); }
+    return '<h6 style="margin-top:1.2rem">' + esc(T('bk_h')) + '</h6><ul class="ka-list ka-bku"><li><span>💾 ' + esc(T('bk_item')) + '<small>' + esc(T('bk_meta', { date: d, n: b.n || 0 })) + '</small></span>' +
+      '<span class="ka-bka"><button type="button" class="ka-link" data-bk="restore">' + esc(T('bk_restore')) + '</button><button type="button" class="ka-link ka-mute" data-bk="save">' + esc(T('bk_save')) + '</button>' +
+      '<button type="button" class="ka-link ka-mute" data-bk="del">' + esc(T('bk_del')) + '</button></span></li></ul><p class="ka-hint">' + esc(T('bk_p')) + '</p>';
   }
   function showDelete() {
     frame('delete', '<div class="ka-eb">' + esc(T('ap_del')) + '</div><h3>' + esc(T('del_h')) + '</h3><p class="ka-sub">' + esc(T('del_p')) + '</p>' +

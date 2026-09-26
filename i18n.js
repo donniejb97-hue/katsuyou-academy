@@ -7149,7 +7149,7 @@ I18N_addText({
 (function () {
   if (window.__kaAcctLoad || typeof document === 'undefined') return;
   window.__kaAcctLoad = true;
-  var v = '1';
+  var v = '2';
   var l = document.createElement('link');
   l.rel = 'stylesheet'; l.href = '/account.css?v=' + v;
   document.head.appendChild(l);

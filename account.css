@@ -196,3 +196,34 @@ html.ka-modal-open { overflow: hidden; }
   .ka-btn.ka-quiet .ka-av + .ka-lbl { display: none; }
   .ka-seg button { font-size: .76rem; padding: .5rem .2rem; }
 }
+
+/* ---- combining two computers (first sign-in on a computer with its own progress) ---- */
+.ka-cbwrap { overflow-x: auto; margin: .4rem 0 1rem; }
+.ka-cb { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border: 1.5px solid #ece6db; border-radius: 14px; overflow: hidden; font-size: .92rem; text-align: left; }
+.ka-cb th { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: #7a7488; font-weight: 800; padding: .7rem .9rem; background: #f6f2ea; text-align: right; }
+.ka-cb th:first-child { text-align: left; }
+.ka-cb td { padding: .62rem .9rem; border-top: 1px dashed #ece6db; text-align: right; color: #56516a; font-variant-numeric: tabular-nums; }
+.ka-cb td:first-child { text-align: left; color: #1a1a2e; font-weight: 700; }
+.ka-cb td:first-child small { display: block; font-weight: 500; color: #8a8577; font-size: .76rem; margin-top: .1rem; }
+.ka-cb td.now { color: #1a1a2e; font-weight: 800; font-size: 1rem; }
+.ka-cb .jp { font-family: 'Noto Serif JP', serif; color: #c45c4a; margin-right: .35rem; }
+.ka-cb tr.ka-cbset td { color: #8a8577; }
+.ka-cb tr.ka-cbset td:first-child { color: #56516a; }
+.ka-cb tr.ka-cbset td[colspan] { text-align: center; }
+.ka-cbbk { display: flex; gap: .8rem; align-items: flex-start; background: #fdf6e9; border: 1.5px solid #f0dfbf; border-radius: 14px; padding: .8rem 1rem; font-size: .86rem; color: #56516a; line-height: 1.45; margin-bottom: 1rem; }
+.ka-cbbk b { color: #1a1a2e; }
+.ka-cbbk > span { font-size: 1.3rem; line-height: 1; }
+.ka-cbfoot { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.ka-cbfoot .ka-link { font-size: .86rem; }
+.ka-bku li { align-items: flex-start; }
+.ka-bku li small { display: block; margin-top: .15rem; }
+.ka-bka { display: flex; gap: .7rem; white-space: nowrap; }
+@media (max-width: 700px) {
+  .ka-cb { font-size: .84rem; }
+  .ka-cb th, .ka-cb td { padding: .55rem .55rem; }
+  .ka-cb th { font-size: .58rem; }
+  .ka-cbfoot { flex-direction: column-reverse; align-items: stretch; }
+  .ka-cbfoot .ka-b { width: 100%; }
+  .ka-cbfoot .ka-link { text-align: center; }
+  .ka-bku li { flex-direction: column; }
+}
