@@ -21,12 +21,8 @@
     var m = null;
     try { m = localStorage.getItem(KEY); } catch (e) {}
     if (m === 'everyday' || m === 'klc') return m;
-    // Nobody chose yet. Someone already working through the course keeps the
-    // order they know; everyone new starts with the everyday kanji.
-    try {
-      var p = JSON.parse(localStorage.getItem('katsuyo-kanji-progress') || '{}');
-      if (p && Object.keys(p).length) return 'klc';
-    } catch (e) {}
+    // Nobody chose yet: everyone starts with the everyday kanji. Progress is
+    // kept by KLC number, so stamps already earned stay on their kanji.
     return 'everyday';
   }
   function setMode(m) {
