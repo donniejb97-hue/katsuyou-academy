@@ -552,6 +552,7 @@
   <div id="toast" class="toast"></div>
 
   <script src="kanji-progress.js"></script>
+  <script src="kanji-order.js"></script>
   <script src="wok-theme.js"></script>
   <script src="howto.js"></script>
   <script src="i18n.js"></script>
@@ -614,7 +615,9 @@
       }
       for (var i = 0; i < kanjiDataList.length; i++) {
         var k = kanjiDataList[i];
-        if (k.id >= state.lo && k.id <= state.hi) out.push(k);
+        // ranges are positions in the wall's order (Everyday or Classic)
+        var p = window.KA_Order ? KA_Order.posOf(k.id) : k.id;
+        if (p >= state.lo && p <= state.hi) out.push(k);
       }
       return out;
     }
@@ -1151,9 +1154,10 @@
       }
       sel.innerHTML = '';
       opt('1-2300', tt('kd_r_all', 'Everything') + ' \u00b7 1\u20132300');
-      opt('1-500', 'KLC 1\u2013500');
-      opt('501-1200', 'KLC 501\u20131200');
-      opt('1201-2300', 'KLC 1201\u20132300');
+      var ord = (window.KA_Order && KA_Order.mode() === 'everyday') ? tt('kd_r_every', 'Everyday') : tt('kd_r_classic', 'KLC');
+      opt('1-500', ord + ' 1\u2013500');
+      opt('501-1200', ord + ' 501\u20131200');
+      opt('1201-2300', ord + ' 1201\u20132300');
 
       var wrong = window.KA_Kanji ? KA_Kanji.idsWithStatus(1, 2300, 'shaky').length : 0;
       opt('wrong', tt('kd_r_wrong', 'Only the ones I\u2019ve got wrong') + ' \u00b7 ' + wrong);

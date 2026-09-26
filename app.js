@@ -9215,15 +9215,17 @@ function generateNewQuestion() {
         }
       });
       
-      // Filter cards based on level
+      // Filter cards based on level. The ranges are positions in the order the
+      // wall uses (Everyday or Classic, kanji-order.js); without it, KLC order.
+      const ordered = window.KA_Order ? window.KA_Order.sort(kanjiDataList) : [...kanjiDataList];
       if (level === 'all') {
-        filteredKanjiCards = [...kanjiDataList];
+        filteredKanjiCards = ordered;
       } else if (level === 'beginner') {
-        filteredKanjiCards = kanjiDataList.filter(k => k.id >= 1 && k.id <= 500);
+        filteredKanjiCards = ordered.slice(0, 500);
       } else if (level === 'intermediate') {
-        filteredKanjiCards = kanjiDataList.filter(k => k.id >= 501 && k.id <= 1200);
+        filteredKanjiCards = ordered.slice(500, 1200);
       } else if (level === 'advanced') {
-        filteredKanjiCards = kanjiDataList.filter(k => k.id >= 1201 && k.id <= 2300);
+        filteredKanjiCards = ordered.slice(1200, 2300);
       }
       
       currentKanjiIndex = 0;
@@ -9237,6 +9239,11 @@ function generateNewQuestion() {
       showKanjiCard();
     }
     
+    // The wall's order switch: rebuild the deck in the new order.
+    window.addEventListener('ka-kanji-order', function () {
+      if (typeof kanjiDataList !== 'undefined' && document.getElementById('kanji-flashcard')) filterKanjiLevel(currentKanjiLevel || 'all');
+    });
+
     function currentKanjiCard() {
       return filteredKanjiCards.length ? filteredKanjiCards[currentKanjiIndex] : null;
     }

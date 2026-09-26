@@ -869,6 +869,116 @@
       .kw-d-close { background: none; border: 0; color: var(--wok-faint); font-size: 1.1rem; cursor: pointer;
         font-family: inherit; padding: 0 0.2rem; }
 
+      /* ---- Everyday / Classic order ---- */
+      .kw-order { display: inline-flex; margin-left: auto; border: 2px solid var(--wok-ink); border-radius: 999px; overflow: hidden; background: #fff; }
+      .kw-order button { border: 0; background: none; font: inherit; font-size: 0.74rem; font-weight: 700; padding: 0.38rem 0.85rem;
+        cursor: pointer; color: var(--wok-ink); }
+      .kw-order button.is-on { background: var(--wok-ink); color: #fff; }
+      .kw-blocks-head .kw-resume { margin-left: 0.6rem; }
+      .kw-tiers { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.1rem 4px 0.45rem; font-size: 0.66rem; font-weight: 800;
+        letter-spacing: 0.06em; text-transform: uppercase; }
+      .kw-tiers[hidden] { display: none; }
+      .kw-tiers span { padding: 0.18rem 0.5rem; border-radius: 6px; }
+      .kw-tiers .t1 { background: #fde7e3; color: #b3321f; }
+      .kw-tiers .t2 { background: #fff3d6; color: #8a5a00; }
+      .kw-tiers .t3 { background: #eef0f4; color: #5b6475; }
+      .kw-blk .kw-tb { display: block; width: 100%; height: 3px; border-radius: 2px; margin-top: -1px; }
+      .kw-blk.t1 .kw-tb { background: #e0533d; } .kw-blk.t2 .kw-tb { background: #f0b429; } .kw-blk.t3 .kw-tb { background: #b7bcc8; }
+
+      /* ---- the kanji card ---- */
+      .kw-detail { display: block; }
+      .kc { display: grid; grid-template-columns: 230px minmax(0, 1fr) 330px; gap: 26px; width: 100%; }
+      .kc-l { display: flex; flex-direction: column; gap: 10px; }
+      .kc-box { position: relative; aspect-ratio: 1; border: 2px solid var(--wok-ink); border-radius: 16px; background: #fffdf8; cursor: pointer;
+        background-image: linear-gradient(transparent calc(50% - .5px), #eadfcd calc(50% - .5px), #eadfcd calc(50% + .5px), transparent calc(50% + .5px)),
+          linear-gradient(90deg, transparent calc(50% - .5px), #eadfcd calc(50% - .5px), #eadfcd calc(50% + .5px), transparent calc(50% + .5px)); }
+      .kc-box svg { position: absolute; inset: 8%; width: 84%; height: 84%; }
+      .kc-box path { fill: none; stroke: var(--wok-ink); stroke-width: 4.2; stroke-linecap: round; stroke-linejoin: round; }
+      .kc-box .kc-char { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+        font-family: 'Noto Serif JP', serif; font-size: 7.5rem; line-height: 1; color: var(--wok-ink); }
+      .kc-play { position: absolute; right: 8px; bottom: 8px; font-size: 0.66rem; font-weight: 800; background: var(--wok-ink); color: #fff;
+        border-radius: 999px; padding: 0.2rem 0.5rem; }
+      .kc-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+      .kc-badges span { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.06em; padding: 0.2rem 0.5rem; border-radius: 6px;
+        background: var(--wok-paper-2, #f3ede2); color: var(--wok-ink); }
+      .kc-badges .jl { background: var(--wok-ink); color: #fff; }
+      .kc-badges .klc { background: var(--wok-red-wash, #fde7e3); color: var(--wok-red); }
+      .kc-rd { display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 0.7rem; align-items: baseline; font-size: 0.88rem; line-height: 1.55; }
+      .kc-rd b { font-size: 0.62rem; letter-spacing: 0.1em; }
+      .kc-rd b.on { color: var(--wok-red-dark, #9c2a1e); } .kc-rd b.kun { color: #4f7454; }
+      .kc-rd .jp { font-family: 'Noto Serif JP', serif; font-size: 1rem; color: var(--wok-ink); }
+      .kc-rd .ok { color: var(--wok-faint, #a89f93); }
+      .kc-rd .rare { color: var(--wok-faint, #a89f93); }
+      .kc-rd .rdg { white-space: nowrap; }
+      .kc-hearall { align-self: flex-start; }
+      .kc-m { min-width: 0; }
+      .kc-head { display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+      .kc-kw { font-size: 1.35rem; font-weight: 800; color: var(--wok-ink); }
+      .kc .kw-d-close { margin-left: auto; }
+      .kc-place { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin: 0 0 0.2rem; }
+      .kc-tag { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.75rem; font-weight: 700; padding: 0.24rem 0.6rem;
+        border-radius: 999px; border: 1.5px solid var(--wok-ink); background: #fffaf0; }
+      .kc-tag.news { background: #eef0f4; }
+      .kc-why { font-size: 0.75rem; color: var(--wok-mute); }
+      .kc-why b { font-family: 'Noto Serif JP', serif; color: var(--wok-ink); }
+      .kc-words { width: 100%; border-collapse: collapse; margin: 0.5rem 0 0.7rem; font-size: 0.9rem; }
+      .kc-words td { padding: 0.34rem 0.45rem; border-bottom: 1px solid #eee4d4; vertical-align: baseline; }
+      .kc-words td.n { width: 1.3rem; color: var(--wok-mute); font-size: 0.7rem; }
+      .kc-words td.h { width: 1.6rem; padding-right: 0; }
+      .kc-words td.w { font-family: 'Noto Serif JP', serif; font-size: 1.05rem; white-space: nowrap; width: 1%; color: var(--wok-ink); }
+      .kc-words td.r { color: var(--wok-red); font-family: 'Noto Serif JP', serif; white-space: nowrap; width: 1%; }
+      .kc-words td.g { color: var(--wok-ink); }
+      .kc-rad { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; background: #fff6e6; border: 1.5px solid #f0c77a;
+        border-radius: 10px; padding: 0.35rem 0.6rem; margin-bottom: 0.7rem; width: max-content; max-width: 100%; }
+      .kc-rad b { font-size: 0.66rem; letter-spacing: 0.08em; }
+      .kc-rad .jp { font-family: 'Noto Serif JP', serif; font-size: 1.15rem; }
+      .kc-h { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.1em; color: var(--wok-mute); margin: 0 0 0.35rem; text-transform: uppercase; }
+      .kc-so { display: flex; flex-wrap: wrap; gap: 5px; }
+      .kc-so i { position: relative; width: 46px; height: 46px; border: 1.5px solid #e4dccd; border-radius: 8px; background: #fffdf8; font-style: normal; }
+      .kc-so svg { position: absolute; inset: 3px; width: 38px; height: 38px; }
+      .kc-so path { fill: none; stroke: #c9bfae; stroke-width: 6; stroke-linecap: round; stroke-linejoin: round; }
+      .kc-so path.cur { stroke: var(--wok-ink); }
+      .kc-so circle { fill: var(--wok-red); }
+      .kc-so small { position: absolute; left: 3px; top: 1px; font-size: 0.55rem; font-weight: 800; color: var(--wok-mute); }
+      .kc-r { background: #fbf6ec; border: 2px solid var(--wok-ink); border-radius: 14px; padding: 14px 16px; display: flex;
+        flex-direction: column; gap: 0.7rem; font-size: 0.9rem; line-height: 1.5; align-self: start; }
+      .kc-r .eb { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.12em; color: var(--wok-red); text-transform: uppercase; }
+      .kc-parts { display: flex; flex-direction: column; gap: 0.3rem; }
+      .kc-parts div { display: flex; gap: 0.55rem; align-items: baseline; font-size: 0.82rem; color: var(--wok-mute); }
+      .kc-parts b { font-family: 'Noto Serif JP', serif; font-size: 1.25rem; color: var(--wok-ink); font-weight: 500; min-width: 1.4rem; text-align: center; }
+      .kc-story { font-size: 0.98rem; color: var(--wok-ink); }
+      .kc-story em { font-style: normal; font-weight: 800; color: var(--wok-red); }
+      .kc-story b, .kc-hooks b, .kc-seen { font-family: inherit; }
+      .kc-hooks { margin: 0; padding-left: 1rem; font-size: 0.84rem; }
+      .kc-hooks li { margin: 0.15rem 0; }
+      .kc-seen { font-size: 0.8rem; background: #fff; border: 1.5px dashed #d8ccb6; border-radius: 10px; padding: 0.45rem 0.6rem; }
+      .kc-soon { font-size: 0.82rem; color: var(--wok-mute); }
+      .kc-mine { background: #fff; border: 1.5px solid var(--wok-ink); border-radius: 10px; padding: 0.45rem 0.6rem; font-size: 0.85rem; }
+      .kc-mine[hidden], .kc-edit[hidden], .kc-own[hidden] { display: none; }
+      .kc-mine p { margin: 0.2rem 0 0; white-space: pre-wrap; }
+      .kc-edit textarea { width: 100%; box-sizing: border-box; font: inherit; font-size: 0.85rem; border: 1.5px solid var(--wok-ink);
+        border-radius: 10px; padding: 0.45rem 0.55rem; resize: vertical; background: #fff; }
+      .kc-edit div { display: flex; gap: 0.4rem; margin-top: 0.4rem; }
+      .kc-edit .kw-go { padding: 0.35rem 0.8rem; font-size: 0.8rem; }
+      .kc-own { font: inherit; font-size: 0.8rem; font-weight: 700; background: none; border: 1.5px solid var(--wok-ink); border-radius: 999px;
+        padding: 0.35rem 0.7rem; align-self: flex-start; cursor: pointer; color: var(--wok-ink); }
+      .kc-acts { grid-column: 1 / -1; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; border-top: 1px solid #eee4d4; padding-top: 14px; }
+      .kc-acts .kw-d-hint { margin-left: auto; }
+      .kc-credit { font-size: 0.62rem; color: var(--wok-mute); }
+      .kc-credit a { color: inherit; }
+      @media (max-width: 1100px) { .kc { grid-template-columns: 200px minmax(0, 1fr); } .kc-r { grid-column: 1 / -1; } }
+      @media (max-width: 640px) {
+        .kc { grid-template-columns: 1fr; gap: 18px; }
+        .kc-l { display: grid; grid-template-columns: 120px 1fr; gap: 10px 14px; align-items: start; }
+        .kc-box { grid-row: span 3; }
+        .kc-box .kc-char { font-size: 4rem; }
+        .kc-words tr { display: grid; grid-template-columns: 1.3rem 1.6rem auto 1fr; align-items: baseline; border-bottom: 1px solid #eee4d4; padding: 0.3rem 0; }
+        .kc-words td { border: 0; padding: 0.05rem 0.35rem; width: auto; }
+        .kc-words td.g { grid-column: 3 / -1; font-size: 0.82rem; color: var(--wok-mute); }
+        .kc-acts .kw-d-hint { display: none; }
+        .kw-order { margin-left: 0; }
+      }
+
       @media (max-width: 900px) {
         .kw-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
         .kw-detail { flex-direction: column; gap: 0.9rem; }
@@ -994,9 +1104,11 @@
         <div class="kw-blocks-wrap">
           <div class="kw-blocks-head">
             <span class="kw-eyebrow" data-i18n="kw_blocks_h">23 blocks of 100</span>
-            <span class="kw-blocks-sub" data-i18n="kw_blocks_sub">— the course in order, so you always know what's next</span>
+            <span class="kw-blocks-sub" id="kw-sub">— everyday kanji first: the ones on signs, menus and shop fronts</span>
+            <span class="kw-order" id="kw-order" role="group"><button type="button" data-o="everyday" data-i18n="kw_order_every">Everyday order</button><button type="button" data-o="klc" data-i18n="kw_order_klc" title="The order of the Kodansha Kanji Learner’s Course">Classic order</button></span>
             <button type="button" class="kw-resume" id="kw-resume" data-i18n="kw_resume">Jump to where I left off</button>
           </div>
+          <div class="kw-tiers" id="kw-tiers"><span class="t1" data-i18n="kw_tier1">Blocks 1–5 · everyday essentials</span><span class="t2" data-i18n="kw_tier2">6–15 · common, with a few rarer ones mixed in</span><span class="t3" data-i18n="kw_tier3">16–23 · less common</span></div>
           <div class="kw-blocks" id="kw-blocks"></div>
         </div>
 
@@ -1151,6 +1263,7 @@
   <div id="toast" class="toast"></div>
 
   <script src="kanji-progress.js"></script>
+  <script src="kanji-order.js"></script>
   <script src="wok-theme.js"></script>
   <script src="howto.js"></script>
   <script src="i18n.js"></script>
@@ -1183,11 +1296,21 @@
   'use strict';
 
   var BLOCK = 100, TOTAL = 2300;
-  var state = { block: 0, filter: 'all', open: null, search: '', fresh: null };
+  var state = { order: window.KA_Order ? KA_Order.mode() : 'klc', block: 0, filter: 'all', open: null, search: '', fresh: null };
 
   function $(id) { return document.getElementById(id); }
   function t(k, fb) { return (typeof window.t === 'function' && window.t(k) !== k) ? window.t(k) : fb; }
   function lo() { return state.block * BLOCK + 1; }
+  // Positions on the wall follow the chosen order; progress stays keyed by KLC id.
+  function idAt(pos) { return window.KA_Order ? KA_Order.idAt(pos, state.order) : pos; }
+  function posOf(id) { return window.KA_Order ? KA_Order.posOf(id, state.order) : id; }
+  function idsOf(a, z) { var out = []; for (var p = a; p <= z; p++) { var id = idAt(p); if (id) out.push(id); } return out; }
+  function countIds(ids) {
+    var out = { solid: 0, shaky: 0, 'new': 0, total: ids.length };
+    ids.forEach(function (id) { out[KA_Kanji.status(id)]++; });
+    return out;
+  }
+  function withStatus(ids, want) { return ids.filter(function (id) { return KA_Kanji.status(id) === want; }); }
   function hi() { return Math.min(lo() + BLOCK - 1, TOTAL); }
   function byId(id) {
     if (typeof kanjiDataList === 'undefined') return null;
@@ -1217,14 +1340,15 @@
     wrap.innerHTML = '';
     for (var b = 0; b * BLOCK < TOTAL; b++) {
       var a = b * BLOCK + 1, z = Math.min(a + BLOCK - 1, TOTAL);
-      var c = KA_Kanji.counts(a, z);
+      var c = countIds(idsOf(a, z));
       var pct = Math.round(100 * c.solid / c.total);
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'kw-blk' + (b === state.block ? ' is-on' : '');
+      var tier = state.order === 'everyday' ? (b < 5 ? ' t1' : b < 15 ? ' t2' : ' t3') : '';
+      btn.className = 'kw-blk' + tier + (b === state.block ? ' is-on' : '');
       btn.innerHTML = '<span class="kw-blk-ring' + (pct >= 100 ? ' is-full' : '') +
                       '" style="--pct:' + pct + '%;--blk:' + KA_Kanji.blockColour(b) + '">' +
-                      (b + 1) + '</span><span class="kw-blk-lbl">' + a + '–' + z + '</span>';
+                      (b + 1) + '</span>' + (tier ? '<span class="kw-tb"></span>' : '') + '<span class="kw-blk-lbl">' + a + '–' + z + '</span>';
       btn.setAttribute('aria-label', a + '–' + z + ', ' + pct + '%');
       (function (n) { btn.addEventListener('click', function () { go(n); }); })(b);
       wrap.appendChild(btn);
@@ -1249,7 +1373,8 @@
     var a = lo(), z = hi(), n = { all: 0, solid: 0, shaky: 0, 'new': 0 };
     var q = state.search.trim().toLowerCase();
 
-    for (var id = a; id <= z; id++) {
+    for (var pos = a; pos <= z; pos++) {
+      var id = idAt(pos);
       var item = byId(id);
       if (!item) continue;
       var st = KA_Kanji.status(id);
@@ -1306,10 +1431,9 @@
       bar.appendChild(b);
     }
 
-    var shaky = KA_Kanji.idsWithStatus(a, z, 'shaky');
-    var fresh = KA_Kanji.idsWithStatus(a, z, 'new');
-    var all = [];
-    for (var i = a; i <= z; i++) if (byId(i)) all.push(i);
+    var all = idsOf(a, z).filter(function (id) { return byId(id); });
+    var shaky = withStatus(all, 'shaky');
+    var fresh = withStatus(all, 'new');
 
     add(t('kw_drill_shaky', 'Drill the shaky') + ' · ' + shaky.length, shaky, false);
     add(t('kw_drill_new', 'Drill what I haven’t started') + ' · ' + fresh.length, fresh, true);
@@ -1358,8 +1482,144 @@
     } catch (e) {}
   }
 
+  /* ---------- card data: stroke order, radical, words, stories ----------
+     Loaded in chunks of 100 KLC ids (kanji-cards/k01.js … k23.js) the first
+     time a card from that range opens. Until it arrives the card is drawn
+     from kanji-data.js alone and then redrawn. */
+  var CARDS = {}, chunkWait = {};
+  window.KA_Cards = { add: function (o) { for (var k in o) CARDS[k] = o[k]; } };
+  function loadChunk(id) {
+    var n = Math.floor((id - 1) / 100) + 1;
+    if (chunkWait[n]) return chunkWait[n];
+    chunkWait[n] = new Promise(function (res) {
+      var s = document.createElement('script');
+      s.src = 'kanji-cards/k' + (n < 10 ? '0' : '') + n + '.js';
+      s.onload = function () { res(true); };
+      s.onerror = function () { chunkWait[n] = null; res(false); };
+      document.head.appendChild(s);
+    });
+    return chunkWait[n];
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // "やす.む" → やす + faint む; "-び" → 〜び; "ジキ*" (rare) fainter; "[-]" dropped.
+  function readingHTML(list) {
+    var seen = {}, out = [];
+    list.forEach(function (raw) {
+      String(raw).split(/[・,、=]/).forEach(function (x) {
+        x = x.trim(); if (!x) return;
+        var rare = /\*/.test(x);
+        x = x.replace(/\*/g, '').replace(/\[-\]/g, '').replace(/^[-‑]|[-‑]$/g, '〜').trim();
+        if (!x || seen[x]) return; seen[x] = 1;
+        var dot = x.indexOf('.'), h = dot > 0 ? esc(x.slice(0, dot)) + '<span class="ok">' + esc(x.slice(dot + 1)) + '</span>' : esc(x);
+        out.push('<span class="rdg' + (rare ? ' rare' : '') + '">' + h + '</span>');
+      });
+    });
+    return out.join('、') || '—';
+  }
+  function kvSvg(paths, upto) {
+    var s = '<svg viewBox="0 0 109 109" aria-hidden="true">';
+    for (var i = 0; i < paths.length; i++) {
+      if (upto != null && i > upto) break;
+      s += '<path' + (upto != null && i === upto ? ' class="cur"' : '') + ' d="' + paths[i] + '"/>';
+    }
+    if (upto != null) {
+      var m = paths[upto].match(/M\s*([\d.]+)[ ,]([\d.]+)/);
+      if (m) s += '<circle cx="' + m[1] + '" cy="' + m[2] + '" r="5.5"/>';
+    }
+    return s + '</svg>';
+  }
+  function animate(box) {
+    var ps = box.querySelectorAll('path'), at = 0;
+    if (!ps.length) return;
+    ps.forEach(function (p) { var L = p.getTotalLength(); p.style.transition = 'none'; p.style.strokeDasharray = L; p.style.strokeDashoffset = L; });
+    box.getBoundingClientRect();
+    ps.forEach(function (p) {
+      var L = p.getTotalLength(), dur = Math.max(0.25, L / 110);
+      p.style.transition = 'stroke-dashoffset ' + dur + 's linear ' + at + 's';
+      p.style.strokeDashoffset = 0; at += dur + 0.12;
+    });
+  }
+  var TAGL = { shop: ['🏪', 'kc_tag_shop', 'Shops & prices'], menu: ['🍜', 'kc_tag_menu', 'Menus & food'],
+               station: ['🚉', 'kc_tag_station', 'Stations & signs'], basic: ['⭐', 'kc_tag_basic', 'Everyday basics'],
+               news: ['📰', 'kc_tag_news', 'Mostly in the news'] };
+  function placeRow(id) {
+    var tg = window.KA_Order ? KA_Order.tags(id) : [], part = window.KA_Order ? KA_Order.partOf(id) : '';
+    var h = tg.map(function (x) { return '<span class="kc-tag ' + x + '">' + TAGL[x][0] + ' ' + esc(t(TAGL[x][1], TAGL[x][2])) + '</span>'; }).join('');
+    if (part && state.order === 'everyday') h += '<span class="kc-why">' + esc(t('kc_part_of', 'Comes early because it’s a part of')) + ' <b>' + esc(part) + '</b></span>';
+    return h ? '<div class="kc-place">' + h + '</div>' : '';
+  }
+  function cardHTML(item, C, stateLabel, d, statsHTML) {
+    var id = item.id, words;
+    if (C && C.w && C.w.length) words = C.w;
+    else words = (item.vocabulary || []).slice(0, 6).map(function (v) { return [stripFuri(v.word), '', (v.meaning || '').replace(/;,?\s*/g, ', ')]; });
+    var wrows = words.map(function (w, i) {
+      return '<tr><td class="n">' + (i + 1) + '</td><td class="h"><button type="button" class="kw-hear is-mini" data-say="' + esc(w[1] || w[0]) + '" aria-label="Listen">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg></button></td>' +
+        '<td class="w jp">' + esc(w[0]) + '</td><td class="r jp">' + esc(w[1]) + '</td><td class="g">' + esc(w[2]) + '</td></tr>';
+    }).join('');
+    var k = (C && C.k) || [];
+    var box = k.length ? kvSvg(k) + '<span class="kc-play">▶ ' + esc(t('kc_play', 'strokes')) + '</span>' : '<span class="kc-char">' + esc(item.kanji) + '</span>';
+    var so = k.map(function (_, i) { return '<i><small>' + (i + 1) + '</small>' + kvSvg(k, i) + '</i>'; }).join('');
+    var ev = window.KA_Order ? KA_Order.everyNo(id) : null;
+    var parts = (C && C.p || []).map(function (p) { return '<div><b>' + esc(p[0]) + '</b><span>' + esc(p[1]) + '</span></div>'; }).join('');
+    var mine = ''; try { mine = localStorage.getItem('katsuyo-kanji-story-' + id) || ''; } catch (e) {}
+    var story = C && C.s
+      ? '<div class="kc-story">' + C.s + '</div>' +
+        (C.h && C.h.length ? '<ul class="kc-hooks">' + C.h.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '') +
+        (C.e ? '<div class="kc-seen"><b>' + esc(t('kc_seen', 'Where you’ll see it')) + '</b><br>' + C.e + '</div>' : '')
+      : (C ? '<div class="kc-soon">' + esc(t('kc_soon', 'Katsu’s story for this one is on its way. Until then, build your own from the parts above.')) + '</div>' : '');
+    return '<div class="kc">' +
+      '<div class="kc-l"><div class="kc-box" title="' + esc(t('kc_play_t', 'Watch the strokes')) + '">' + box + '</div>' +
+        '<div class="kc-badges">' + (C && C.j ? '<span class="jl" title="' + esc(t('kc_jlpt_t', 'JLPT level (unofficial lists)')) + '">N' + C.j + '</span>' : '') +
+          '<span class="klc">KLC #' + id + '</span>' + (ev ? '<span>' + esc(t('kc_every', 'Everyday')).toUpperCase() + ' #' + ev + '</span>' : '') + '</div>' +
+        '<div class="kc-rd"><b class="on">' + esc(t('kc_on', 'ON')) + '</b><span class="jp">' + readingHTML(item.onyomi || []) + '</span>' +
+          '<b class="kun">' + esc(t('kc_kun', 'KUN')) + '</b><span class="jp">' + readingHTML([item.kunyomi || '']) + '</span></div>' +
+        '<button type="button" class="kw-hear kc-hearall" data-hear="readings">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>' +
+          esc(t('kw_hear', 'Hear the readings')) + '</button>' +
+      '</div>' +
+      '<div class="kc-m"><div class="kc-head"><span class="kc-kw">' + esc(item.keyword.replace(/・/g, ' · ').toLowerCase()) + '</span>' +
+          '<span class="kw-d-state s-' + d.status + '" style="--stamp:' + KA_Kanji.colour(id) + ';--stamp-fg:' + KA_Kanji.textOn(id) + '">' + esc(stateLabel) + '</span>' +
+          statsHTML + '<button type="button" class="kw-d-close" aria-label="Close">✕</button></div>' +
+        placeRow(id) +
+        '<table class="kc-words">' + wrows + '</table>' +
+        (C && C.r ? '<div class="kc-rad"><b>' + esc(t('kc_radical', 'RADICAL')).toUpperCase() + '</b><span class="jp">' + esc(C.r[1]) + '</span><span>' + esc(C.r[2]) + '</span></div>' : '') +
+        (k.length ? '<p class="kc-h">' + esc(t('kc_order', 'Stroke order')) + ' · ' + k.length + ' ' + esc(t('kc_strokes', 'strokes')) + ' · ' + esc(t('kc_start', 'start at the red dot')) + '</p><div class="kc-so">' + so + '</div>' : '') +
+      '</div>' +
+      '<div class="kc-r"><span class="eb">' + esc(t('kc_remember', 'Remember it')) + '</span>' +
+        (parts ? '<div class="kc-parts">' + parts + '</div>' : '') + story +
+        '<div class="kc-mine"' + (mine ? '' : ' hidden') + '><b>' + esc(t('kc_yours', 'Your story')) + '</b><p></p></div>' +
+        '<div class="kc-edit" hidden><textarea rows="3" maxlength="400"></textarea><div><button type="button" class="kw-go kc-save">' + esc(t('kc_save', 'Save')) + '</button>' +
+          '<button type="button" class="kw-go is-ghost kc-cancel">' + esc(t('kc_cancel', 'Cancel')) + '</button></div></div>' +
+        '<button type="button" class="kc-own">✎ ' + esc(mine ? t('kc_own_edit', 'Edit my story') : t('kc_own', 'Write my own story')) + '</button>' +
+      '</div>' +
+      '<div class="kc-acts"><button type="button" class="kw-go" data-act="drill">' + esc(t('kw_drill_this', 'Drill this one')) + '</button>' +
+        '<button type="button" class="kw-go is-ghost" data-act="solid">' + esc(t('kw_mark_solid', 'Mark as solid')) + '</button>' +
+        '<a class="kw-go is-ghost" href="/dictionary?q=' + encodeURIComponent(item.kanji) + '">' + esc(t('kw_lookup', 'Look it up')) + '</a>' +
+        (k.length ? '<span class="kc-credit">' + esc(t('kc_credit', 'Stroke order')) + ': <a href="https://kanjivg.tagaini.net" target="_blank" rel="noopener">KanjiVG</a> (CC BY-SA)</span>' : '') +
+        '<span class="kw-d-hint">' + esc(t('kw_keys', '← → to move · Esc to close')) + '</span></div>' +
+    '</div>';
+  }
+  function wireStory(box, item) {
+    var key = 'katsuyo-kanji-story-' + item.id, mine = '';
+    try { mine = localStorage.getItem(key) || ''; } catch (e) {}
+    var M = box.querySelector('.kc-mine'), E = box.querySelector('.kc-edit'), T = E.querySelector('textarea'), B = box.querySelector('.kc-own');
+    M.querySelector('p').textContent = mine;
+    T.placeholder = t('kc_ph', 'Your own way to remember it…') + ' ' + item.kanji;
+    B.addEventListener('click', function () { T.value = mine; E.hidden = false; B.hidden = true; T.focus(); });
+    E.querySelector('.kc-cancel').addEventListener('click', function () { E.hidden = true; B.hidden = false; });
+    E.querySelector('.kc-save').addEventListener('click', function () {
+      mine = T.value.trim();
+      try { if (mine) localStorage.setItem(key, mine); else localStorage.removeItem(key); } catch (e) {}
+      M.querySelector('p').textContent = mine; M.hidden = !mine; E.hidden = true; B.hidden = false;
+      B.textContent = '✎ ' + (mine ? t('kc_own_edit', 'Edit my story') : t('kc_own', 'Write my own story'));
+    });
+    T.addEventListener('keydown', function (e) { e.stopPropagation(); });
+  }
+
   /* ---------- the opened card ---------- */
-  function openCard(id) {
+  function openCard(id, quiet) {
     var item = byId(id);
     if (!item) return;
     state.open = id;
@@ -1371,62 +1631,31 @@
       : d.status === 'shaky'
         ? t('kw_s_shaky', 'Shaky') + ' — ' + d.wrong + '/' + d.seen + ' ' + t('kw_s_missed', 'missed')
         : t('kw_s_new', 'Not started yet');
+    var stats = d.seen ? '<span class="kw-d-stats">' +
+        '<b class="is-right">✓ ' + (d.seen - d.wrong) + '</b> ' + t('kw_st_right', 'right') + ' · ' +
+        '<b class="is-wrong">✗ ' + d.wrong + '</b> ' + t('kw_st_wrong', 'wrong') +
+        (d.streak > 1 ? ' · <b>' + d.streak + '</b> ' + t('kw_st_streak', 'in a row') : '') +
+      '</span>' : '';
 
-    var vocab = (item.vocabulary || []).slice(0, 6).map(function (v, i) {
-      return '<li><button type="button" class="kw-hear is-mini" data-hear="' + i + '" aria-label="Listen">' +
-               '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg></button>' +
-             '<span class="jp">' + stripFuri(v.word) + '</span>' +
-             (v.meaning || '').replace(/;,?\s*/g, ', ') + '</li>';
-    }).join('');
-
+    var C = CARDS[id] || null;
     box.hidden = false;
-    box.innerHTML =
-      '<div class="kw-d-left">' +
-        '<span class="kw-d-char">' + item.kanji + '</span>' +
-        '<span class="kw-d-id">KLC #' + item.id + '</span>' +
-      '</div>' +
-      '<div class="kw-d-body">' +
-        '<div class="kw-d-head">' +
-          '<span class="kw-d-kw">' + item.keyword.replace(/・/g, ' · ').toLowerCase() + '</span>' +
-          '<span class="kw-d-state s-' + d.status + '" style="--stamp:' + KA_Kanji.colour(id) + ';--stamp-fg:' + KA_Kanji.textOn(id) + '">' + stateLabel + '</span>' +
-          (d.seen ? '<span class="kw-d-stats">' +
-              '<b class="is-right">✓ ' + (d.seen - d.wrong) + '</b> ' + t('kw_st_right', 'right') + ' · ' +
-              '<b class="is-wrong">✗ ' + d.wrong + '</b> ' + t('kw_st_wrong', 'wrong') +
-              (d.streak > 1 ? ' · <b>' + d.streak + '</b> ' + t('kw_st_streak', 'in a row') : '') +
-            '</span>' : '') +
-          '<button type="button" class="kw-d-close" aria-label="Close">✕</button>' +
-        '</div>' +
-        '<div class="kw-d-readings">' +
-          '<span class="kw-d-on"><b>' + t('onyomi', "On'yomi") + '</b><span class="jp">' +
-            ((item.onyomi || []).join(' ・ ') || '—') + '</span></span>' +
-          '<span class="kw-d-kun"><b>' + t('kunyomi', "Kun'yomi") + '</b><span class="jp">' +
-            (item.kunyomi || '—') + '</span></span>' +
-          '<button type="button" class="kw-hear" data-hear="readings">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"></path><path d="M16 9a4 4 0 0 1 0 6"></path></svg>' +
-            t('kw_hear', 'Hear the readings') + '</button>' +
-        '</div>' +
-        (vocab ? '<ul class="kw-d-vocab">' + vocab + '</ul>' : '') +
-        '<div class="kw-d-acts">' +
-          '<button type="button" class="kw-go" data-act="drill">' + t('kw_drill_this', 'Drill this one') + '</button>' +
-          '<button type="button" class="kw-go is-ghost" data-act="solid">' + t('kw_mark_solid', 'Mark as solid') + '</button>' +
-          '<a class="kw-go is-ghost" href="/dictionary?q=' + encodeURIComponent(item.kanji) + '">' +
-            t('kw_lookup', 'Look it up') + '</a>' +
-          '<span class="kw-d-hint">' + t('kw_keys', '← → to move · Esc to close') + '</span>' +
-        '</div>' +
-      '</div>';
+    box.innerHTML = cardHTML(item, C, stateLabel, d, stats);
+    if (!C) loadChunk(id).then(function (ok) { if (ok && state.open === id && CARDS[id]) openCard(id, quiet); });
 
     box.querySelector('.kw-d-close').addEventListener('click', closeCard);
+    var kb = box.querySelector('.kc-box');
+    kb.addEventListener('click', function () { animate(kb); });
+    if (C && !quiet) setTimeout(function () { animate(kb); }, 80);
+    wireStory(box, item);
 
-    // Listen buttons: the readings, and each example word (spoken from its
-    // furigana, never the bare kanji). Hidden until something can speak.
+    // Listen buttons: all the readings, and each example word spoken from its
+    // kana. Hidden until something can speak.
     if (window.KA_Listen) {
       KA_Listen.stop();
       box.querySelectorAll('.kw-hear').forEach(function (btn) {
-        var which = btn.getAttribute('data-hear');
         KA_Listen.attach(btn, function () {
-          if (which === 'readings') return window.kanjiReadingSpeech ? window.kanjiReadingSpeech(item) : '';
-          var v = (item.vocabulary || [])[+which];
-          return v ? v.word : '';
+          if (btn.getAttribute('data-hear') === 'readings') return window.kanjiReadingSpeech ? window.kanjiReadingSpeech(item) : '';
+          return btn.getAttribute('data-say') || '';
         });
       });
       paintListen();
@@ -1438,7 +1667,7 @@
       // Two notes, because "solid" is defined as two in a row — this keeps the
       // button honest rather than writing a special-case flag.
       KA_Kanji.note(id, true); KA_Kanji.note(id, true);
-      refresh(); openCard(id);
+      refresh(); openCard(id, true);
     });
     paintGrid();
   }
@@ -1461,9 +1690,9 @@
 
   function step(delta) {
     if (state.open == null) return;
-    var next = state.open + delta;
+    var next = posOf(state.open) + delta;
     if (next < lo() || next > hi()) return;
-    openCard(next);
+    openCard(idAt(next));
   }
 
   /* ---------- wiring ---------- */
@@ -1474,7 +1703,17 @@
     paintBlocks(); paintGrid();
   }
 
-  function refresh() { paintTotals(); paintBlocks(); paintGrid(); paintColours(); }
+  function paintOrder() {
+    var every = state.order === 'everyday';
+    document.querySelectorAll('#kw-order button').forEach(function (b) {
+      var on = b.dataset.o === state.order;
+      b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', String(on));
+    });
+    $('kw-tiers').hidden = !every;
+    $('kw-sub').textContent = every ? t('kw_blocks_sub_every', '— everyday kanji first: the ones on signs, menus and shop fronts')
+                                    : t('kw_blocks_sub', "— the course in order, so you always know what's next");
+  }
+  function refresh() { paintOrder(); paintTotals(); paintBlocks(); paintGrid(); paintColours(); }
 
   /* ---------- the colours panel ---------- */
   var SWATCHES = ['#c8392b', '#e0a030', '#3aa17e', '#2d6a9f', '#7b4fa0', '#2b2320'];
@@ -1549,6 +1788,18 @@
     if (typeof kanjiDataList === 'undefined' || !kanjiDataList.length) return;
 
     wireColours();
+    $('kw-order').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-o]');
+      if (!b || b.dataset.o === state.order) return;
+      var keep = state.open;
+      state.order = b.dataset.o;
+      if (window.KA_Order) KA_Order.setMode(state.order);
+      // stay with the kanji you had open; otherwise start at the top of the new order
+      state.block = keep ? Math.floor((posOf(keep) - 1) / BLOCK) : 0;
+      refresh();
+      if (keep) openCard(keep, true);
+    });
+    window.addEventListener('katsuyo:lang', function () { refresh(); if (state.open) openCard(state.open, true); });
     $('kw-tab-wall').addEventListener('click', function () { showTab('wall'); });
     $('kw-tab-card').addEventListener('click', function () { showTab('card'); });
 
@@ -1573,7 +1824,7 @@
         if (hit) id = hit.id;
       }
       if (id && id >= 1 && id <= TOTAL) {
-        var b = Math.floor((id - 1) / BLOCK);
+        var b = Math.floor((posOf(id) - 1) / BLOCK);
         if (b !== state.block) { state.block = b; paintBlocks(); }
         paintGrid(); openCard(id); return;
       }
@@ -1584,7 +1835,7 @@
       // Where you left off = the first block that isn't finished.
       for (var b = 0; b * BLOCK < TOTAL; b++) {
         var a = b * BLOCK + 1, z = Math.min(a + BLOCK - 1, TOTAL);
-        var c = KA_Kanji.counts(a, z);
+        var c = countIds(idsOf(a, z));
         if (c.solid < c.total) { go(b); return; }
       }
       go(0);
