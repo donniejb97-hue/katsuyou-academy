@@ -1173,8 +1173,28 @@
         g.appendChild(o);
       }
       opt('custom', tt('kd_r_custom', 'Custom range\u2026'));
-      sel.value = state.lo + '-' + state.hi;
+      sel.value = state.onlyWrong ? 'wrong' : state.lo + '-' + state.hi;
+      if (sel.value === '' || sel.selectedIndex < 0) {
+        sel.value = 'custom';
+        $('kd-lo').value = state.lo; $('kd-hi').value = state.hi;
+        $('kd-custom').hidden = false;
+      }
     }
+
+    // The range you picked is remembered, so a refresh keeps it.
+    function saveRange() {
+      try { localStorage.setItem('kanjiDrillRange', state.onlyWrong ? 'wrong' : state.lo + '-' + state.hi); } catch (e) {}
+    }
+    (function loadRange() {
+      var v = null;
+      try { v = localStorage.getItem('kanjiDrillRange'); } catch (e) {}
+      if (v === 'wrong') { state.onlyWrong = true; return; }
+      var m = /^(\d+)-(\d+)$/.exec(v || '');
+      if (m) {
+        var a = +m[1], z = +m[2];
+        if (a >= 1 && z <= 2300 && a <= z) { state.lo = a; state.hi = z; }
+      }
+    })();
 
     function applyRange(value) {
       if (value === 'wrong') {
@@ -1190,6 +1210,7 @@
         state.lo = parseInt(parts[0], 10);
         state.hi = parseInt(parts[1], 10);
       }
+      saveRange();
       showPoolSize();
       newQuestion();
     }
@@ -1354,6 +1375,7 @@
         state.lo = Math.max(1, Math.min(2300, a));
         state.hi = Math.max(1, Math.min(2300, z));
         state.onlyWrong = false;
+        saveRange();
         showPoolSize();
         newQuestion();
       });

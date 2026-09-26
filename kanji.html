@@ -1335,7 +1335,16 @@
   /* ---------- block strip ----------
      Each block is a stamp that fills with its colour from the bottom as the
      block turns solid; at 100% it is a proper stamp, crooked and shadowed. */
+  // The block you were on is remembered (one per order), so a refresh or a
+  // round in the Kitchen brings you back to it rather than to block 1.
+  function blockKey() { return 'katsuyo-kanji-block-' + state.order; }
+  function savedBlock() {
+    var b = NaN;
+    try { b = parseInt(localStorage.getItem(blockKey()), 10); } catch (e) {}
+    return (b >= 0 && b * BLOCK < TOTAL) ? b : 0;
+  }
   function paintBlocks() {
+    try { localStorage.setItem(blockKey(), String(state.block)); } catch (e) {}
     var wrap = $('kw-blocks');
     wrap.innerHTML = '';
     for (var b = 0; b * BLOCK < TOTAL; b++) {
@@ -1795,7 +1804,7 @@
       state.order = b.dataset.o;
       if (window.KA_Order) KA_Order.setMode(state.order);
       // stay with the kanji you had open; otherwise start at the top of the new order
-      state.block = keep ? Math.floor((posOf(keep) - 1) / BLOCK) : 0;
+      state.block = keep ? Math.floor((posOf(keep) - 1) / BLOCK) : savedBlock();
       refresh();
       if (keep) openCard(keep, true);
     });
@@ -1852,6 +1861,7 @@
     if (window.KA_Speech && KA_Speech.onReady) KA_Speech.onReady(paintListen);
     if (window.KA_Azure && KA_Azure.listVoices) KA_Azure.listVoices().then(paintListen);
 
+    state.block = savedBlock();
     takeFresh();
     refresh();
     var saved = 'wall';
