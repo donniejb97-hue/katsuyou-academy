@@ -526,6 +526,7 @@
     if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) {}
     if (afterClose) { var f = afterClose; afterClose = null; f(); }
   }
+  function backBtn(attr) { return '<button type="button" class="ka-b ka-backb" ' + attr + '>' + esc(T('back_b')) + '</button>'; }
   function busy(b, on) { if (!b) return; b.disabled = on; b.classList.toggle('ka-busy', on); }
   function say(sel, msg, bad) { var n = box.querySelector(sel); if (n) { n.textContent = msg || ''; n.classList.toggle('ka-bad', !!bad); n.classList.toggle('ka-good', !bad && !!msg); } }
 
@@ -603,7 +604,7 @@
                      : '<div class="ka-hint"><button type="button" class="ka-link" data-go="forgot">' + esc(T('pw_forgot')) + '</button></div>') : '') +
       (pk ? '<div class="ka-hint ka-keyp">' + esc(T('key_p')) + (A.isNew ? ' ' + esc(T('key_new_p')) : '') + '</div>' : '') +
       '<div class="ka-msg" id="ka-msg" role="alert"></div>' +
-      '<button type="button" class="ka-b ka-red ka-wide" data-go="go">' + esc(pw ? T(A.isNew ? 'b_create' : 'b_signin') : pk ? T(A.isNew ? 'b_key_new' : 'b_key_in') : T('b_link')) + '</button>' +
+      '<div class="ka-actrow">' + backBtn('data-back') + '<button type="button" class="ka-b ka-red" data-go="go">' + esc(pw ? T(A.isNew ? 'b_create' : 'b_signin') : pk ? T(A.isNew ? 'b_key_new' : 'b_key_in') : T('b_link')) + '</button></div>' +
       '<p class="ka-switch">' + (welcome
         ? esc(T('sw_not', { email: known.email })) + ' <button type="button" class="ka-link" data-go="other">' + esc(T('sw_other')) + '</button> · <button type="button" class="ka-link" data-go="stop">' + esc(T('sw_stop')) + '</button>'
         : esc(T(A.isNew ? 'sw_new' : 'sw_in')) + ' <button type="button" class="ka-link" data-go="flip">' + esc(T(A.isNew ? 'sw_new_b' : 'sw_in_b')) + '</button>') + '</p>';
@@ -612,8 +613,7 @@
       esc(T('keeps_2')) + '<br>' + esc(T('keeps_3')) + '<br>' + esc(T('keeps_4')) + '<br><br>' +
       '<b>' + esc(n ? T('keeps_come_n', { n: n }) : T('keeps_come')) + '</b> ' + esc(T('keeps_come_p')) + '<br><br>' +
       esc(T('keeps_switch')) + '<br><br>' + esc(T('keeps_del')) + '</div>';
-    frame('acc', head + '<p class="ka-sub">' + esc(T('acc_p')) + '</p><div class="ka-acc2"><div>' + form + '</div>' + side + '</div>' +
-      '<p class="ka-foot"><button type="button" class="ka-link ka-mute" data-back>' + esc(T('back')) + '</button></p>', function () { showAccount({}); });
+    frame('acc', head + '<p class="ka-sub">' + esc(T('acc_p')) + '</p><div class="ka-acc2"><div>' + form + '</div>' + side + '</div>', function () { showAccount({}); });
 
     var mail = box.querySelector('#ka-mail'), pwi = box.querySelector('#ka-pw'), pw2 = box.querySelector('#ka-pw2');
     if (mail) { mail.value = A.email || ''; mail.oninput = function () { A.email = mail.value.trim(); mail.classList.remove('ka-err'); if (pwi && A.isNew) paintRules(pwi.value, A.email); }; }
@@ -680,8 +680,7 @@
   function showForgot() {
     frame('forgot', '<div class="ka-eb">' + esc(T('fg_eb')) + '</div><h3>' + esc(T('fg_h')) + '</h3><p class="ka-sub">' + esc(T('fg_p')) + '</p>' +
       '<div class="ka-narrow"><label class="ka-lb" for="ka-mail">' + esc(T('f_email')) + '</label><input id="ka-mail" class="ka-in" type="email" autocomplete="email">' +
-      '<div class="ka-msg" id="ka-msg" role="alert"></div><button type="button" class="ka-b ka-red ka-wide" data-go="go">' + esc(T('fg_b')) + '</button></div>' +
-      '<p class="ka-foot"><button type="button" class="ka-link ka-mute" data-go="backacc">' + esc(T('back')) + '</button></p>', showForgot);
+      '<div class="ka-msg" id="ka-msg" role="alert"></div><div class="ka-actrow">' + backBtn('data-go="backacc"') + '<button type="button" class="ka-b ka-red" data-go="go">' + esc(T('fg_b')) + '</button></div></div>', showForgot);
     var mail = box.querySelector('#ka-mail'); mail.value = A.email || '';
     box.querySelector('[data-go=backacc]').onclick = function () { showAccount({}); };
     box.querySelector('[data-go=go]').onclick = function () {
@@ -957,8 +956,7 @@
     frame('code', '<div class="ka-eb">' + esc(T('cd_eb')) + '</div><h3>' + esc(T('cd_h')) + '</h3><p class="ka-sub">' + esc(T('cd_p')) + '</p>' +
       '<div class="ka-narrow"><input id="ka-cd" class="ka-in ka-codein" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD-EFGH">' +
       '<div class="ka-hint">' + esc(T('cd_warn')) + '</div><div class="ka-msg" id="ka-msg" role="alert"></div>' +
-      '<button type="button" class="ka-b ka-red ka-wide" data-go="go">' + esc(T('cd_b')) + '</button></div>' +
-      '<p class="ka-foot"><button type="button" class="ka-link ka-mute" data-back>' + esc(T('back')) + '</button></p>', function () { showCode(prefill); });
+      '<div class="ka-actrow">' + backBtn('data-back') + '<button type="button" class="ka-b ka-red" data-go="go">' + esc(T('cd_b')) + '</button></div></div>', function () { showCode(prefill); });
     var i = box.querySelector('#ka-cd'); i.value = prefill || '';
     i.oninput = function () { var v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8); i.value = v.length > 4 ? v.slice(0, 4) + '-' + v.slice(4) : v; };
     i.addEventListener('keydown', function (e) { if (e.key === 'Enter') box.querySelector('[data-go=go]').click(); });

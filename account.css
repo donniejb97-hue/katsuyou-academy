@@ -227,3 +227,8 @@ html.ka-modal-open { overflow: hidden; }
   .ka-cbfoot .ka-link { text-align: center; }
   .ka-bku li { flex-direction: column; }
 }
+
+/* Back + main action on one row (sign-in, forgot password, enter code) */
+.ka-actrow { display: flex; gap: .6rem; align-items: stretch; }
+.ka-actrow .ka-backb { flex: 0 0 auto; white-space: nowrap; }
+.ka-actrow .ka-red { flex: 1 1 auto; min-width: 0; }
