@@ -9267,15 +9267,27 @@ function generateNewQuestion() {
         if (s) parts.push(s);
       });
       var seen = {}, out = [];
-      parts.forEach(function (p) { if (!seen[p]) { seen[p] = 1; out.push(p); } });
-      // The wall is the reference: every reading, on first, then kun.
-      return out.join('、');
+      parts.forEach(function (p) {
+        // ジッ・ハッ・ガッ are only the clipped front of ジュウ, ハチ, ガク before
+        // another sound — said on their own they are just a click, so skip them.
+        if (/[ッっ]$/.test(p)) return;
+        if (!seen[p]) { seen[p] = 1; out.push(p); }
+      });
+      // The wall is the reference: every reading, on first, then kun. A full
+      // stop between them, not a comma: with commas the voice runs short
+      // readings together (ひ、び、か) and seems to skip some.
+      return out.join('。');
     }
     // The Kanji Kitchen says one reading only: the one you would hear for the
     // kanji on its own (山 やま, 食 たべる, 学 がく). kanji-data.js carries it
     // as "main"; the first on-reading stands in if an entry has none.
+    // Where the data's single reading isn't the one people actually say for
+    // the kanji on its own (私 is わたし in everyday speech, not わたくし).
+    var MAIN_FIX = { '私': 'わたし', '業': 'ぎょう', '枚': 'まい', '再': 'さい', '準': 'じゅん', '労': 'ろう',
+                     '因': 'いん', '程': 'ほど', '種': 'たね', '緒': 'しょ', '率': 'りつ', '供': 'とも', '要': 'よう' };
     window.kanjiMainSpeech = function (card) {
       if (!card) return '';
+      if (MAIN_FIX[card.kanji]) return MAIN_FIX[card.kanji];
       if (card.main) return card.main;
       var on = (card.onyomi || [])[0];
       if (on) return String(on).split(/[・,、\s]+/)[0].replace(/[-*]/g, '');

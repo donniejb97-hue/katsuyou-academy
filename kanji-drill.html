@@ -960,7 +960,7 @@
         '<div class="drill-detail">' +
           '<div class="row"><span class="lbl">ON</span><span class="jp">' + on + '</span>' +
           '<span class="lbl">KUN</span><span class="jp">' + kun + '</span>' +
-          '<button type="button" class="kd-hear" data-hear="readings">' + ICON + tt('kd_hear', 'Hear the reading') + '</button></div>' +
+          '<button type="button" class="kd-hear" data-hear="readings">' + ICON + tt('kw_hear', 'Hear the readings') + '</button></div>' +
           vocabHtml +
         '</div>';
       wireHear(fb, item);
@@ -1067,7 +1067,9 @@
       root.querySelectorAll('.kd-hear').forEach(function (btn) {
         var which = btn.getAttribute('data-hear');
         KA_Listen.attach(btn, function () {
-          if (which === 'readings') return window.kanjiMainSpeech ? window.kanjiMainSpeech(item) : '';
+          // The button reads every reading shown beside it (as on the wall);
+          // the automatic one as a card opens stays the single main reading.
+          if (which === 'readings') return window.kanjiReadingSpeech ? window.kanjiReadingSpeech(item) : (window.kanjiMainSpeech ? window.kanjiMainSpeech(item) : '');
           var v = (item.vocabulary || [])[0];
           return v ? v.word : '';
         });
