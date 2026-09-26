@@ -9437,6 +9437,13 @@ function generateNewQuestion() {
       // Only handle if kanji page is active
       const kanjiPage = document.getElementById('page-kanji');
       if (!kanjiPage || kanjiPage.style.display === 'none') return;
+      // These keys belong to the flashcards ("One at a time"), never to typing:
+      // without this, a "g" typed into the wall's search box (or any form on
+      // the page) opened the Go-to box and an "s" shuffled the deck.
+      const tag = (e.target && e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || (e.target && e.target.isContentEditable)) return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (kanjiPage.classList.contains('kw-view-wall')) return;
       
       // Check if modal is open
       const modal = document.getElementById('kanji-goto-modal');
