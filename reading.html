@@ -757,10 +757,18 @@
       paintRead();
     }
     // Previous / Next keep the page where it is
+    // Previous / Next roll the open scroll shut first, then unroll the next story.
+    // The page stays where it is.
+    var switching = false;
     function switchTo(s) {
+      if (switching) return;
       var y = window.pageYOffset;
-      var go = function () { openStory(s.id, { keep: true }); window.scrollTo(0, y); };
-      if (state.view === 'quiz' && !state.both) show('story', go, true); else go();
+      var go = function () { switching = false; openStory(s.id, { keep: true }); window.scrollTo(0, y); };
+      if (state.both || reduced) { go(); return; }
+      var cur = state.view === 'quiz' ? $('rr-sheet') : $('rr-story');
+      switching = true;
+      if (state.speaking) stopAudio();
+      roll(cur, true, go);
     }
 
     function evidence(qi) {
