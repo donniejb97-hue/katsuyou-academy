@@ -60,15 +60,18 @@
       <div class="room"><div class="shoji"></div><div class="kamoi"></div><div class="floor"><i></i></div></div>
       <div class="deskbg"></div>
 
+      <h1 class="sign">巻物の間<small data-i18n="rr_sign_sub">THE SCROLL ROOM · 読解</small></h1>
+      <!-- the windowsill: tabs, level plaques and reading options sit on the beam of the painting -->
+      <div class="sill" id="rr-sill">
       <div class="keys" id="rr-keys">
         <button class="key on" type="button" data-go="shelf"><i></i><span><small data-i18n="rr_k_shelf_s">本棚 · THE SHELF</small><span data-i18n="rr_k_shelf">All scrolls</span></span></button>
         <button class="key" type="button" data-go="read" id="rr-key-read" disabled><i></i><span><small data-i18n="rr_k_read_s">巻物 · READING</small><span id="rr-key-title">Open a scroll</span></span></button>
       </div>
-      <h1 class="sign">巻物の間<small data-i18n="rr_sign_sub">THE SCROLL ROOM · 読解</small></h1>
+        <div class="plaques" id="rr-plaques"></div>
+      </div>
 
       <!-- ================= THE SHELF ================= -->
       <section class="shelfview" id="rr-shelf">
-        <div class="plaques" id="rr-plaques"></div>
         <div class="cabinet"><div class="cab-h"><span id="rr-cab-h"></span><span id="rr-cab-p"></span></div><div class="grid" id="rr-grid"></div></div>
         <aside class="desk">
           <div class="cm" id="rr-cm"><span class="jk t"></span><span class="jk b"></span>
@@ -336,6 +339,7 @@
 
       $('rr-cm-lv').textContent = state.level;
       paintGen();
+      fitRoom();
     }
 
     function setShelf(lv) {
@@ -362,7 +366,7 @@
       $('rr-shelf').hidden = v !== 'shelf';
       $('rr-read').hidden = v !== 'read';
       $('rr-stage').classList.toggle('at-desk', v === 'read');
-      if (v === 'shelf') { stopAudio(); paintShelf(); }
+      if (v === 'shelf') { stopAudio(); paintShelf(); } else fitRoom();
       if (!keep) window.scrollTo(0, 0);
     }
 
@@ -1093,7 +1097,32 @@
       if (t.closest('#rr-create')) { generate(); return; }
     }
 
+    // The shelf room follows the learner's own clock: sunlit by day, rain and lanterns from 18:00 to 6:00.
+    // The shelf room is painted as a rainy evening. (The sunlit painting is there
+    // too: set EVENING_ONLY to false and it shows from 6:00 to 18:00.)
+    var EVENING_ONLY = true;
+    function paintDaylight() {
+      var h = new Date().getHours();
+      $('rr-stage').classList.toggle('night', EVENING_ONLY || h >= 18 || h < 6);
+    }
+    // Lay the room out on the painting: the sign hangs on the shoji's double
+    // crossbar, the sill row sits on the beam, and the shelf starts below it.
+    // The painting is drawn 'cover' from the bottom, so where those land depends
+    // on the stage's size — measured here rather than guessed in CSS.
+    var ROOM = { w: 3000, h: 1273, beam: [.226, .310], bar: [.080, .112] };
+    function fitRoom() {
+      var st = $('rr-stage'), sill = $('rr-sill'), shelf = $('rr-shelf'), sign = document.querySelector('.rr .sign');
+      if (window.innerWidth <= 900 || state.reading) { sill.style.top = sign.style.top = shelf.style.paddingTop = ''; return; }
+      for (var i = 0; i < 3; i++) {
+        var W = st.clientWidth, H = st.offsetHeight, sc = Math.max(W / ROOM.w, H / ROOM.h), ih = ROOM.h * sc, top = H - ih;
+        var bt = top + ROOM.beam[0] * ih, bb = top + ROOM.beam[1] * ih;
+        sill.style.top = ((bt + bb) / 2 - Math.min(sill.offsetHeight, bb - bt + 20) / 2) + 'px';
+        sign.style.top = (top + (ROOM.bar[0] + ROOM.bar[1]) / 2 * ih) + 'px';
+        shelf.style.paddingTop = Math.max(bb, sill.offsetTop + sill.offsetHeight) + 36 + 'px';
+      }
+    }
     function init() {
+      paintDaylight(); setInterval(paintDaylight, 60000);
       document.addEventListener('click', onClick);
       document.addEventListener('keydown', function (e) {
         var tg = e.target;
@@ -1115,6 +1144,8 @@
       window.addEventListener('mousemove', function (e) { if (drag) art.scrollLeft = drag.l - (e.clientX - drag.x); });
       window.addEventListener('mouseup', function () { drag = null; art.style.cursor = ''; });
       window.addEventListener('resize', progressSoon);
+      window.addEventListener('resize', fitRoom);
+      window.addEventListener('load', fitRoom);
       // hovering a word in the list lights it up in the text; hovering it in the text shows its meaning
       document.addEventListener('mouseover', function (e) {
         if (!e.target.closest) return;

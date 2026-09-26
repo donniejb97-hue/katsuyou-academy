@@ -497,3 +497,29 @@
 @media (prefers-reduced-motion:reduce){.rr .clip,.rr .clip > .doc,.rr .shade{transition:none!important}}
 .rr .bar2 i{width:100%!important;transform:scaleX(0);transform-origin:100% 50%;transition:transform .15s}
 .rr .article.yoko ~ .prog .bar2 i{transform-origin:0 50%}
+.rr .stage:not(.at-desk){background:linear-gradient(rgba(30,16,6,0) 60%,rgba(30,16,6,.25)),url(reading-room-bg.jpg) center bottom/cover no-repeat,#8a6a42}
+.rr .stage:not(.at-desk) .room{display:none}
+.rr .stage:not(.at-desk) .sign{box-shadow:inset 0 0 0 3px rgba(0,0,0,.25),inset 0 0 0 4px rgba(255,220,170,.12),0 14px 24px rgba(0,0,0,.45)}
+.rr .stage.night:not(.at-desk){background:linear-gradient(rgba(10,10,20,0) 60%,rgba(10,10,20,.3)),url(reading-room-bg-night.jpg) center bottom/cover no-repeat,#4a3a2a}
+.rr .stage.at-desk .sill{display:none}
+@media (min-width:901px){.rr .sill{position:absolute;left:24px;right:24px;top:230px;z-index:6;display:grid;grid-template-columns:minmax(0,1fr) repeat(6,auto) minmax(0,1fr);align-items:center;gap:10px}
+.rr .sill .keys{position:static;margin:0;justify-self:start}
+.rr .sill .plaques{display:contents}
+.rr .sill .pl{min-width:88px;padding:7px 12px 6px}
+.rr .sill .pl b{font-size:1.1rem}
+.rr .sill .pl.on{transform:translateY(-3px)}
+.rr .sill .opts{justify-self:end;margin:0;padding:6px 10px;grid-column:8}
+.rr .sign{transform:translate(-50%,-50%)}
+.rr .shelfview{padding-top:320px}}
+@media (min-width:901px) and (max-width:1600px){.rr .sill .opts{grid-column:1 / -1;grid-row:2;justify-self:end}}
+@media (min-width:901px) and (max-width:1120px){.rr .sill .pl{min-width:76px;padding:6px 9px 5px}
+.rr .sill .pl b{font-size:1rem}
+.rr .sill .pl small{font-size:.62rem}
+.rr .sill .keys .key{padding:6px 10px}}
+@media (max-width:900px){.rr .sill{position:relative;padding:0 12px}
+.rr .sill .keys{position:static;margin:10px 0 0}}
+@media (min-width:901px) and (max-width:1300px){.rr .sill{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.rr .sill .keys{flex:0 0 auto}
+.rr .sill .plaques{display:contents}
+.rr .sill .opts{flex:0 0 auto}}
+@media (max-width:900px){.rr .sill .plaques{padding:14px 0 6px}}
